@@ -7,11 +7,13 @@ interface SidebarProps {
   leagueData: any;
   featuredTip: any;
   streams?: any[];
+  mode?: 'default' | 'predictions';
 }
 
-export default function Sidebar({ leagueData, featuredTip, streams = [] }: SidebarProps) {
+export default function Sidebar({ leagueData, featuredTip, streams = [], mode = 'default' }: SidebarProps) {
   const topLeagues = leagueData;
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [openCountry, setOpenCountry] = useState<string | null>(null);
 
   const mockPredictions = [
     {
@@ -49,6 +51,20 @@ export default function Sidebar({ leagueData, featuredTip, streams = [] }: Sideb
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % mockPredictions.length);
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + mockPredictions.length) % mockPredictions.length);
 
+  const mockCompetitions = [
+    { country: { name: 'Algeria', flagUrl: 'https://flagcdn.com/dz.svg' }, leagues: [{ id: 101, name: 'Ligue 1', slug: 'algeria-ligue-1' }] },
+    { country: { name: 'Argentina', flagUrl: 'https://flagcdn.com/ar.svg' }, leagues: [{ id: 102, name: 'Liga Profesional', slug: 'argentina-liga-profesional' }, { id: 103, name: 'Primera B Nacional', slug: 'argentina-primera-b' }] },
+    { country: { name: 'Botswana', flagUrl: 'https://flagcdn.com/bw.svg' }, leagues: [{ id: 104, name: 'Premier League', slug: 'botswana-premier-league' }] },
+    { country: { name: 'Brazil', flagUrl: 'https://flagcdn.com/br.svg' }, leagues: [{ id: 105, name: 'Série A', slug: 'brazil-serie-a' }, { id: 106, name: 'Série B', slug: 'brazil-serie-b' }] },
+    { country: { name: 'Cameroon', flagUrl: 'https://flagcdn.com/cm.svg' }, leagues: [{ id: 107, name: 'Elite One', slug: 'cameroon-elite-one' }] },
+    { country: { name: 'England', flagUrl: 'https://flagcdn.com/gb-eng.svg' }, leagues: [{ id: 108, name: 'Premier League', slug: 'england-premier-league' }, { id: 109, name: 'Championship', slug: 'england-championship' }] },
+    { country: { name: 'France', flagUrl: 'https://flagcdn.com/fr.svg' }, leagues: [{ id: 110, name: 'Ligue 1', slug: 'france-ligue-1' }, { id: 111, name: 'Ligue 2', slug: 'france-ligue-2' }] },
+    { country: { name: 'Germany', flagUrl: 'https://flagcdn.com/de.svg' }, leagues: [{ id: 112, name: 'Bundesliga', slug: 'germany-bundesliga' }, { id: 113, name: '2. Bundesliga', slug: 'germany-2-bundesliga' }] },
+    { country: { name: 'Italy', flagUrl: 'https://flagcdn.com/it.svg' }, leagues: [{ id: 114, name: 'Serie A', slug: 'italy-serie-a' }, { id: 115, name: 'Serie B', slug: 'italy-serie-b' }] },
+    { country: { name: 'Spain', flagUrl: 'https://flagcdn.com/es.svg' }, leagues: [{ id: 116, name: 'La Liga', slug: 'spain-la-liga' }, { id: 117, name: 'Segunda División', slug: 'spain-segunda' }] },
+  ];
+
+  const competitionsData = (leagueData && leagueData.length > 0) ? leagueData : mockCompetitions;
   const currentPrediction = mockPredictions[currentSlide];
 
   return (
@@ -158,86 +174,142 @@ export default function Sidebar({ leagueData, featuredTip, streams = [] }: Sideb
         </div>
       </div>
 
-      {/* Today's Streams */}
-      <div className="card !p-0 overflow-hidden shadow-sm !border-slate-200/60 border-t-4 !border-t-brand-indigo">
-        <div className="p-5 border-b border-slate-100 bg-white">
-          <h3 className="font-bold text-lg text-slate-800">Today&apos;s Streams</h3>
-        </div>
-        <div className="divide-y divide-slate-100">
-            {streams.length > 0 ? (
-              streams.map((stream: any) => (
-                <div key={stream.id} className="p-4 hover:bg-slate-50 transition-colors flex items-center justify-between group">
-                  <div className="flex items-center gap-4">
-                    <div className="w-8 h-8 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center text-sm shadow-sm">
-                      {stream.icon}
-                    </div>
-                    <div>
-                      <div className="text-[11px] font-bold text-slate-800 line-clamp-1 group-hover:text-brand-indigo transition-colors">
-                        {stream.home} vs {stream.away}
-                      </div>
-                      <div className="flex items-center gap-1.5 mt-0.5">
-                        <span className={`w-1.5 h-1.5 rounded-full ${stream.time === 'LIVE' ? 'bg-red-500 animate-pulse' : 'bg-slate-300'}`}></span>
-                        <span className={`text-[9px] font-black uppercase tracking-tighter ${stream.time === 'LIVE' ? 'text-red-500' : 'text-slate-400'}`}>
-                          {stream.time}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <button className="p-1.5 rounded-lg bg-slate-100 text-slate-400 group-hover:bg-brand-indigo/10 group-hover:text-brand-indigo transition-all">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                    </svg>
-                  </button>
-                </div>
-              ))
-            ) : (
-              <div className="p-8 text-center">
-                  <div className="text-xs text-slate-400 font-semibold mb-2">No live events now</div>
-                  <Link href="/streams" className="text-[11px] text-brand-indigo font-bold hover:underline">View schedule &rarr;</Link>
-              </div>
-            )}
-        </div>
-      </div>
-
-      {/* Football Leagues */}
-      <div className="card !p-0 overflow-hidden shadow-sm !border-slate-200/60 border-t-4 !border-t-brand-indigo">
-        <div className="p-5 border-b border-slate-100 bg-white">
-          <h3 className="font-bold text-lg text-slate-800">Football Leagues</h3>
-        </div>
-        <div className="flex flex-col">
-          {topLeagues.length > 0 ? (topLeagues.map((group: any) => (
-              <div key={group.country.name}>
-                 {group.leagues.map((league: any) => (
-                    <Link 
-                      key={league.id} 
-                      href={`/leagues/${group.country.name.toLowerCase()}/${league.slug}`} 
-                      className="flex items-center justify-between p-4 px-5 hover:bg-slate-50 transition-all border-b border-slate-100 last:border-0 group"
-                    >
+      {/* Sections based on mode */}
+      {mode === 'default' ? (
+        <>
+          {/* Today's Streams */}
+          <div className="card !p-0 overflow-hidden shadow-sm !border-slate-200/60 border-t-4 !border-t-brand-indigo">
+            <div className="p-5 border-b border-slate-100 bg-white">
+              <h3 className="font-bold text-lg text-slate-800">Today&apos;s Streams</h3>
+            </div>
+            <div className="divide-y divide-slate-100">
+                {streams.length > 0 ? (
+                  streams.map((stream: any) => (
+                    <div key={stream.id} className="p-4 hover:bg-slate-50 transition-colors flex items-center justify-between group">
                       <div className="flex items-center gap-4">
-                        {league.logoUrl ? (
-                          <img src={league.logoUrl} alt={league.name} className="w-8 h-8 object-contain rounded shadow-sm border border-slate-100" />
-                        ) : (
-                          <div className="w-9 h-9 bg-slate-100 rounded-xl flex items-center justify-center text-[10px] font-black text-slate-400 group-hover:bg-brand-indigo/10 group-hover:text-brand-indigo transition-all border border-slate-200/50">
-                              {league.name.substring(0,2).toUpperCase()}
-                          </div>
-                        )}
+                        <div className="w-8 h-8 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center text-sm shadow-sm">
+                          {stream.icon}
+                        </div>
                         <div>
-                            <div className="text-xs font-bold text-slate-800 group-hover:text-brand-indigo transition-colors line-clamp-1">{league.name}</div>
-                            <div className="text-[10px] text-slate-400 font-bold tracking-tight">{group.country.name}</div>
+                          <div className="text-[11px] font-bold text-slate-800 line-clamp-1 group-hover:text-brand-indigo transition-colors">
+                            {stream.home} vs {stream.away}
+                          </div>
+                          <div className="flex items-center gap-1.5 mt-0.5">
+                            <span className={`w-1.5 h-1.5 rounded-full ${stream.time === 'LIVE' ? 'bg-red-500 animate-pulse' : 'bg-slate-300'}`}></span>
+                            <span className={`text-[9px] font-black uppercase tracking-tighter ${stream.time === 'LIVE' ? 'text-red-500' : 'text-slate-400'}`}>
+                              {stream.time}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                      <svg className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-all translate-x-0 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7-7" />
+                      <button className="p-1.5 rounded-lg bg-slate-100 text-slate-400 group-hover:bg-brand-indigo/10 group-hover:text-brand-indigo transition-all">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        </svg>
+                      </button>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-8 text-center">
+                      <div className="text-xs text-slate-400 font-semibold mb-2">No live events now</div>
+                      <Link href="/streams" className="text-[11px] text-brand-indigo font-bold hover:underline">View schedule &rarr;</Link>
+                  </div>
+                )}
+            </div>
+          </div>
+
+          {/* Football Leagues */}
+          <div className="card !p-0 overflow-hidden shadow-sm !border-slate-200/60 border-t-4 !border-t-brand-indigo">
+            <div className="p-5 border-b border-slate-100 bg-white">
+              <h3 className="font-bold text-lg text-slate-800">Football Leagues</h3>
+            </div>
+            <div className="flex flex-col">
+              {topLeagues.length > 0 ? (topLeagues.map((group: any) => (
+                  <div key={group.country.name}>
+                     {group.leagues.map((league: any) => (
+                        <Link 
+                          key={league.id} 
+                          href={`/leagues/${group.country.name.toLowerCase()}/${league.slug}`} 
+                          className="flex items-center justify-between p-4 px-5 hover:bg-slate-50 transition-all border-b border-slate-100 last:border-0 group"
+                        >
+                          <div className="flex items-center gap-4">
+                            {league.logoUrl ? (
+                              <img src={league.logoUrl} alt={league.name} className="w-8 h-8 object-contain rounded shadow-sm border border-slate-100" />
+                            ) : (
+                              <div className="w-9 h-9 bg-slate-100 rounded-xl flex items-center justify-center text-[10px] font-black text-slate-400 group-hover:bg-brand-indigo/10 group-hover:text-brand-indigo transition-all border border-slate-200/50">
+                                  {league.name.substring(0,2).toUpperCase()}
+                              </div>
+                            )}
+                            <div>
+                                <div className="text-xs font-bold text-slate-800 group-hover:text-brand-indigo transition-colors line-clamp-1">{league.name}</div>
+                                <div className="text-[10px] text-slate-400 font-bold tracking-tight">{group.country.name}</div>
+                            </div>
+                          </div>
+                          <svg className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-all translate-x-0 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7-7" />
+                          </svg>
+                        </Link>
+                     ))}
+                  </div>
+                ))
+              ) : (
+                <div className="p-8 text-center text-xs text-slate-400 font-bold">No data available</div>
+              )}
+            </div>
+          </div>
+        </>
+      ) : (
+        /* Predictions Mode: Today's Competitions Accordion */
+        <div className="flex flex-col gap-4">
+           <h3 className="font-bold text-xl text-slate-800 ml-1">Today&apos;s Competitions</h3>
+           <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-hidden">
+              <div className="divide-y divide-slate-100">
+                {competitionsData.map((group: any) => (
+                  <div key={group.country.name} className="flex flex-col">
+                    <button 
+                      onClick={() => setOpenCountry(openCountry === group.country.name ? null : group.country.name)}
+                      className="w-full flex items-center justify-between p-5 hover:bg-slate-50 transition-all group"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-7 h-7 bg-slate-50 rounded-lg flex items-center justify-center text-base shadow-sm group-hover:scale-110 transition-transform">
+                          {group.country.flagUrl ? (
+                            <img src={group.country.flagUrl} alt="" className="w-5 h-4 object-cover rounded-sm" />
+                          ) : (
+                            <span>🏳️</span>
+                          )}
+                        </div>
+                        <span className="text-sm font-bold text-slate-700 group-hover:text-brand-indigo transition-colors">{group.country.name}</span>
+                      </div>
+                      <svg 
+                        className={`w-4 h-4 text-slate-300 transition-transform duration-300 ${openCountry === group.country.name ? 'rotate-180' : ''}`} 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
                       </svg>
-                    </Link>
-                 ))}
+                    </button>
+                    
+                    {openCountry === group.country.name && (
+                      <div className="bg-slate-50/50 px-5 pb-4 space-y-2 pt-1">
+                        {group.leagues.map((league: any) => (
+                          <Link 
+                            key={league.id} 
+                            href={`/predictions?leagueSlug=${league.slug}`}
+                            className="flex items-center gap-3 p-2 rounded-lg hover:bg-white hover:text-brand-indigo transition-all text-xs font-bold text-slate-500"
+                          >
+                            <span className="w-1.5 h-1.5 rounded-full bg-slate-200"></span>
+                            {league.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
-            ))
-          ) : (
-            <div className="p-8 text-center text-xs text-slate-400 font-bold">No data available</div>
-          )}
+           </div>
         </div>
-      </div>
+      )}
     </aside>
   );
 }
