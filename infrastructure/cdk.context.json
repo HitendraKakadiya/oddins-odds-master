@@ -1,0 +1,14 @@
+{
+  "availability-zones:account=545586473769:region=us-east-1": [
+    "us-east-1a",
+    "us-east-1b",
+    "us-east-1c",
+    "us-east-1d",
+    "us-east-1e",
+    "us-east-1f"
+  ],
+  "hosted-zone:account=545586473769:domainName=oddins-odds.com:region=us-east-1": {
+    "Id": "/hostedzone/Z099120115Q1H8OYJ6G2C",
+    "Name": "oddins-odds.com."
+  }
+}

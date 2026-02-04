@@ -1,0 +1,27 @@
+{
+  "name": "oddins-odds",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "dev:frontend": "pnpm --filter @oddins/frontend dev",
+    "dev:api": "pnpm --filter @oddins/api dev",
+    "dev:worker": "pnpm --filter @oddins/worker dev",
+    "dev": "concurrently \"pnpm dev:frontend\" \"pnpm dev:api\"",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "db:init": "pnpm --filter @oddins/shared db:init",
+    "db:reset": "pnpm --filter @oddins/shared db:reset",
+    "db:seed": "pnpm --filter @oddins/api db:seed",
+    "api:dev": "pnpm --filter @oddins/api dev",
+    "worker:sync:leagues": "pnpm --filter @oddins/worker sync:leagues"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.57.0",
+    "typescript": "^5.3.3"
+  }
+}
+

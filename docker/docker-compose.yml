@@ -1,0 +1,57 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    platform: linux/amd64
+    environment:
+      POSTGRES_USER: oddins
+      POSTGRES_PASSWORD: oddins_dev
+      POSTGRES_DB: oddins_odds
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5433:5432"
+    volumes:
+      - /home/elad/odds/local_data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U oddins"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ..
+      dockerfile: apps/api/Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-postgresql://oddins:oddins_dev@postgres:5432/oddins_odds}
+      - APP_ENV=${APP_ENV:-development}
+      - SPORTS_PROVIDER_API_KEY=${SPORTS_PROVIDER_API_KEY:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: apps/frontend/Dockerfile
+    ports:
+      - "3006:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://api:3001}
+      - APP_ENV=${APP_ENV:-development}
+    depends_on:
+      - api
+
+  worker:
+    build:
+      context: ..
+      dockerfile: apps/worker/Dockerfile
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-postgresql://oddins:oddins_dev@postgres:5432/oddins_odds}
+      - APP_ENV=${APP_ENV:-development}
+      - SPORTS_PROVIDER_API_KEY=${SPORTS_PROVIDER_API_KEY:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+

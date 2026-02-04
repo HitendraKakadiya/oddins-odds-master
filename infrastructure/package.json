@@ -1,0 +1,33 @@
+{
+  "name": "oddins-infrastructure",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "cdk": "cdk",
+    "deploy": "cdk deploy --all --require-approval never --profile sports-cli",
+    "deploy:network": "cdk deploy NetworkStack --require-approval never --profile sports-cli",
+    "deploy:secrets": "cdk deploy SecretsStack --require-approval never --profile sports-cli",
+    "deploy:database": "cdk deploy DatabaseStack --require-approval never --profile sports-cli",
+    "deploy:cicd": "cdk deploy CICDStack --require-approval never --profile sports-cli",
+    "deploy:compute": "cdk deploy ComputeStack --require-approval never --profile sports-cli",
+    "deploy:loadbalancer": "cdk deploy LoadBalancerStack --require-approval never --profile sports-cli",
+    "deploy:monitoring": "cdk deploy MonitoringStack --require-approval never --profile sports-cli",
+    "diff": "cdk diff --profile sports-cli",
+    "synth": "cdk synth --profile sports-cli",
+    "destroy": "cdk destroy --all --profile sports-cli"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "aws-cdk": "^2.120.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.120.0",
+    "constructs": "^10.3.0",
+    "source-map-support": "^0.5.21"
+  }
+}
+
