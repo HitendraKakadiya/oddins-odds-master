@@ -20,6 +20,12 @@ module.exports = {
           800: '#075985',
           900: '#0c4a6e',
         },
+        brand: {
+          indigo: '#4F46E5',
+          pink: '#E91E63',
+          'light-indigo': '#F5F7FF',
+          'dark-blue': '#1A1D2E',
+        }
       },
     },
   },

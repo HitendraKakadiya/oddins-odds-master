@@ -1,10 +1,10 @@
 export default function AboutPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-4xl font-bold text-gray-900 mb-6">About Oddins Odds</h1>
+      <h1 className="text-4xl font-bold text-gray-900 mb-6">About OddinsOdds</h1>
       <div className="card prose prose-lg max-w-none">
         <p>
-          Oddins Odds is your premier destination for football betting insights, predictions, and analytics.
+          OddinsOdds is your premier destination for football betting insights, predictions, and analytics.
         </p>
         <p>
           We combine advanced statistical models, expert analysis, and real-time data to provide you with 

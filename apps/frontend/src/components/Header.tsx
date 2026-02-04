@@ -1,50 +1,53 @@
 import Link from 'next/link';
 
 export default function Header() {
+  const navItems = [
+    { name: 'Predictions', href: '/predictions', hasDropdown: true },
+    { name: 'Betting Sites', href: '/betting-sites' },
+    { name: 'Statistics', href: '/statistics', hasDropdown: true },
+    { name: 'Leagues', href: '/leagues' },
+    { name: 'Teams', href: '/teams' },
+    { name: 'Streams', href: '/streams' },
+    { name: 'Academy', href: '/academy' },
+  ];
+
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    <header className="bg-white/90 backdrop-blur-md border-b border-slate-200/60 sticky top-0 z-50">
+      <nav className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-bold text-primary-600">Oddins Odds</span>
+          <Link href="/" className="flex items-center space-x-2 group">
+            <div className="w-10 h-10 bg-brand-indigo rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-brand-indigo/20 group-hover:scale-105 transition-transform">
+              OO
+            </div>
+            <span className="text-2xl font-bold text-slate-900 tracking-tight">OddinsOdds</span>
           </Link>
 
           {/* Main Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
-              Home
-            </Link>
-            <Link href="/predictions" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
-              Predictions
-            </Link>
-            <Link href="/leagues" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
-              Leagues
-            </Link>
-            <Link href="/teams" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
-              Teams
-            </Link>
-            <Link href="/streams" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
-              Streams
-            </Link>
-            <Link href="/academy" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
-              Academy
-            </Link>
-            <Link href="/trends" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
-              Trends
-            </Link>
+          <div className="hidden lg:flex items-center space-x-8">
+            {navItems.map((item) => (
+              <Link 
+                key={item.name} 
+                href={item.href} 
+                className="text-slate-600 hover:text-brand-indigo font-semibold flex items-center transition-colors text-sm"
+              >
+                {item.name}
+                {item.hasDropdown && (
+                  <svg className="w-4 h-4 ml-1 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                )}
+              </Link>
+            ))}
           </div>
 
-          {/* Right side - Search & Auth */}
-          <div className="flex items-center space-x-4">
-            <Link href="/search" className="text-gray-500 hover:text-gray-700">
+          {/* Right side - UI Actions */}
+          <div className="flex items-center space-x-3">
+            <button className="w-10 h-10 flex items-center justify-center bg-slate-50 rounded-xl text-slate-400 hover:text-brand-indigo hover:bg-slate-100 transition-all border border-slate-100">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-            </Link>
-            <Link href="/auth/login" className="btn-primary text-sm">
-              Login
-            </Link>
+            </button>
           </div>
         </div>
       </nav>

@@ -15,8 +15,8 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "lint": "eslint src --ext .ts",
-    "db:init": "tsx init-scripts/api-football/run_init.ts",
-    "db:reset": "tsx init-scripts/api-football/run_reset.ts"
+    "db:init": "tsx --env-file=../../.env init-scripts/api-football/run_init.ts",
+    "db:reset": "tsx --env-file=../../.env init-scripts/api-football/run_reset.ts"
   },
   "dependencies": {
     "pg": "^8.11.3",
@@ -29,4 +29,3 @@
     "typescript": "^5.3.3"
   }
 }
-

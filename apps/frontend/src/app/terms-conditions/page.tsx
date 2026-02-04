@@ -19,7 +19,7 @@ export default function TermsConditionsPage() {
 
         <h2 className="text-2xl font-bold mt-8 mb-4">Disclaimer</h2>
         <p>
-          The predictions and information provided on Oddins Odds are for informational purposes only. 
+          The predictions and information provided on OddinsOdds are for informational purposes only. 
           We do not guarantee the accuracy or completeness of any prediction or analysis.
         </p>
         <p>
@@ -29,13 +29,13 @@ export default function TermsConditionsPage() {
 
         <h2 className="text-2xl font-bold mt-8 mb-4">Intellectual Property</h2>
         <p>
-          All content on Oddins Odds, including text, graphics, logos, and software, is the property 
-          of Oddins Odds and is protected by copyright laws.
+          All content on OddinsOdds, including text, graphics, logos, and software, is the property 
+          of OddinsOdds and is protected by copyright laws.
         </p>
 
         <h2 className="text-2xl font-bold mt-8 mb-4">Limitation of Liability</h2>
         <p>
-          Oddins Odds shall not be liable for any direct, indirect, incidental, or consequential damages 
+          OddinsOdds shall not be liable for any direct, indirect, incidental, or consequential damages 
           arising from your use of the service.
         </p>
 

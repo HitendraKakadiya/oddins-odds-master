@@ -23,7 +23,7 @@ function computeFingerprint(sql: string): string {
     .replace(/\s+/g, ' ') // Normalize whitespace
     .trim()
     .toLowerCase();
-  
+
   return crypto.createHash('sha256').update(normalized).digest('hex');
 }
 
@@ -33,13 +33,13 @@ function extractTableName(sql: string, filename: string): string {
   if (match) {
     return match[1].toLowerCase();
   }
-  
+
   // Fallback: extract from filename (e.g., "001_countries.sql" -> "countries")
   const fileMatch = filename.match(/\d+_(.+)\.sql$/);
   if (fileMatch) {
     return fileMatch[1].toLowerCase();
   }
-  
+
   throw new Error(`Cannot extract table name from SQL or filename: ${filename}`);
 }
 
@@ -57,7 +57,7 @@ function parseDatabaseUrl(url: string): { host: string; database: string } {
 
 function performSafetyCheck(databaseUrl: string, appEnv: string): SafetyCheckResult {
   const { host, database } = parseDatabaseUrl(databaseUrl);
-  
+
   // Check 1: APP_ENV must be "local"
   if (appEnv !== 'local') {
     return {
@@ -65,7 +65,7 @@ function performSafetyCheck(databaseUrl: string, appEnv: string): SafetyCheckRes
       reason: `APP_ENV is "${appEnv}" (must be "local" for drop+recreate operations)`,
     };
   }
-  
+
   // Check 2: Host must be localhost/127.0.0.1/postgres
   const allowedHosts = ['localhost', '127.0.0.1', 'postgres'];
   if (!allowedHosts.includes(host)) {
@@ -74,7 +74,7 @@ function performSafetyCheck(databaseUrl: string, appEnv: string): SafetyCheckRes
       reason: `Database host is "${host}" (must be one of: ${allowedHosts.join(', ')})`,
     };
   }
-  
+
   // Check 3: Database name must NOT be production/staging
   const blockedDatabases = ['prod', 'production', 'stage', 'staging'];
   if (blockedDatabases.includes(database.toLowerCase())) {
@@ -83,7 +83,7 @@ function performSafetyCheck(databaseUrl: string, appEnv: string): SafetyCheckRes
       reason: `Database name is "${database}" (blocked for safety)`,
     };
   }
-  
+
   return { isSafe: true };
 }
 
@@ -91,7 +91,7 @@ async function ensureMetadataSchema(client: Client): Promise<void> {
   await client.query(`
     CREATE SCHEMA IF NOT EXISTS oddins_schema;
   `);
-  
+
   await client.query(`
     CREATE TABLE IF NOT EXISTS oddins_schema.schema_fingerprints (
       table_name TEXT PRIMARY KEY,
@@ -141,9 +141,9 @@ async function processTableFile(
     const sql = fs.readFileSync(filePath, 'utf8');
     const tableName = extractTableName(sql, filename);
     const fingerprint = computeFingerprint(sql);
-    
+
     const exists = await tableExists(client, tableName);
-    
+
     if (!exists) {
       // Table doesn't exist - create it
       await client.query('BEGIN');
@@ -159,7 +159,7 @@ async function processTableFile(
     } else {
       // Table exists - check fingerprint
       const storedFingerprint = await getStoredFingerprint(client, tableName);
-      
+
       if (storedFingerprint === fingerprint) {
         // No changes - skip
         return { tableName, action: 'skipped', fingerprint };
@@ -170,7 +170,7 @@ async function processTableFile(
             `Cannot drop+recreate table "${tableName}": ${safetyCheck.reason}`
           );
         }
-        
+
         await client.query('BEGIN');
         try {
           console.log(`  ⚠️  Dropping table "${tableName}" (schema changed)`);
@@ -196,20 +196,20 @@ async function processTableFile(
 }
 
 async function main() {
-  console.log('🚀 Oddins Odds - Database Schema Initializer\n');
-  
+  console.log('🚀 OddinsOdds - Database Schema Initializer\n');
+
   // Read environment
   const databaseUrl = process.env.DATABASE_URL;
   const appEnv = process.env.APP_ENV || 'development';
-  
+
   if (!databaseUrl) {
     console.error('❌ ERROR: DATABASE_URL environment variable is not set');
     process.exit(1);
   }
-  
+
   console.log(`📊 APP_ENV: ${appEnv}`);
   console.log(`🔗 DATABASE_URL: ${databaseUrl}\n`);
-  
+
   // Perform safety check
   const safetyCheck = performSafetyCheck(databaseUrl, appEnv);
   if (!safetyCheck.isSafe) {
@@ -218,26 +218,26 @@ async function main() {
   } else {
     console.log(`✅ Safety Check: Passed (drop+recreate enabled)\n`);
   }
-  
+
   // Connect to database
   const client = new Client({ connectionString: databaseUrl });
-  
+
   try {
     await client.connect();
     console.log('✅ Connected to database\n');
-    
+
     // Ensure metadata schema exists
     await ensureMetadataSchema(client);
     console.log('✅ Metadata schema ready\n');
-    
+
     // Get all SQL files in order
     const tablesDir = path.join(__dirname, 'tables');
     const files = fs.readdirSync(tablesDir)
       .filter(f => f.endsWith('.sql'))
       .sort();
-    
+
     console.log(`📁 Found ${files.length} table definition files\n`);
-    
+
     // Process each file
     const results: TableResult[] = [];
     for (const file of files) {
@@ -245,7 +245,7 @@ async function main() {
       console.log(`Processing: ${file}`);
       const result = await processTableFile(client, filePath, file, safetyCheck);
       results.push(result);
-      
+
       if (result.action === 'created') {
         console.log(`  ✅ Created table: ${result.tableName}`);
       } else if (result.action === 'recreated') {
@@ -256,30 +256,30 @@ async function main() {
         console.log(`  ❌ ERROR: ${result.error}`);
       }
     }
-    
+
     // Print summary
     console.log('\n' + '='.repeat(60));
     console.log('📊 SUMMARY');
     console.log('='.repeat(60));
-    
+
     const created = results.filter(r => r.action === 'created').length;
     const recreated = results.filter(r => r.action === 'recreated').length;
     const skipped = results.filter(r => r.action === 'skipped').length;
     const errors = results.filter(r => r.action === 'error').length;
-    
+
     console.log(`✅ Created:   ${created}`);
     console.log(`♻️  Recreated: ${recreated}`);
     console.log(`⏭️  Skipped:   ${skipped}`);
     console.log(`❌ Errors:    ${errors}`);
     console.log('='.repeat(60));
-    
+
     if (errors > 0) {
       console.log('\n❌ Initialization completed with errors');
       process.exit(1);
     } else {
       console.log('\n✅ Database initialization completed successfully!');
     }
-    
+
   } catch (err) {
     const error = err as Error;
     console.error('\n❌ FATAL ERROR:', error.message);

@@ -1,4 +1,4 @@
-# Oddins Odds
+# OddinsOdds
 
 A sports betting odds aggregator built with a modern TypeScript monorepo architecture.
 
@@ -81,13 +81,44 @@ docker-compose up --build
 
 All Docker images are built for `linux/arm64` (AWS Graviton compatible).
 
+## Database Setup
+
+Follow these steps to set up the database locally:
+
+1. **Start PostgreSQL**:
+   ```bash
+   cd docker
+   docker-compose up -d postgres
+   ```
+2. **Initialize Schema**:
+   ```bash
+   pnpm db:init
+   ```
+3. **Seed Sample Data**:
+   ```bash
+   pnpm db:seed
+   ```
+
+> [!NOTE]  
+> The following scripts in `package.json` have been updated to use the Node.js `--env-file=../../.env` flag for loading environment variables from the root:
+> - **@oddins/shared**: `db:init`, `db:reset`
+> - **@oddins/api**: `db:seed`
+>
+> Example: `"db:init": "tsx --env-file=../../.env init-scripts/api-football/run_init.ts"`
+>   in Shared package.json:
+>   "db:init": "tsx --env-file=../../.env init-scripts/api-football/run_init.ts",
+>   "db:reset": "tsx --env-file=../../.env init-scripts/api-football/run_reset.ts"
+>
+>   in API package.json:
+>   "db:seed": "tsx --env-file=../../.env src/db/seed.ts"
+> This ensures that your root `.env` file is loaded correctly regardless of which directory you run the command from. (Requires Node.js v20.6.0+).
+
 ## Development
 
 - Frontend runs on port 3000
 - API runs on port 3001
-- PostgreSQL (in Docker) runs on port 5432
+- PostgreSQL (in Docker) runs on port 5433 (mapped from 5432)
 
 ## License
 
 MIT
-

@@ -1,5 +1,5 @@
 /**
- * API Client for Oddins Odds
+ * API Client for OddinsOdds
  * Connects to localhost:3001 (local API)
  */
 
@@ -90,7 +90,7 @@ class APIError extends Error {
 
 async function fetchAPI<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
-  
+
   try {
     const response = await fetch(url, {
       ...options,
@@ -140,7 +140,7 @@ export async function getPredictions(params?: {
   if (params?.marketKey) searchParams.set('marketKey', params.marketKey);
   if (params?.page) searchParams.set('page', params.page.toString());
   if (params?.pageSize) searchParams.set('pageSize', params.pageSize.toString());
-  
+
   const query = searchParams.toString();
   return fetchAPI(`/v1/predictions${query ? `?${query}` : ''}`);
 }
@@ -159,7 +159,7 @@ export async function getTeams(query?: string, leagueSlug?: string) {
   const searchParams = new URLSearchParams();
   if (query) searchParams.set('query', query);
   if (leagueSlug) searchParams.set('leagueSlug', leagueSlug);
-  
+
   const queryStr = searchParams.toString();
   return fetchAPI(`/v1/teams${queryStr ? `?${queryStr}` : ''}`);
 }
@@ -177,7 +177,7 @@ export async function getStreams(date?: string, region?: string) {
   const searchParams = new URLSearchParams();
   if (date) searchParams.set('date', date);
   if (region) searchParams.set('region', region);
-  
+
   const query = searchParams.toString();
   return fetchAPI(`/v1/streams${query ? `?${query}` : ''}`);
 }
@@ -194,7 +194,7 @@ export async function getArticles(type: 'academy' | 'blog', category?: string, p
   if (category) searchParams.set('category', category);
   if (page) searchParams.set('page', page.toString());
   if (pageSize) searchParams.set('pageSize', pageSize.toString());
-  
+
   return fetchAPI(`/v1/articles?${searchParams.toString()}`);
 }
 

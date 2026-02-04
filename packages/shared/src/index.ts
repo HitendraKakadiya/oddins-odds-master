@@ -1,4 +1,4 @@
-export const APP_NAME = "Oddins Odds";
+export const APP_NAME = "OddinsOdds";
 
 export type LeagueId = string;
 

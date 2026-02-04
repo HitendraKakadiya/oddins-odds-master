@@ -7,7 +7,7 @@ export default function PrivacyPage() {
         
         <h2 className="text-2xl font-bold mt-8 mb-4">Introduction</h2>
         <p>
-          Oddins Odds (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) is committed to protecting your privacy. 
+          OddinsOdds (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) is committed to protecting your privacy. 
           This Privacy Policy explains how we collect, use, and safeguard your information.
         </p>
 
