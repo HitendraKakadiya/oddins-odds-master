@@ -465,7 +465,7 @@ async function seed() {
       for (let i = 0; i < 2; i++) {
         const capturedAt = addDays(match.kickoff, -2 + i);
 
-        for (const [_bookmakerSlug, bookmakerId] of Object.entries(bookmakerIds)) {
+        for (const bookmakerId of Object.values(bookmakerIds)) {
           const snapshotRes = await client.query(
             `INSERT INTO odds_snapshots (match_id, bookmaker_id, captured_at, source, is_live)
              VALUES ($1, $2, $3, $4, $5)
@@ -620,9 +620,7 @@ async function seed() {
     // Create tips for 10 matches
     for (const match of matchesWithOdds.slice(0, 10)) {
       const matchId = matchIds[match.provider_id];
-
-      const _isPremium = Math.random() > 0.6;
-      const _confidence = 60 + Math.floor(Math.random() * 30);
+      const isPremium = Math.random() > 0.6;
 
       const titles = [
         'Strong Home Win Expected',
@@ -649,7 +647,7 @@ async function seed() {
           reasons[Math.floor(Math.random() * reasons.length)],
           tipCount + 1,
           formatDateTime(addDays(match.kickoff, -2)),
-          _isPremium,
+          isPremium,
         ]
       );
       tipCount++;

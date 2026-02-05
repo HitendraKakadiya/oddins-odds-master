@@ -45,7 +45,7 @@ async function getPlayerId(
   providerPlayerId: number | null
 ): Promise<number | null> {
   if (!providerPlayerId) return null;
-  
+
   const result = await client.query(
     `SELECT id FROM players WHERE provider_player_id = $1`,
     [providerPlayerId]
@@ -87,7 +87,7 @@ async function insertMatchEvent(
 }
 
 // Get completed matches without events
-async function getCompletedMatches(client: PoolClient, limit: number = 1000): Promise<Array<{matchId: number, providerFixtureId: number}>> {
+async function getCompletedMatches(client: PoolClient, limit: number = 1000): Promise<Array<{ matchId: number, providerFixtureId: number }>> {
   const result = await client.query(
     `SELECT m.id as match_id, m.provider_fixture_id
      FROM matches m
@@ -100,6 +100,7 @@ async function getCompletedMatches(client: PoolClient, limit: number = 1000): Pr
      LIMIT $1`,
     [limit]
   );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return result.rows.map((row: any) => ({
     matchId: row.match_id,
     providerFixtureId: row.provider_fixture_id
@@ -108,7 +109,6 @@ async function getCompletedMatches(client: PoolClient, limit: number = 1000): Pr
 
 export async function syncEvents(): Promise<void> {
   const JOB_NAME = 'sync:events';
-  const ENTITY_NAME = 'match_events';
 
   logger.setContext({ job: JOB_NAME });
   logger.info('Starting match events sync job');
@@ -143,13 +143,13 @@ export async function syncEvents(): Promise<void> {
             });
 
             // Fetch events from API
-            const rawResponse: EventsAPIResponse = await apiFootballClient.getFixtureEvents({
+            const rawResponse = (await apiFootballClient.getFixtureEvents({
               fixture: match.providerFixtureId,
-            });
+            })) as EventsAPIResponse;
             apiCallsMade++;
 
             const events = rawResponse.response || [];
-            
+
             if (events.length === 0) {
               logger.info(`No events for match ${match.providerFixtureId}`);
               matchesSkipped++;
@@ -187,11 +187,12 @@ export async function syncEvents(): Promise<void> {
                 );
                 eventsInserted++;
 
-              } catch (eventError: any) {
+              } catch (eventError: unknown) {
+                const error = eventError as Error;
                 logger.warn('Failed to process event', {
                   matchId: match.matchId,
                   eventType: event.type,
-                  error: eventError.message,
+                  error: error.message,
                 });
                 // Continue with next event
               }
@@ -202,10 +203,11 @@ export async function syncEvents(): Promise<void> {
             // Rate limiting: wait 100ms between requests
             await new Promise(resolve => setTimeout(resolve, 100));
 
-          } catch (matchError: any) {
+          } catch (matchError: unknown) {
+            const error = matchError as Error;
             logger.warn('Failed to process match', {
               matchId: match.matchId,
-              error: matchError.message,
+              error: error.message,
             });
             matchesSkipped++;
             // Continue with next match
@@ -213,7 +215,7 @@ export async function syncEvents(): Promise<void> {
         }
 
         // Update sync state
-        await updateSyncState(client, sourceId, ENTITY_NAME, {
+        await updateSyncState(client, sourceId, 'match_events', {
           eventsInserted,
           apiCallsMade,
           matchesProcessed,
@@ -235,7 +237,7 @@ export async function syncEvents(): Promise<void> {
           matchesProcessed,
           matchesSkipped,
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         await client.query('ROLLBACK');
         throw error;
       } finally {
@@ -250,7 +252,7 @@ export async function syncEvents(): Promise<void> {
 
     logger.info('Job completed successfully');
     process.exit(0);
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error('Job failed', error);
     process.exit(1);
   } finally {

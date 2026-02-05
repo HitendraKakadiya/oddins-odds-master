@@ -81,7 +81,7 @@ async function upsertTeam(
   logoUrl: string | null
 ): Promise<number> {
   const slug = slugify(name);
-  
+
   const result = await client.query(
     `INSERT INTO teams (provider_team_id, country_id, venue_id, name, short_name, logo_url, slug)
      VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -108,11 +108,11 @@ async function getOrCreateCountry(
     `SELECT id FROM countries WHERE name = $1`,
     [countryName]
   );
-  
+
   if (findResult.rows.length > 0) {
     return findResult.rows[0].id;
   }
-  
+
   // Create new country
   const insertResult = await client.query(
     `INSERT INTO countries (name, code, flag_url)
@@ -120,7 +120,7 @@ async function getOrCreateCountry(
      RETURNING id`,
     [countryName]
   );
-  
+
   return insertResult.rows[0].id;
 }
 
@@ -151,7 +151,7 @@ async function getSeasonId(
      WHERE l.provider_league_id = $1 AND s.year = $2`,
     [leagueId, year]
   );
-  
+
   return result.rows.length > 0 ? result.rows[0].id : null;
 }
 
@@ -190,10 +190,10 @@ export async function syncTeams(): Promise<void> {
               });
 
               // Fetch teams from API
-              const rawResponse: TeamsAPIResponse = await apiFootballClient.getTeams({
+              const rawResponse = (await apiFootballClient.getTeams({
                 league: league.id,
                 season,
-              });
+              })) as TeamsAPIResponse;
               apiCallsMade++;
 
               const teams = rawResponse.response || [];
@@ -201,7 +201,7 @@ export async function syncTeams(): Promise<void> {
 
               // Get season ID for linking
               const seasonId = await getSeasonId(client, league.id, season);
-              
+
               if (!seasonId) {
                 logger.warn(`Season not found for league ${league.id} year ${season}, skipping`);
                 continue;
@@ -243,21 +243,23 @@ export async function syncTeams(): Promise<void> {
                   await linkTeamToSeason(client, seasonId, teamId);
                   seasonLinksCreated++;
 
-                } catch (itemError: any) {
+                } catch (itemError: unknown) {
+                  const error = itemError as Error;
                   logger.warn('Failed to process team item', {
                     teamId: item.team.id,
                     teamName: item.team.name,
-                    error: itemError.message,
+                    error: error.message,
                   });
                   // Continue with next item
                 }
               }
-            } catch (leagueError: any) {
+            } catch (leagueError: unknown) {
+              const error = leagueError as Error;
               logger.warn('Failed to process league/season', {
                 leagueId: league.id,
                 leagueName: league.name,
                 season,
-                error: leagueError.message,
+                error: error.message,
               });
               // Continue with next league/season
             }
@@ -289,7 +291,7 @@ export async function syncTeams(): Promise<void> {
           seasonLinksCreated,
           apiCallsMade,
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         await client.query('ROLLBACK');
         throw error;
       } finally {
@@ -304,7 +306,7 @@ export async function syncTeams(): Promise<void> {
 
     logger.info('Job completed successfully');
     process.exit(0);
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error('Job failed', error);
     process.exit(1);
   } finally {

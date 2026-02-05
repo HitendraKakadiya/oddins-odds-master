@@ -67,20 +67,22 @@ export type LeaguesResponse = z.infer<typeof LeaguesResponseSchema>;
 export type LeagueResponseItem = z.infer<typeof LeagueResponseItemSchema>;
 
 // Helper to normalize coverage flags
-export function normalizeCoverage(coverage: any) {
-  const c = coverage as Record<string, unknown> || {};
-  const fixtures = (c.fixtures as Record<string, unknown>) || {};
-  
+export function normalizeCoverage(coverage: unknown) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const c = (coverage as Record<string, any>) || {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const fixtures = (c.fixtures as Record<string, any>) || {};
+
   return {
     fixtures: true, // Always assume we can fetch fixtures
-    events: (fixtures.events as boolean) || false,
-    lineups: (fixtures.lineups as boolean) || false,
-    stats_fixtures: (fixtures.statistics_fixtures as boolean) || false,
-    stats_players: (fixtures.statistics_players as boolean) || false,
-    standings: (c.standings as boolean) || false,
-    injuries: c.injuries || false,
-    predictions: c.predictions || false,
-    odds: c.odds || false,
+    events: Boolean(fixtures.events),
+    lineups: Boolean(fixtures.lineups),
+    stats_fixtures: Boolean(fixtures.statistics_fixtures),
+    stats_players: Boolean(fixtures.statistics_players),
+    standings: Boolean(c.standings),
+    injuries: Boolean(c.injuries),
+    predictions: Boolean(c.predictions),
+    odds: Boolean(c.odds),
   };
 }
 

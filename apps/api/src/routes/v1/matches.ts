@@ -13,7 +13,7 @@ interface FeaturedTipsQuery {
 export async function matchesRoutes(server: FastifyInstance) {
   // GET /v1/matches/today
   server.get<{ Querystring: TodayQuery }>('/matches/today', async (request) => {
-    const { date, tz: _tz } = request.query;
+    const { date } = request.query;
 
     // Default to today if no date provided
     const targetDate = date || new Date().toISOString().split('T')[0];

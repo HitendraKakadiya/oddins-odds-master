@@ -57,7 +57,7 @@ export async function leaguesRoutes(server: FastifyInstance) {
 
   // GET /v1/league/:countrySlug/:leagueSlug
   server.get<{ Params: LeagueDetailParams }>('/league/:countrySlug/:leagueSlug', async (request, reply) => {
-    const { countrySlug: _countrySlug, leagueSlug } = request.params;
+    const { leagueSlug } = request.params;
 
     // Get league info
     const leagueResult = await query(

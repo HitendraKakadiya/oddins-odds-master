@@ -2,8 +2,7 @@
  * Database queries for syncing data
  */
 
-import { Pool, PoolClient } from 'pg';
-import { logger } from '../logger';
+import { PoolClient } from 'pg';
 
 // Utility: slugify
 function slugify(text: string): string {
@@ -54,7 +53,7 @@ export async function upsertLeague(
   logoUrl: string | null
 ): Promise<number> {
   const slug = slugify(name);
-  
+
   const result = await client.query(
     `INSERT INTO leagues (provider_league_id, country_id, name, type, logo_url, slug)
      VALUES ($1, $2, $3, $4, $5, $6)
@@ -167,7 +166,7 @@ export async function recordSyncError(
   error: string
 ): Promise<void> {
   const truncatedError = error.substring(0, 2000);
-  
+
   await client.query(
     `INSERT INTO provider_sync_state (source_id, entity, last_error_at, last_error)
      VALUES ($1, $2, NOW(), $3)

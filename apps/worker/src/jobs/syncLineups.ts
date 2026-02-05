@@ -43,24 +43,24 @@ async function getOrCreatePlayerId(
   providerPlayerId: number,
   playerName: string,
   position: string
-): Promise<{id: number, wasCreated: boolean}> {
+): Promise<{ id: number, wasCreated: boolean }> {
   // Try to find existing player
   let result = await client.query(
     `SELECT id FROM players WHERE provider_player_id = $1`,
     [providerPlayerId]
   );
-  
+
   if (result.rows.length > 0) {
     return { id: result.rows[0].id, wasCreated: false };
   }
-  
+
   // Player doesn't exist, create it with ON CONFLICT
   logger.info('Creating new player from lineup data', {
     providerPlayerId,
     playerName,
     position
   });
-  
+
   result = await client.query(
     `INSERT INTO players (provider_player_id, name, position)
      VALUES ($1, $2, $3)
@@ -70,7 +70,7 @@ async function getOrCreatePlayerId(
      RETURNING id`,
     [providerPlayerId, playerName, position]
   );
-  
+
   return { id: result.rows[0].id, wasCreated: true };
 }
 
@@ -110,7 +110,7 @@ async function insertMatchLineup(
 }
 
 // Get completed matches without lineups
-async function getCompletedMatches(client: PoolClient, limit: number = 1000): Promise<Array<{matchId: number, providerFixtureId: number}>> {
+async function getCompletedMatches(client: PoolClient, limit: number = 1000): Promise<Array<{ matchId: number, providerFixtureId: number }>> {
   const result = await client.query(
     `SELECT m.id as match_id, m.provider_fixture_id
      FROM matches m
@@ -123,6 +123,7 @@ async function getCompletedMatches(client: PoolClient, limit: number = 1000): Pr
      LIMIT $1`,
     [limit]
   );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return result.rows.map((row: any) => ({
     matchId: row.match_id,
     providerFixtureId: row.provider_fixture_id
@@ -168,13 +169,13 @@ export async function syncLineups(): Promise<void> {
             });
 
             // Fetch lineups from API
-            const rawResponse: LineupsAPIResponse = await apiFootballClient.getFixtureLineups({
+            const rawResponse = (await apiFootballClient.getFixtureLineups({
               fixture: match.providerFixtureId,
-            });
+            })) as LineupsAPIResponse;
             apiCallsMade++;
 
             const teamLineups = rawResponse.response || [];
-            
+
             if (teamLineups.length === 0) {
               logger.info(`No lineups for match ${match.providerFixtureId}`);
               matchesSkipped++;
@@ -201,7 +202,7 @@ export async function syncLineups(): Promise<void> {
                     lineupPlayer.player.name,
                     lineupPlayer.player.pos
                   );
-                  
+
                   if (playerResult.wasCreated) {
                     playersCreated++;
                   }
@@ -227,7 +228,7 @@ export async function syncLineups(): Promise<void> {
                     lineupPlayer.player.name,
                     lineupPlayer.player.pos
                   );
-                  
+
                   if (playerResult.wasCreated) {
                     playersCreated++;
                   }
@@ -244,10 +245,11 @@ export async function syncLineups(): Promise<void> {
                   );
                   lineupsInserted++;
                 }
-              } catch (teamError: any) {
+              } catch (teamError: unknown) {
+                const error = teamError as Error;
                 logger.warn('Failed to process team lineup', {
                   teamId: teamLineup.team.id,
-                  error: teamError.message,
+                  error: error.message,
                 });
               }
             }
@@ -259,12 +261,13 @@ export async function syncLineups(): Promise<void> {
             // Rate limiting: wait 100ms between requests
             await new Promise(resolve => setTimeout(resolve, 100));
 
-          } catch (matchError: any) {
+          } catch (matchError: unknown) {
+            const error = matchError as Error;
             // Rollback this match's transaction
             await client.query('ROLLBACK');
             logger.warn('Failed to process match', {
               matchId: match.matchId,
-              error: matchError.message,
+              error: error.message,
             });
             matchesSkipped++;
             // Continue with next match
@@ -297,7 +300,7 @@ export async function syncLineups(): Promise<void> {
           matchesProcessed,
           matchesSkipped,
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         // Try to rollback if there's an open transaction
         try {
           await client.query('ROLLBACK');
@@ -317,7 +320,7 @@ export async function syncLineups(): Promise<void> {
 
     logger.info('Job completed successfully');
     process.exit(0);
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error('Job failed', error);
     process.exit(1);
   } finally {
