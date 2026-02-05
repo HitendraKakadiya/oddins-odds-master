@@ -1,4 +1,4 @@
-import { FastifyInstance } from 'fastify';
+import { FastifyInstance, FastifyRequest } from 'fastify';
 import { query } from '../../db';
 
 interface TodayQuery {
@@ -13,7 +13,7 @@ interface FeaturedTipsQuery {
 export async function matchesRoutes(server: FastifyInstance) {
   // GET /v1/matches/today
   server.get<{ Querystring: TodayQuery }>('/matches/today', async (request) => {
-    const { date } = request.query;
+    const { date, tz } = request.query;
 
     // Default to today if no date provided
     const targetDate = date || new Date().toISOString().split('T')[0];
@@ -58,7 +58,6 @@ export async function matchesRoutes(server: FastifyInstance) {
       [targetDate]
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const matches = result.rows.map((row: any) => ({
       matchId: row.match_id,
       providerFixtureId: row.provider_fixture_id,
@@ -130,7 +129,6 @@ export async function matchesRoutes(server: FastifyInstance) {
 
     return {
       date: targetDate,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       tips: result.rows.map((row: any) => ({
         id: row.id,
         matchId: row.match_id,

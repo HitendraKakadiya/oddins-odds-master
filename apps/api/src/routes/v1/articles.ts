@@ -32,7 +32,7 @@ export async function articlesRoutes(server: FastifyInstance) {
     const offset = (pageNum - 1) * pageSizeNum;
 
     const conditions: string[] = ['type = $1', 'published_at IS NOT NULL'];
-    const params: unknown[] = [type];
+    const params: any[] = [type];
     let paramIndex = 2;
 
     if (category) {
@@ -68,7 +68,6 @@ export async function articlesRoutes(server: FastifyInstance) {
       page: pageNum,
       pageSize: pageSizeNum,
       total,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       items: result.rows.map((row: any) => ({
         id: row.id,
         type: row.type,

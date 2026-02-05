@@ -31,6 +31,10 @@ function addDays(date: Date, days: number): Date {
   return result;
 }
 
+// Helper to format date as YYYY-MM-DD
+function formatDate(date: Date): string {
+  return date.toISOString().split('T')[0];
+}
 
 // Helper to format datetime as ISO string
 function formatDateTime(date: Date): string {
@@ -465,7 +469,7 @@ async function seed() {
       for (let i = 0; i < 2; i++) {
         const capturedAt = addDays(match.kickoff, -2 + i);
 
-        for (const bookmakerId of Object.values(bookmakerIds)) {
+        for (const [bookmakerSlug, bookmakerId] of Object.entries(bookmakerIds)) {
           const snapshotRes = await client.query(
             `INSERT INTO odds_snapshots (match_id, bookmaker_id, captured_at, source, is_live)
              VALUES ($1, $2, $3, $4, $5)
@@ -620,7 +624,9 @@ async function seed() {
     // Create tips for 10 matches
     for (const match of matchesWithOdds.slice(0, 10)) {
       const matchId = matchIds[match.provider_id];
+
       const isPremium = Math.random() > 0.6;
+      const confidence = 60 + Math.floor(Math.random() * 30);
 
       const titles = [
         'Strong Home Win Expected',

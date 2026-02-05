@@ -105,6 +105,17 @@ async function upsertPlayer(
   return result.rows[0].id;
 }
 
+// Get team ID by provider_team_id
+async function getTeamId(
+  client: PoolClient,
+  providerTeamId: number
+): Promise<number | null> {
+  const result = await client.query(
+    `SELECT id FROM teams WHERE provider_team_id = $1`,
+    [providerTeamId]
+  );
+  return result.rows.length > 0 ? result.rows[0].id : null;
+}
 
 // Link player to team
 async function linkPlayerToTeam(
@@ -135,7 +146,6 @@ async function getFeaturedTeams(client: PoolClient): Promise<Array<{ teamId: num
      ORDER BY t.id`,
     [FEATURED_LEAGUES.map(l => l.id)]
   );
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return result.rows.map((row: any) => ({
     teamId: row.team_id,
     providerTeamId: row.provider_team_id
@@ -182,10 +192,10 @@ export async function syncPlayers(): Promise<void> {
             });
 
             // Fetch players from API
-            const rawResponse = (await apiFootballClient.getPlayers({
+            const rawResponse: PlayersAPIResponse = await apiFootballClient.getPlayers({
               team: team.providerTeamId,
               season: currentSeason,
-            })) as PlayersAPIResponse;
+            });
             apiCallsMade++;
 
             const playerResponses = rawResponse.response || [];
@@ -236,12 +246,11 @@ export async function syncPlayers(): Promise<void> {
                 await linkPlayerToTeam(client, playerId, team.teamId, currentSeason, jerseyNumber);
                 teamLinksCreated++;
 
-              } catch (itemError: unknown) {
-                const error = itemError as Error;
+              } catch (itemError: any) {
                 logger.warn('Failed to process player item', {
                   playerId: item.player.id,
                   playerName: item.player.name,
-                  error: error.message,
+                  error: itemError.message,
                 });
                 // Continue with next item
               }
@@ -252,11 +261,10 @@ export async function syncPlayers(): Promise<void> {
             // Rate limiting: wait 100ms between requests
             await new Promise(resolve => setTimeout(resolve, 100));
 
-          } catch (teamError: unknown) {
-            const error = teamError as Error;
+          } catch (teamError: any) {
             logger.warn('Failed to process team', {
               teamId: team.teamId,
-              error: error.message,
+              error: teamError.message,
             });
             teamsSkipped++;
             // Continue with next team
@@ -290,7 +298,7 @@ export async function syncPlayers(): Promise<void> {
           teamsProcessed,
           teamsSkipped,
         };
-      } catch (error: unknown) {
+      } catch (error: any) {
         await client.query('ROLLBACK');
         throw error;
       } finally {
@@ -305,7 +313,7 @@ export async function syncPlayers(): Promise<void> {
 
     logger.info('Job completed successfully');
     process.exit(0);
-  } catch (error: unknown) {
+  } catch (error: any) {
     logger.error('Job failed', error);
     process.exit(1);
   } finally {

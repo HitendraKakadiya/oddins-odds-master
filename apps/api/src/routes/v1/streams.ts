@@ -12,7 +12,7 @@ export async function streamsRoutes(server: FastifyInstance) {
     const targetDate = date || new Date().toISOString().split('T')[0];
 
     const conditions: string[] = ['DATE(m.kickoff_at) = $1'];
-    const params: unknown[] = [targetDate];
+    const params: any[] = [targetDate];
     let paramIndex = 2;
 
     if (region) {
@@ -46,7 +46,6 @@ export async function streamsRoutes(server: FastifyInstance) {
       params
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const items = result.rows.map((row: any) => ({
       league: {
         name: row.league_name,

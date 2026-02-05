@@ -190,10 +190,10 @@ export async function syncTeams(): Promise<void> {
               });
 
               // Fetch teams from API
-              const rawResponse = (await apiFootballClient.getTeams({
+              const rawResponse: TeamsAPIResponse = await apiFootballClient.getTeams({
                 league: league.id,
                 season,
-              })) as TeamsAPIResponse;
+              });
               apiCallsMade++;
 
               const teams = rawResponse.response || [];
@@ -243,23 +243,21 @@ export async function syncTeams(): Promise<void> {
                   await linkTeamToSeason(client, seasonId, teamId);
                   seasonLinksCreated++;
 
-                } catch (itemError: unknown) {
-                  const error = itemError as Error;
+                } catch (itemError: any) {
                   logger.warn('Failed to process team item', {
                     teamId: item.team.id,
                     teamName: item.team.name,
-                    error: error.message,
+                    error: itemError.message,
                   });
                   // Continue with next item
                 }
               }
-            } catch (leagueError: unknown) {
-              const error = leagueError as Error;
+            } catch (leagueError: any) {
               logger.warn('Failed to process league/season', {
                 leagueId: league.id,
                 leagueName: league.name,
                 season,
-                error: error.message,
+                error: leagueError.message,
               });
               // Continue with next league/season
             }
@@ -291,7 +289,7 @@ export async function syncTeams(): Promise<void> {
           seasonLinksCreated,
           apiCallsMade,
         };
-      } catch (error: unknown) {
+      } catch (error: any) {
         await client.query('ROLLBACK');
         throw error;
       } finally {
@@ -306,7 +304,7 @@ export async function syncTeams(): Promise<void> {
 
     logger.info('Job completed successfully');
     process.exit(0);
-  } catch (error: unknown) {
+  } catch (error: any) {
     logger.error('Job failed', error);
     process.exit(1);
   } finally {

@@ -123,7 +123,6 @@ async function getCompletedMatches(client: PoolClient, limit: number = 1000): Pr
      LIMIT $1`,
     [limit]
   );
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return result.rows.map((row: any) => ({
     matchId: row.match_id,
     providerFixtureId: row.provider_fixture_id
@@ -169,9 +168,9 @@ export async function syncLineups(): Promise<void> {
             });
 
             // Fetch lineups from API
-            const rawResponse = (await apiFootballClient.getFixtureLineups({
+            const rawResponse: LineupsAPIResponse = await apiFootballClient.getFixtureLineups({
               fixture: match.providerFixtureId,
-            })) as LineupsAPIResponse;
+            });
             apiCallsMade++;
 
             const teamLineups = rawResponse.response || [];
@@ -245,11 +244,10 @@ export async function syncLineups(): Promise<void> {
                   );
                   lineupsInserted++;
                 }
-              } catch (teamError: unknown) {
-                const error = teamError as Error;
+              } catch (teamError: any) {
                 logger.warn('Failed to process team lineup', {
                   teamId: teamLineup.team.id,
-                  error: error.message,
+                  error: teamError.message,
                 });
               }
             }
@@ -261,13 +259,12 @@ export async function syncLineups(): Promise<void> {
             // Rate limiting: wait 100ms between requests
             await new Promise(resolve => setTimeout(resolve, 100));
 
-          } catch (matchError: unknown) {
-            const error = matchError as Error;
+          } catch (matchError: any) {
             // Rollback this match's transaction
             await client.query('ROLLBACK');
             logger.warn('Failed to process match', {
               matchId: match.matchId,
-              error: error.message,
+              error: matchError.message,
             });
             matchesSkipped++;
             // Continue with next match
@@ -300,7 +297,7 @@ export async function syncLineups(): Promise<void> {
           matchesProcessed,
           matchesSkipped,
         };
-      } catch (error: unknown) {
+      } catch (error: any) {
         // Try to rollback if there's an open transaction
         try {
           await client.query('ROLLBACK');
@@ -320,7 +317,7 @@ export async function syncLineups(): Promise<void> {
 
     logger.info('Job completed successfully');
     process.exit(0);
-  } catch (error: unknown) {
+  } catch (error: any) {
     logger.error('Job failed', error);
     process.exit(1);
   } finally {

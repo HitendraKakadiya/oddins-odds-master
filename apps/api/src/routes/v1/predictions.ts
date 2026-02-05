@@ -27,7 +27,7 @@ export async function predictionsRoutes(server: FastifyInstance) {
 
     // Build WHERE clause dynamically
     const conditions: string[] = ['mp.generated_at IS NOT NULL'];
-    const params: unknown[] = [];
+    const params: any[] = [];
     let paramIndex = 1;
 
     if (date) {
@@ -105,7 +105,6 @@ export async function predictionsRoutes(server: FastifyInstance) {
       params
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const items = result.rows.map((row: any) => ({
       matchId: row.match_id,
       kickoffAt: row.kickoff_at,

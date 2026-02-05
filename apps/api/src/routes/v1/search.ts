@@ -25,7 +25,6 @@ export async function searchRoutes(server: FastifyInstance) {
       [searchTerm]
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const leagues = leaguesResult.rows.map((row: any) => ({
       id: row.id,
       name: row.name,
@@ -42,7 +41,6 @@ export async function searchRoutes(server: FastifyInstance) {
       [searchTerm]
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const teams = teamsResult.rows.map((row: any) => ({
       id: row.id,
       name: row.name,
@@ -87,7 +85,6 @@ export async function searchRoutes(server: FastifyInstance) {
       [searchTerm]
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const matches = matchesResult.rows.map((row: any) => ({
       matchId: row.match_id,
       providerFixtureId: row.provider_fixture_id,
@@ -135,7 +132,6 @@ export async function searchRoutes(server: FastifyInstance) {
       [searchTerm]
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const articles = articlesResult.rows.map((row: any) => ({
       id: row.id,
       type: row.type,

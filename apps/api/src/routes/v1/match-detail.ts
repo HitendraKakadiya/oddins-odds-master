@@ -117,7 +117,6 @@ export async function matchDetailRoutes(server: FastifyInstance) {
           slug: firstRow.bookmaker_slug,
         },
         capturedAt: firstRow.captured_at,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         markets: oddsResult.rows.map((r: any) => ({
           marketKey: r.market_key,
           line: r.line,
@@ -150,7 +149,6 @@ export async function matchDetailRoutes(server: FastifyInstance) {
       [matchId]
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const predictions = predictionsResult.rows.map((r: any) => ({
       matchId: parseInt(matchId, 10),
       kickoffAt: row.kickoff_at,
@@ -212,7 +210,6 @@ export async function matchDetailRoutes(server: FastifyInstance) {
       [matchId, row.home_team_id, row.away_team_id]
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const h2h = h2hResult.rows.map((r: any) => ({
       matchId: r.match_id,
       providerFixtureId: r.provider_fixture_id,

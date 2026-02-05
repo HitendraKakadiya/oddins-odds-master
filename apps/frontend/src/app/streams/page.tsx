@@ -1,5 +1,4 @@
-import Image from 'next/image';
-import { getStreams, getLeagues, MatchData, LeaguesResponse } from '@/lib/api';
+import { getStreams, getLeagues } from '@/lib/api';
 import StreamsDateFilter from '@/components/StreamsDateFilter';
 import StreamsLeagueGroup from '@/components/StreamsLeagueGroup';
 import Sidebar from '@/components/Sidebar';
@@ -12,35 +11,14 @@ interface SearchParams {
   region?: string;
 }
 
-interface MockStream {
-  matchId: number;
-  kickoffAt: string;
-  league: {
-    id: number;
-    name: string;
-    logoUrl?: string;
-  };
-  homeTeam: {
-    name: string;
-    logoUrl?: string;
-  };
-  awayTeam: {
-    name: string;
-    logoUrl?: string;
-  };
-}
-
 export default async function StreamsPage({ searchParams }: { searchParams: SearchParams }) {
   const today = new Date().toISOString().split('T')[0];
   const date = searchParams.date || today;
 
-  // Fetch data in parallel
-  const [streamsResponse, leagues] = await Promise.all([
-    getStreams(date, searchParams.region).catch(() => ({ date, items: [] as MatchData[] })),
-    getLeagues().catch(() => [] as LeaguesResponse[])
-  ]);
+  const streamsData = await getStreams(date, searchParams.region).catch(() => ({ date, items: [] }));
+  const leagues = await getLeagues().catch(() => []);
 
-  const mockStreams: MockStream[] = [
+  const mockStreams = [
     {
       matchId: 9001,
       kickoffAt: `${date}T20:00:00Z`,
@@ -78,12 +56,10 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
     }
   ];
 
-  // Use API items if available, otherwise fallback to mock
-  const apiItems = (streamsResponse as { items?: MatchData[] }).items;
-  const items: (MatchData | MockStream)[] = (apiItems && apiItems.length > 0) ? apiItems : mockStreams;
+  const items = (streamsData as any).items?.length > 0 ? (streamsData as any).items : mockStreams;
 
   // Group items by league
-  const groupedStreams = items.reduce((acc: Record<number, { league: MatchData['league'] | MockStream['league']; matches: (MatchData | MockStream)[] }>, item: MatchData | MockStream) => {
+  const groupedStreams = items.reduce((acc: any, item: any) => {
     const leagueId = item.league.id;
     if (!acc[leagueId]) {
       acc[leagueId] = {
@@ -95,7 +71,7 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
     return acc;
   }, {});
 
-  const groupedList = Object.values(groupedStreams) as { league: MatchData['league'] | MockStream['league']; matches: (MatchData | MockStream)[] }[];
+  const groupedList = Object.values(groupedStreams);
 
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -108,11 +84,10 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
           {/* Hero Banner */}
           <div className="relative rounded-[32px] overflow-hidden mb-8 min-h-[300px] flex items-center p-8 lg:p-12">
              <div className="absolute inset-0 z-0">
-                <Image 
+                <img 
                   src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000" 
                   alt="Football stadium background" 
-                  fill
-                  className="object-cover"
+                  className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-brand-dark-blue/90 via-brand-dark-blue/70 to-transparent"></div>
              </div>
@@ -143,12 +118,8 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
             </div>
           ) : (
             <div className="space-y-4">
-              {groupedList.map((group) => (
-                <StreamsLeagueGroup 
-                  key={group.league.id} 
-                  league={group.league} 
-                  matches={group.matches} 
-                />
+              {groupedList.map((group: any) => (
+                <StreamsLeagueGroup key={group.league.id} league={group.league} matches={group.matches} />
               ))}
             </div>
           )}

@@ -100,7 +100,6 @@ async function getCompletedMatches(client: PoolClient, limit: number = 1000): Pr
      LIMIT $1`,
     [limit]
   );
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return result.rows.map((row: any) => ({
     matchId: row.match_id,
     providerFixtureId: row.provider_fixture_id
@@ -109,6 +108,7 @@ async function getCompletedMatches(client: PoolClient, limit: number = 1000): Pr
 
 export async function syncEvents(): Promise<void> {
   const JOB_NAME = 'sync:events';
+  const ENTITY_NAME = 'match_events';
 
   logger.setContext({ job: JOB_NAME });
   logger.info('Starting match events sync job');
@@ -143,9 +143,9 @@ export async function syncEvents(): Promise<void> {
             });
 
             // Fetch events from API
-            const rawResponse = (await apiFootballClient.getFixtureEvents({
+            const rawResponse: EventsAPIResponse = await apiFootballClient.getFixtureEvents({
               fixture: match.providerFixtureId,
-            })) as EventsAPIResponse;
+            });
             apiCallsMade++;
 
             const events = rawResponse.response || [];
@@ -187,12 +187,11 @@ export async function syncEvents(): Promise<void> {
                 );
                 eventsInserted++;
 
-              } catch (eventError: unknown) {
-                const error = eventError as Error;
+              } catch (eventError: any) {
                 logger.warn('Failed to process event', {
                   matchId: match.matchId,
                   eventType: event.type,
-                  error: error.message,
+                  error: eventError.message,
                 });
                 // Continue with next event
               }
@@ -203,11 +202,10 @@ export async function syncEvents(): Promise<void> {
             // Rate limiting: wait 100ms between requests
             await new Promise(resolve => setTimeout(resolve, 100));
 
-          } catch (matchError: unknown) {
-            const error = matchError as Error;
+          } catch (matchError: any) {
             logger.warn('Failed to process match', {
               matchId: match.matchId,
-              error: error.message,
+              error: matchError.message,
             });
             matchesSkipped++;
             // Continue with next match
@@ -215,7 +213,7 @@ export async function syncEvents(): Promise<void> {
         }
 
         // Update sync state
-        await updateSyncState(client, sourceId, 'match_events', {
+        await updateSyncState(client, sourceId, ENTITY_NAME, {
           eventsInserted,
           apiCallsMade,
           matchesProcessed,
@@ -237,7 +235,7 @@ export async function syncEvents(): Promise<void> {
           matchesProcessed,
           matchesSkipped,
         };
-      } catch (error: unknown) {
+      } catch (error: any) {
         await client.query('ROLLBACK');
         throw error;
       } finally {
@@ -252,7 +250,7 @@ export async function syncEvents(): Promise<void> {
 
     logger.info('Job completed successfully');
     process.exit(0);
-  } catch (error: unknown) {
+  } catch (error: any) {
     logger.error('Job failed', error);
     process.exit(1);
   } finally {

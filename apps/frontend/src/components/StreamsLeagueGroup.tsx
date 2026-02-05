@@ -1,4 +1,5 @@
-import Image from 'next/image';
+'use client';
+
 import { useState } from 'react';
 import StreamsMatchRow from './StreamsMatchRow';
 
@@ -8,7 +9,7 @@ interface StreamsLeagueGroupProps {
     name: string;
     logoUrl?: string | null;
   };
-  matches: any[]; // Matches are rendered by StreamsMatchRow, keeping any for now to avoid cascading type changes
+  matches: any[];
 }
 
 export default function StreamsLeagueGroup({ league, matches }: StreamsLeagueGroupProps) {
@@ -22,13 +23,7 @@ export default function StreamsLeagueGroup({ league, matches }: StreamsLeagueGro
       >
         <div className="flex items-center gap-3">
           {league.logoUrl ? (
-            <Image 
-              src={league.logoUrl} 
-              alt={league.name} 
-              width={24} 
-              height={24} 
-              className="object-contain" 
-            />
+            <img src={league.logoUrl} alt="" className="w-6 h-6 object-contain" />
           ) : (
             <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center text-[10px] font-bold text-brand-indigo shadow-sm">
               ⚽

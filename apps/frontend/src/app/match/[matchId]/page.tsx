@@ -1,5 +1,4 @@
-import Image from 'next/image';
-import { getMatchDetail, MatchData } from '@/lib/api';
+import { getMatchDetail } from '@/lib/api';
 import PredictionCard from '@/components/PredictionCard';
 import Link from 'next/link';
 
@@ -12,37 +11,13 @@ interface PageProps {
   };
 }
 
-interface MatchDetail {
-  match: MatchData;
-  oddsLatest?: {
-    bookmaker?: { name: string };
-    capturedAt?: string;
-    markets: {
-      marketKey: string;
-      selection?: string;
-      oddValue: number;
-      impliedProb?: number;
-    }[];
-  };
-  predictions?: any[]; // Reverting to any[] for now to match PredictionCard expectations without deep typing everything
-  h2h?: {
-    date: string;
-    competition: string;
-    homeTeam: string;
-    awayTeam: string;
-    homeScore: number;
-    awayScore: number;
-  }[];
-  whereToWatch?: { name: string; url: string }[];
-}
-
 export default async function MatchDetailPage({ params }: PageProps) {
   const matchId = parseInt(params.matchId, 10);
   
-  let matchData: MatchDetail | null = null;
+  let matchData: any = null;
   
   try {
-    matchData = await getMatchDetail(matchId) as MatchDetail;
+    matchData = await getMatchDetail(matchId);
   } catch (error) {
     console.error(`Failed to fetch match ${matchId}:`, error);
     
@@ -151,13 +126,8 @@ export default async function MatchDetailPage({ params }: PageProps) {
         <div className="flex items-center justify-between mb-6">
           <Link href={`/league/${match.league.country.name.toLowerCase()}/${match.league.slug}`} className="flex items-center space-x-2 text-gray-600 hover:text-primary-600">
             {match.league.logoUrl && (
-              <Image 
-                src={match.league.logoUrl} 
-                alt={match.league.name} 
-                width={24} 
-                height={24} 
-                className="object-contain" 
-              />
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={match.league.logoUrl} alt="" className="w-6 h-6 object-contain" />
             )}
             <span className="font-medium">{match.league.name}</span>
           </Link>
@@ -174,13 +144,8 @@ export default async function MatchDetailPage({ params }: PageProps) {
               <h2 className="text-2xl font-bold">{match.homeTeam.name}</h2>
             </Link>
             {match.homeTeam.logoUrl && (
-              <Image 
-                src={match.homeTeam.logoUrl} 
-                alt={match.homeTeam.name} 
-                width={64} 
-                height={64} 
-                className="object-contain" 
-              />
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={match.homeTeam.logoUrl} alt="" className="w-16 h-16 object-contain" />
             )}
           </div>
 
@@ -208,13 +173,8 @@ export default async function MatchDetailPage({ params }: PageProps) {
           {/* Away Team */}
           <div className="col-span-3 flex items-center space-x-3">
             {match.awayTeam.logoUrl && (
-              <Image 
-                src={match.awayTeam.logoUrl} 
-                alt={match.awayTeam.name} 
-                width={64} 
-                height={64} 
-                className="object-contain" 
-              />
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={match.awayTeam.logoUrl} alt="" className="w-16 h-16 object-contain" />
             )}
             <Link href={`/team/${match.awayTeam.slug}`} className="hover:text-primary-600">
               <h2 className="text-2xl font-bold">{match.awayTeam.name}</h2>
@@ -240,7 +200,7 @@ export default async function MatchDetailPage({ params }: PageProps) {
           <div className="card">
             <h2 className="text-xl font-bold text-gray-900 mb-4">📺 Where to Watch</h2>
             <div className="flex flex-wrap gap-3">
-              {whereToWatch.map((channel, index) => (
+              {whereToWatch.map((channel: any, index: number) => (
                 <a
                   key={index}
                   href={channel.url}
@@ -263,11 +223,11 @@ export default async function MatchDetailPage({ params }: PageProps) {
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-gray-900">Latest Odds</h2>
               <span className="text-sm text-gray-500">
-                From {oddsLatest.bookmaker?.name || 'Unknown'} • Updated {oddsLatest.capturedAt ? new Date(oddsLatest.capturedAt).toLocaleString() : 'N/A'}
+                From {oddsLatest.bookmaker.name} • Updated {new Date(oddsLatest.capturedAt).toLocaleString()}
               </span>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {oddsLatest.markets.map((market: { marketKey: string; selection?: string; oddValue: number; impliedProb?: number }, index: number) => (
+              {oddsLatest.markets.map((market: any, index: number) => (
                 <div key={index} className="bg-gray-50 rounded-lg p-3">
                   <div className="text-xs text-gray-500 mb-1">{market.marketKey}</div>
                   {market.selection && (
@@ -291,7 +251,7 @@ export default async function MatchDetailPage({ params }: PageProps) {
             <h2 className="text-2xl font-bold text-gray-900">Our Predictions</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {predictions.map((prediction, index) => (
+            {predictions.map((prediction: any, index: number) => (
               <PredictionCard key={index} prediction={prediction} />
             ))}
           </div>
@@ -314,15 +274,15 @@ export default async function MatchDetailPage({ params }: PageProps) {
                 </tr>
               </thead>
               <tbody>
-                {h2h.map((h2hMatch, index) => (
+                {h2h.map((match: any, index: number) => (
                   <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="py-3 px-4 text-sm">{new Date(h2hMatch.date).toLocaleDateString()}</td>
-                    <td className="py-3 px-4 text-sm">{h2hMatch.competition}</td>
-                    <td className="py-3 px-4 text-sm font-medium">{h2hMatch.homeTeam}</td>
+                    <td className="py-3 px-4 text-sm">{new Date(match.date).toLocaleDateString()}</td>
+                    <td className="py-3 px-4 text-sm">{match.competition}</td>
+                    <td className="py-3 px-4 text-sm font-medium">{match.homeTeam}</td>
                     <td className="py-3 px-4 text-sm text-center font-bold">
-                      {h2hMatch.homeScore} - {h2hMatch.awayScore}
+                      {match.homeScore} - {match.awayScore}
                     </td>
-                    <td className="py-3 px-4 text-sm font-medium">{h2hMatch.awayTeam}</td>
+                    <td className="py-3 px-4 text-sm font-medium">{match.awayTeam}</td>
                   </tr>
                 ))}
               </tbody>

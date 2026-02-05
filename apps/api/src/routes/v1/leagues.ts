@@ -26,8 +26,7 @@ export async function leaguesRoutes(server: FastifyInstance) {
     );
 
     // Group by country
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const grouped: Record<string, { country: { name: string; code: string; flagUrl: string }; leagues: any[] }> = {};
+    const grouped: Record<string, any> = {};
 
     for (const row of result.rows) {
       const countryKey = row.country_name;
@@ -57,7 +56,7 @@ export async function leaguesRoutes(server: FastifyInstance) {
 
   // GET /v1/league/:countrySlug/:leagueSlug
   server.get<{ Params: LeagueDetailParams }>('/league/:countrySlug/:leagueSlug', async (request, reply) => {
-    const { leagueSlug } = request.params;
+    const { countrySlug, leagueSlug } = request.params;
 
     // Get league info
     const leagueResult = await query(
@@ -135,7 +134,6 @@ export async function leaguesRoutes(server: FastifyInstance) {
       [seasonId]
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const standings = standingsResult.rows.map((row: any, index: number) => ({
       rank: index + 1,
       team: {
@@ -190,7 +188,6 @@ export async function leaguesRoutes(server: FastifyInstance) {
       [seasonId]
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const fixtures = fixturesResult.rows.map((row: any) => ({
       matchId: row.match_id,
       providerFixtureId: row.provider_fixture_id,
@@ -264,7 +261,6 @@ export async function leaguesRoutes(server: FastifyInstance) {
       [seasonId]
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const results = resultsResult.rows.map((row: any) => ({
       matchId: row.match_id,
       providerFixtureId: row.provider_fixture_id,

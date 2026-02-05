@@ -1,4 +1,5 @@
-import Image from 'next/image';
+'use client';
+
 import Link from 'next/link';
 
 interface StreamsMatchRowProps {
@@ -45,13 +46,7 @@ export default function StreamsMatchRow({ match }: StreamsMatchRowProps) {
           <div className="flex items-center gap-3 flex-1 justify-end">
              <span className="font-bold text-slate-700 text-sm sm:text-base">{match.homeTeam.name}</span>
              {match.homeTeam.logoUrl ? (
-               <Image 
-                 src={match.homeTeam.logoUrl} 
-                 alt={match.homeTeam.name} 
-                 width={24} 
-                 height={24} 
-                 className="object-contain" 
-               />
+               <img src={match.homeTeam.logoUrl} alt="" className="w-6 h-6 object-contain" />
              ) : (
                <div className="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center text-[8px] font-bold text-slate-400">
                  {match.homeTeam.name.substring(0, 1)}
@@ -63,13 +58,7 @@ export default function StreamsMatchRow({ match }: StreamsMatchRowProps) {
           
           <div className="flex items-center gap-3 flex-1 justify-start">
              {match.awayTeam.logoUrl ? (
-               <Image 
-                 src={match.awayTeam.logoUrl} 
-                 alt={match.awayTeam.name} 
-                 width={24} 
-                 height={24} 
-                 className="object-contain" 
-               />
+               <img src={match.awayTeam.logoUrl} alt="" className="w-6 h-6 object-contain" />
              ) : (
                <div className="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center text-[8px] font-bold text-slate-400">
                  {match.awayTeam.name.substring(0, 1)}

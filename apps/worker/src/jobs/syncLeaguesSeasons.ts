@@ -8,7 +8,7 @@
 import { getPool } from '../db/pool';
 import { logger } from '../logger';
 import { apiFootballClient } from '../provider/apiFootballClient';
-import { LeaguesResponseSchema, normalizeCoverage } from '../provider/schemas';
+import { LeaguesResponseSchema, normalizeCoverage, LeagueResponseItem } from '../provider/schemas';
 import { withLock } from '../orchestration/locks';
 import {
   ensureProviderSource,
@@ -22,6 +22,7 @@ import {
 
 export async function syncLeaguesSeasons(): Promise<void> {
   const JOB_NAME = 'sync:leagues_seasons';
+  const ENTITY_NAME = 'leagues_seasons';
 
   logger.setContext({ job: JOB_NAME });
   logger.info('Starting leagues and seasons sync job');
@@ -98,19 +99,18 @@ export async function syncLeaguesSeasons(): Promise<void> {
               await upsertSeasonCoverage(client, seasonId, coverage);
               coveragesUpserted++;
             }
-          } catch (itemError: unknown) {
-            const error = itemError as Error;
+          } catch (itemError: any) {
             logger.warn('Failed to process league item', {
               leagueId: item.league.id,
               leagueName: item.league.name,
-              error: error.message,
+              error: itemError.message,
             });
             // Continue with next item
           }
         }
 
         // Update sync state with success
-        await updateSyncState(client, sourceId, 'leagues_seasons', {
+        await updateSyncState(client, sourceId, ENTITY_NAME, {
           fetchedAt: new Date().toISOString(),
           totalLeagues: leagues.length,
           countriesUpserted,
@@ -134,15 +134,14 @@ export async function syncLeaguesSeasons(): Promise<void> {
           seasonsUpserted,
           coveragesUpserted,
         };
-      } catch (error: unknown) {
-        const err = error as Error;
+      } catch (error: any) {
         await client.query('ROLLBACK');
 
         // Record error in sync state
         try {
           const errorClient = await pool.connect();
           const sourceId = await ensureProviderSource(errorClient);
-          await recordSyncError(errorClient, sourceId, 'leagues_seasons', err.message);
+          await recordSyncError(errorClient, sourceId, ENTITY_NAME, error.message);
           errorClient.release();
         } catch (recordError) {
           logger.error('Failed to record sync error', recordError);
@@ -161,7 +160,7 @@ export async function syncLeaguesSeasons(): Promise<void> {
 
     logger.info('Job completed successfully');
     process.exit(0);
-  } catch (error: unknown) {
+  } catch (error: any) {
     logger.error('Job failed', error);
     process.exit(1);
   } finally {

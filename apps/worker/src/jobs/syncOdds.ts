@@ -155,7 +155,6 @@ async function getUpcomingFixtures(client: PoolClient): Promise<number[]> {
      LIMIT 1000`,
     []
   );
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return result.rows.map((row: any) => row.provider_fixture_id);
 }
 
@@ -205,9 +204,9 @@ export async function syncOdds(): Promise<void> {
             logger.info(`Fetching odds for fixture ${providerFixtureId} (${i + 1}/${fixturesLimit})`);
 
             // Fetch odds from API
-            const rawResponse = (await apiFootballClient.getOdds({
+            const rawResponse: OddsAPIResponse = await apiFootballClient.getOdds({
               fixture: providerFixtureId,
-            })) as OddsAPIResponse;
+            });
             apiCallsMade++;
 
             if (!rawResponse.response || rawResponse.response.length === 0) {
@@ -267,11 +266,10 @@ export async function syncOdds(): Promise<void> {
             // Rate limiting: wait 200ms between requests
             await new Promise(resolve => setTimeout(resolve, 200));
 
-          } catch (fixtureError: unknown) {
-            const error = fixtureError as Error;
+          } catch (fixtureError: any) {
             logger.warn('Failed to process fixture odds', {
               fixtureId: providerFixtureId,
-              error: error.message,
+              error: fixtureError.message,
             });
             fixturesSkipped++;
             // Continue with next fixture
@@ -312,7 +310,7 @@ export async function syncOdds(): Promise<void> {
           fixturesProcessed,
           fixturesSkipped,
         };
-      } catch (error: unknown) {
+      } catch (error: any) {
         await client.query('ROLLBACK');
         throw error;
       } finally {
@@ -327,7 +325,7 @@ export async function syncOdds(): Promise<void> {
 
     logger.info('Job completed successfully');
     process.exit(0);
-  } catch (error: unknown) {
+  } catch (error: any) {
     logger.error('Job failed', error);
     process.exit(1);
   } finally {
