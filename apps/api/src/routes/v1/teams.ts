@@ -19,23 +19,23 @@ export async function teamsRoutes(server: FastifyInstance) {
   // GET /v1/teams
   server.get<{ Querystring: TeamsQuery }>('/teams', async (request) => {
     const { query: searchQuery, leagueSlug } = request.query;
-    
+
     const conditions: string[] = [];
-    const params: any[] = [];
+    const params: unknown[] = [];
     let paramIndex = 1;
-    
+
     if (searchQuery) {
       conditions.push(`t.name ILIKE $${paramIndex++}`);
       params.push(`%${searchQuery}%`);
     }
-    
+
     if (leagueSlug) {
       conditions.push(`l.slug = $${paramIndex++}`);
       params.push(leagueSlug);
     }
-    
+
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
-    
+
     const result = await query(
       `SELECT DISTINCT
         t.id,
@@ -49,7 +49,8 @@ export async function teamsRoutes(server: FastifyInstance) {
       LIMIT 50`,
       params
     );
-    
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return result.rows.map((row: any) => ({
       id: row.id,
       name: row.name,
@@ -57,11 +58,11 @@ export async function teamsRoutes(server: FastifyInstance) {
       logoUrl: row.logo_url,
     }));
   });
-  
+
   // GET /v1/team/:teamSlug
   server.get<{ Params: TeamParams }>('/team/:teamSlug', async (request, reply) => {
     const { teamSlug } = request.params;
-    
+
     const teamResult = await query(
       `SELECT id, name, slug, logo_url
        FROM teams
@@ -69,13 +70,13 @@ export async function teamsRoutes(server: FastifyInstance) {
        LIMIT 1`,
       [teamSlug]
     );
-    
+
     if (teamResult.rows.length === 0) {
       return reply.status(404).send({ error: 'Team not found' });
     }
-    
+
     const team = teamResult.rows[0];
-    
+
     // Get next match
     const nextMatchResult = await query(
       `SELECT 
@@ -114,7 +115,7 @@ export async function teamsRoutes(server: FastifyInstance) {
       LIMIT 1`,
       [team.id]
     );
-    
+
     const nextMatch = nextMatchResult.rows.length > 0 ? {
       matchId: nextMatchResult.rows[0].match_id,
       providerFixtureId: nextMatchResult.rows[0].provider_fixture_id,
@@ -150,7 +151,7 @@ export async function teamsRoutes(server: FastifyInstance) {
         away: nextMatchResult.rows[0].away_goals,
       },
     } : null;
-    
+
     // Get recent matches
     const recentResult = await query(
       `SELECT 
@@ -188,7 +189,8 @@ export async function teamsRoutes(server: FastifyInstance) {
       LIMIT 5`,
       [team.id]
     );
-    
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const recentMatches = recentResult.rows.map((row: any) => ({
       matchId: row.match_id,
       providerFixtureId: row.provider_fixture_id,
@@ -224,7 +226,7 @@ export async function teamsRoutes(server: FastifyInstance) {
         away: row.away_goals,
       },
     }));
-    
+
     return {
       team: {
         id: team.id,
@@ -241,11 +243,11 @@ export async function teamsRoutes(server: FastifyInstance) {
       },
     };
   });
-  
+
   // GET /v1/team/:teamSlug/:tab
   server.get<{ Params: TeamTabParams }>('/team/:teamSlug/:tab', async (request, reply) => {
     const { teamSlug, tab } = request.params;
-    
+
     const teamResult = await query(
       `SELECT id, name, slug, logo_url
        FROM teams
@@ -253,17 +255,17 @@ export async function teamsRoutes(server: FastifyInstance) {
        LIMIT 1`,
       [teamSlug]
     );
-    
+
     if (teamResult.rows.length === 0) {
       return reply.status(404).send({ error: 'Team not found' });
     }
-    
+
     const team = teamResult.rows[0];
-    
-    let items: any[] = [];
-    
+
+    let items: unknown[] = [];
+
     switch (tab) {
-      case 'fixtures':
+      case 'fixtures': {
         const fixturesResult = await query(
           `SELECT 
             m.id, m.kickoff_at, m.status,
@@ -281,8 +283,9 @@ export async function teamsRoutes(server: FastifyInstance) {
         );
         items = fixturesResult.rows;
         break;
-        
-      case 'results':
+      }
+
+      case 'results': {
         const resultsResult = await query(
           `SELECT 
             m.id, m.kickoff_at, m.status, m.home_goals, m.away_goals,
@@ -300,10 +303,11 @@ export async function teamsRoutes(server: FastifyInstance) {
         );
         items = resultsResult.rows;
         break;
-        
+      }
+
       case 'stats':
       case 'corners':
-      case 'cards':
+      case 'cards': {
         // Return aggregated stats from team_match_stats
         const statsResult = await query(
           `SELECT 
@@ -318,6 +322,7 @@ export async function teamsRoutes(server: FastifyInstance) {
           LIMIT 20`,
           [team.id]
         );
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         items = statsResult.rows.map((row: any) => ({
           matchId: row.match_id,
           kickoffAt: row.kickoff_at,
@@ -325,11 +330,12 @@ export async function teamsRoutes(server: FastifyInstance) {
           stats: row.stats,
         }));
         break;
-        
+      }
+
       default:
         items = [];
     }
-    
+
     return {
       team: {
         id: team.id,

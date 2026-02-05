@@ -22,26 +22,26 @@ export async function articlesRoutes(server: FastifyInstance) {
       page = '1',
       pageSize = '20',
     } = request.query;
-    
+
     if (!type || !['academy', 'blog'].includes(type)) {
       return reply.status(400).send({ error: 'Invalid type parameter. Must be "academy" or "blog"' });
     }
-    
+
     const pageNum = Math.max(1, parseInt(page, 10));
     const pageSizeNum = Math.min(200, Math.max(1, parseInt(pageSize, 10)));
     const offset = (pageNum - 1) * pageSizeNum;
-    
+
     const conditions: string[] = ['type = $1', 'published_at IS NOT NULL'];
-    const params: any[] = [type];
+    const params: unknown[] = [type];
     let paramIndex = 2;
-    
+
     if (category) {
       conditions.push(`category = $${paramIndex++}`);
       params.push(category);
     }
-    
+
     const whereClause = conditions.join(' AND ');
-    
+
     // Get total count
     const countResult = await query(
       `SELECT COUNT(*) as total
@@ -49,9 +49,9 @@ export async function articlesRoutes(server: FastifyInstance) {
        WHERE ${whereClause}`,
       params
     );
-    
+
     const total = parseInt(countResult.rows[0].total, 10);
-    
+
     // Get paginated results
     params.push(pageSizeNum, offset);
     const result = await query(
@@ -63,11 +63,12 @@ export async function articlesRoutes(server: FastifyInstance) {
       LIMIT $${paramIndex++} OFFSET $${paramIndex++}`,
       params
     );
-    
+
     return {
       page: pageNum,
       pageSize: pageSizeNum,
       total,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       items: result.rows.map((row: any) => ({
         id: row.id,
         type: row.type,
@@ -80,15 +81,15 @@ export async function articlesRoutes(server: FastifyInstance) {
       })),
     };
   });
-  
+
   // GET /v1/articles/:type/:slug
   server.get<{ Params: ArticleParams }>('/articles/:type/:slug', async (request, reply) => {
     const { type, slug } = request.params;
-    
+
     if (!['academy', 'blog'].includes(type)) {
       return reply.status(400).send({ error: 'Invalid type parameter' });
     }
-    
+
     const result = await query(
       `SELECT 
         id, type, slug, title, summary, body_md, category,
@@ -98,13 +99,13 @@ export async function articlesRoutes(server: FastifyInstance) {
       LIMIT 1`,
       [type, slug]
     );
-    
+
     if (result.rows.length === 0) {
       return reply.status(404).send({ error: 'Article not found' });
     }
-    
+
     const row = result.rows[0];
-    
+
     return {
       id: row.id,
       type: row.type,

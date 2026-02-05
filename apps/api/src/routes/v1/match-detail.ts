@@ -8,7 +8,7 @@ interface MatchParams {
 export async function matchDetailRoutes(server: FastifyInstance) {
   server.get<{ Params: MatchParams }>('/match/:matchId', async (request, reply) => {
     const { matchId } = request.params;
-    
+
     // Get match details
     const matchResult = await query(
       `SELECT 
@@ -44,13 +44,13 @@ export async function matchDetailRoutes(server: FastifyInstance) {
       LIMIT 1`,
       [matchId]
     );
-    
+
     if (matchResult.rows.length === 0) {
       return reply.status(404).send({ error: 'Match not found' });
     }
-    
+
     const row = matchResult.rows[0];
-    
+
     const match = {
       matchId: row.match_id,
       providerFixtureId: row.provider_fixture_id,
@@ -86,7 +86,7 @@ export async function matchDetailRoutes(server: FastifyInstance) {
         away: row.away_goals,
       },
     };
-    
+
     // Get latest odds
     const oddsResult = await query(
       `SELECT 
@@ -107,7 +107,7 @@ export async function matchDetailRoutes(server: FastifyInstance) {
       LIMIT 20`,
       [matchId]
     );
-    
+
     let oddsLatest = null;
     if (oddsResult.rows.length > 0) {
       const firstRow = oddsResult.rows[0];
@@ -117,6 +117,7 @@ export async function matchDetailRoutes(server: FastifyInstance) {
           slug: firstRow.bookmaker_slug,
         },
         capturedAt: firstRow.captured_at,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         markets: oddsResult.rows.map((r: any) => ({
           marketKey: r.market_key,
           line: r.line,
@@ -126,7 +127,7 @@ export async function matchDetailRoutes(server: FastifyInstance) {
         })),
       };
     }
-    
+
     // Get predictions
     const predictionsResult = await query(
       `SELECT 
@@ -148,7 +149,8 @@ export async function matchDetailRoutes(server: FastifyInstance) {
       ORDER BY mp.confidence DESC`,
       [matchId]
     );
-    
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const predictions = predictionsResult.rows.map((r: any) => ({
       matchId: parseInt(matchId, 10),
       kickoffAt: row.kickoff_at,
@@ -167,7 +169,7 @@ export async function matchDetailRoutes(server: FastifyInstance) {
       shortExplanation: 'Based on recent form and statistical analysis',
       isPremium: false,
     }));
-    
+
     // Get H2H (simplified - last 5 matches between these teams)
     const h2hResult = await query(
       `SELECT 
@@ -209,7 +211,8 @@ export async function matchDetailRoutes(server: FastifyInstance) {
       LIMIT 5`,
       [matchId, row.home_team_id, row.away_team_id]
     );
-    
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const h2h = h2hResult.rows.map((r: any) => ({
       matchId: r.match_id,
       providerFixtureId: r.provider_fixture_id,
@@ -245,7 +248,7 @@ export async function matchDetailRoutes(server: FastifyInstance) {
         away: r.away_goals,
       },
     }));
-    
+
     return {
       match,
       oddsLatest,

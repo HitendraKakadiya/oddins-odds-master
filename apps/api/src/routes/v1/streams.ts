@@ -10,18 +10,18 @@ export async function streamsRoutes(server: FastifyInstance) {
   server.get<{ Querystring: StreamsQuery }>('/streams', async (request) => {
     const { region, date } = request.query;
     const targetDate = date || new Date().toISOString().split('T')[0];
-    
+
     const conditions: string[] = ['DATE(m.kickoff_at) = $1'];
-    const params: any[] = [targetDate];
+    const params: unknown[] = [targetDate];
     let paramIndex = 2;
-    
+
     if (region) {
       conditions.push(`c.name ILIKE $${paramIndex++}`);
       params.push(`%${region}%`);
     }
-    
+
     const whereClause = conditions.join(' AND ');
-    
+
     const result = await query(
       `SELECT 
         l.name as league_name,
@@ -45,7 +45,8 @@ export async function streamsRoutes(server: FastifyInstance) {
       ORDER BY m.kickoff_at ASC`,
       params
     );
-    
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const items = result.rows.map((row: any) => ({
       league: {
         name: row.league_name,
@@ -70,7 +71,7 @@ export async function streamsRoutes(server: FastifyInstance) {
         { name: 'BT Sport', url: 'https://www.bt.com/sport' },
       ],
     }));
-    
+
     return {
       date: targetDate,
       region,

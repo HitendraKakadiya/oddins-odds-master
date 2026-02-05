@@ -8,13 +8,13 @@ interface SearchQuery {
 export async function searchRoutes(server: FastifyInstance) {
   server.get<{ Querystring: SearchQuery }>('/search', async (request, reply) => {
     const { q } = request.query;
-    
+
     if (!q || q.trim().length === 0) {
       return reply.status(400).send({ error: 'Query parameter "q" is required' });
     }
-    
+
     const searchTerm = `%${q.trim()}%`;
-    
+
     // Search leagues
     const leaguesResult = await query(
       `SELECT id, name, slug
@@ -24,13 +24,14 @@ export async function searchRoutes(server: FastifyInstance) {
        LIMIT 10`,
       [searchTerm]
     );
-    
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const leagues = leaguesResult.rows.map((row: any) => ({
       id: row.id,
       name: row.name,
       slug: row.slug,
     }));
-    
+
     // Search teams
     const teamsResult = await query(
       `SELECT id, name, slug, logo_url
@@ -40,14 +41,15 @@ export async function searchRoutes(server: FastifyInstance) {
        LIMIT 10`,
       [searchTerm]
     );
-    
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const teams = teamsResult.rows.map((row: any) => ({
       id: row.id,
       name: row.name,
       slug: row.slug,
       logoUrl: row.logo_url,
     }));
-    
+
     // Search matches (by team names)
     const matchesResult = await query(
       `SELECT 
@@ -84,7 +86,8 @@ export async function searchRoutes(server: FastifyInstance) {
       LIMIT 10`,
       [searchTerm]
     );
-    
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const matches = matchesResult.rows.map((row: any) => ({
       matchId: row.match_id,
       providerFixtureId: row.provider_fixture_id,
@@ -120,7 +123,7 @@ export async function searchRoutes(server: FastifyInstance) {
         away: row.away_goals,
       },
     }));
-    
+
     // Search articles
     const articlesResult = await query(
       `SELECT id, type, slug, title, summary, category, published_at, updated_at
@@ -131,7 +134,8 @@ export async function searchRoutes(server: FastifyInstance) {
        LIMIT 10`,
       [searchTerm]
     );
-    
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const articles = articlesResult.rows.map((row: any) => ({
       id: row.id,
       type: row.type,
@@ -142,7 +146,7 @@ export async function searchRoutes(server: FastifyInstance) {
       publishedAt: row.published_at,
       updatedAt: row.updated_at,
     }));
-    
+
     return {
       q: q.trim(),
       leagues,

@@ -15,7 +15,7 @@ export async function healthRoutes(server: FastifyInstance) {
       // Check database connection
       await pool.query('SELECT 1');
       health.database = 'connected';
-    } catch (error: any) {
+    } catch (error: unknown) {
       server.log.error({ err: error }, 'Database health check failed');
       health.status = 'unhealthy';
       health.database = 'disconnected';
@@ -47,7 +47,7 @@ export async function healthRoutes(server: FastifyInstance) {
         FROM pg_stat_activity
         WHERE datname = current_database()
       `);
-      
+
       if (result.rows && result.rows.length > 0) {
         health.database = {
           status: 'connected',
@@ -55,7 +55,7 @@ export async function healthRoutes(server: FastifyInstance) {
           activeConnections: result.rows[0].active_connections,
         };
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       server.log.error({ err: error }, 'Detailed database health check failed');
       health.status = 'unhealthy';
       health.database.status = 'disconnected';

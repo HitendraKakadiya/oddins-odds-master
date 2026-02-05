@@ -1,8 +1,8 @@
 import { Pool, PoolClient } from 'pg';
 
 // Support both DATABASE_URL (for local dev) and individual components (for production)
-const DATABASE_URL = process.env.DATABASE_URL || 
-  (process.env.DB_HOST && process.env.DB_USER && process.env.DB_PASSWORD 
+const DATABASE_URL = process.env.DATABASE_URL ||
+  (process.env.DB_HOST && process.env.DB_USER && process.env.DB_PASSWORD
     ? `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT || '5432'}/${process.env.DB_NAME || 'oddins_odds'}`
     : undefined);
 
@@ -35,7 +35,7 @@ export async function getClient(): Promise<PoolClient> {
 }
 
 // Helper for simple queries
-export async function query(text: string, params?: any[]) {
+export async function query(text: string, params?: unknown[]) {
   return await pool.query(text, params);
 }
 

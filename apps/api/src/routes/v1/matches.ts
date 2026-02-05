@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyRequest } from 'fastify';
+import { FastifyInstance } from 'fastify';
 import { query } from '../../db';
 
 interface TodayQuery {
@@ -13,11 +13,11 @@ interface FeaturedTipsQuery {
 export async function matchesRoutes(server: FastifyInstance) {
   // GET /v1/matches/today
   server.get<{ Querystring: TodayQuery }>('/matches/today', async (request) => {
-    const { date, tz } = request.query;
-    
+    const { date, tz: _tz } = request.query;
+
     // Default to today if no date provided
     const targetDate = date || new Date().toISOString().split('T')[0];
-    
+
     // Query matches for the given date
     const result = await query(
       `SELECT 
@@ -57,7 +57,8 @@ export async function matchesRoutes(server: FastifyInstance) {
       ORDER BY m.kickoff_at ASC`,
       [targetDate]
     );
-    
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const matches = result.rows.map((row: any) => ({
       matchId: row.match_id,
       providerFixtureId: row.provider_fixture_id,
@@ -98,18 +99,18 @@ export async function matchesRoutes(server: FastifyInstance) {
         isPremium: row.tip_is_premium,
       } : null,
     }));
-    
+
     return {
       date: targetDate,
       matches,
     };
   });
-  
+
   // GET /v1/tips/featured
   server.get<{ Querystring: FeaturedTipsQuery }>('/tips/featured', async (request) => {
     const { date } = request.query;
     const targetDate = date || new Date().toISOString().split('T')[0];
-    
+
     const result = await query(
       `SELECT 
         t.id,
@@ -126,9 +127,10 @@ export async function matchesRoutes(server: FastifyInstance) {
       LIMIT 10`,
       [targetDate]
     );
-    
+
     return {
       date: targetDate,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       tips: result.rows.map((row: any) => ({
         id: row.id,
         matchId: row.match_id,
