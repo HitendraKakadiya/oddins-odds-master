@@ -6,7 +6,7 @@ type LogLevel = 'info' | 'warn' | 'error' | 'debug';
 
 interface LogContext {
   job?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 class Logger {
@@ -16,7 +16,7 @@ class Logger {
     this.context = { ...this.context, ...context };
   }
 
-  private log(level: LogLevel, message: string, meta?: Record<string, any>) {
+  private log(level: LogLevel, message: string, meta?: Record<string, unknown>) {
     const timestamp = new Date().toISOString();
     const logEntry = {
       timestamp,
@@ -37,22 +37,22 @@ class Logger {
     }
   }
 
-  info(message: string, meta?: Record<string, any>) {
+  info(message: string, meta?: Record<string, unknown>) {
     this.log('info', message, meta);
   }
 
-  warn(message: string, meta?: Record<string, any>) {
+  warn(message: string, meta?: Record<string, unknown>) {
     this.log('warn', message, meta);
   }
 
-  error(message: string, error?: Error | any, meta?: Record<string, any>) {
+  error(message: string, error?: Error | unknown, meta?: Record<string, unknown>) {
     const errorMeta = error instanceof Error 
       ? { error: error.message, stack: error.stack }
       : { error };
     this.log('error', message, { ...errorMeta, ...meta });
   }
 
-  debug(message: string, meta?: Record<string, any>) {
+  debug(message: string, meta?: Record<string, unknown>) {
     this.log('debug', message, meta);
   }
 }

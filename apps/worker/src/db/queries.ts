@@ -145,7 +145,7 @@ export async function updateSyncState(
   client: PoolClient,
   sourceId: number,
   entity: string,
-  cursor: any
+  cursor: unknown
 ): Promise<void> {
   await client.query(
     `INSERT INTO provider_sync_state (source_id, entity, last_synced_at, cursor)

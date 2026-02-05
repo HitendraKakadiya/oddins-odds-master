@@ -26,7 +26,7 @@ class APIFootballClient {
   private async fetchWithRetry(
     endpoint: string,
     options: RequestOptions = {}
-  ): Promise<any> {
+  ): Promise<unknown> {
     const { timeout = 10000, maxRetries = 5 } = options;
     const url = `${this.baseUrl}${endpoint}`;
 
@@ -70,7 +70,7 @@ class APIFootballClient {
           throw new Error(`API error: ${response.status} ${response.statusText}`);
         }
 
-        const data = await response.json() as any;
+        const data = await response.json() as Record<string, unknown>;
         
         logger.debug(`Successfully fetched ${endpoint}`, { 
           status: response.status,
@@ -78,15 +78,16 @@ class APIFootballClient {
         });
 
         return data;
-      } catch (error: any) {
-        lastError = error;
+      } catch (error: unknown) {
+        const err = error instanceof Error ? error : new Error(String(error));
+        lastError = err;
 
-        if (error.name === 'AbortError') {
+        if (err instanceof Error && err.name === 'AbortError') {
           logger.warn(`Request timeout for ${endpoint}`, { attempt });
         } else {
           logger.warn(`Request failed for ${endpoint}`, { 
             attempt, 
-            error: error.message 
+            error: err.message 
           });
         }
 
@@ -100,35 +101,35 @@ class APIFootballClient {
     throw new Error(`Failed to fetch ${endpoint} after ${maxRetries} attempts: ${lastError?.message}`);
   }
 
-  async getLeagues(): Promise<any> {
+  async getLeagues(): Promise<unknown> {
     return this.fetchWithRetry('/leagues');
   }
 
-  async getTeams(params: { league: number; season: number }): Promise<any> {
+  async getTeams(params: { league: number; season: number }): Promise<unknown> {
     return this.fetchWithRetry(`/teams?league=${params.league}&season=${params.season}`);
   }
 
-  async getFixtures(params: { league: number; season: number }): Promise<any> {
+  async getFixtures(params: { league: number; season: number }): Promise<unknown> {
     return this.fetchWithRetry(`/fixtures?league=${params.league}&season=${params.season}`);
   }
 
-  async getStandings(params: { league: number; season: number }): Promise<any> {
+  async getStandings(params: { league: number; season: number }): Promise<unknown> {
     return this.fetchWithRetry(`/standings?league=${params.league}&season=${params.season}`);
   }
 
-  async getOdds(params: { fixture: number }): Promise<any> {
+  async getOdds(params: { fixture: number }): Promise<unknown> {
     return this.fetchWithRetry(`/odds?fixture=${params.fixture}`);
   }
 
-  async getPlayers(params: { team: number; season: number }): Promise<any> {
+  async getPlayers(params: { team: number; season: number }): Promise<unknown> {
     return this.fetchWithRetry(`/players?team=${params.team}&season=${params.season}`);
   }
 
-  async getFixtureEvents(params: { fixture: number }): Promise<any> {
+  async getFixtureEvents(params: { fixture: number }): Promise<unknown> {
     return this.fetchWithRetry(`/fixtures/events?fixture=${params.fixture}`);
   }
 
-  async getFixtureLineups(params: { fixture: number }): Promise<any> {
+  async getFixtureLineups(params: { fixture: number }): Promise<unknown> {
     return this.fetchWithRetry(`/fixtures/lineups?fixture=${params.fixture}`);
   }
 }
