@@ -2,8 +2,7 @@
  * Database queries for syncing data
  */
 
-import { Pool, PoolClient } from 'pg';
-import { logger } from '../logger';
+import { PoolClient } from 'pg';
 
 // Utility: slugify
 function slugify(text: string): string {

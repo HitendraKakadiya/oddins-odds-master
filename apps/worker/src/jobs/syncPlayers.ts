@@ -105,18 +105,6 @@ async function upsertPlayer(
   return result.rows[0].id;
 }
 
-// Get team ID by provider_team_id
-async function getTeamId(
-  client: PoolClient,
-  providerTeamId: number
-): Promise<number | null> {
-  const result = await client.query(
-    `SELECT id FROM teams WHERE provider_team_id = $1`,
-    [providerTeamId]
-  );
-  return result.rows.length > 0 ? result.rows[0].id : null;
-}
-
 // Link player to team
 async function linkPlayerToTeam(
   client: PoolClient,
@@ -146,7 +134,7 @@ async function getFeaturedTeams(client: PoolClient): Promise<Array<{ teamId: num
      ORDER BY t.id`,
     [FEATURED_LEAGUES.map(l => l.id)]
   );
-  return result.rows.map((row: any) => ({
+  return result.rows.map((row: { team_id: number; provider_team_id: number }) => ({
     teamId: row.team_id,
     providerTeamId: row.provider_team_id
   }));
@@ -246,11 +234,11 @@ export async function syncPlayers(): Promise<void> {
                 await linkPlayerToTeam(client, playerId, team.teamId, currentSeason, jerseyNumber);
                 teamLinksCreated++;
 
-              } catch (itemError: any) {
+              } catch (itemError: unknown) {
                 logger.warn('Failed to process player item', {
                   playerId: item.player.id,
                   playerName: item.player.name,
-                  error: itemError.message,
+                  error: itemError instanceof Error ? itemError.message : String(itemError),
                 });
                 // Continue with next item
               }
@@ -261,10 +249,10 @@ export async function syncPlayers(): Promise<void> {
             // Rate limiting: wait 100ms between requests
             await new Promise(resolve => setTimeout(resolve, 100));
 
-          } catch (teamError: any) {
+          } catch (teamError: unknown) {
             logger.warn('Failed to process team', {
               teamId: team.teamId,
-              error: teamError.message,
+              error: teamError instanceof Error ? teamError.message : String(teamError),
             });
             teamsSkipped++;
             // Continue with next team
@@ -298,7 +286,7 @@ export async function syncPlayers(): Promise<void> {
           teamsProcessed,
           teamsSkipped,
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         await client.query('ROLLBACK');
         throw error;
       } finally {
@@ -313,7 +301,7 @@ export async function syncPlayers(): Promise<void> {
 
     logger.info('Job completed successfully');
     process.exit(0);
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error('Job failed', error);
     process.exit(1);
   } finally {

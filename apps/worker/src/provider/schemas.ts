@@ -67,7 +67,7 @@ export type LeaguesResponse = z.infer<typeof LeaguesResponseSchema>;
 export type LeagueResponseItem = z.infer<typeof LeagueResponseItemSchema>;
 
 // Helper to normalize coverage flags
-export function normalizeCoverage(coverage: any) {
+export function normalizeCoverage(coverage: unknown) {
   const c = coverage as Record<string, unknown> || {};
   const fixtures = (c.fixtures as Record<string, unknown>) || {};
 

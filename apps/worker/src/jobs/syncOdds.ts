@@ -155,7 +155,7 @@ async function getUpcomingFixtures(client: PoolClient): Promise<number[]> {
      LIMIT 1000`,
     []
   );
-  return result.rows.map((row: any) => row.provider_fixture_id);
+  return result.rows.map((row: { provider_fixture_id: number }) => row.provider_fixture_id);
 }
 
 export async function syncOdds(): Promise<void> {
@@ -266,10 +266,10 @@ export async function syncOdds(): Promise<void> {
             // Rate limiting: wait 200ms between requests
             await new Promise(resolve => setTimeout(resolve, 200));
 
-          } catch (fixtureError: any) {
+          } catch (fixtureError: unknown) {
             logger.warn('Failed to process fixture odds', {
               fixtureId: providerFixtureId,
-              error: fixtureError.message,
+              error: fixtureError instanceof Error ? fixtureError.message : String(fixtureError),
             });
             fixturesSkipped++;
             // Continue with next fixture
@@ -310,7 +310,7 @@ export async function syncOdds(): Promise<void> {
           fixturesProcessed,
           fixturesSkipped,
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         await client.query('ROLLBACK');
         throw error;
       } finally {
@@ -325,7 +325,7 @@ export async function syncOdds(): Promise<void> {
 
     logger.info('Job completed successfully');
     process.exit(0);
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error('Job failed', error);
     process.exit(1);
   } finally {

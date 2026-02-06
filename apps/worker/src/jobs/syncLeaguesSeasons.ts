@@ -8,7 +8,7 @@
 import { getPool } from '../db/pool';
 import { logger } from '../logger';
 import { apiFootballClient } from '../provider/apiFootballClient';
-import { LeaguesResponseSchema, normalizeCoverage, LeagueResponseItem } from '../provider/schemas';
+import { LeaguesResponseSchema, normalizeCoverage } from '../provider/schemas';
 import { withLock } from '../orchestration/locks';
 import {
   ensureProviderSource,
@@ -99,11 +99,11 @@ export async function syncLeaguesSeasons(): Promise<void> {
               await upsertSeasonCoverage(client, seasonId, coverage);
               coveragesUpserted++;
             }
-          } catch (itemError: any) {
+          } catch (itemError: unknown) {
             logger.warn('Failed to process league item', {
               leagueId: item.league.id,
               leagueName: item.league.name,
-              error: itemError.message,
+              error: itemError instanceof Error ? itemError.message : String(itemError),
             });
             // Continue with next item
           }
@@ -134,14 +134,14 @@ export async function syncLeaguesSeasons(): Promise<void> {
           seasonsUpserted,
           coveragesUpserted,
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         await client.query('ROLLBACK');
 
         // Record error in sync state
         try {
           const errorClient = await pool.connect();
           const sourceId = await ensureProviderSource(errorClient);
-          await recordSyncError(errorClient, sourceId, ENTITY_NAME, error.message);
+          await recordSyncError(errorClient, sourceId, ENTITY_NAME, error instanceof Error ? error.message : String(error));
           errorClient.release();
         } catch (recordError) {
           logger.error('Failed to record sync error', recordError);
@@ -160,7 +160,7 @@ export async function syncLeaguesSeasons(): Promise<void> {
 
     logger.info('Job completed successfully');
     process.exit(0);
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error('Job failed', error);
     process.exit(1);
   } finally {

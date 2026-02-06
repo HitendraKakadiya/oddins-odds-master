@@ -123,7 +123,7 @@ async function getCompletedMatches(client: PoolClient, limit: number = 1000): Pr
      LIMIT $1`,
     [limit]
   );
-  return result.rows.map((row: any) => ({
+  return result.rows.map((row: { match_id: number; provider_fixture_id: number }) => ({
     matchId: row.match_id,
     providerFixtureId: row.provider_fixture_id
   }));
@@ -244,10 +244,10 @@ export async function syncLineups(): Promise<void> {
                   );
                   lineupsInserted++;
                 }
-              } catch (teamError: any) {
+              } catch (teamError: unknown) {
                 logger.warn('Failed to process team lineup', {
                   teamId: teamLineup.team.id,
-                  error: teamError.message,
+                  error: teamError instanceof Error ? teamError.message : String(teamError),
                 });
               }
             }
@@ -259,12 +259,12 @@ export async function syncLineups(): Promise<void> {
             // Rate limiting: wait 100ms between requests
             await new Promise(resolve => setTimeout(resolve, 100));
 
-          } catch (matchError: any) {
+          } catch (matchError: unknown) {
             // Rollback this match's transaction
             await client.query('ROLLBACK');
             logger.warn('Failed to process match', {
               matchId: match.matchId,
-              error: matchError.message,
+              error: matchError instanceof Error ? matchError.message : String(matchError),
             });
             matchesSkipped++;
             // Continue with next match
@@ -297,7 +297,7 @@ export async function syncLineups(): Promise<void> {
           matchesProcessed,
           matchesSkipped,
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         // Try to rollback if there's an open transaction
         try {
           await client.query('ROLLBACK');
@@ -317,7 +317,7 @@ export async function syncLineups(): Promise<void> {
 
     logger.info('Job completed successfully');
     process.exit(0);
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error('Job failed', error);
     process.exit(1);
   } finally {

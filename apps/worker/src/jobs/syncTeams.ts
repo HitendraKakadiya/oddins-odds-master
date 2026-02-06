@@ -243,21 +243,21 @@ export async function syncTeams(): Promise<void> {
                   await linkTeamToSeason(client, seasonId, teamId);
                   seasonLinksCreated++;
 
-                } catch (itemError: any) {
+                } catch (itemError: unknown) {
                   logger.warn('Failed to process team item', {
                     teamId: item.team.id,
                     teamName: item.team.name,
-                    error: itemError.message,
+                    error: itemError instanceof Error ? itemError.message : String(itemError),
                   });
                   // Continue with next item
                 }
               }
-            } catch (leagueError: any) {
+            } catch (leagueError: unknown) {
               logger.warn('Failed to process league/season', {
                 leagueId: league.id,
                 leagueName: league.name,
                 season,
-                error: leagueError.message,
+                error: leagueError instanceof Error ? leagueError.message : String(leagueError),
               });
               // Continue with next league/season
             }
@@ -289,7 +289,7 @@ export async function syncTeams(): Promise<void> {
           seasonLinksCreated,
           apiCallsMade,
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         await client.query('ROLLBACK');
         throw error;
       } finally {
@@ -304,7 +304,7 @@ export async function syncTeams(): Promise<void> {
 
     logger.info('Job completed successfully');
     process.exit(0);
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error('Job failed', error);
     process.exit(1);
   } finally {
