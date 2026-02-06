@@ -1,4 +1,4 @@
-import { getPredictions, getLeagues } from '@/lib/api';
+import { getPredictions, getLeagues, type Prediction } from '@/lib/api';
 import CompactPredictionCard from '@/components/CompactPredictionCard';
 import FeaturedPredictionCard from '@/components/FeaturedPredictionCard';
 import PredictionDateSelector from '@/components/PredictionDateSelector';
@@ -25,31 +25,19 @@ export default async function PredictionsPage({
   const pageSize = 12;
 
   // Fetch predictions with filters
-  const predictionsData = await (getPredictions({
+  const predictionsData = await getPredictions({
     date: searchParams.date,
     region: searchParams.region,
     leagueSlug: searchParams.leagueSlug,
     marketKey: searchParams.marketKey,
     page,
     pageSize,
-  }) as Promise<any>).catch(() => ({ page: 1, pageSize, total: 0, items: [] }));
+  }).catch(() => ({ page: 1, pageSize, total: 0, items: [] }));
 
   // Fetch leagues for filter
   const leaguesData = await getLeagues().catch(() => []);
 
   const predictions = predictionsData.items || [];
-  const total = predictionsData.total || 0;
-  const totalPages = Math.ceil(total / pageSize);
-
-  // Build query string helper
-  const buildQueryString = (params: Record<string, string | undefined>) => {
-    const query = new URLSearchParams();
-    Object.entries(params).forEach(([key, value]) => {
-      if (value) query.set(key, value);
-    });
-    const str = query.toString();
-    return str ? `?${str}` : '';
-  };
 
   const streamsMock = [
     { id: 1, home: 'Real Madrid', away: 'Barcelona', time: 'LIVE', icon: '⚽' },
@@ -176,7 +164,7 @@ export default async function PredictionsPage({
                 
                 <div className="p-6 lg:p-10 bg-slate-50/50">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {featuredPredictions.map((prediction: any) => (
+                    {featuredPredictions.map((prediction: Prediction) => (
                       <FeaturedPredictionCard key={prediction.matchId} prediction={prediction} />
                     ))}
                   </div>
@@ -187,7 +175,7 @@ export default async function PredictionsPage({
           {/* All Predictions List */}
           <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden mb-10">
             <div className="divide-y divide-slate-100">
-              {listPredictions.map((prediction: any) => (
+              {listPredictions.map((prediction: Prediction) => (
                 <CompactPredictionCard key={prediction.matchId} prediction={prediction} />
               ))}
             </div>

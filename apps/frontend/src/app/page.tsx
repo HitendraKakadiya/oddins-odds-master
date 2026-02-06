@@ -5,12 +5,10 @@ import { LeagueGroup } from '@/components/MatchCard';
 import FAQAccordion from '@/components/FAQAccordion';
 import HighlightBanner from '@/components/HighlightBanner';
 import FeaturedTeams from '@/components/FeaturedTeams';
-import { getTodayMatches, getFeaturedTips, getLeagues } from '@/lib/api';
 
 export default async function HomePage() {
   const today = new Date().toISOString().split('T')[0];
-  
-  // Mock data for UI testing
+
   const leaguesData = [
     {
       country: { name: 'Europe' },
@@ -112,10 +110,10 @@ export default async function HomePage() {
   ];
 
   // Group mock matches by league
-  const groupedMatches = mockMatches.reduce((acc: any[], match: any) => {
+  const groupedMatches = mockMatches.reduce((acc, match) => {
     const leagueName = match.league.name;
     const existingGroup = acc.find(g => g.leagueName === leagueName);
-    
+
     if (existingGroup) {
       existingGroup.matches.push(match);
     } else {
@@ -126,7 +124,7 @@ export default async function HomePage() {
       });
     }
     return acc;
-  }, []);
+  }, [] as Array<{ leagueName: string; country: string; matches: typeof mockMatches }>);
 
   const streamsMock = [
     { id: 1, home: 'Real Madrid', away: 'Barcelona', time: 'LIVE', icon: '⚽' },
@@ -156,7 +154,7 @@ export default async function HomePage() {
 
             <div className="space-y-6">
               {groupedMatches.length > 0 ? (
-                groupedMatches.map((group: any) => (
+                groupedMatches.map((group) => (
                   <LeagueGroup 
                     key={group.leagueName}
                     leagueName={group.leagueName}

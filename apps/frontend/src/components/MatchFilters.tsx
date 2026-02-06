@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 
 export type FilterType = 
   | '1X2' | 'Over 1.5' | 'Over 2.5' | 'Under 2.5' | 'Under 3.5' | 'Under 4.5' 

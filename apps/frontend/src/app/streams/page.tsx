@@ -1,4 +1,4 @@
-import { getStreams, getLeagues } from '@/lib/api';
+import { getStreams, getLeagues, type StreamItem, type StreamsResponse } from '@/lib/api';
 import StreamsDateFilter from '@/components/StreamsDateFilter';
 import StreamsLeagueGroup from '@/components/StreamsLeagueGroup';
 import Sidebar from '@/components/Sidebar';
@@ -56,10 +56,10 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
     }
   ];
 
-  const items = (streamsData as any).items?.length > 0 ? (streamsData as any).items : mockStreams;
+  const items = (streamsData as StreamsResponse).items?.length > 0 ? (streamsData as StreamsResponse).items : mockStreams;
 
   // Group items by league
-  const groupedStreams = items.reduce((acc: any, item: any) => {
+  const groupedStreams = items.reduce((acc: Record<number, { league: typeof items[0]['league']; matches: typeof items }>, item: StreamItem) => {
     const leagueId = item.league.id;
     if (!acc[leagueId]) {
       acc[leagueId] = {
@@ -118,7 +118,7 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
             </div>
           ) : (
             <div className="space-y-4">
-              {groupedList.map((group: any) => (
+              {groupedList.map((group) => (
                 <StreamsLeagueGroup key={group.league.id} league={group.league} matches={group.matches} />
               ))}
             </div>

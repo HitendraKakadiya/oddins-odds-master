@@ -1,4 +1,4 @@
-import { getArticles } from '@/lib/api';
+import { getArticles, type Article } from '@/lib/api';
 import Link from 'next/link';
 
 // ISR: Revalidate every 1 hour
@@ -25,7 +25,7 @@ export default async function BlogPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {articles.map((article: any) => (
+          {articles.map((article: Article) => (
             <Link
               key={article.id}
               href={`/articles/${article.type}/${article.slug}`}

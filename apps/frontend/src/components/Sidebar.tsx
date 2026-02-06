@@ -2,15 +2,16 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import type { LeaguesResponse } from '@/lib/api';
 
 interface SidebarProps {
-  leagueData: any;
-  featuredTip: any;
-  streams?: any[];
+  leagueData: LeaguesResponse[];
+  _featuredTip?: unknown;
+  streams?: Array<{ id: number; home: string; away: string; time: string; icon: string }>;
   mode?: 'default' | 'predictions';
 }
 
-export default function Sidebar({ leagueData, featuredTip, streams = [], mode = 'default' }: SidebarProps) {
+export default function Sidebar({ leagueData, _featuredTip, streams = [], mode = 'default' }: SidebarProps) {
   const topLeagues = leagueData;
   const [currentSlide, setCurrentSlide] = useState(0);
   const [openCountry, setOpenCountry] = useState<string | null>(null);
@@ -184,7 +185,7 @@ export default function Sidebar({ leagueData, featuredTip, streams = [], mode = 
             </div>
             <div className="divide-y divide-slate-100">
                 {streams.length > 0 ? (
-                  streams.map((stream: any) => (
+                  streams.map((stream) => (
                     <div key={stream.id} className="p-4 hover:bg-slate-50 transition-colors flex items-center justify-between group">
                       <div className="flex items-center gap-4">
                         <div className="w-8 h-8 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center text-sm shadow-sm">
@@ -224,9 +225,9 @@ export default function Sidebar({ leagueData, featuredTip, streams = [], mode = 
               <h3 className="font-bold text-lg text-slate-800">Football Leagues</h3>
             </div>
             <div className="flex flex-col">
-              {topLeagues.length > 0 ? (topLeagues.map((group: any) => (
+              {topLeagues.length > 0 ? (topLeagues.map((group) => (
                   <div key={group.country.name}>
-                     {group.leagues.map((league: any) => (
+                     {group.leagues.map((league) => (
                         <Link 
                           key={league.id} 
                           href={`/leagues/${group.country.name.toLowerCase()}/${league.slug}`} 
@@ -264,7 +265,7 @@ export default function Sidebar({ leagueData, featuredTip, streams = [], mode = 
            <h3 className="font-bold text-xl text-slate-800 ml-1">Today&apos;s Competitions</h3>
            <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-hidden">
               <div className="divide-y divide-slate-100">
-                {competitionsData.map((group: any) => (
+                {competitionsData.map((group) => (
                   <div key={group.country.name} className="flex flex-col">
                     <button 
                       onClick={() => setOpenCountry(openCountry === group.country.name ? null : group.country.name)}
@@ -292,7 +293,7 @@ export default function Sidebar({ leagueData, featuredTip, streams = [], mode = 
                     
                     {openCountry === group.country.name && (
                       <div className="bg-slate-50/50 px-5 pb-4 space-y-2 pt-1">
-                        {group.leagues.map((league: any) => (
+                        {group.leagues.map((league) => (
                           <Link 
                             key={league.id} 
                             href={`/predictions?leagueSlug=${league.slug}`}

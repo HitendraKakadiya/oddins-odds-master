@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import StreamsMatchRow from './StreamsMatchRow';
+import type { StreamItem } from '@/lib/api';
 
 interface StreamsLeagueGroupProps {
   league: {
@@ -9,7 +10,7 @@ interface StreamsLeagueGroupProps {
     name: string;
     logoUrl?: string | null;
   };
-  matches: any[];
+  matches: StreamItem[];
 }
 
 export default function StreamsLeagueGroup({ league, matches }: StreamsLeagueGroupProps) {

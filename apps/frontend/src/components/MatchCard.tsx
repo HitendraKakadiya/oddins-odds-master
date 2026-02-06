@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import type { MatchData } from '@/lib/api';
 
 interface MatchProps {
   match: {
@@ -73,7 +74,7 @@ export function MatchRow({ match }: MatchProps) {
 
       <div className="flex items-center gap-4 pl-16">
         <div className="flex-1 bg-slate-50/80 rounded-xl p-3.5 text-center italic text-[11px] font-bold text-slate-500 border border-slate-100 group-hover:border-brand-indigo/20 transition-all shadow-sm">
-          "{match.featuredTip?.title || 'Waiting for prediction analysis...'}"
+          &quot;{match.featuredTip?.title || 'Waiting for prediction analysis...'}&quot;
         </div>
         <div className="flex gap-2">
             <button className="btn-pink !py-2.5 !px-5 !rounded-xl text-[10px] uppercase font-black tracking-widest shadow-sm border border-brand-pink/10">Prediction</button>
@@ -84,7 +85,7 @@ export function MatchRow({ match }: MatchProps) {
   );
 }
 
-export function LeagueGroup({ leagueName, country, matches }: { leagueName: string; country: string; matches: any[] }) {
+export function LeagueGroup({ leagueName, country, matches }: { leagueName: string; country: string; matches: MatchData[] }) {
   const [isOpen, setIsOpen] = useState(true);
 
   return (

@@ -2,13 +2,14 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import type { LeaguesResponse } from '@/lib/api';
 
 interface PredictionSidebarProps {
-  leagues: any[];
+  leagues: LeaguesResponse[];
 }
 
 export default function PredictionSidebar({ leagues }: PredictionSidebarProps) {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [currentSlide] = useState(0);
   const [openSection, setOpenSection] = useState<string | null>('England');
 
   const mockPredictions = [
@@ -118,7 +119,7 @@ export default function PredictionSidebar({ leagues }: PredictionSidebarProps) {
                   </button>
                   {openSection === country.country.name && (
                      <div className="pl-7 py-2 space-y-2">
-                        {country.leagues.map((league: any) => (
+                        {country.leagues.map((league) => (
                            <Link 
                              key={league.id} 
                              href={`/predictions?leagueSlug=${league.slug}`}

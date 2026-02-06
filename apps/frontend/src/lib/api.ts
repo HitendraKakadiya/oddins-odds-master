@@ -81,6 +81,192 @@ export interface LeaguesResponse {
   }>;
 }
 
+export interface Article {
+  id: number;
+  type: string;
+  slug: string;
+  category?: string | null;
+  title: string;
+  summary: string;
+  publishedAt?: string | null;
+}
+
+export interface ArticlesResponse {
+  page: number;
+  pageSize: number;
+  total: number;
+  items: Article[];
+}
+
+export interface StandingsRow {
+  rank: number;
+  team: {
+    id: number;
+    slug: string;
+    logoUrl?: string | null;
+    name: string;
+  };
+  played: number;
+  wins: number;
+  draws: number;
+  losses: number;
+  gf: number;
+  ga: number;
+  points: number;
+}
+
+export interface FAQItem {
+  q: string;
+  a: string;
+}
+
+export interface LeagueDetailResponse {
+  league: {
+    id: number;
+    name: string;
+    logoUrl?: string | null;
+    country: {
+      name: string;
+    };
+  };
+  season: {
+    year: number;
+  };
+  standings: StandingsRow[];
+  fixtures: MatchData[];
+  results: MatchData[];
+  statsSummary?: {
+    goalsAvg?: number | null;
+    cornersAvg?: number | null;
+    cardsAvg?: number | null;
+  } | null;
+  faq?: FAQItem[] | null;
+}
+
+export interface WhereToWatchItem {
+  name: string;
+  url: string;
+}
+
+export interface Market {
+  marketKey: string;
+  selection?: string | null;
+  oddValue: number;
+  impliedProb?: number | null;
+}
+
+export interface OddsLatest {
+  bookmaker: {
+    name: string;
+  };
+  capturedAt: string;
+  markets: Market[];
+}
+
+export interface H2HMatch {
+  date: string;
+  competition: string;
+  homeTeam: string;
+  homeScore: number;
+  awayScore: number;
+  awayTeam: string;
+}
+
+export interface Prediction {
+  id?: number;
+  matchId?: number;
+  title?: string;
+  shortReason?: string | null;
+  isPremium?: boolean;
+  confidence?: number | null;
+  kickoffAt?: string;
+  league?: {
+    name: string;
+    slug?: string;
+    countryName?: string;
+  };
+  homeTeam?: {
+    name: string;
+    logoUrl?: string;
+  };
+  awayTeam?: {
+    name: string;
+    logoUrl?: string;
+  };
+  selection?: string;
+  [key: string]: unknown;
+}
+
+export interface MatchDetailResponse {
+  match: MatchData;
+  oddsLatest?: OddsLatest | null;
+  predictions?: Prediction[] | null;
+  h2h?: H2HMatch[] | null;
+  whereToWatch?: WhereToWatchItem[] | null;
+}
+
+export interface PredictionsResponse {
+  page: number;
+  pageSize: number;
+  total: number;
+  items: Prediction[];
+}
+
+export interface StreamItem {
+  matchId: number;
+  kickoffAt: string;
+  league: {
+    id: number;
+    name: string;
+    logoUrl?: string;
+  };
+  homeTeam: {
+    name: string;
+    logoUrl?: string;
+  };
+  awayTeam: {
+    name: string;
+    logoUrl?: string;
+  };
+}
+
+export interface StreamsResponse {
+  date: string;
+  items: StreamItem[];
+}
+
+export interface TeamDetailResponse {
+  team: {
+    id: number;
+    name: string;
+    logoUrl?: string;
+  };
+  nextMatch?: MatchData | null;
+  recentMatches?: MatchData[] | null;
+  statsSummary?: {
+    wins?: number;
+    draws?: number;
+    losses?: number;
+    goalsScored?: number;
+    goalsConceded?: number;
+    cleanSheets?: number;
+  } | null;
+}
+
+export interface TabItem {
+  matchId?: number;
+  kickoffAt?: string;
+  homeTeamName?: string;
+  awayTeamName?: string;
+  leagueName?: string;
+  stats?: Record<string, unknown>;
+  [key: string]: unknown;
+}
+
+export interface TabResponse {
+  items: TabItem[];
+}
+
 class APIError extends Error {
   constructor(public status: number, message: string) {
     super(message);
@@ -132,7 +318,7 @@ export async function getPredictions(params?: {
   marketKey?: string;
   page?: number;
   pageSize?: number;
-}) {
+}): Promise<PredictionsResponse> {
   const searchParams = new URLSearchParams();
   if (params?.date) searchParams.set('date', params.date);
   if (params?.region) searchParams.set('region', params.region);
@@ -142,7 +328,7 @@ export async function getPredictions(params?: {
   if (params?.pageSize) searchParams.set('pageSize', params.pageSize.toString());
 
   const query = searchParams.toString();
-  return fetchAPI(`/v1/predictions${query ? `?${query}` : ''}`);
+  return fetchAPI<PredictionsResponse>(`/v1/predictions${query ? `?${query}` : ''}`);
 }
 
 // Leagues
@@ -150,8 +336,8 @@ export async function getLeagues(): Promise<LeaguesResponse[]> {
   return fetchAPI<LeaguesResponse[]>('/v1/leagues');
 }
 
-export async function getLeagueDetail(countrySlug: string, leagueSlug: string) {
-  return fetchAPI(`/v1/league/${countrySlug}/${leagueSlug}`);
+export async function getLeagueDetail(countrySlug: string, leagueSlug: string): Promise<LeagueDetailResponse> {
+  return fetchAPI<LeagueDetailResponse>(`/v1/league/${countrySlug}/${leagueSlug}`);
 }
 
 // Teams
@@ -164,38 +350,38 @@ export async function getTeams(query?: string, leagueSlug?: string) {
   return fetchAPI(`/v1/teams${queryStr ? `?${queryStr}` : ''}`);
 }
 
-export async function getTeamDetail(teamSlug: string) {
-  return fetchAPI(`/v1/team/${teamSlug}`);
+export async function getTeamDetail(teamSlug: string): Promise<TeamDetailResponse> {
+  return fetchAPI<TeamDetailResponse>(`/v1/team/${teamSlug}`);
 }
 
-export async function getTeamTab(teamSlug: string, tab: string) {
-  return fetchAPI(`/v1/team/${teamSlug}/${tab}`);
+export async function getTeamTab(teamSlug: string, tab: string): Promise<TabResponse> {
+  return fetchAPI<TabResponse>(`/v1/team/${teamSlug}/${tab}`);
 }
 
 // Streams
-export async function getStreams(date?: string, region?: string) {
+export async function getStreams(date?: string, region?: string): Promise<StreamsResponse> {
   const searchParams = new URLSearchParams();
   if (date) searchParams.set('date', date);
   if (region) searchParams.set('region', region);
 
   const query = searchParams.toString();
-  return fetchAPI(`/v1/streams${query ? `?${query}` : ''}`);
+  return fetchAPI<StreamsResponse>(`/v1/streams${query ? `?${query}` : ''}`);
 }
 
 // Match Detail
-export async function getMatchDetail(matchId: string | number) {
-  return fetchAPI(`/v1/match/${matchId}`);
+export async function getMatchDetail(matchId: string | number): Promise<MatchDetailResponse> {
+  return fetchAPI<MatchDetailResponse>(`/v1/match/${matchId}`);
 }
 
 // Articles
-export async function getArticles(type: 'academy' | 'blog', category?: string, page?: number, pageSize?: number) {
+export async function getArticles(type: 'academy' | 'blog', category?: string, page?: number, pageSize?: number): Promise<ArticlesResponse> {
   const searchParams = new URLSearchParams();
   searchParams.set('type', type);
   if (category) searchParams.set('category', category);
   if (page) searchParams.set('page', page.toString());
   if (pageSize) searchParams.set('pageSize', pageSize.toString());
 
-  return fetchAPI(`/v1/articles?${searchParams.toString()}`);
+  return fetchAPI<ArticlesResponse>(`/v1/articles?${searchParams.toString()}`);
 }
 
 export async function getArticleDetail(type: 'academy' | 'blog', slug: string) {
