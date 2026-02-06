@@ -21,7 +21,7 @@ export async function teamsRoutes(server: FastifyInstance) {
     const { query: searchQuery, leagueSlug } = request.query;
 
     const conditions: string[] = [];
-    const params: any[] = [];
+    const params: (string)[] = [];
     let paramIndex = 1;
 
     if (searchQuery) {
@@ -50,7 +50,7 @@ export async function teamsRoutes(server: FastifyInstance) {
       params
     );
 
-    return result.rows.map((row: any) => ({
+    return result.rows.map((row: { id: number; name: string; slug: string; logo_url: string | null }) => ({
       id: row.id,
       name: row.name,
       slug: row.slug,
@@ -189,7 +189,7 @@ export async function teamsRoutes(server: FastifyInstance) {
       [team.id]
     );
 
-    const recentMatches = recentResult.rows.map((row: any) => ({
+    const recentMatches = recentResult.rows.map((row: { match_id: number; provider_fixture_id: number | null; kickoff_at: string; status: string; elapsed: number | null; home_goals: number | null; away_goals: number | null; league_id: number; league_name: string; league_slug: string; league_type: string; league_logo: string | null; country_name: string; country_code: string; country_flag: string | null; home_team_id: number; home_team_name: string; home_team_slug: string; home_team_logo: string | null; away_team_id: number; away_team_name: string; away_team_slug: string; away_team_logo: string | null }) => ({
       matchId: row.match_id,
       providerFixtureId: row.provider_fixture_id,
       kickoffAt: row.kickoff_at,
@@ -260,12 +260,12 @@ export async function teamsRoutes(server: FastifyInstance) {
 
     const team = teamResult.rows[0];
 
-    let items: any[] = [];
+    let items: Array<{ id?: number; kickoff_at?: string; status?: string; home_team?: string; away_team?: string; league_name?: string; home_goals?: number | null; away_goals?: number | null; match_id?: number; is_home?: boolean; stats?: unknown }> = [];
 
     switch (tab) {
-      case 'fixtures':
+      case 'fixtures': {
         const fixturesResult = await query(
-          `SELECT 
+          `SELECT
             m.id, m.kickoff_at, m.status,
             ht.name as home_team, at.name as away_team,
             l.name as league_name
@@ -281,10 +281,11 @@ export async function teamsRoutes(server: FastifyInstance) {
         );
         items = fixturesResult.rows;
         break;
+      }
 
-      case 'results':
+      case 'results': {
         const resultsResult = await query(
-          `SELECT 
+          `SELECT
             m.id, m.kickoff_at, m.status, m.home_goals, m.away_goals,
             ht.name as home_team, at.name as away_team,
             l.name as league_name
@@ -300,13 +301,14 @@ export async function teamsRoutes(server: FastifyInstance) {
         );
         items = resultsResult.rows;
         break;
+      }
 
       case 'stats':
       case 'corners':
-      case 'cards':
+      case 'cards': {
         // Return aggregated stats from team_match_stats
         const statsResult = await query(
-          `SELECT 
+          `SELECT
             m.id as match_id,
             m.kickoff_at,
             tms.stats,
@@ -318,13 +320,14 @@ export async function teamsRoutes(server: FastifyInstance) {
           LIMIT 20`,
           [team.id]
         );
-        items = statsResult.rows.map((row: any) => ({
+        items = statsResult.rows.map((row: { match_id: number; kickoff_at: string; is_home: boolean; stats: unknown }) => ({
           matchId: row.match_id,
           kickoffAt: row.kickoff_at,
           isHome: row.is_home,
           stats: row.stats,
         }));
         break;
+      }
 
       default:
         items = [];

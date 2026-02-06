@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyRequest } from 'fastify';
+import { FastifyInstance } from 'fastify';
 import { query } from '../../db';
 
 interface TodayQuery {
@@ -13,7 +13,7 @@ interface FeaturedTipsQuery {
 export async function matchesRoutes(server: FastifyInstance) {
   // GET /v1/matches/today
   server.get<{ Querystring: TodayQuery }>('/matches/today', async (request) => {
-    const { date, tz } = request.query;
+    const { date } = request.query;
 
     // Default to today if no date provided
     const targetDate = date || new Date().toISOString().split('T')[0];
@@ -58,7 +58,7 @@ export async function matchesRoutes(server: FastifyInstance) {
       [targetDate]
     );
 
-    const matches = result.rows.map((row: any) => ({
+    const matches = result.rows.map((row: { match_id: number; provider_fixture_id: number | null; kickoff_at: string; status: string; elapsed: number | null; home_goals: number | null; away_goals: number | null; league_id: number; league_name: string; league_slug: string; league_type: string; league_logo: string | null; country_name: string; country_code: string; country_flag: string | null; home_team_id: number; home_team_name: string; home_team_slug: string; home_team_logo: string | null; away_team_id: number; away_team_name: string; away_team_slug: string; away_team_logo: string | null; tip_id: number | null; tip_title: string | null; tip_is_premium: boolean | null }) => ({
       matchId: row.match_id,
       providerFixtureId: row.provider_fixture_id,
       kickoffAt: row.kickoff_at,
@@ -129,7 +129,7 @@ export async function matchesRoutes(server: FastifyInstance) {
 
     return {
       date: targetDate,
-      tips: result.rows.map((row: any) => ({
+      tips: result.rows.map((row: { id: number; match_id: number; title: string; short_reason: string; is_premium: boolean; published_at: string }) => ({
         id: row.id,
         matchId: row.match_id,
         title: row.title,

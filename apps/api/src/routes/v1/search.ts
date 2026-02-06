@@ -25,7 +25,7 @@ export async function searchRoutes(server: FastifyInstance) {
       [searchTerm]
     );
 
-    const leagues = leaguesResult.rows.map((row: any) => ({
+    const leagues = leaguesResult.rows.map((row: { id: number; name: string; slug: string }) => ({
       id: row.id,
       name: row.name,
       slug: row.slug,
@@ -41,7 +41,7 @@ export async function searchRoutes(server: FastifyInstance) {
       [searchTerm]
     );
 
-    const teams = teamsResult.rows.map((row: any) => ({
+    const teams = teamsResult.rows.map((row: { id: number; name: string; slug: string; logo_url: string | null }) => ({
       id: row.id,
       name: row.name,
       slug: row.slug,
@@ -85,7 +85,7 @@ export async function searchRoutes(server: FastifyInstance) {
       [searchTerm]
     );
 
-    const matches = matchesResult.rows.map((row: any) => ({
+    const matches = matchesResult.rows.map((row: { match_id: number; provider_fixture_id: number | null; kickoff_at: string; status: string; elapsed: number | null; home_goals: number | null; away_goals: number | null; league_id: number; league_name: string; league_slug: string; league_type: string; league_logo: string | null; country_name: string; country_code: string; country_flag: string | null; home_team_id: number; home_team_name: string; home_team_slug: string; home_team_logo: string | null; away_team_id: number; away_team_name: string; away_team_slug: string; away_team_logo: string | null }) => ({
       matchId: row.match_id,
       providerFixtureId: row.provider_fixture_id,
       kickoffAt: row.kickoff_at,
@@ -132,7 +132,7 @@ export async function searchRoutes(server: FastifyInstance) {
       [searchTerm]
     );
 
-    const articles = articlesResult.rows.map((row: any) => ({
+    const articles = articlesResult.rows.map((row: { id: number; type: string; slug: string; title: string; summary: string; category: string; published_at: string; updated_at: string }) => ({
       id: row.id,
       type: row.type,
       slug: row.slug,

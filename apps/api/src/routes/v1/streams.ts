@@ -12,7 +12,7 @@ export async function streamsRoutes(server: FastifyInstance) {
     const targetDate = date || new Date().toISOString().split('T')[0];
 
     const conditions: string[] = ['DATE(m.kickoff_at) = $1'];
-    const params: any[] = [targetDate];
+    const params: (string)[] = [targetDate];
     let paramIndex = 2;
 
     if (region) {
@@ -46,7 +46,7 @@ export async function streamsRoutes(server: FastifyInstance) {
       params
     );
 
-    const items = result.rows.map((row: any) => ({
+    const items = result.rows.map((row: { league_name: string; league_slug: string; match_id: number; kickoff_at: string; home_team_id: number; home_team_name: string; home_team_slug: string; home_team_logo: string | null; away_team_id: number; away_team_name: string; away_team_slug: string; away_team_logo: string | null }) => ({
       league: {
         name: row.league_name,
         slug: row.league_slug,

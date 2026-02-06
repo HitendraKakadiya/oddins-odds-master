@@ -26,7 +26,7 @@ export async function leaguesRoutes(server: FastifyInstance) {
     );
 
     // Group by country
-    const grouped: Record<string, any> = {};
+    const grouped: Record<string, { country: { name: string; code: string | null; flagUrl: string | null }; leagues: Array<{ id: number; name: string; slug: string; logoUrl: string | null; type: string }> }> = {};
 
     for (const row of result.rows) {
       const countryKey = row.country_name;
@@ -56,7 +56,7 @@ export async function leaguesRoutes(server: FastifyInstance) {
 
   // GET /v1/league/:countrySlug/:leagueSlug
   server.get<{ Params: LeagueDetailParams }>('/league/:countrySlug/:leagueSlug', async (request, reply) => {
-    const { countrySlug, leagueSlug } = request.params;
+    const { leagueSlug } = request.params;
 
     // Get league info
     const leagueResult = await query(
@@ -134,7 +134,7 @@ export async function leaguesRoutes(server: FastifyInstance) {
       [seasonId]
     );
 
-    const standings = standingsResult.rows.map((row: any, index: number) => ({
+    const standings = standingsResult.rows.map((row: { team_id: number; team_name: string; team_slug: string; team_logo: string | null; played: number | string; wins: number | string; draws: number | string; losses: number | string; gf: number | string; ga: number | string }, index: number) => ({
       rank: index + 1,
       team: {
         id: row.team_id,
@@ -142,13 +142,13 @@ export async function leaguesRoutes(server: FastifyInstance) {
         slug: row.team_slug,
         logoUrl: row.team_logo,
       },
-      played: parseInt(row.played, 10),
-      wins: parseInt(row.wins, 10),
-      draws: parseInt(row.draws, 10),
-      losses: parseInt(row.losses, 10),
-      gf: parseInt(row.gf, 10),
-      ga: parseInt(row.ga, 10),
-      points: parseInt(row.wins, 10) * 3 + parseInt(row.draws, 10),
+      played: parseInt(String(row.played), 10),
+      wins: parseInt(String(row.wins), 10),
+      draws: parseInt(String(row.draws), 10),
+      losses: parseInt(String(row.losses), 10),
+      gf: parseInt(String(row.gf), 10),
+      ga: parseInt(String(row.ga), 10),
+      points: parseInt(String(row.wins), 10) * 3 + parseInt(String(row.draws), 10),
     }));
 
     // Get upcoming fixtures
@@ -188,7 +188,7 @@ export async function leaguesRoutes(server: FastifyInstance) {
       [seasonId]
     );
 
-    const fixtures = fixturesResult.rows.map((row: any) => ({
+    const fixtures = fixturesResult.rows.map((row: { match_id: number; provider_fixture_id: number | null; kickoff_at: string; status: string; elapsed: number | null; home_goals: number | null; away_goals: number | null; league_id: number; league_name: string; league_slug: string; league_type: string; league_logo: string | null; country_name: string; country_code: string; country_flag: string | null; home_team_id: number; home_team_name: string; home_team_slug: string; home_team_logo: string | null; away_team_id: number; away_team_name: string; away_team_slug: string; away_team_logo: string | null }) => ({
       matchId: row.match_id,
       providerFixtureId: row.provider_fixture_id,
       kickoffAt: row.kickoff_at,
@@ -261,7 +261,7 @@ export async function leaguesRoutes(server: FastifyInstance) {
       [seasonId]
     );
 
-    const results = resultsResult.rows.map((row: any) => ({
+    const results = resultsResult.rows.map((row: { match_id: number; provider_fixture_id: number | null; kickoff_at: string; status: string; elapsed: number | null; home_goals: number | null; away_goals: number | null; league_id: number; league_name: string; league_slug: string; league_type: string; league_logo: string | null; country_name: string; country_code: string; country_flag: string | null; home_team_id: number; home_team_name: string; home_team_slug: string; home_team_logo: string | null; away_team_id: number; away_team_name: string; away_team_slug: string; away_team_logo: string | null }) => ({
       matchId: row.match_id,
       providerFixtureId: row.provider_fixture_id,
       kickoffAt: row.kickoff_at,

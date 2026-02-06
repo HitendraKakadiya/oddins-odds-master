@@ -35,7 +35,7 @@ export async function getClient(): Promise<PoolClient> {
 }
 
 // Helper for simple queries
-export async function query(text: string, params?: any[]) {
+export async function query(text: string, params?: (string | number | boolean | null)[]) {
   return await pool.query(text, params);
 }
 

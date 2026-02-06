@@ -32,7 +32,7 @@ export async function articlesRoutes(server: FastifyInstance) {
     const offset = (pageNum - 1) * pageSizeNum;
 
     const conditions: string[] = ['type = $1', 'published_at IS NOT NULL'];
-    const params: any[] = [type];
+    const params: (string | number | null)[] = [type];
     let paramIndex = 2;
 
     if (category) {
@@ -68,7 +68,7 @@ export async function articlesRoutes(server: FastifyInstance) {
       page: pageNum,
       pageSize: pageSizeNum,
       total,
-      items: result.rows.map((row: any) => ({
+      items: result.rows.map((row: { id: number; type: string; slug: string; title: string; summary: string; category: string; published_at: string; updated_at: string }) => ({
         id: row.id,
         type: row.type,
         slug: row.slug,

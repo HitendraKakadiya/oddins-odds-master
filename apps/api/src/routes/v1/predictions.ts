@@ -27,7 +27,7 @@ export async function predictionsRoutes(server: FastifyInstance) {
 
     // Build WHERE clause dynamically
     const conditions: string[] = ['mp.generated_at IS NOT NULL'];
-    const params: any[] = [];
+    const params: (string | number)[] = [];
     let paramIndex = 1;
 
     if (date) {
@@ -105,7 +105,7 @@ export async function predictionsRoutes(server: FastifyInstance) {
       params
     );
 
-    const items = result.rows.map((row: any) => ({
+    const items = result.rows.map((row: { match_id: number; prediction_id: number; kickoff_at: string; league_name: string; league_slug: string; country_name: string; home_team_id: number; home_team_name: string; home_team_slug: string; home_team_logo: string | null; away_team_id: number; away_team_name: string; away_team_slug: string; away_team_logo: string | null; market_key: string; line: string | number | null; selection: string; probability: number | string; confidence: number | string; is_premium: boolean | null }) => ({
       matchId: row.match_id,
       kickoffAt: row.kickoff_at,
       league: {
