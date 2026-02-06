@@ -180,10 +180,10 @@ export async function syncPlayers(): Promise<void> {
             });
 
             // Fetch players from API
-            const rawResponse: PlayersAPIResponse = await apiFootballClient.getPlayers({
+            const rawResponse = await apiFootballClient.getPlayers({
               team: team.providerTeamId,
               season: currentSeason,
-            });
+            }) as PlayersAPIResponse;
             apiCallsMade++;
 
             const playerResponses = rawResponse.response || [];

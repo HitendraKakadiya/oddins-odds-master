@@ -135,3 +135,5 @@ export function LeagueGroup({ leagueName, country, matches }: { leagueName: stri
     </div>
   );
 }
+
+export default MatchRow;

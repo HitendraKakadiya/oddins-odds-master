@@ -216,10 +216,10 @@ export async function syncFixtures(): Promise<void> {
               });
 
               // Fetch fixtures from API
-              const rawResponse: FixturesAPIResponse = await apiFootballClient.getFixtures({
+              const rawResponse = await apiFootballClient.getFixtures({
                 league: league.id,
                 season,
-              });
+              }) as FixturesAPIResponse;
               apiCallsMade++;
 
               const fixtures = rawResponse.response || [];

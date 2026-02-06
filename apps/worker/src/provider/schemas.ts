@@ -78,9 +78,9 @@ export function normalizeCoverage(coverage: unknown) {
     stats_fixtures: (fixtures.statistics_fixtures as boolean) || false,
     stats_players: (fixtures.statistics_players as boolean) || false,
     standings: (c.standings as boolean) || false,
-    injuries: c.injuries || false,
-    predictions: c.predictions || false,
-    odds: c.odds || false,
+    injuries: (c.injuries as boolean) || false,
+    predictions: (c.predictions as boolean) || false,
+    odds: (c.odds as boolean) || false,
   };
 }
 

@@ -168,9 +168,9 @@ export async function syncLineups(): Promise<void> {
             });
 
             // Fetch lineups from API
-            const rawResponse: LineupsAPIResponse = await apiFootballClient.getFixtureLineups({
+            const rawResponse = await apiFootballClient.getFixtureLineups({
               fixture: match.providerFixtureId,
-            });
+            }) as LineupsAPIResponse;
             apiCallsMade++;
 
             const teamLineups = rawResponse.response || [];

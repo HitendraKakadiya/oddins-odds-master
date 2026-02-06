@@ -143,9 +143,9 @@ export async function syncEvents(): Promise<void> {
             });
 
             // Fetch events from API
-            const rawResponse: EventsAPIResponse = await apiFootballClient.getFixtureEvents({
+            const rawResponse = await apiFootballClient.getFixtureEvents({
               fixture: match.providerFixtureId,
-            });
+            }) as EventsAPIResponse;
             apiCallsMade++;
 
             const events = rawResponse.response || [];

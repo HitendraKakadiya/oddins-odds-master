@@ -190,10 +190,10 @@ export async function syncTeams(): Promise<void> {
               });
 
               // Fetch teams from API
-              const rawResponse: TeamsAPIResponse = await apiFootballClient.getTeams({
+              const rawResponse = await apiFootballClient.getTeams({
                 league: league.id,
                 season,
-              });
+              }) as TeamsAPIResponse;
               apiCallsMade++;
 
               const teams = rawResponse.response || [];

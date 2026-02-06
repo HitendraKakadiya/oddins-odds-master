@@ -204,9 +204,9 @@ export async function syncOdds(): Promise<void> {
             logger.info(`Fetching odds for fixture ${providerFixtureId} (${i + 1}/${fixturesLimit})`);
 
             // Fetch odds from API
-            const rawResponse: OddsAPIResponse = await apiFootballClient.getOdds({
+            const rawResponse = await apiFootballClient.getOdds({
               fixture: providerFixtureId,
-            });
+            }) as OddsAPIResponse;
             apiCallsMade++;
 
             if (!rawResponse.response || rawResponse.response.length === 0) {
