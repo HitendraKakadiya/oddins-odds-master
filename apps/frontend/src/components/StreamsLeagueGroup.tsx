@@ -17,25 +17,25 @@ export default function StreamsLeagueGroup({ league, matches }: StreamsLeagueGro
   const [isExpanded, setIsExpanded] = useState(true);
 
   return (
-    <div className="mb-6 rounded-2xl overflow-hidden bg-white border border-slate-200/60 shadow-sm transition-all duration-300">
+    <div className="mb-4 sm:mb-6 rounded-2xl overflow-hidden bg-white border border-slate-200/60 shadow-sm transition-all duration-300">
       <div 
-        className="bg-[#E8E8FF] p-4 flex items-center justify-between cursor-pointer hover:bg-[#DEDEFF] transition-colors"
+        className="bg-[#E8E8FF] p-3 sm:p-4 flex items-center justify-between cursor-pointer hover:bg-[#DEDEFF] transition-colors"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {league.logoUrl ? (
-            <img src={league.logoUrl} alt="" className="w-6 h-6 object-contain" />
+            <img src={league.logoUrl} alt="" className="w-5 h-5 sm:w-6 sm:h-6 object-contain" />
           ) : (
-            <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center text-[10px] font-bold text-brand-indigo shadow-sm">
+            <div className="w-5 h-5 sm:w-6 sm:h-6 bg-white rounded-full flex items-center justify-center text-[9px] sm:text-[10px] font-bold text-brand-indigo shadow-sm">
               ⚽
             </div>
           )}
-          <h3 className="font-black text-slate-800 text-sm tracking-tight">{league.name}</h3>
+          <h3 className="font-black text-slate-800 text-xs sm:text-sm tracking-tight">{league.name}</h3>
         </div>
         
         <button className="text-slate-400 hover:text-slate-600 transition-colors">
           <svg 
-            className={`w-5 h-5 transition-transform duration-300 ${isExpanded ? '' : 'rotate-180'}`} 
+            className={`w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300 ${isExpanded ? '' : 'rotate-180'}`} 
             fill="none" 
             stroke="currentColor" 
             viewBox="0 0 24 24"

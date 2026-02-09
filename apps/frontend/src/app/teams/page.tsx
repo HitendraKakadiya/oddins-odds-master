@@ -8,16 +8,16 @@ export default function TeamsPage() {
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header & Breadcrumbs */}
-      <div className="flex flex-col mb-8">
+      <div className="flex flex-col mb-6 sm:mb-8">
         <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 bg-slate-50 self-start px-4 py-2 rounded-full border border-slate-100/60 shadow-inner">
           <Link href="/" className="hover:text-brand-indigo transition-colors">Home</Link>
           <span className="text-slate-200">/</span>
           <span className="text-brand-indigo">Teams</span>
         </div>
-        <h1 className="text-3xl font-black text-brand-dark-blue leading-tight">
+        <h1 className="text-2xl sm:text-3xl font-black text-brand-dark-blue leading-tight">
           Football Teams & Statistics
         </h1>
-        <p className="text-slate-500 font-bold text-sm mt-2">
+        <p className="text-slate-500 font-bold text-xs sm:text-sm mt-2">
           Explore comprehensive stats and predictions for clubs worldwide
         </p>
       </div>
@@ -35,9 +35,9 @@ export default function TeamsPage() {
       </div>
 
       {/* More About Teams Section - Full Width */}
-      <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm p-8 lg:p-12">
-        <h2 className="text-xl font-black text-slate-800 mb-6">More About Teams</h2>
-        <div className="space-y-6 text-slate-600 leading-relaxed text-sm">
+      <div className="bg-white rounded-[24px] sm:rounded-[32px] border border-slate-100 shadow-sm p-6 sm:p-8 lg:p-12">
+        <h2 className="text-xl sm:text-2xl font-black text-slate-800 mb-6">More About Teams</h2>
+        <div className="space-y-4 sm:space-y-6 text-slate-600 leading-relaxed text-sm sm:text-base">
           <p>
             Looking for statistics of the biggest Teams in the world? <strong>OddinsOdds</strong> offers all the football team statistics from over 2,500 different teams from all around the globe.
           </p>

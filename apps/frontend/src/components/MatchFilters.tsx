@@ -76,23 +76,23 @@ export function MatchFilter() {
         </div>
       </div>
       
-      <div className="flex gap-4">
-        <div className="relative flex-1 max-w-[220px]">
-          <select className="w-full bg-white border border-slate-200/60 rounded-2xl px-5 py-3.5 text-sm font-bold text-slate-800 appearance-none focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/5 outline-none transition-all shadow-sm">
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="relative flex-1 sm:max-w-[220px]">
+          <select className="w-full bg-white border border-slate-200/60 rounded-2xl px-5 py-3 sm:py-3.5 text-xs sm:text-sm font-bold text-slate-800 appearance-none focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/5 outline-none transition-all shadow-sm">
             <option>All Leagues</option>
           </select>
-          <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+          <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-xs">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
             </svg>
           </div>
         </div>
         
-        <div className="relative flex-1 max-w-[220px]">
-          <select className="w-full bg-white border border-slate-200/60 rounded-2xl px-5 py-3.5 text-sm font-bold text-slate-800 appearance-none focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/5 outline-none transition-all shadow-sm">
+        <div className="relative flex-1 sm:max-w-[220px]">
+          <select className="w-full bg-white border border-slate-200/60 rounded-2xl px-5 py-3 sm:py-3.5 text-xs sm:text-sm font-bold text-slate-800 appearance-none focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/5 outline-none transition-all shadow-sm">
             <option>All Odds</option>
           </select>
-          <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+          <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-xs">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
             </svg>
@@ -115,20 +115,20 @@ export function DateSelector() {
   ];
 
   return (
-    <div className="flex bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden mb-10">
+    <div className="flex bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-x-auto scrollbar-hide mb-10">
       {days.map((day) => (
         <button
           key={day.date}
-          className={`flex-1 flex flex-col items-center py-5 px-3 transition-all border-r border-slate-100 last:border-0 ${
+          className={`flex-none w-20 sm:flex-1 flex flex-col items-center py-4 sm:py-5 px-2 sm:px-3 transition-all border-r border-slate-100 last:border-0 ${
             day.active 
               ? 'bg-brand-indigo text-white shadow-lg pointer-events-none' 
               : 'hover:bg-slate-50 active:scale-95'
           }`}
         >
-          <span className={`text-[9px] uppercase font-black mb-1.5 tracking-widest ${day.active ? 'text-white/70' : 'text-slate-400'}`}>
+          <span className={`text-[8px] sm:text-[9px] uppercase font-black mb-1 sm:mb-1.5 tracking-widest ${day.active ? 'text-white/70' : 'text-slate-400'}`}>
             {day.label}
           </span>
-          <span className="text-sm font-black whitespace-nowrap tracking-tight">{day.date}</span>
+          <span className="text-[12px] sm:text-sm font-black whitespace-nowrap tracking-tight">{day.date}</span>
         </button>
       ))}
     </div>

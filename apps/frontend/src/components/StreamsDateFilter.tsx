@@ -34,28 +34,28 @@ export default function StreamsDateFilter({ initialDate }: StreamsDateFilterProp
   };
 
   return (
-    <div className="flex items-center justify-between mb-8 bg-white rounded-2xl border border-slate-200/60 p-2 shadow-sm overflow-x-auto scrollbar-hide">
-      <div className="flex items-center gap-2">
+    <div className="flex items-center justify-between mb-6 sm:mb-8 bg-white rounded-2xl border border-slate-200/60 p-1.5 sm:p-2 shadow-sm overflow-x-auto scrollbar-hide">
+      <div className="flex items-center gap-1 sm:gap-2">
         {dates.map((date) => (
           <button
             key={date.value}
             onClick={() => handleDateClick(date.value)}
-            className={`flex flex-col items-center justify-center min-w-[100px] py-2 px-4 rounded-xl transition-all ${
+            className={`flex flex-col items-center justify-center min-w-[80px] sm:min-w-[100px] py-1.5 sm:py-2 px-3 sm:px-4 rounded-xl transition-all ${
               activeDate === date.value
                 ? 'bg-[#E8E8FF] text-brand-indigo ring-1 ring-brand-indigo/20'
                 : 'bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-50'
             }`}
           >
             {date.value === 'live' && (
-              <div className={`w-2 h-2 rounded-full mb-1 ${activeDate === 'live' ? 'bg-brand-indigo' : 'bg-slate-300'}`}></div>
+              <div className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full mb-1 ${activeDate === 'live' ? 'bg-brand-indigo' : 'bg-slate-300'}`}></div>
             )}
-            <span className="text-[10px] font-black tracking-wider leading-none mb-1">{date.label}</span>
-            {date.subLabel && <span className="text-[11px] font-bold">{date.subLabel}</span>}
+            <span className="text-[9px] sm:text-[10px] font-black tracking-wider leading-none mb-0.5 sm:mb-1">{date.label}</span>
+            {date.subLabel && <span className="text-[10px] sm:text-[11px] font-bold">{date.subLabel}</span>}
           </button>
         ))}
       </div>
       
-      <div className="flex items-center gap-3 pr-4">
+      <div className="flex items-center gap-2 sm:gap-3 pr-2 sm:pr-4 ml-4">
         <button className="p-2 rounded-full border border-slate-100 text-slate-400 hover:bg-slate-50 transition-all">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />

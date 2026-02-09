@@ -77,12 +77,12 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Sidebar */}
-        <Sidebar leagueData={leagues} featuredTip={null} mode="predictions" />
+        <Sidebar leagueData={leagues} _featuredTip={null} mode="predictions" />
 
         {/* Main Content */}
         <div className="flex-1">
           {/* Hero Banner */}
-          <div className="relative rounded-[32px] overflow-hidden mb-8 min-h-[300px] flex items-center p-8 lg:p-12">
+          <div className="relative rounded-[24px] sm:rounded-[32px] overflow-hidden mb-8 min-h-[240px] sm:min-h-[300px] flex items-center p-6 sm:p-8 lg:p-12">
              <div className="absolute inset-0 z-0">
                 <img 
                   src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000" 
@@ -93,11 +93,11 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
              </div>
              
              <div className="relative z-10 max-w-2xl">
-                <h1 className="text-4xl lg:text-5xl font-black text-white mb-6 leading-tight">
+                <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white mb-4 sm:mb-6 leading-tight">
                   Where to watch football live streams
                 </h1>
-                <p className="text-lg text-slate-200 leading-relaxed font-medium">
-                  Find out here how to watch football live and online today and access the main players to follow the most diverse football championships around the world.
+                <p className="text-sm sm:text-lg text-slate-200 leading-relaxed font-medium">
+                  Find out here how to watch football live and today and access the main players to follow the most diverse football championships around the world.
                 </p>
              </div>
           </div>
@@ -125,10 +125,10 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
           )}
 
           {/* SEO Content */}
-          <div className="mt-12 bg-white rounded-3xl border border-slate-100 p-8 lg:p-12 shadow-sm">
-             <h2 className="text-2xl font-black text-slate-800 mb-6">Live Streams {new Date(date).toLocaleDateString('en-GB')}</h2>
+          <div className="mt-8 sm:mt-12 bg-white rounded-[24px] sm:rounded-3xl border border-slate-100 p-6 sm:p-8 lg:p-12 shadow-sm">
+             <h2 className="text-xl sm:text-2xl font-black text-slate-800 mb-6">Live Streams {new Date(date).toLocaleDateString('en-GB')}</h2>
              
-             <div className="space-y-6 text-slate-600 leading-relaxed">
+             <div className="space-y-4 sm:space-y-6 text-slate-600 leading-relaxed text-sm sm:text-base">
                 <p>
                   <strong className="text-slate-800">APWin</strong> delivers the <strong className="text-slate-800">top options for watching football live and for free</strong>. With the information on our platform, users who like to enjoy football live can know where they can watch today&apos;s games for free and follow their favourite team closely.
                 </p>
@@ -136,28 +136,28 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
                   In addition to providing the complete list of channels that will show today&apos;s games, APWin also allows you to watch football live and online in HD on mobile devices such as cell phones, tablets and even on your computer. Everything is directly connected to our website.
                 </p>
                 
-                <h3 className="text-lg font-bold text-slate-800 !mt-8">Here are some important considerations for watching football matches in HD today:</h3>
+                <h3 className="text-base sm:text-lg font-bold text-slate-800 !mt-6 sm:!mt-8">Here are some important considerations for watching football matches in HD today:</h3>
                 
-                <ul className="space-y-4 list-none !pl-0 mt-4">
-                   <li className="flex gap-3">
-                      <span className="text-brand-indigo font-bold">•</span>
+                <ul className="space-y-3 sm:space-y-4 list-none !pl-0 mt-4">
+                   <li className="flex gap-2 sm:gap-3">
+                      <span className="text-brand-indigo font-bold shrink-0">•</span>
                       <span><strong className="text-slate-800">Website Terms and Conditions:</strong> Some bookmakers may offer live streams of sporting events, but this is generally subject to their terms and conditions. Make sure you carefully read the platform&apos;s T&Cs to understand the restrictions and requirements for free streaming.</span>
                    </li>
-                   <li className="flex gap-3">
-                      <span className="text-brand-indigo font-bold">•</span>
+                   <li className="flex gap-2 sm:gap-3">
+                      <span className="text-brand-indigo font-bold shrink-0">•</span>
                       <span><strong className="text-slate-800">Account creation:</strong> In many cases, you may need to create an account with a betting site and possibly deposit funds into that account to access live streams.</span>
                    </li>
-                   <li className="flex gap-3">
-                      <span className="text-brand-indigo font-bold">•</span>
+                   <li className="flex gap-2 sm:gap-3">
+                      <span className="text-brand-indigo font-bold shrink-0">•</span>
                       <span><strong className="text-slate-800">Local restrictions:</strong> Many betting sites have geographic restrictions that limit who can access their live streams. Depending on where you live, you may not have access to certain sporting events.</span>
                    </li>
-                   <li className="flex gap-3">
-                      <span className="text-brand-indigo font-bold">•</span>
+                   <li className="flex gap-2 sm:gap-3">
+                      <span className="text-brand-indigo font-bold shrink-0">•</span>
                       <span><strong className="text-slate-800">Stream Quality:</strong> Sportsbook streams quality may vary. Therefore, test different platforms to find the best option for watching football matches live for free.</span>
                    </li>
                 </ul>
                 
-                <p className="pt-6 border-t border-slate-50 italic text-sm">
+                <p className="pt-6 border-t border-slate-50 italic text-xs sm:text-sm">
                   It&apos;s worth remembering that the availability of live football streams may change, and it is important to <strong className="text-slate-800">respect the copyright</strong> and terms of use of digital streaming platforms. Always opt for legal methods to support your club and the sports industry.
                 </p>
              </div>

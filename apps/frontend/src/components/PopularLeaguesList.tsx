@@ -27,27 +27,27 @@ const popularLeagues: PopularLeague[] = [
 
 export default function PopularLeaguesList() {
   return (
-    <div className="flex flex-col gap-6">
-      <h2 className="text-2xl font-black text-slate-800">Popular Leagues</h2>
+    <div className="flex flex-col gap-4 sm:gap-6">
+      <h2 className="text-xl sm:text-2xl font-black text-slate-800">Popular Leagues</h2>
       <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-hidden">
         <div className="divide-y divide-slate-50">
           {popularLeagues.map((league) => (
             <Link 
               key={league.id} 
               href={`/predictions?leagueSlug=${league.slug}`}
-              className="group flex items-center justify-between p-4 hover:bg-slate-50 transition-all"
+              className="group flex items-center justify-between p-3 sm:p-4 hover:bg-slate-50 transition-all"
             >
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-white border border-slate-100 flex items-center justify-center overflow-hidden shadow-sm group-hover:scale-110 transition-transform">
-                  <img src={league.logoUrl} alt={league.name} className="w-8 h-8 object-contain" />
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white border border-slate-100 flex items-center justify-center overflow-hidden shadow-sm group-hover:scale-110 transition-transform">
+                  <img src={league.logoUrl} alt={league.name} className="w-6 h-6 sm:w-8 sm:h-8 object-contain" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm font-black text-slate-800 group-hover:text-brand-indigo transition-colors">{league.name}</span>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{league.country}</span>
+                  <span className="text-xs sm:text-sm font-black text-slate-800 group-hover:text-brand-indigo transition-colors">{league.name}</span>
+                  <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-widest">{league.country}</span>
                 </div>
               </div>
               <svg 
-                className="w-5 h-5 text-slate-200 group-hover:text-brand-indigo transition-all transform group-hover:translate-x-1" 
+                className="w-4 h-4 sm:w-5 sm:h-5 text-slate-200 group-hover:text-brand-indigo transition-all transform group-hover:translate-x-1" 
                 fill="none" 
                 stroke="currentColor" 
                 viewBox="0 0 24 24"

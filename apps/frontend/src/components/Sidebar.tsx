@@ -102,27 +102,27 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
           </div>
 
           <div className="flex items-center justify-between gap-1 mb-4 mt-4">
-            <div className="flex flex-col items-center text-center w-[100px]">
-              <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-full mb-2 flex items-center justify-center text-xl shadow-sm">
+            <div className="flex flex-col items-center text-center flex-1 min-w-0">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-50 border border-slate-100 rounded-full mb-2 flex items-center justify-center text-lg sm:text-xl shadow-sm">
                 {currentPrediction.homeTeam.logo}
               </div>
-              <div className="text-[11px] font-black text-slate-800 leading-tight">
+              <div className="text-[10px] sm:text-[11px] font-black text-slate-800 leading-tight line-clamp-2">
                 {currentPrediction.homeTeam.name}
               </div>
             </div>
 
-            <div className="flex flex-col items-center justify-center">
-              <div className="text-[11px] font-black text-slate-300 mb-0.5">V.S</div>
-              <div className="text-[9px] font-bold text-slate-800 bg-slate-50 px-2 py-0.5 rounded-full border border-slate-100 shadow-inner">
+            <div className="flex flex-col items-center justify-center flex-shrink-0 px-2">
+              <div className="text-[10px] sm:text-[11px] font-black text-slate-300 mb-0.5">V.S</div>
+              <div className="text-[8px] sm:text-[9px] font-bold text-slate-800 bg-slate-50 px-2 py-0.5 rounded-full border border-slate-100 shadow-inner">
                  {currentPrediction.countdown}
               </div>
             </div>
 
-            <div className="flex flex-col items-center text-center w-[100px]">
-              <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-full mb-2 flex items-center justify-center text-xl shadow-sm">
+            <div className="flex flex-col items-center text-center flex-1 min-w-0">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-50 border border-slate-100 rounded-full mb-2 flex items-center justify-center text-lg sm:text-xl shadow-sm">
                 {currentPrediction.awayTeam.logo}
               </div>
-              <div className="text-[11px] font-black text-slate-800 leading-tight">
+              <div className="text-[10px] sm:text-[11px] font-black text-slate-800 leading-tight line-clamp-2">
                 {currentPrediction.awayTeam.name}
               </div>
             </div>

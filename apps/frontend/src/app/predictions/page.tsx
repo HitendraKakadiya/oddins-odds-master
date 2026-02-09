@@ -47,6 +47,7 @@ export default async function PredictionsPage({
 
   const mockFeatured = [
     {
+      id: 99901,
       matchId: 99901,
       kickoffAt: new Date().toISOString(),
       league: { name: 'Premier League', slug: 'england-premier-league', countryName: 'England' },
@@ -55,6 +56,7 @@ export default async function PredictionsPage({
       selection: 'Home Win'
     },
     {
+      id: 99902,
       matchId: 99902,
       kickoffAt: new Date().toISOString(),
       league: { name: 'La Liga', slug: 'spain-la-liga', countryName: 'Spain' },
@@ -63,6 +65,7 @@ export default async function PredictionsPage({
       selection: 'Over 2.5 Goals'
     },
     {
+      id: 99903,
       matchId: 99903,
       kickoffAt: new Date().toISOString(),
       league: { name: 'Bundesliga', slug: 'germany-bundesliga', countryName: 'Germany' },
@@ -71,6 +74,7 @@ export default async function PredictionsPage({
       selection: 'Home Win'
     },
     {
+      id: 99904,
       matchId: 99904,
       kickoffAt: new Date().toISOString(),
       league: { name: 'Serie A', slug: 'italy-serie-a', countryName: 'Italy' },
@@ -79,6 +83,7 @@ export default async function PredictionsPage({
       selection: 'Both Teams To Score'
     },
     {
+      id: 99905,
       matchId: 99905,
       kickoffAt: new Date().toISOString(),
       league: { name: 'Ligue 1', slug: 'france-ligue-1', countryName: 'France' },
@@ -87,6 +92,7 @@ export default async function PredictionsPage({
       selection: 'Home Win'
     },
     {
+      id: 99906,
       matchId: 99906,
       kickoffAt: new Date().toISOString(),
       league: { name: 'Eredivisie', slug: 'netherlands-eredivisie', countryName: 'Netherlands' },
@@ -99,6 +105,7 @@ export default async function PredictionsPage({
   const mockAll = [
     ...mockFeatured,
     {
+      id: 99907,
       matchId: 99907,
       kickoffAt: new Date().toISOString(),
       league: { name: 'Primeira Liga', slug: 'portugal-primeira-liga', countryName: 'Portugal' },
@@ -107,6 +114,7 @@ export default async function PredictionsPage({
       selection: 'Under 3.5 Goals'
     },
     {
+      id: 99908,
       matchId: 99908,
       kickoffAt: new Date().toISOString(),
       league: { name: 'MLS', slug: 'usa-mls', countryName: 'USA' },
@@ -129,7 +137,7 @@ export default async function PredictionsPage({
         {/* Sidebar */}
         <Sidebar 
           leagueData={leaguesData} 
-          featuredTip={displayPredictions[0]} 
+          _featuredTip={displayPredictions[0]} 
           streams={streamsMock}
           mode="predictions"
         />
@@ -137,14 +145,14 @@ export default async function PredictionsPage({
         {/* Main Content Area */}
         <main className="flex-1 min-w-0">
           {/* Page Heading & Breadcrumb */}
-          <div className="flex flex-col mb-8">
+          <div className="flex flex-col mb-6 sm:mb-8">
             <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 bg-slate-50 self-start px-4 py-2 rounded-full border border-slate-100/60 shadow-inner">
               <Link href="/" className="hover:text-brand-indigo transition-colors">Home</Link>
               <span className="text-slate-200">/</span>
               <span className="text-brand-indigo">Predictions</span>
             </div>
-            <h1 className="text-3xl font-black text-brand-dark-blue mb-8 leading-tight">
-              Today&apos;s Football Predictions | Betting Tips For {searchParams.date || '04/02/2026'}
+            <h1 className="text-2xl sm:text-3xl font-black text-brand-dark-blue mb-0 leading-tight">
+              Today&apos;s Football Predictions Betting Tips For {searchParams.date || '04/02/2026'}
             </h1>
           </div>
 
@@ -152,19 +160,19 @@ export default async function PredictionsPage({
 
           {/* Featured Predictions Section */}
           <div className="mb-8">
-             <div className="bg-brand-indigo rounded-[32px] overflow-hidden shadow-xl shadow-brand-indigo/10 mb-8 border border-brand-indigo/5">
-                <div className="flex items-center justify-center gap-3 py-4 bg-white/5 backdrop-blur-sm border-b border-white/10">
-                   <div className="p-1.5 bg-brand-pink rounded-lg shadow-lg shadow-brand-pink/20">
-                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+             <div className="bg-brand-indigo rounded-[24px] sm:rounded-[32px] overflow-hidden shadow-xl shadow-brand-indigo/10 mb-8 border border-brand-indigo/5">
+                <div className="flex items-center justify-center gap-3 py-3 sm:py-4 bg-white/5 backdrop-blur-sm border-b border-white/10">
+                   <div className="p-1 px-1.5 bg-brand-pink rounded-lg shadow-lg shadow-brand-pink/20">
+                      <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                       </svg>
                    </div>
-                   <h2 className="text-sm font-black text-white uppercase tracking-widest">Featured Predictions</h2>
+                   <h2 className="text-xs sm:text-sm font-black text-white uppercase tracking-widest">Featured Predictions</h2>
                 </div>
                 
-                <div className="p-6 lg:p-10 bg-slate-50/50">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {featuredPredictions.map((prediction: Prediction) => (
+                <div className="p-4 sm:p-6 lg:p-10 bg-slate-50/50">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+                    {featuredPredictions.map((prediction: any) => (
                       <FeaturedPredictionCard key={prediction.matchId} prediction={prediction} />
                     ))}
                   </div>
@@ -173,16 +181,16 @@ export default async function PredictionsPage({
           </div>
 
           {/* All Predictions List */}
-          <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden mb-10">
+          <div className="bg-white rounded-[24px] sm:rounded-[32px] border border-slate-100 shadow-sm overflow-hidden mb-10">
             <div className="divide-y divide-slate-100">
-              {listPredictions.map((prediction: Prediction) => (
+              {listPredictions.map((prediction: any) => (
                 <CompactPredictionCard key={prediction.matchId} prediction={prediction} />
               ))}
             </div>
             
             {listPredictions.length > 0 && (
-              <div className="p-8 border-t border-slate-50 bg-slate-50/30 flex justify-center">
-                <button className="bg-white text-brand-indigo border-2 border-brand-indigo/10 hover:border-brand-indigo px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all hover:bg-brand-indigo/5 shadow-lg shadow-brand-indigo/5">
+              <div className="p-6 sm:p-8 border-t border-slate-50 bg-slate-50/30 flex justify-center">
+                <button className="bg-white text-brand-indigo border-2 border-brand-indigo/10 hover:border-brand-indigo px-8 sm:px-10 py-3.5 sm:py-4 rounded-2xl font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] transition-all hover:bg-brand-indigo/5 shadow-lg shadow-brand-indigo/5">
                   See more predictions
                 </button>
               </div>
@@ -190,11 +198,11 @@ export default async function PredictionsPage({
           </div>
 
           {/* SEO Content Section */}
-          <article className="mt-12 mb-16">
-            <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden p-8 lg:p-12">
+          <article className="mt-8 sm:mt-12 mb-12 sm:mb-16">
+            <div className="bg-white rounded-[24px] sm:rounded-[32px] border border-slate-100 shadow-sm overflow-hidden p-6 sm:p-8 lg:p-12">
                <div className="prose prose-slate max-w-none text-slate-600">
-                  <h2 className="text-3xl font-black text-slate-900 mb-8 leading-tight">OddinsOdds Has the Best Football Predictions for Today</h2>
-                  <div className="space-y-6 text-lg leading-relaxed">
+                  <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-6 sm:mb-8 leading-tight">OddinsOdds Has the Best Football Predictions for Today</h2>
+                  <div className="space-y-4 sm:space-y-6 text-base sm:text-lg leading-relaxed">
                      <p>Looking for accurate football tips? <strong>OddinsOdds</strong> provides reliable, data-driven predictions to help you make smarter bets. Get free insights across popular markets, including <strong>1x2, over/under, handicaps, double chance, cards, and corners</strong>.</p>
                      <p>You&apos;ll find free football tips covering a wide range of markets... and many other betting opportunities.</p>
                   </div>
