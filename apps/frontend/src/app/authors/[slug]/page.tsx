@@ -79,10 +79,10 @@ export default function AuthorDetailsPage({ params }: { params: { slug: string }
             </div>
          </div>
          
-         <h1 className="text-3xl font-black text-slate-900 mb-6">{author.name}</h1>
+         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 mb-4 sm:mb-6">{author.name}</h1>
 
          {/* Meta Info */}
-         <div className="flex items-center justify-center gap-6 text-sm text-slate-500 font-medium mb-12">
+         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-[11px] sm:text-sm text-slate-500 font-medium mb-8 sm:mb-12 bg-slate-50/50 py-3 sm:py-0 rounded-xl sm:bg-transparent">
             <div className="flex items-center gap-2">
                <svg className="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 24 24"><path d="M19 4h-2V2h-2v2H9V2H7v2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zm.002 16H5V8h14l.002 12z"/><path d="M11 10h2v5H9v-2h2z"/><path d="M13 15h-2v2h2zM9 10H7v2h2z"/><path d="M7 15h2v2H7z"/><path d="M15 10h2v2h-2z"/><path d="M17 15h-2v2h2z"/></svg>
                <span>Updated: {author.updatedAt}</span>
@@ -94,8 +94,8 @@ export default function AuthorDetailsPage({ params }: { params: { slug: string }
          </div>
 
          {/* Brief Story Card */}
-         <div className="bg-white rounded-2xl border border-slate-100 p-8 text-left shadow-sm mb-8">
-            <h2 className="text-xl font-bold text-slate-900 mb-4">Brief Story</h2>
+         <div className="bg-white rounded-2xl border border-slate-100 p-6 sm:p-8 text-left shadow-sm mb-6 sm:mb-8">
+            <h2 className="text-lg sm:text-xl font-bold text-slate-900 mb-4">Brief Story</h2>
             <p className="text-slate-600 leading-relaxed mb-6">
                {author.bio}
             </p>
@@ -113,8 +113,8 @@ export default function AuthorDetailsPage({ params }: { params: { slug: string }
          </div>
 
          {/* Fun Facts Card */}
-         <div className="bg-white rounded-2xl border border-slate-100 p-8 text-left shadow-sm">
-            <h2 className="text-xl font-bold text-slate-900 mb-4">{author.name.split(' ')[0]}&rsquo;s Fun Facts</h2>
+         <div className="bg-white rounded-2xl border border-slate-100 p-6 sm:p-8 text-left shadow-sm">
+            <h2 className="text-lg sm:text-xl font-bold text-slate-900 mb-4">{author.name.split(' ')[0]}&rsquo;s Fun Facts</h2>
             <ul className="space-y-3">
                {author.funFacts.map((fact, index) => (
                   <li key={index} className="flex items-start gap-3 text-slate-700">

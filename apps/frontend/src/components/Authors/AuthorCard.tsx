@@ -9,7 +9,7 @@ interface AuthorCardProps {
 
 export default function AuthorCard({ name, role, imageUrl, link }: AuthorCardProps) {
   return (
-    <div className="bg-white rounded-3xl p-8 text-center border border-slate-100 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center">
+    <div className="bg-white rounded-3xl p-6 sm:p-8 text-center border border-slate-100 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center">
       <div className="w-24 h-24 rounded-full overflow-hidden mb-6 bg-slate-100 border-4 border-slate-50 relative">
         {imageUrl ? (
             <img src={imageUrl} alt={name} className="w-full h-full object-cover" />

@@ -1,6 +1,6 @@
 export default function AuthorBio() {
   return (
-    <div className="bg-white border boundary-slate-100 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-6 mt-8 shadow-sm">
+    <div className="bg-white border boundary-slate-100 rounded-2xl p-4 sm:p-6 lg:p-8 flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 mt-6 sm:mt-8 shadow-sm">
        <div className="relative">
           <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-200">
              {/* Placeholder for author image */}

@@ -7,12 +7,12 @@ export default function AboutPage() {
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header Section */}
-      <div className="mb-8">
-         <h1 className="text-4xl font-black text-gray-900 mb-4">About OddinsOdds</h1>
-         <div className="flex items-center gap-2 text-sm text-gray-500 font-bold">
+      <div className="mb-6 sm:mb-8 transition-all duration-300">
+         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 mb-3 sm:mb-4 leading-tight">About OddinsOdds</h1>
+         <div className="flex flex-wrap items-center gap-2 text-[11px] sm:text-sm text-gray-500 font-bold bg-slate-50 self-start px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-slate-100/60 shadow-inner">
             <Link href="/" className="hover:text-brand-pink transition-colors">Home</Link>
-            <span>/</span>
-            <span className="text-brand-pink">About OddinsOdds: independence and...</span>
+            <span className="text-slate-200">/</span>
+            <span className="text-brand-pink truncate max-w-[200px] sm:max-w-none">About OddinsOdds: independence and...</span>
          </div>
       </div>
 
