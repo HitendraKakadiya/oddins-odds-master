@@ -1,4 +1,4 @@
-import { getStreams, getLeagues, type StreamItem, type StreamsResponse } from '@/lib/api';
+import { api, type StreamItem, type StreamsResponse } from '@/lib/api';
 import StreamsDateFilter from '@/components/StreamsDateFilter';
 import StreamsLeagueGroup from '@/components/StreamsLeagueGroup';
 import Sidebar from '@/components/Sidebar';
@@ -15,8 +15,8 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
   const today = new Date().toISOString().split('T')[0];
   const date = searchParams.date || today;
 
-  const streamsData = await getStreams(date, searchParams.region).catch(() => ({ date, items: [] }));
-  const leagues = await getLeagues().catch(() => []);
+  const streamsData = await api.streams.getStreams(date, searchParams.region).catch(() => ({ date, items: [] }));
+  const leagues = await api.leagues.getLeagues().catch(() => []);
 
   const mockStreams = [
     {

@@ -1,4 +1,4 @@
-import { getPredictions, getLeagues, type Prediction } from '@/lib/api';
+import { api, type Prediction } from '@/lib/api';
 import CompactPredictionCard from '@/components/CompactPredictionCard';
 import FeaturedPredictionCard from '@/components/FeaturedPredictionCard';
 import PredictionDateSelector from '@/components/PredictionDateSelector';
@@ -25,7 +25,7 @@ export default async function PredictionsPage({
   const pageSize = 12;
 
   // Fetch predictions with filters
-  const predictionsData = await getPredictions({
+  const predictionsData = await api.predictions.getPredictions({
     date: searchParams.date,
     region: searchParams.region,
     leagueSlug: searchParams.leagueSlug,
@@ -35,7 +35,7 @@ export default async function PredictionsPage({
   }).catch(() => ({ page: 1, pageSize, total: 0, items: [] }));
 
   // Fetch leagues for filter
-  const leaguesData = await getLeagues().catch(() => []);
+  const leaguesData = await api.leagues.getLeagues().catch(() => []);
 
   const predictions = predictionsData.items || [];
 
@@ -137,7 +137,7 @@ export default async function PredictionsPage({
         {/* Sidebar */}
         <Sidebar 
           leagueData={leaguesData} 
-          _featuredTip={displayPredictions[0]} 
+          _featuredTip={displayPredictions[0] as any} 
           streams={streamsMock}
           mode="predictions"
         />
@@ -170,8 +170,8 @@ export default async function PredictionsPage({
                    <h2 className="text-xs sm:text-sm font-black text-white uppercase tracking-widest">Featured Predictions</h2>
                 </div>
                 
-                <div className="p-4 sm:p-6 lg:p-10 bg-slate-50/50">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+                <div className="p-6 lg:p-10 bg-slate-50/50">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {featuredPredictions.map((prediction: any) => (
                       <FeaturedPredictionCard key={prediction.matchId} prediction={prediction} />
                     ))}
