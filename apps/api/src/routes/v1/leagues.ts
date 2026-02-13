@@ -8,7 +8,12 @@ interface LeagueDetailParams {
 
 export async function leaguesRoutes(server: FastifyInstance) {
   // GET /v1/leagues
-  server.get('/leagues', async () => {
+  server.get<{ Querystring: { page?: string; pageSize?: string } }>('/leagues', async (request) => {
+    const { page = '1', pageSize = '50' } = request.query;
+    const pageNum = Math.max(1, parseInt(page, 10));
+    const pageSizeNum = Math.min(200, Math.max(1, parseInt(pageSize, 10)));
+    const offset = (pageNum - 1) * pageSizeNum;
+
     const result = await query(
       `SELECT 
         c.id as country_id,
@@ -26,23 +31,23 @@ export async function leaguesRoutes(server: FastifyInstance) {
     );
 
     // Group by country
-    const grouped: Record<string, { country: { name: string; code: string | null; flagUrl: string | null }; leagues: Array<{ id: number; name: string; slug: string; logoUrl: string | null; type: string }> }> = {};
+    const groupedMap: Map<string, any> = new Map();
 
     for (const row of result.rows) {
       const countryKey = row.country_name;
 
-      if (!grouped[countryKey]) {
-        grouped[countryKey] = {
+      if (!groupedMap.has(countryKey)) {
+        groupedMap.set(countryKey, {
           country: {
             name: row.country_name,
             code: row.country_code,
             flagUrl: row.country_flag,
           },
           leagues: [],
-        };
+        });
       }
 
-      grouped[countryKey].leagues.push({
+      groupedMap.get(countryKey).leagues.push({
         id: row.league_id,
         name: row.league_name,
         slug: row.league_slug,
@@ -51,7 +56,16 @@ export async function leaguesRoutes(server: FastifyInstance) {
       });
     }
 
-    return Object.values(grouped);
+    const allGrouped = Array.from(groupedMap.values());
+    const total = allGrouped.length;
+    const paginated = allGrouped.slice(offset, offset + pageSizeNum);
+
+    return {
+      page: pageNum,
+      pageSize: pageSizeNum,
+      total,
+      items: paginated,
+    };
   });
 
   // GET /v1/league/:countrySlug/:leagueSlug

@@ -6,13 +6,13 @@ export const revalidate = 21600;
 
 interface PageProps {
   params: {
-    type: 'academy' | 'blog';
+    type: string;
     slug: string;
   };
 }
 
 export default async function ArticleDetailPage({ params }: PageProps) {
-  const article = await getArticleDetail(params.type, params.slug);
+  const article = await getArticleDetail(params.type as 'academy' | 'blog', params.slug);
 
   if (!article) {
     return (

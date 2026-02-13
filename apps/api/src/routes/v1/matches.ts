@@ -4,6 +4,8 @@ import { query } from '../../db';
 interface TodayQuery {
   date?: string;
   tz?: string;
+  page?: string;
+  pageSize?: string;
 }
 
 interface FeaturedTipsQuery {
@@ -13,12 +15,23 @@ interface FeaturedTipsQuery {
 export async function matchesRoutes(server: FastifyInstance) {
   // GET /v1/matches/today
   server.get<{ Querystring: TodayQuery }>('/matches/today', async (request) => {
-    const { date } = request.query;
+    const { date, page = '1', pageSize = '20' } = request.query;
 
     // Default to today if no date provided
     const targetDate = date || new Date().toISOString().split('T')[0];
 
-    // Query matches for the given date
+    const pageNum = Math.max(1, parseInt(page, 10));
+    const pageSizeNum = Math.min(100, Math.max(1, parseInt(pageSize, 10)));
+    const offset = (pageNum - 1) * pageSizeNum;
+
+    // Get total count
+    const countResult = await query(
+      `SELECT COUNT(*) as total FROM matches WHERE DATE(kickoff_at) = $1`,
+      [targetDate]
+    );
+    const total = parseInt(countResult.rows[0].total, 10);
+
+    // Query matches for the given date with pagination
     const result = await query(
       `SELECT 
         m.id as match_id,
@@ -54,8 +67,9 @@ export async function matchesRoutes(server: FastifyInstance) {
       JOIN teams at ON m.away_team_id = at.id
       LEFT JOIN tips t ON m.id = t.match_id AND t.published_at IS NOT NULL
       WHERE DATE(m.kickoff_at) = $1
-      ORDER BY m.kickoff_at ASC`,
-      [targetDate]
+      ORDER BY m.kickoff_at ASC
+      LIMIT $2 OFFSET $3`,
+      [targetDate, pageSizeNum, offset]
     );
 
     const matches = result.rows.map((row: { match_id: number; provider_fixture_id: number | null; kickoff_at: string; status: string; elapsed: number | null; home_goals: number | null; away_goals: number | null; league_id: number; league_name: string; league_slug: string; league_type: string; league_logo: string | null; country_name: string; country_code: string; country_flag: string | null; home_team_id: number; home_team_name: string; home_team_slug: string; home_team_logo: string | null; away_team_id: number; away_team_name: string; away_team_slug: string; away_team_logo: string | null; tip_id: number | null; tip_title: string | null; tip_is_premium: boolean | null }) => ({
@@ -101,6 +115,9 @@ export async function matchesRoutes(server: FastifyInstance) {
 
     return {
       date: targetDate,
+      page: pageNum,
+      pageSize: pageSizeNum,
+      total,
       matches,
     };
   });
@@ -117,25 +134,49 @@ export async function matchesRoutes(server: FastifyInstance) {
         t.title,
         t.short_reason,
         t.is_premium,
-        t.published_at
+        t.published_at,
+        m.kickoff_at,
+        l.name as league_name,
+        l.slug as league_slug,
+        ht.name as home_team_name,
+        ht.logo_url as home_team_logo,
+        at.name as away_team_name,
+        at.logo_url as away_team_logo,
+        c.code as country_code
       FROM tips t
       JOIN matches m ON t.match_id = m.id
+      JOIN leagues l ON m.league_id = l.id
+      JOIN teams ht ON m.home_team_id = ht.id
+      JOIN teams at ON m.away_team_id = at.id
+      LEFT JOIN countries c ON l.country_id = c.id
       WHERE DATE(m.kickoff_at) = $1
         AND t.published_at IS NOT NULL
       ORDER BY t.tip_rank ASC, t.published_at DESC
-      LIMIT 10`,
+      LIMIT 3`,
       [targetDate]
     );
 
     return {
       date: targetDate,
-      tips: result.rows.map((row: { id: number; match_id: number; title: string; short_reason: string; is_premium: boolean; published_at: string }) => ({
+      tips: result.rows.map((row: any) => ({
         id: row.id,
         matchId: row.match_id,
         title: row.title,
         shortReason: row.short_reason,
         isPremium: row.is_premium,
         publishedAt: row.published_at,
+        kickoffAt: row.kickoff_at,
+        leagueName: row.league_name,
+        leagueSlug: row.league_slug,
+        homeTeam: {
+          name: row.home_team_name,
+          logoUrl: row.home_team_logo,
+        },
+        awayTeam: {
+          name: row.away_team_name,
+          logoUrl: row.away_team_logo,
+        },
+        countryCode: row.country_code,
       })),
     };
   });

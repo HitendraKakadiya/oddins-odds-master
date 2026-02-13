@@ -8,6 +8,7 @@ import { streamsRoutes } from './streams';
 import { matchDetailRoutes } from './match-detail';
 import { articlesRoutes } from './articles';
 import { searchRoutes } from './search';
+import { liveRoutes } from './live';
 
 export async function v1Routes(server: FastifyInstance) {
   await server.register(metaRoutes);
@@ -19,5 +20,6 @@ export async function v1Routes(server: FastifyInstance) {
   await server.register(matchDetailRoutes);
   await server.register(articlesRoutes);
   await server.register(searchRoutes);
+  await server.register(liveRoutes);
 }
 

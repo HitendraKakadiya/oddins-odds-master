@@ -5,15 +5,22 @@
   "scripts": {
     "dev": "tsx --env-file=../../.env src/index.ts",
     "sync:leagues": "tsx --env-file=../../.env src/index.ts sync:leagues",
+    "sync:daily": "tsx --env-file=../../.env src/index.ts sync:daily",
+    "sync:window": "tsx --env-file=../../.env src/index.ts sync:window",
+    "sync:odds": "tsx --env-file=../../.env src/index.ts sync:odds",
+    "cleanup": "tsx --env-file=../../.env src/index.ts cleanup",
+    "scheduler": "tsx --env-file=../../.env src/index.ts scheduler",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {
     "@oddins/shared": "workspace:*",
+    "@types/node-cron": "^3.0.11",
+    "dayjs": "^1.11.11",
+    "node-cron": "^4.2.1",
     "pg": "^8.12.0",
-    "zod": "^3.23.8",
-    "dayjs": "^1.11.11"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

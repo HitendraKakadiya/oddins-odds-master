@@ -71,10 +71,10 @@ class APIFootballClient {
         }
 
         const data = await response.json() as Record<string, unknown>;
-        
-        logger.debug(`Successfully fetched ${endpoint}`, { 
+
+        logger.debug(`Successfully fetched ${endpoint}`, {
           status: response.status,
-          results: data.results 
+          results: data.results
         });
 
         return data;
@@ -85,9 +85,9 @@ class APIFootballClient {
         if (err instanceof Error && err.name === 'AbortError') {
           logger.warn(`Request timeout for ${endpoint}`, { attempt });
         } else {
-          logger.warn(`Request failed for ${endpoint}`, { 
-            attempt, 
-            error: err.message 
+          logger.warn(`Request failed for ${endpoint}`, {
+            attempt,
+            error: err.message
           });
         }
 
@@ -131,6 +131,10 @@ class APIFootballClient {
 
   async getFixtureLineups(params: { fixture: number }): Promise<unknown> {
     return this.fetchWithRetry(`/fixtures/lineups?fixture=${params.fixture}`);
+  }
+
+  async getFixturesByDate(date: string): Promise<unknown> {
+    return this.fetchWithRetry(`/fixtures?date=${date}`);
   }
 }
 

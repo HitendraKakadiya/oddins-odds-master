@@ -103,23 +103,57 @@ export function MatchFilter() {
   );
 }
 
-export function DateSelector() {
-  const days = [
-    { label: 'SUN', date: '01 Feb' },
-    { label: 'MON', date: '02 Feb' },
-    { label: 'YESTERDAY', date: '03 Feb' },
-    { label: 'TODAY', date: '04 Feb', active: true },
-    { label: 'TOMORROW', date: '05 Feb' },
-    { label: 'FRI', date: '06 Feb' },
-    { label: 'SAT', date: '07 Feb' },
-  ];
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+
+export function DateSelector({ selectedDate }: { selectedDate?: string }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  
+  const today = new Date();
+  const days = [];
+
+  const activeDate = selectedDate || today.toISOString().split('T')[0];
+
+  for (let i = -3; i <= 3; i++) {
+    const date = new Date();
+    date.setDate(today.getDate() + i);
+
+    let label = '';
+    if (i === -1) label = 'YESTERDAY';
+    else if (i === 0) label = 'TODAY';
+    else if (i === 1) label = 'TOMORROW';
+    else label = date.toLocaleDateString('en-GB', { weekday: 'short' }).toUpperCase();
+
+    const dateStr = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+    
+    // Fix: Use local date instead of UTC to avoid timezone offset issues
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const fullDate = `${year}-${month}-${day}`;
+    
+    days.push({
+      label,
+      date: dateStr,
+      fullDate,
+      active: fullDate === activeDate,
+    });
+  }
+
+  const handleDateClick = (date: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('date', date);
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
   return (
-    <div className="flex bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden mb-10">
+    <div className="flex bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden mb-10 overflow-x-auto scrollbar-hide">
       {days.map((day) => (
         <button
-          key={day.date}
-          className={`flex-1 flex flex-col items-center py-5 px-3 transition-all border-r border-slate-100 last:border-0 ${
+          key={day.fullDate}
+          onClick={() => handleDateClick(day.fullDate)}
+          className={`flex-1 min-w-[100px] flex flex-col items-center py-5 px-3 transition-all border-r border-slate-100 last:border-0 ${
             day.active 
               ? 'bg-brand-indigo text-white shadow-lg pointer-events-none' 
               : 'hover:bg-slate-50 active:scale-95'

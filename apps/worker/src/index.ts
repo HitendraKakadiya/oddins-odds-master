@@ -12,6 +12,9 @@ import { syncOdds } from './jobs/syncOdds';
 import { syncPlayers } from './jobs/syncPlayers';
 import { syncEvents } from './jobs/syncEvents';
 import { syncLineups } from './jobs/syncLineups';
+import { syncDailyFixtures, syncFixturesWindow } from './jobs/syncDailyFixtures';
+import { cleanupOldData } from './jobs/cleanup';
+import { startScheduler } from './scheduler';
 
 function printUsage() {
   console.log(`
@@ -21,6 +24,8 @@ Available commands:
   sync:leagues    Sync leagues and seasons from API-Football
   sync:teams      Sync teams for featured leagues (24 months)
   sync:fixtures   Sync fixtures/matches for featured leagues (24 months)
+  sync:daily      Sync fixtures for today only
+  sync:window     Sync fixtures for past 10 days + future 14 days
   sync:odds       Sync betting odds for upcoming fixtures
   sync:players    Sync player data for all teams
   sync:events     Sync match events (goals, cards, subs)
@@ -77,6 +82,24 @@ async function main() {
 
       case 'sync:lineups':
         await syncLineups();
+        break;
+
+      case 'sync:daily':
+        await syncDailyFixtures();
+        break;
+
+      case 'sync:window':
+        await syncFixturesWindow(10, 14);
+        break;
+
+      case 'cleanup':
+        await cleanupOldData();
+        break;
+
+      case 'scheduler':
+        startScheduler();
+        // Keep process alive for scheduler
+        await new Promise(() => { });
         break;
 
       default:

@@ -46,6 +46,9 @@ export interface MatchData {
 
 export interface TodayMatchesResponse {
     date: string;
+    page: number;
+    pageSize: number;
+    total: number;
     matches: MatchData[];
 }
 
@@ -59,6 +62,11 @@ export interface FeaturedTipsResponse {
         isPremium: boolean;
         confidence?: number | null;
         publishedAt?: string | null;
+        kickoffAt?: string | null;
+        leagueName?: string | null;
+        homeTeam?: { name: string; logoUrl?: string | null } | null;
+        awayTeam?: { name: string; logoUrl?: string | null } | null;
+        countryCode?: string | null;
     }>;
 }
 
@@ -85,6 +93,8 @@ export interface Article {
     title: string;
     summary: string;
     publishedAt?: string | null;
+    updatedAt?: string | null;
+    bodyMd?: string | null;
 }
 
 export interface ArticlesResponse {
@@ -228,6 +238,9 @@ export interface StreamItem {
 
 export interface StreamsResponse {
     date: string;
+    page: number;
+    pageSize: number;
+    total: number;
     items: StreamItem[];
 }
 

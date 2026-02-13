@@ -1,80 +1,259 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import type { LeaguesResponse } from '@/lib/api';
+import { getLiveLeagues, getStreams } from '@/lib/api';
 
 interface SidebarProps {
   leagueData: LeaguesResponse[];
-  _featuredTip?: unknown;
+  initialTotal?: number;
+  featuredTips?: any[];
   streams?: Array<{ id: number; home: string; away: string; time: string; icon: string }>;
+  initialStreamsTotal?: number;
   mode?: 'default' | 'predictions';
 }
 
-export default function Sidebar({ leagueData, _featuredTip, streams = [], mode = 'default' }: SidebarProps) {
-  const topLeagues = leagueData;
+const mockCompetitions = [
+  { country: { name: 'Algeria', flagUrl: 'https://flagcdn.com/dz.svg' }, leagues: [{ id: 101, name: 'Ligue 1', slug: 'algeria-ligue-1', logoUrl: null, type: 'league' }] },
+  { country: { name: 'Argentina', flagUrl: 'https://flagcdn.com/ar.svg' }, leagues: [{ id: 102, name: 'Liga Profesional', slug: 'argentina-liga-profesional', logoUrl: null, type: 'league' }, { id: 103, name: 'Primera B Nacional', slug: 'argentina-primera-b', logoUrl: null, type: 'league' }] },
+  { country: { name: 'Botswana', flagUrl: 'https://flagcdn.com/bw.svg' }, leagues: [{ id: 104, name: 'Premier League', slug: 'botswana-premier-league', logoUrl: null, type: 'league' }] },
+  { country: { name: 'Brazil', flagUrl: 'https://flagcdn.com/br.svg' }, leagues: [{ id: 105, name: 'Série A', slug: 'brazil-serie-a', logoUrl: null, type: 'league' }, { id: 106, name: 'Série B', slug: 'brazil-serie-b', logoUrl: null, type: 'league' }] },
+  { country: { name: 'Cameroon', flagUrl: 'https://flagcdn.com/cm.svg' }, leagues: [{ id: 107, name: 'Elite One', slug: 'cameroon-elite-one', logoUrl: null, type: 'league' }] },
+  { country: { name: 'England', flagUrl: 'https://flagcdn.com/gb-eng.svg' }, leagues: [{ id: 108, name: 'Premier League', slug: 'england-premier-league', logoUrl: null, type: 'league' }, { id: 109, name: 'Championship', slug: 'england-championship', logoUrl: null, type: 'league' }] },
+  { country: { name: 'France', flagUrl: 'https://flagcdn.com/fr.svg' }, leagues: [{ id: 110, name: 'Ligue 1', slug: 'france-ligue-1', logoUrl: null, type: 'league' }, { id: 111, name: 'Ligue 2', slug: 'france-ligue-2', logoUrl: null, type: 'league' }] },
+  { country: { name: 'Germany', flagUrl: 'https://flagcdn.com/de.svg' }, leagues: [{ id: 112, name: 'Bundesliga', slug: 'germany-bundesliga', logoUrl: null, type: 'league' }, { id: 113, name: '2. Bundesliga', slug: 'germany-2-bundesliga', logoUrl: null, type: 'league' }] },
+  { country: { name: 'Italy', flagUrl: 'https://flagcdn.com/it.svg' }, leagues: [{ id: 114, name: 'Serie A', slug: 'italy-serie-a', logoUrl: null, type: 'league' }, { id: 115, name: 'Serie B', slug: 'italy-serie-b', logoUrl: null, type: 'league' }] },
+  { country: { name: 'Spain', flagUrl: 'https://flagcdn.com/es.svg' }, leagues: [{ id: 116, name: 'La Liga', slug: 'spain-la-liga', logoUrl: null, type: 'league' }, { id: 117, name: 'Segunda División', slug: 'spain-segunda', logoUrl: null, type: 'league' }] },
+];
+
+export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [], streams = [], initialStreamsTotal = 0, mode = 'default' }: SidebarProps) {
+  // Leagues State
+  const [competitions, setCompetitions] = useState<LeaguesResponse[]>(leagueData);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(initialTotal);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(leagueData.length < initialTotal);
+  const loaderRef = useRef<HTMLDivElement>(null);
+
+  // Sync Leagues State with Props
+  useEffect(() => {
+    setCompetitions(leagueData);
+    setTotal(initialTotal);
+    setPage(1);
+    setHasMore(leagueData.length < initialTotal);
+  }, [leagueData, initialTotal]);
+
+  // Streams State
+  const [streamItems, setStreamItems] = useState(streams);
+  const [streamsPage, setStreamsPage] = useState(1);
+  const [streamsTotal, setStreamsTotal] = useState(initialStreamsTotal);
+  const [streamsLoading, setStreamsLoading] = useState(false);
+  const [streamsHasMore, setStreamsHasMore] = useState(streams.length < initialStreamsTotal);
+  const streamsLoaderRef = useRef<HTMLDivElement>(null);
+
+  // Sync Streams State with Props
+  useEffect(() => {
+    setStreamItems(streams);
+    setStreamsTotal(initialStreamsTotal);
+    setStreamsPage(1);
+    setStreamsHasMore(streams.length < initialStreamsTotal);
+  }, [streams, initialStreamsTotal]);
+
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [openCountry, setOpenCountry] = useState<string | null>(null);
+  const [openCountries, setOpenCountries] = useState<string[]>(() => {
+    return leagueData.slice(0, 5).map(group => group.country.name);
+  });
 
-  const mockPredictions = [
-    {
-      id: 1,
-      leagueName: 'Greek Super League',
-      time: '22:00',
-      date: 'Wed - 4 Feb 2026',
-      homeTeam: { name: 'Asteras Tripolis', logo: '⚽' },
-      awayTeam: { name: 'Olympiakos Piraeus', logo: '⚽' },
-      prediction: 'Over 2.5 Goals',
-      countdown: '1m 41s'
-    },
-    {
-      id: 2,
-      leagueName: 'Premier League',
-      time: '21:30',
-      date: 'Wed - 4 Feb 2026',
-      homeTeam: { name: 'Manchester City', logo: '⚽' },
-      awayTeam: { name: 'Arsenal', logo: '⚽' },
-      prediction: 'Home Win',
-      countdown: '15m 20s'
-    },
-    {
-      id: 3,
-      leagueName: 'La Liga',
-      time: '23:00',
-      date: 'Wed - 4 Feb 2026',
-      homeTeam: { name: 'Real Madrid', logo: '⚽' },
-      awayTeam: { name: 'Barcelona', logo: '⚽' },
-      prediction: 'Both Teams To Score',
-      countdown: '45m 10s'
+  // Load More Leagues
+  const loadMoreLeagues = useCallback(async () => {
+    if (loading || !hasMore) return;
+
+    setLoading(true);
+    try {
+      const nextPage = page + 1;
+      const response = await getLiveLeagues(nextPage, 20);
+      
+      if (response && response.items) {
+        setCompetitions(prev => [...prev, ...response.items]);
+        setPage(nextPage);
+        setTotal(response.total);
+        setHasMore(competitions.length + response.items.length < response.total);
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error('Failed to load more leagues:', error);
+      setHasMore(false);
+    } finally {
+      setLoading(false);
     }
+  }, [page, loading, hasMore, competitions.length]);
+
+  // Load More Streams
+  const loadMoreStreams = useCallback(async () => {
+    if (streamsLoading || !streamsHasMore) return;
+
+    setStreamsLoading(true);
+    try {
+      const nextPage = streamsPage + 1;
+      // You might need to pass the date here if it's dynamic. 
+      // For sidebar, it usually shows "Today's", so defaulting to today (backend default) is fine.
+      // But if `page.tsx` passes a selected date, we might need to know it. 
+      // `Sidebar` doesn't currently receive `selectedDate` prop. 
+      // Assuming "Today's Streams" implies today.
+      const response = await getStreams(undefined, undefined, nextPage, 20);
+
+      if (response && response.items) {
+          const newStreams = response.items.map(item => ({
+            id: item.matchId,
+            home: item.homeTeam?.name || 'Home',
+            away: item.awayTeam?.name || 'Away',
+            time: item.kickoffAt && new Date(item.kickoffAt) > new Date() ? 
+            new Date(item.kickoffAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }) : 
+            'LIVE',
+            icon: '⚽' // Default icon? Or map from league/sport?
+          }));
+
+          setStreamItems(prev => [...prev, ...newStreams]);
+          setStreamsPage(nextPage);
+          setStreamsTotal(response.total);
+          setStreamsHasMore(streamItems.length + newStreams.length < response.total);
+      } else {
+          setStreamsHasMore(false);
+      }
+    } catch (error) {
+      console.error('Failed to load more streams:', error);
+      setStreamsHasMore(false);
+    } finally {
+      setStreamsLoading(false);
+    }
+  }, [streamsPage, streamsLoading, streamsHasMore, streamItems.length]);
+
+  // Observer for Leagues
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          loadMoreLeagues();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [loadMoreLeagues, hasMore]);
+
+  // Observer for Streams
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+        (entries) => {
+            if (entries[0].isIntersecting && streamsHasMore) {
+                loadMoreStreams();
+            }
+        },
+        { threshold: 0.1 }
+    );
+
+    if (streamsLoaderRef.current) {
+        observer.observe(streamsLoaderRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [loadMoreStreams, streamsHasMore]);
+
+  const toggleCountry = (countryName: string) => {
+    setOpenCountries(prev => 
+      prev.includes(countryName) 
+        ? prev.filter(name => name !== countryName) 
+        : [...prev, countryName]
+    );
+  };
+
+  // ... (rest of code usually identical until return) ...
+  const today = new Date();
+  const mockPredictions = [
+     // ...
   ];
+  
+  // ... displayPredictions mapping ...
+  const displayPredictions = featuredTips.length > 0 
+    ? featuredTips.map(tip => {
+        // ... (same mapping)
+        const kickoffDate = tip.kickoffAt ? new Date(tip.kickoffAt) : null;
+        return {
+          id: tip.id,
+          leagueName: tip.leagueName || 'Unknown League',
+          time: kickoffDate ? kickoffDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : '00:00',
+          date: kickoffDate ? kickoffDate.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : today.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }),
+          homeTeam: { 
+            name: tip.homeTeam?.name || 'Home', 
+            logo: tip.homeTeam?.logoUrl ? <img src={tip.homeTeam.logoUrl} className="w-8 h-8 object-contain" /> : '⚽' 
+          },
+          awayTeam: { 
+            name: tip.awayTeam?.name || 'Away', 
+            logo: tip.awayTeam?.logoUrl ? <img src={tip.awayTeam.logoUrl} className="w-8 h-8 object-contain" /> : '⚽' 
+          },
+          prediction: tip.title || 'Match Winner',
+          countdown: 'LIVE', 
+          countryCode: tip.countryCode
+        };
+      })
+    : [
+        {
+            id: 1,
+            leagueName: 'Greek Super League',
+            time: '22:00',
+            date: today.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }),
+            homeTeam: { name: 'Asteras Tripolis', logo: '⚽' },
+            awayTeam: { name: 'Olympiakos Piraeus', logo: '⚽' },
+            prediction: 'Over 2.5 Goals',
+            countdown: '1m 41s',
+            countryCode: 'GR'
+        },
+        {
+            id: 2,
+            leagueName: 'Premier League',
+            time: '21:30',
+            date: today.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }),
+            homeTeam: { name: 'Manchester City', logo: '⚽' },
+            awayTeam: { name: 'Arsenal', logo: '⚽' },
+            prediction: 'Home Win',
+            countdown: '15m 20s',
+            countryCode: 'GB'
+        },
+        {
+            id: 3,
+            leagueName: 'La Liga',
+            time: '23:00',
+            date: today.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }),
+            homeTeam: { name: 'Real Madrid', logo: '⚽' },
+            awayTeam: { name: 'Barcelona', logo: '⚽' },
+            prediction: 'Both Teams To Score',
+            countdown: '45m 10s',
+            countryCode: 'ES'
+        }
+    ];
 
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % mockPredictions.length);
-  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + mockPredictions.length) % mockPredictions.length);
+  // ... rest of code ....
+  
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % displayPredictions.length);
+  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + displayPredictions.length) % displayPredictions.length);
 
-  const mockCompetitions = [
-    { country: { name: 'Algeria', flagUrl: 'https://flagcdn.com/dz.svg' }, leagues: [{ id: 101, name: 'Ligue 1', slug: 'algeria-ligue-1' }] },
-    { country: { name: 'Argentina', flagUrl: 'https://flagcdn.com/ar.svg' }, leagues: [{ id: 102, name: 'Liga Profesional', slug: 'argentina-liga-profesional' }, { id: 103, name: 'Primera B Nacional', slug: 'argentina-primera-b' }] },
-    { country: { name: 'Botswana', flagUrl: 'https://flagcdn.com/bw.svg' }, leagues: [{ id: 104, name: 'Premier League', slug: 'botswana-premier-league' }] },
-    { country: { name: 'Brazil', flagUrl: 'https://flagcdn.com/br.svg' }, leagues: [{ id: 105, name: 'Série A', slug: 'brazil-serie-a' }, { id: 106, name: 'Série B', slug: 'brazil-serie-b' }] },
-    { country: { name: 'Cameroon', flagUrl: 'https://flagcdn.com/cm.svg' }, leagues: [{ id: 107, name: 'Elite One', slug: 'cameroon-elite-one' }] },
-    { country: { name: 'England', flagUrl: 'https://flagcdn.com/gb-eng.svg' }, leagues: [{ id: 108, name: 'Premier League', slug: 'england-premier-league' }, { id: 109, name: 'Championship', slug: 'england-championship' }] },
-    { country: { name: 'France', flagUrl: 'https://flagcdn.com/fr.svg' }, leagues: [{ id: 110, name: 'Ligue 1', slug: 'france-ligue-1' }, { id: 111, name: 'Ligue 2', slug: 'france-ligue-2' }] },
-    { country: { name: 'Germany', flagUrl: 'https://flagcdn.com/de.svg' }, leagues: [{ id: 112, name: 'Bundesliga', slug: 'germany-bundesliga' }, { id: 113, name: '2. Bundesliga', slug: 'germany-2-bundesliga' }] },
-    { country: { name: 'Italy', flagUrl: 'https://flagcdn.com/it.svg' }, leagues: [{ id: 114, name: 'Serie A', slug: 'italy-serie-a' }, { id: 115, name: 'Serie B', slug: 'italy-serie-b' }] },
-    { country: { name: 'Spain', flagUrl: 'https://flagcdn.com/es.svg' }, leagues: [{ id: 116, name: 'La Liga', slug: 'spain-la-liga' }, { id: 117, name: 'Segunda División', slug: 'spain-segunda' }] },
-  ];
-
-  const competitionsData = (leagueData && leagueData.length > 0) ? leagueData : mockCompetitions;
-  const currentPrediction = mockPredictions[currentSlide];
+  const currentPrediction = displayPredictions[currentSlide];
 
   return (
     <aside className="w-full lg:w-[380px] flex flex-col gap-6">
-      {/* Prediction of the day Slider */}
+      {/* ... Slider ... */}
       <div className="bg-gradient-to-br from-[#6366F1] to-[#4F46E5] rounded-[28px] p-4 text-white overflow-hidden relative shadow-xl shadow-brand-indigo/30 border border-white/20">
-        <div className="flex items-center justify-center gap-2 mb-4">
+         {/* ... content ... */}
+         <div className="flex items-center justify-center gap-2 mb-4">
           <div className="bg-white/20 p-1.5 rounded-lg backdrop-blur-sm border border-white/10">
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5S19.832 5.477 21 6.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
           </div>
@@ -84,7 +263,15 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
         <div className="bg-white rounded-2xl p-4 shadow-lg mb-4 border border-white/30 text-slate-900">
           <div className="flex items-start gap-2.5 mb-3 border-b border-slate-100 pb-3">
              <div className="w-8 h-8 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center text-brand-indigo shadow-sm overflow-hidden">
-                <span className="text-lg">🇬🇷</span>
+                {currentPrediction.countryCode ? (
+                  <img 
+                    src={`https://flagcdn.com/${currentPrediction.countryCode.toLowerCase()}.svg`} 
+                    alt="" 
+                    className="w-5 h-4 object-cover rounded-sm" 
+                  />
+                ) : (
+                  <span className="text-lg">⚽</span>
+                )}
              </div>
              <div>
                 <div className="text-xs font-black text-slate-800 leading-tight">{currentPrediction.leagueName}</div>
@@ -103,7 +290,7 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
 
           <div className="flex items-center justify-between gap-1 mb-4 mt-4">
             <div className="flex flex-col items-center text-center w-[100px]">
-              <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-full mb-2 flex items-center justify-center text-xl shadow-sm">
+              <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-full mb-2 flex items-center justify-center text-xl shadow-sm overflow-hidden p-2">
                 {currentPrediction.homeTeam.logo}
               </div>
               <div className="text-[11px] font-black text-slate-800 leading-tight">
@@ -119,7 +306,7 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
             </div>
 
             <div className="flex flex-col items-center text-center w-[100px]">
-              <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-full mb-2 flex items-center justify-center text-xl shadow-sm">
+              <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-full mb-2 flex items-center justify-center text-xl shadow-sm overflow-hidden p-2">
                 {currentPrediction.awayTeam.logo}
               </div>
               <div className="text-[11px] font-black text-slate-800 leading-tight">
@@ -151,9 +338,9 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
               </button>
               
               <div className="flex flex-col items-center gap-2">
-                 <div className="text-[12px] font-black text-white/80">{currentSlide + 1} / {mockPredictions.length}</div>
+                 <div className="text-[12px] font-black text-white/80">{currentSlide + 1} / {displayPredictions.length}</div>
                  <div className="flex items-center gap-1.5">
-                    {mockPredictions.map((_, idx) => (
+                    {displayPredictions.map((_, idx) => (
                        <button 
                          key={idx}
                          onClick={() => setCurrentSlide(idx)}
@@ -183,9 +370,9 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
             <div className="p-5 border-b border-slate-100 bg-white">
               <h3 className="font-bold text-lg text-slate-800">Today&apos;s Streams</h3>
             </div>
-            <div className="divide-y divide-slate-100">
-                {streams.length > 0 ? (
-                  streams.map((stream) => (
+            <div className="divide-y divide-slate-100 max-h-[500px] overflow-y-auto">
+                {streamItems.length > 0 ? (
+                  streamItems.map((stream) => (
                     <div key={stream.id} className="p-4 hover:bg-slate-50 transition-colors flex items-center justify-between group">
                       <div className="flex items-center gap-4">
                         <div className="w-8 h-8 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center text-sm shadow-sm">
@@ -216,16 +403,27 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
                       <Link href="/streams" className="text-[11px] text-brand-indigo font-bold hover:underline">View schedule &rarr;</Link>
                   </div>
                 )}
+                
+                {/* Infinite Scroll Trigger for Streams */}
+                <div ref={streamsLoaderRef} className="py-4 flex flex-col items-center justify-center gap-2">
+                    {streamsLoading && (
+                        <div className="w-5 h-5 border-2 border-brand-indigo/20 border-t-brand-indigo rounded-full animate-spin"></div>
+                    )}
+                    {!streamsHasMore && streamItems.length > 0 && (
+                        <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">End of list</span>
+                    )}
+                </div>
             </div>
           </div>
 
           {/* Football Leagues */}
           <div className="card !p-0 overflow-hidden shadow-sm !border-slate-200/60 border-t-4 !border-t-brand-indigo">
+             {/* ... leagues content ... */}
             <div className="p-5 border-b border-slate-100 bg-white">
               <h3 className="font-bold text-lg text-slate-800">Football Leagues</h3>
             </div>
-            <div className="flex flex-col">
-              {topLeagues.length > 0 ? (topLeagues.map((group) => (
+            <div className="flex flex-col h-[500px] overflow-y-auto">
+              {(competitions.length > 0 ? competitions : mockCompetitions).map((group) => (
                   <div key={group.country.name}>
                      {group.leagues.map((league) => (
                         <Link 
@@ -253,22 +451,32 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
                      ))}
                   </div>
                 ))
-              ) : (
-                <div className="p-8 text-center text-xs text-slate-400 font-bold">No data available</div>
-              )}
+              }
+              
+              {/* Infinite Scroll Trigger */}
+              <div ref={loaderRef} className="py-4 flex flex-col items-center justify-center gap-2">
+                {loading && (
+                  <div className="w-5 h-5 border-2 border-brand-indigo/20 border-t-brand-indigo rounded-full animate-spin"></div>
+                )}
+                {!hasMore && (
+                  <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">End of list</span>
+                )}
+              </div>
             </div>
           </div>
         </>
       ) : (
-        /* Predictions Mode: Today's Competitions Accordion */
+        /* Predictions Mode */
         <div className="flex flex-col gap-4">
+             {/* ... */}
            <h3 className="font-bold text-xl text-slate-800 ml-1">Today&apos;s Competitions</h3>
            <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-hidden">
-              <div className="divide-y divide-slate-100">
-                {competitionsData.map((group) => (
-                  <div key={group.country.name} className="flex flex-col">
+             {/* ... */}
+              <div className="divide-y divide-slate-100 max-h-[600px] overflow-y-auto">
+                {competitions.map((group) => (
+                  <div key={group.country.name} className="flex flex-col border-b border-slate-50 last:border-0">
                     <button 
-                      onClick={() => setOpenCountry(openCountry === group.country.name ? null : group.country.name)}
+                      onClick={() => toggleCountry(group.country.name)}
                       className="w-full flex items-center justify-between p-5 hover:bg-slate-50 transition-all group"
                     >
                       <div className="flex items-center gap-4">
@@ -282,7 +490,7 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
                         <span className="text-sm font-bold text-slate-700 group-hover:text-brand-indigo transition-colors">{group.country.name}</span>
                       </div>
                       <svg 
-                        className={`w-4 h-4 text-slate-300 transition-transform duration-300 ${openCountry === group.country.name ? 'rotate-180' : ''}`} 
+                        className={`w-4 h-4 text-slate-300 transition-transform duration-300 ${openCountries.includes(group.country.name) ? 'rotate-180' : ''}`} 
                         fill="none" 
                         stroke="currentColor" 
                         viewBox="0 0 24 24"
@@ -291,7 +499,7 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
                       </svg>
                     </button>
                     
-                    {openCountry === group.country.name && (
+                    {openCountries.includes(group.country.name) && (
                       <div className="bg-slate-50/50 px-5 pb-4 space-y-2 pt-1">
                         {group.leagues.map((league) => (
                           <Link 
@@ -307,6 +515,16 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
                     )}
                   </div>
                 ))}
+
+                {/* Infinite Scroll Trigger for Predictions Mode */}
+                <div ref={loaderRef} className="py-4 flex flex-col items-center justify-center gap-2 border-t border-slate-100">
+                  {loading && (
+                    <div className="w-5 h-5 border-2 border-brand-indigo/20 border-t-brand-indigo rounded-full animate-spin"></div>
+                  )}
+                  {!hasMore && (
+                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">End of list</span>
+                  )}
+                </div>
               </div>
            </div>
         </div>

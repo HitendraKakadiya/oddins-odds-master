@@ -3,7 +3,7 @@
  */
 
 import { fetchAPI } from './client';
-import { ArticlesResponse } from './types';
+import { Article, ArticlesResponse } from './types';
 
 export async function getArticles(type: 'academy' | 'blog', category?: string, page?: number, pageSize?: number): Promise<ArticlesResponse> {
     const searchParams = new URLSearchParams();
@@ -15,6 +15,6 @@ export async function getArticles(type: 'academy' | 'blog', category?: string, p
     return fetchAPI<ArticlesResponse>(`/v1/articles?${searchParams.toString()}`);
 }
 
-export async function getArticleDetail(type: 'academy' | 'blog', slug: string) {
-    return fetchAPI(`/v1/articles/${type}/${slug}`);
+export async function getArticleDetail(type: 'academy' | 'blog', slug: string): Promise<Article | null> {
+    return fetchAPI<Article>(`/v1/articles/${type}/${slug}`);
 }

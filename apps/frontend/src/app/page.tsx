@@ -1,130 +1,62 @@
 import Link from 'next/link';
 import Sidebar from '@/components/Sidebar';
 import { MatchFilter, DateSelector } from '@/components/MatchFilters';
-import { LeagueGroup } from '@/components/MatchCard';
+import MatchListInfinite from '@/components/MatchListInfinite';
 import FAQAccordion from '@/components/FAQAccordion';
 import HighlightBanner from '@/components/HighlightBanner';
 import FeaturedTeams from '@/components/FeaturedTeams';
+import { getLiveTodayMatches, getLiveLeagues, getFeaturedTips, getStreams } from '@/lib/api';
 
-export default async function HomePage() {
-  const today = new Date().toISOString().split('T')[0];
+export default async function HomePage({ searchParams }: { searchParams: { date?: string } }) {
+  let selectedDate = searchParams.date || new Date().toISOString().split('T')[0];
 
-  const leaguesData = [
-    {
-      country: { name: 'Europe' },
-      leagues: [{ id: 1, name: 'UEFA Champions League', slug: 'champions-league' }]
-    },
-    {
-      country: { name: 'England' },
-      leagues: [{ id: 2, name: 'Premier League', slug: 'premier-league' }]
-    },
-    {
-      country: { name: 'Spain' },
-      leagues: [{ id: 3, name: 'La Liga', slug: 'la-liga' }]
-    },
-    {
-      country: { name: 'Italy' },
-      leagues: [{ id: 4, name: 'Serie A', slug: 'serie-a' }]
-    },
-    {
-      country: { name: 'Germany' },
-      leagues: [{ id: 5, name: 'Bundesliga', slug: 'bundesliga' }]
-    },
-    {
-      country: { name: 'South America' },
-      leagues: [{ id: 6, name: 'Copa Libertadores', slug: 'copa-libertadores' }]
-    },
-    {
-      country: { name: 'International' },
-      leagues: [{ id: 7, name: 'FIFA Club World Cup', slug: 'club-world-cup' }]
-    },
-    {
-      country: { name: 'France' },
-      leagues: [{ id: 8, name: 'Ligue 1', slug: 'ligue-1' }]
+  // Fetch data from live third-party proxy APIs
+  let matches: any[] = [];
+  let leaguesData: any = { items: [], total: 0, page: 1, pageSize: 50 };
+  let tipsData: any[] = [];
+  let streamsData: any[] = [];
+  let streamsTotal = 0;
+  let pagination = { page: 1, pageSize: 20, total: 0 };
+
+  try {
+    const [matchesRes, leaguesRes, tipsRes, streamsRes] = await Promise.all([
+      getLiveTodayMatches(selectedDate, 1, 20).catch(err => { console.error('Matches fetch failed:', err); return { matches: [], total: 0, page: 1, pageSize: 20, date: selectedDate }; }),
+      getLiveLeagues(1, 20).catch(err => { console.error('Leagues fetch failed:', err); return { items: [], total: 0, page: 1, pageSize: 20 }; }),
+      getFeaturedTips(selectedDate).catch(err => { console.error('Tips fetch failed:', err); return { tips: [] }; }),
+      getStreams(selectedDate).catch(err => { console.error('Streams fetch failed:', err); return { items: [], total: 10 }; }) // fallback with total=0
+    ]);
+
+    // Smart Fallback Handling:
+    // If user didn't request a specific date (default view), and API returned a different date (fallback),
+    // update the selectedDate to reflect what we are actually showing.
+    if (!searchParams.date && matchesRes?.date && matchesRes.date !== selectedDate) {
+        selectedDate = matchesRes.date;
     }
-  ];
 
-  const tipsData = {
-    tips: [
-      {
-        id: 1,
-        matchId: 101,
-        title: 'Manchester City to Win',
-        leagueName: 'Premier League',
-        publishedAt: new Date().toISOString()
-      }
-    ]
-  };
+    matches = matchesRes?.matches || [];
+    pagination = { 
+      page: matchesRes?.page || 1, 
+      pageSize: matchesRes?.pageSize || 20, 
+      total: matchesRes?.total || 0 
+    };
+    leaguesData = leaguesRes || { items: [], total: 0, page: 1, pageSize: 20 };
+    tipsData = tipsRes?.tips || [];
+    streamsData = streamsRes?.items || [];
+    streamsTotal = streamsRes?.total || 0;
+  } catch (error) {
+    console.error('Failed to fetch home page data:', error);
+  }
 
-  const mockMatches = [
-    {
-      matchId: 101,
-      kickoffAt: new Date().toISOString(),
-      status: 'NS',
-      league: { name: 'Premier League', country: { name: 'England' } },
-      homeTeam: { name: 'Manchester City' },
-      awayTeam: { name: 'Arsenal' },
-      score: { home: null, away: null },
-      featuredTip: { title: 'Home Win & Over 2.5' }
-    },
-    {
-      matchId: 102,
-      kickoffAt: new Date().toISOString(),
-      status: 'LIVE',
-      league: { name: 'Premier League', country: { name: 'England' } },
-      homeTeam: { name: 'Liverpool' },
-      awayTeam: { name: 'Chelsea' },
-      score: { home: 1, away: 0 },
-      featuredTip: { title: 'Next Goal: Liverpool' }
-    },
-    {
-      matchId: 201,
-      kickoffAt: new Date().toISOString(),
-      status: 'FT',
-      league: { name: 'La Liga', country: { name: 'Spain' } },
-      homeTeam: { name: 'Real Madrid' },
-      awayTeam: { name: 'Barcelona' },
-      score: { home: 3, away: 2 },
-      featuredTip: { title: 'Both Teams to Score' }
-    },
-    {
-      matchId: 301,
-      kickoffAt: new Date().toISOString(),
-      status: 'NS',
-      league: { name: 'Serie A', country: { name: 'Italy' } },
-      homeTeam: { name: 'Inter' },
-      awayTeam: { name: 'Juventus' },
-      score: { home: null, away: null },
-      featuredTip: { title: 'Under 2.5 Goals' }
-    },
-    {
-      matchId: 401,
-      kickoffAt: new Date().toISOString(),
-      status: 'NS',
-      league: { name: 'Bundesliga', country: { name: 'Germany' } },
-      homeTeam: { name: 'Bayern Munich' },
-      awayTeam: { name: 'Dortmund' },
-      score: { home: null, away: null },
-      featuredTip: { title: 'Bayern to Lead at HT' }
-    }
-  ];
-
-  // Group mock matches by league
-  const groupedMatches = mockMatches.reduce((acc, match) => {
-    const leagueName = match.league.name;
-    const existingGroup = acc.find(g => g.leagueName === leagueName);
-
-    if (existingGroup) {
-      existingGroup.matches.push(match);
-    } else {
-      acc.push({
-        leagueName,
-        country: match.league.country.name,
-        matches: [match]
-      });
-    }
-    return acc;
-  }, [] as Array<{ leagueName: string; country: string; matches: typeof mockMatches }>);
+  // Map streams for Sidebar
+  const streams = streamsData.map(item => ({
+    id: item.matchId,
+    home: item.homeTeam?.name || 'Home',
+    away: item.awayTeam?.name || 'Away',
+    time: item.kickoffAt && new Date(item.kickoffAt) > new Date() ? 
+      new Date(item.kickoffAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }) : 
+      'LIVE',
+    icon: '⚽'
+  }));
 
   const streamsMock = [
     { id: 1, home: 'Real Madrid', away: 'Barcelona', time: 'LIVE', icon: '⚽' },
@@ -138,9 +70,11 @@ export default async function HomePage() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
           <Sidebar 
-            leagueData={leaguesData} 
-            featuredTip={tipsData.tips[0]} 
-            streams={streamsMock}
+            leagueData={leaguesData.items || []} 
+            initialTotal={leaguesData.total || 0}
+            featuredTips={tipsData} 
+            streams={streams}
+            initialStreamsTotal={streamsTotal}
           />
 
           {/* Main Content */}
@@ -150,23 +84,15 @@ export default async function HomePage() {
             </h1>
 
             <MatchFilter />
-            <DateSelector />
+            <DateSelector selectedDate={selectedDate} />
 
             <div className="space-y-6">
-              {groupedMatches.length > 0 ? (
-                groupedMatches.map((group) => (
-                  <LeagueGroup 
-                    key={group.leagueName}
-                    leagueName={group.leagueName}
-                    country={group.country}
-                    matches={group.matches}
-                  />
-                ))
-              ) : (
-                <div className="card text-center py-12">
-                   <p className="text-gray-500">No matches found for today. Try seeding the database!</p>
-                </div>
-              )}
+              <MatchListInfinite 
+                initialMatches={matches}
+                initialPage={pagination.page}
+                initialTotal={pagination.total}
+                selectedDate={selectedDate}
+              />
             </div>
 
             {/* Featured Teams Section */}
@@ -229,7 +155,7 @@ export default async function HomePage() {
                     <h2 className="text-2xl font-black text-slate-900">Frequently Asked Questions</h2>
                     <div className="h-px flex-1 bg-slate-200/60"></div>
                   </div>
-                  <p className="text-[10px] text-slate-400 mb-10 font-black uppercase tracking-[0.2em]">Common questions about today&apos;s schedule ({today})</p>
+                  <p className="text-[10px] text-slate-400 mb-10 font-black uppercase tracking-[0.2em]">Common questions about today&apos;s schedule ({selectedDate})</p>
                   <FAQAccordion />
                </section>
             </article>

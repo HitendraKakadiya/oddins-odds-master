@@ -5,9 +5,22 @@
 import { fetchAPI } from './client';
 import { TodayMatchesResponse, MatchDetailResponse } from './types';
 
-export async function getTodayMatches(date?: string): Promise<TodayMatchesResponse> {
-    const dateParam = date || new Date().toISOString().split('T')[0];
-    return fetchAPI<TodayMatchesResponse>(`/v1/matches/today?date=${dateParam}`);
+export async function getTodayMatches(date?: string, page?: number, pageSize?: number): Promise<TodayMatchesResponse> {
+    const params = new URLSearchParams();
+    if (date) params.set('date', date);
+    if (page) params.set('page', page.toString());
+    if (pageSize) params.set('pageSize', pageSize.toString());
+    const query = params.toString();
+    return fetchAPI<TodayMatchesResponse>(`/v1/matches/today${query ? `?${query}` : ''}`);
+}
+
+export async function getLiveTodayMatches(date?: string, page?: number, pageSize?: number): Promise<TodayMatchesResponse> {
+    const params = new URLSearchParams();
+    if (date) params.set('date', date);
+    if (page) params.set('page', page.toString());
+    if (pageSize) params.set('pageSize', pageSize.toString());
+    const query = params.toString();
+    return fetchAPI<TodayMatchesResponse>(`/v1/live/matches${query ? `?${query}` : ''}`);
 }
 
 export async function getMatchDetail(matchId: string | number): Promise<MatchDetailResponse> {

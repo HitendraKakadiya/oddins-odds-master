@@ -129,7 +129,7 @@ export default async function PredictionsPage({
         {/* Sidebar */}
         <Sidebar 
           leagueData={leaguesData} 
-          _featuredTip={displayPredictions[0] as any} 
+          featuredTips={displayPredictions.slice(0, 3)} 
           streams={streamsMock}
           mode="predictions"
         />

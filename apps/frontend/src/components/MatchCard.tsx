@@ -43,8 +43,12 @@ export function MatchRow({ match }: MatchProps) {
           <div className="flex items-center gap-10 min-w-[350px] justify-center">
             <div className="flex items-center gap-3 flex-1 justify-end">
               <span className="font-bold text-sm text-slate-800 group-hover:text-brand-indigo transition-colors">{match.homeTeam.name}</span>
-              <div className="w-9 h-9 bg-slate-50 rounded-xl flex items-center justify-center text-[10px] font-black text-slate-400 border border-slate-100 group-hover:border-brand-indigo/30 group-hover:text-brand-indigo transition-all shadow-sm">
-                {match.homeTeam.name.substring(0,2).toUpperCase()}
+              <div className="w-9 h-9 bg-slate-50 rounded-xl flex items-center justify-center text-[10px] font-black text-slate-400 border border-slate-100 group-hover:border-brand-indigo/30 group-hover:text-brand-indigo transition-all shadow-sm overflow-hidden">
+                {match.homeTeam.logoUrl ? (
+                  <img src={match.homeTeam.logoUrl} alt={match.homeTeam.name} className="w-6 h-6 object-contain" />
+                ) : (
+                  match.homeTeam.name.substring(0,2).toUpperCase()
+                )}
               </div>
             </div>
             
@@ -55,8 +59,12 @@ export function MatchRow({ match }: MatchProps) {
             </div>
 
             <div className="flex items-center gap-3 flex-1">
-              <div className="w-9 h-9 bg-slate-50 rounded-xl flex items-center justify-center text-[10px] font-black text-slate-400 border border-slate-100 group-hover:border-brand-indigo/30 group-hover:text-brand-indigo transition-all shadow-sm">
-                {match.awayTeam.name.substring(0,2).toUpperCase()}
+              <div className="w-9 h-9 bg-slate-50 rounded-xl flex items-center justify-center text-[10px] font-black text-slate-400 border border-slate-100 group-hover:border-brand-indigo/30 group-hover:text-brand-indigo transition-all shadow-sm overflow-hidden">
+                {match.awayTeam.logoUrl ? (
+                  <img src={match.awayTeam.logoUrl} alt={match.awayTeam.name} className="w-6 h-6 object-contain" />
+                ) : (
+                  match.awayTeam.name.substring(0,2).toUpperCase()
+                )}
               </div>
               <span className="font-bold text-sm text-slate-800 group-hover:text-brand-indigo transition-colors">{match.awayTeam.name}</span>
             </div>
@@ -85,8 +93,8 @@ export function MatchRow({ match }: MatchProps) {
   );
 }
 
-export function LeagueGroup({ leagueName, country, matches }: { leagueName: string; country: string; matches: MatchData[] }) {
-  const [isOpen, setIsOpen] = useState(true);
+export function LeagueGroup({ leagueName, country, matches, initialOpen = false }: { leagueName: string; country: string; matches: MatchData[]; initialOpen?: boolean }) {
+  const [isOpen, setIsOpen] = useState(initialOpen);
 
   return (
     <div className="card !p-0 overflow-hidden mb-8 !border-slate-200/60 shadow-sm hover:shadow-md transition-shadow">
