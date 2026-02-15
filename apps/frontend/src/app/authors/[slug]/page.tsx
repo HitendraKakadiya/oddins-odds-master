@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { FaLinkedin, FaInstagram, FaTwitter } from 'react-icons/fa';
+import OfferSection from '@/components/About/OfferSection';
 
 export default function AuthorDetailsPage({ params }: { params: { slug: string } }) {
-  // Mock data source - ideally this would come from an API or shared constant
   const authors = [
     {
       id: 1,
@@ -67,10 +67,9 @@ export default function AuthorDetailsPage({ params }: { params: { slug: string }
   }
 
   return (
-    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-6">
       <div className="max-w-4xl mx-auto text-center">
          
-         {/* Avatar and Name */}
          <div className="relative inline-block mb-6">
             <div className="w-32 h-32 rounded-2xl overflow-hidden border-4 border-white shadow-[0_0_0_2px_#ec4899] bg-slate-100 mx-auto">
                <div className="w-full h-full flex items-center justify-center text-5xl bg-gradient-to-br from-indigo-100 to-purple-50">
@@ -81,8 +80,7 @@ export default function AuthorDetailsPage({ params }: { params: { slug: string }
          
          <h1 className="text-3xl font-black text-slate-900 mb-6">{author.name}</h1>
 
-         {/* Meta Info */}
-         <div className="flex items-center justify-center gap-6 text-sm text-slate-500 font-medium mb-12">
+         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-[11px] sm:text-sm text-slate-500 font-medium mb-8 sm:mb-12 bg-slate-50/50 py-3 sm:py-0 rounded-xl sm:bg-transparent">
             <div className="flex items-center gap-2">
                <svg className="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 24 24"><path d="M19 4h-2V2h-2v2H9V2H7v2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2zm.002 16H5V8h14l.002 12z"/><path d="M11 10h2v5H9v-2h2z"/><path d="M13 15h-2v2h2zM9 10H7v2h2z"/><path d="M7 15h2v2H7z"/><path d="M15 10h2v2h-2z"/><path d="M17 15h-2v2h2z"/></svg>
                <span>Updated: {author.updatedAt}</span>
@@ -93,9 +91,8 @@ export default function AuthorDetailsPage({ params }: { params: { slug: string }
             </div>
          </div>
 
-         {/* Brief Story Card */}
-         <div className="bg-white rounded-2xl border border-slate-100 p-8 text-left shadow-sm mb-8">
-            <h2 className="text-xl font-bold text-slate-900 mb-4">Brief Story</h2>
+         <div className="bg-white rounded-2xl border border-slate-100 p-6 sm:p-8 text-left shadow-sm mb-6 sm:mb-8">
+            <h2 className="text-lg sm:text-xl font-bold text-slate-900 mb-4">Brief Story</h2>
             <p className="text-slate-600 leading-relaxed mb-6">
                {author.bio}
             </p>
@@ -123,7 +120,11 @@ export default function AuthorDetailsPage({ params }: { params: { slug: string }
                   </li>
                ))}
             </ul>
-         </div>
+          </div>
+
+          <div className="max-w-4xl mx-auto">
+             <OfferSection />
+          </div>
 
       </div>
     </div>

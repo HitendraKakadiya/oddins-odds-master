@@ -36,7 +36,7 @@ export default function TableOfContents() {
     const element = document.getElementById(id);
     if (element) {
       window.scrollTo({
-        top: element.offsetTop - 100, // Offset for sticky header if any
+        top: element.offsetTop - 100,
         behavior: 'smooth',
       });
       setActiveSection(id);
@@ -45,14 +45,14 @@ export default function TableOfContents() {
 
   return (
     <div className="hidden lg:block">
-      <h3 className="font-bold text-gray-900 mb-4 text-sm">Table of Contents</h3>
+      <h3 className="font-bold text-gray-900 mb-4 text-base">Table of Contents</h3>
       <div className="border-l-2 border-gray-100 pl-4 space-y-3">
         {sections.map((section) => (
           <a
             key={section.id}
             href={`#${section.id}`}
             onClick={(e) => scrollToSection(e, section.id)}
-            className={`block text-xs transition-colors duration-200 ${
+            className={`block text-sm transition-colors duration-200 ${
               activeSection === section.id
                 ? 'text-brand-pink font-bold border-l-2 border-brand-pink -ml-[18px] pl-[14px]'
                 : 'text-gray-500 hover:text-gray-900'

@@ -65,7 +65,7 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
   ];
 
   return (
-    <div className="bg-transparent min-h-screen">
+    <div className="bg-transparent">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
@@ -79,7 +79,7 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
 
           {/* Main Content */}
           <main className="flex-1 min-w-0">
-            <h1 className="text-3xl font-black text-brand-dark-blue mb-8 leading-tight">
+            <h1 className="text-3xl sm:text-4xl font-black text-brand-dark-blue mb-6 sm:mb-8 leading-tight">
               Today&apos;s Matches
             </h1>
 
@@ -95,44 +95,40 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
               />
             </div>
 
-            {/* Featured Teams Section */}
             <FeaturedTeams />
 
-            {/* Featured Highlight Banner */}
             <div className="mt-12">
               <HighlightBanner />
             </div>
-
-            {/* SEO Text Content */}
-            <article className="mt-12 space-y-12">
-               <div className="card !shadow-sm !border-slate-200/60 !p-10">
-                  <div className="prose prose-slate max-w-none text-slate-600 space-y-6">
-                     <p className="leading-relaxed text-lg">If you still don&apos;t know <strong>which matches are being played today in world football</strong>, this page will be your new daily football schedule. OddinsOdds is the largest free hub of statistics, predictions, broadcasts, and information about <strong>all of today&apos;s matches</strong> across <strong>more than 400 national and international</strong> competitions.</p>
-                     <p className="leading-relaxed text-lg">If you want to track your team, keep an eye on rivals, analyse games, or bet with more confidence, our schedule of today&apos;s matches has you covered. No need to look elsewhere - all the fixtures are right here.</p>
-                     <h3 className="text-slate-900 font-black text-2xl mt-10">List of all today&apos;s matches</h3>
-                     <p className="leading-relaxed text-lg">As soon as you open our website, you&apos;ll find a complete list, like a true football match schedule. This way, you can search for your favourite competition, see the kick-off time, stadium, and much more.</p>
+            <article className="mt-12 space-y-8 sm:space-y-12">
+               <div className="card !shadow-sm !border-slate-200/60 p-6 sm:!p-10">
+                  <div className="prose prose-slate max-w-none text-slate-600 space-y-4 sm:space-y-6">
+                     <p className="leading-relaxed text-lg sm:text-xl">If you still don&apos;t know <strong>which matches are being played today in world football</strong>, this page will be your new daily football schedule. OddinsOdds is the largest free hub of statistics, predictions, broadcasts, and information about <strong>all of today&apos;s matches</strong> across <strong>more than 400 national and international</strong> competitions.</p>
+                     <p className="leading-relaxed text-lg sm:text-xl">If you want to track your team, keep an eye on rivals, analyse games, or bet with more confidence, our schedule of today&apos;s matches has you covered. No need to look elsewhere - all the fixtures are right here.</p>
+                     <h3 className="text-slate-900 font-black text-2xl sm:text-3xl mt-8 sm:mt-10">List of all today&apos;s matches</h3>
+                     <p className="leading-relaxed text-lg sm:text-xl">As soon as you open our website, you&apos;ll find a complete list, like a true football match schedule. This way, you can search for your favourite competition, see the kick-off time, stadium, and much more.</p>
                   </div>
                </div>
 
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <section className="bg-white p-10 rounded-[32px] border border-slate-200/60 shadow-sm hover:shadow-md transition-all hover:border-slate-300 group">
-                     <h2 className="text-xl font-black text-slate-900 mb-5 flex items-center gap-3">
-                        <span className="w-12 h-12 bg-brand-indigo/10 rounded-2xl flex items-center justify-center text-brand-indigo border border-brand-indigo/5 shadow-inner">📺</span>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+                  <section className="bg-white p-6 sm:p-10 rounded-[24px] sm:rounded-[32px] border border-slate-200/60 shadow-sm hover:shadow-md transition-all hover:border-slate-300 group">
+                     <h2 className="text-xl sm:text-2xl font-black text-slate-900 mb-4 sm:mb-5 flex items-center gap-3">
+                        <span className="w-10 h-10 sm:w-12 sm:h-12 bg-brand-indigo/10 rounded-xl sm:rounded-2xl flex items-center justify-center text-brand-indigo border border-brand-indigo/5 shadow-inner">📺</span>
                         Where to watch live
                      </h2>
-                     <p className="text-sm text-slate-500 mb-8 leading-relaxed font-medium">You don&apos;t need to search multiple websites. See where to watch each match live on TV, mobile, or betting sites.</p>
-                     <Link href="/streams" className="inline-flex items-center gap-2 text-brand-indigo font-bold text-sm bg-brand-light-indigo/50 px-6 py-3 rounded-xl hover:bg-brand-light-indigo transition-all border border-brand-indigo/10 hover:scale-[1.02]">
+                     <p className="text-base sm:text-lg text-slate-500 mb-6 sm:mb-8 leading-relaxed font-medium">You don&apos;t need to search multiple websites. See where to watch each match live on TV, mobile, or betting sites.</p>
+                     <Link href="/streams" className="inline-flex items-center gap-2 text-brand-indigo font-bold text-sm sm:text-base bg-brand-light-indigo/50 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl hover:bg-brand-light-indigo transition-all border border-brand-indigo/10 hover:scale-[1.02]">
                         Check live streams &rarr;
                      </Link>
                   </section>
 
-                  <section className="bg-white p-10 rounded-[32px] border border-slate-200/60 shadow-sm hover:shadow-md transition-all hover:border-slate-300 group">
-                     <h2 className="text-xl font-black text-slate-900 mb-5 flex items-center gap-3">
-                        <span className="w-12 h-12 bg-brand-pink/10 rounded-2xl flex items-center justify-center text-brand-pink border border-brand-pink/5 shadow-inner">📚</span>
+                  <section className="bg-white p-6 sm:p-10 rounded-[24px] sm:rounded-[32px] border border-slate-200/60 shadow-sm hover:shadow-md transition-all hover:border-slate-300 group">
+                     <h2 className="text-xl sm:text-2xl font-black text-slate-900 mb-4 sm:mb-5 flex items-center gap-3">
+                        <span className="w-10 h-10 sm:w-12 sm:h-12 bg-brand-pink/10 rounded-xl sm:rounded-2xl flex items-center justify-center text-brand-pink border border-brand-pink/5 shadow-inner">📚</span>
                         Betting Academy
                      </h2>
-                     <p className="text-sm text-slate-500 mb-8 leading-relaxed font-medium">Learn how to bet like a pro with articles on bankroll management, value analysis, and advanced strategies.</p>
-                     <Link href="/academy" className="inline-flex items-center gap-2 text-brand-pink font-bold text-sm bg-brand-pink/5 px-6 py-3 rounded-xl hover:bg-brand-pink/10 transition-all border border-brand-pink/10 hover:scale-[1.02]">
+                     <p className="text-base sm:text-lg text-slate-500 mb-6 sm:mb-8 leading-relaxed font-medium">Learn how to bet like a pro with articles on bankroll management, value analysis, and advanced strategies.</p>
+                     <Link href="/academy" className="inline-flex items-center gap-2 text-brand-pink font-bold text-sm sm:text-base bg-brand-pink/5 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl hover:bg-brand-pink/10 transition-all border border-brand-pink/10 hover:scale-[1.02]">
                         Start learning &rarr;
                      </Link>
                   </section>
@@ -140,9 +136,9 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
 
                <section className="bg-gradient-to-r from-slate-900 to-slate-800 p-12 rounded-[40px] text-white shadow-xl relative overflow-hidden group border border-slate-800">
                   <div className="relative z-10">
-                    <h2 className="text-2xl font-black mb-4">Trusted Betting Sites 2026</h2>
-                    <p className="text-slate-400 text-sm max-w-lg mb-8 leading-relaxed font-medium">Technical criteria, updated bonuses, and proper licensing — we only recommend the best.</p>
-                    <Link href="/betting-sites" className="btn-pink !bg-white !text-slate-900 !px-8 hover:!bg-slate-50 transition-colors border border-white/20">
+                    <h2 className="text-2xl sm:text-3xl font-black mb-3 sm:mb-4">Trusted Betting Sites 2026</h2>
+                    <p className="text-slate-400 text-base sm:text-lg max-w-lg mb-6 sm:mb-8 leading-relaxed font-medium">Technical criteria, updated bonuses, and proper licensing — we only recommend the best.</p>
+                    <Link href="/betting-sites" className="btn-pink !bg-white !text-slate-900 !px-6 sm:!px-8 hover:!bg-slate-50 transition-colors border border-white/20">
                        View Rankings
                     </Link>
                   </div>
@@ -151,8 +147,8 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
                </section>
 
                <section>
-                  <div className="flex items-center gap-6 mb-10">
-                    <h2 className="text-2xl font-black text-slate-900">Frequently Asked Questions</h2>
+                  <div className="flex items-center gap-4 sm:gap-6 mb-8 sm:mb-10">
+                    <h2 className="text-2xl sm:text-3xl font-black text-slate-900 whitespace-nowrap">Frequently Asked Questions</h2>
                     <div className="h-px flex-1 bg-slate-200/60"></div>
                   </div>
                   <p className="text-[10px] text-slate-400 mb-10 font-black uppercase tracking-[0.2em]">Common questions about today&apos;s schedule ({selectedDate})</p>
