@@ -1,19 +1,19 @@
+import React from 'react';
+
 export default function AuthorBio() {
   return (
-    <div className="bg-white border boundary-slate-100 rounded-2xl p-4 sm:p-6 lg:p-8 flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 mt-6 sm:mt-8 shadow-sm">
+    <div className="bg-white border border-slate-100 rounded-2xl p-4 sm:p-6 lg:p-8 flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 mt-2 sm:mt-8 shadow-sm">
        <div className="relative">
           <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-200">
-             {/* Placeholder for author image */}
              <div className="w-full h-full bg-slate-200 flex items-center justify-center text-3xl">👨🏻‍💻</div>
           </div>
-          {/* Decorative elements could be added here */}
        </div>
        <div className="flex-1 text-center md:text-left">
           <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
-             <h3 className="text-lg font-bold text-gray-900">John Doe</h3>
-             <span className="bg-purple-100 text-purple-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">Senior Analyst</span>
+             <h3 className="text-lg sm:text-xl font-black text-gray-900 leading-tight">John Doe</h3>
+             <span className="bg-purple-100 text-purple-700 text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wide">Senior Analyst</span>
           </div>
-          <p className="text-xs text-gray-500 mb-4 leading-relaxed">
+          <p className="text-sm sm:text-base text-gray-500 mb-5 leading-relaxed font-medium">
              John is a seasoned sports analyst with over 10 years of experience in data modeling and match predictions. 
              At OddinsOdds, he leads the statistical analysis team, ensuring every tip is backed by solid data. Outside of work, 
              he enjoys playing 5-a-side football and analyzing historical match data.

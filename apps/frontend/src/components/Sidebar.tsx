@@ -70,7 +70,6 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
 
   return (
     <aside className="w-full lg:w-[380px] flex flex-col gap-6">
-      {/* Prediction of the day Slider */}
       <div className="bg-gradient-to-br from-[#6366F1] to-[#4F46E5] rounded-[28px] p-4 text-white overflow-hidden relative shadow-xl shadow-brand-indigo/30 border border-white/20">
         <div className="flex items-center justify-center gap-2 mb-4">
           <div className="bg-white/20 p-1.5 rounded-lg backdrop-blur-sm border border-white/10">
@@ -78,7 +77,7 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5S19.832 5.477 21 6.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
           </div>
-          <h3 className="font-black text-base tracking-tight">Prediction of the day</h3>
+          <h3 className="font-black text-lg sm:text-xl tracking-tight">Prediction of the day</h3>
         </div>
 
         <div className="bg-white rounded-2xl p-4 shadow-lg mb-4 border border-white/30 text-slate-900">
@@ -87,7 +86,7 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
                 <span className="text-lg">🇬🇷</span>
              </div>
              <div>
-                <div className="text-xs font-black text-slate-800 leading-tight">{currentPrediction.leagueName}</div>
+                <div className="text-sm sm:text-base font-black text-slate-800 leading-tight">{currentPrediction.leagueName}</div>
                 <div className="flex items-center gap-2 mt-0.5 text-slate-400 font-bold text-[10px]">
                    <div className="flex items-center gap-1">
                       <svg className="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -106,14 +105,14 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-50 border border-slate-100 rounded-full mb-2 flex items-center justify-center text-lg sm:text-xl shadow-sm">
                 {currentPrediction.homeTeam.logo}
               </div>
-              <div className="text-[10px] sm:text-[11px] font-black text-slate-800 leading-tight line-clamp-2">
+              <div className="text-sm sm:text-base font-black text-slate-800 leading-tight line-clamp-2">
                 {currentPrediction.homeTeam.name}
               </div>
             </div>
 
             <div className="flex flex-col items-center justify-center flex-shrink-0 px-2">
-              <div className="text-[10px] sm:text-[11px] font-black text-slate-300 mb-0.5">V.S</div>
-              <div className="text-[8px] sm:text-[9px] font-bold text-slate-800 bg-slate-50 px-2 py-0.5 rounded-full border border-slate-100 shadow-inner">
+              <div className="text-xs sm:text-sm font-black text-slate-300 mb-0.5">V.S</div>
+              <div className="text-xs sm:text-sm font-bold text-slate-800 bg-slate-50 px-2 py-0.5 rounded-full border border-slate-100 shadow-inner">
                  {currentPrediction.countdown}
               </div>
             </div>
@@ -122,23 +121,22 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-slate-50 border border-slate-100 rounded-full mb-2 flex items-center justify-center text-lg sm:text-xl shadow-sm">
                 {currentPrediction.awayTeam.logo}
               </div>
-              <div className="text-[10px] sm:text-[11px] font-black text-slate-800 leading-tight line-clamp-2">
+              <div className="text-sm sm:text-base font-black text-slate-800 leading-tight line-clamp-2">
                 {currentPrediction.awayTeam.name}
               </div>
             </div>
           </div>
           
           <div className="mt-4 text-center bg-slate-50 rounded-xl p-3 border border-slate-100 mb-4">
-             <div className="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">Prediction</div>
-             <div className="font-black text-base text-slate-900 leading-tight">{currentPrediction.prediction}</div>
+             <div className="text-[10px] sm:text-xs text-slate-400 font-black uppercase tracking-widest mb-1">Prediction</div>
+             <div className="font-black text-lg sm:text-xl text-slate-900 leading-tight">{currentPrediction.prediction}</div>
           </div>
 
-          <button className="w-full bg-brand-pink text-white py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.15em] shadow-lg shadow-brand-pink/20 hover:scale-[1.01] transition-all active:scale-[0.99]">
+          <button className="w-full bg-brand-pink text-white py-3 rounded-xl font-black text-xs sm:text-sm uppercase tracking-[0.15em] shadow-lg shadow-brand-pink/20 hover:scale-[1.01] transition-all active:scale-[0.99]">
             See Prediction
           </button>
         </div>
 
-        {/* Slider Controls */}
         <div className="flex flex-col items-center gap-3">
            <div className="flex items-center gap-4">
               <button 
@@ -151,7 +149,7 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
               </button>
               
               <div className="flex flex-col items-center gap-2">
-                 <div className="text-[12px] font-black text-white/80">{currentSlide + 1} / {mockPredictions.length}</div>
+                 <div className="text-sm sm:text-base font-black text-white/80">{currentSlide + 1} / {mockPredictions.length}</div>
                  <div className="flex items-center gap-1.5">
                     {mockPredictions.map((_, idx) => (
                        <button 
@@ -175,13 +173,11 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
         </div>
       </div>
 
-      {/* Sections based on mode */}
       {mode === 'default' ? (
         <>
-          {/* Today's Streams */}
           <div className="card !p-0 overflow-hidden shadow-sm !border-slate-200/60 border-t-4 !border-t-brand-indigo">
             <div className="p-5 border-b border-slate-100 bg-white">
-              <h3 className="font-bold text-lg text-slate-800">Today&apos;s Streams</h3>
+              <h3 className="font-bold text-lg sm:text-xl text-slate-800">Today&apos;s Streams</h3>
             </div>
             <div className="divide-y divide-slate-100">
                 {streams.length > 0 ? (
@@ -192,12 +188,12 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
                           {stream.icon}
                         </div>
                         <div>
-                          <div className="text-[11px] font-bold text-slate-800 line-clamp-1 group-hover:text-brand-indigo transition-colors">
+                          <div className="text-sm sm:text-base font-bold text-slate-800 line-clamp-1 group-hover:text-brand-indigo transition-colors">
                             {stream.home} vs {stream.away}
                           </div>
                           <div className="flex items-center gap-1.5 mt-0.5">
                             <span className={`w-1.5 h-1.5 rounded-full ${stream.time === 'LIVE' ? 'bg-red-500 animate-pulse' : 'bg-slate-300'}`}></span>
-                            <span className={`text-[9px] font-black uppercase tracking-tighter ${stream.time === 'LIVE' ? 'text-red-500' : 'text-slate-400'}`}>
+                            <span className={`text-xs sm:text-sm font-black uppercase tracking-tighter ${stream.time === 'LIVE' ? 'text-red-500' : 'text-slate-400'}`}>
                               {stream.time}
                             </span>
                           </div>
@@ -212,17 +208,16 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
                   ))
                 ) : (
                   <div className="p-8 text-center">
-                      <div className="text-xs text-slate-400 font-semibold mb-2">No live events now</div>
-                      <Link href="/streams" className="text-[11px] text-brand-indigo font-bold hover:underline">View schedule &rarr;</Link>
+                      <div className="text-sm sm:text-base text-slate-400 font-semibold mb-2">No live events now</div>
+                      <Link href="/streams" className="text-xs sm:text-sm text-brand-indigo font-bold hover:underline">View schedule &rarr;</Link>
                   </div>
                 )}
             </div>
           </div>
 
-          {/* Football Leagues */}
           <div className="card !p-0 overflow-hidden shadow-sm !border-slate-200/60 border-t-4 !border-t-brand-indigo">
             <div className="p-5 border-b border-slate-100 bg-white">
-              <h3 className="font-bold text-lg text-slate-800">Football Leagues</h3>
+              <h3 className="font-bold text-lg sm:text-xl text-slate-800">Football Leagues</h3>
             </div>
             <div className="flex flex-col">
               {topLeagues.length > 0 ? (topLeagues.map((group) => (
@@ -242,8 +237,8 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
                               </div>
                             )}
                             <div>
-                                <div className="text-xs font-bold text-slate-800 group-hover:text-brand-indigo transition-colors line-clamp-1">{league.name}</div>
-                                <div className="text-[10px] text-slate-400 font-bold tracking-tight">{group.country.name}</div>
+                                <div className="text-sm sm:text-base font-bold text-slate-800 group-hover:text-brand-indigo transition-colors line-clamp-1">{league.name}</div>
+                                <div className="text-xs sm:text-sm text-slate-400 font-bold tracking-tight">{group.country.name}</div>
                             </div>
                           </div>
                           <svg className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-all translate-x-0 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -254,15 +249,14 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
                   </div>
                 ))
               ) : (
-                <div className="p-8 text-center text-xs text-slate-400 font-bold">No data available</div>
+                <div className="p-8 text-center text-sm sm:text-base text-slate-400 font-bold">No data available</div>
               )}
             </div>
           </div>
         </>
       ) : (
-        /* Predictions Mode: Today's Competitions Accordion */
         <div className="flex flex-col gap-4">
-           <h3 className="font-bold text-xl text-slate-800 ml-1">Today&apos;s Competitions</h3>
+           <h3 className="font-bold text-xl sm:text-2xl text-slate-800 ml-1">Today&apos;s Competitions</h3>
            <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-hidden">
               <div className="divide-y divide-slate-100">
                 {competitionsData.map((group) => (
@@ -279,7 +273,7 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
                             <span>🏳️</span>
                           )}
                         </div>
-                        <span className="text-sm font-bold text-slate-700 group-hover:text-brand-indigo transition-colors">{group.country.name}</span>
+                        <span className="text-base sm:text-lg font-bold text-slate-700 group-hover:text-brand-indigo transition-colors">{group.country.name}</span>
                       </div>
                       <svg 
                         className={`w-4 h-4 text-slate-300 transition-transform duration-300 ${openCountry === group.country.name ? 'rotate-180' : ''}`} 
@@ -297,7 +291,7 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
                           <Link 
                             key={league.id} 
                             href={`/predictions?leagueSlug=${league.slug}`}
-                            className="flex items-center gap-3 p-2 rounded-lg hover:bg-white hover:text-brand-indigo transition-all text-xs font-bold text-slate-500"
+                            className="flex items-center gap-3 p-2 rounded-lg hover:bg-white hover:text-brand-indigo transition-all text-sm sm:text-base font-bold text-slate-500"
                           >
                             <span className="w-1.5 h-1.5 rounded-full bg-slate-200"></span>
                             {league.name}

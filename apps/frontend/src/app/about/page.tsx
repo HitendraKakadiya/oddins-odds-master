@@ -1,12 +1,12 @@
 import TableOfContents from '@/components/About/TableOfContents';
 import TodaysMatchesWidget from '@/components/About/TodaysMatchesWidget';
 import AuthorBio from '@/components/About/AuthorBio';
+import OfferSection from '@/components/About/OfferSection';
 import Link from 'next/link';
 
 export default function AboutPage() {
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Header Section */}
       <div className="mb-6 sm:mb-8 transition-all duration-300">
          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 mb-3 sm:mb-4 leading-tight">About OddinsOdds</h1>
          <div className="flex flex-wrap items-center gap-2 text-[11px] sm:text-sm text-gray-500 font-bold bg-slate-50 self-start px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-slate-100/60 shadow-inner">
@@ -16,10 +16,8 @@ export default function AboutPage() {
          </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-12">
-        {/* Main Content */}
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-12">
         <main className="flex-1 max-w-4xl">
-           {/* Intro */}
            <div className="prose prose-slate max-w-none text-gray-600 mb-12">
               <p className="lead font-bold text-gray-900 text-lg mb-6">
                  OddinsOdds is a platform specialized in football statistics, sportsbook analysis, and sports betting tips,
@@ -32,8 +30,7 @@ export default function AboutPage() {
               </p>
            </div>
 
-           {/* Our History */}
-           <section id="our-history" className="scroll-mt-24 mb-16">
+           <section id="our-history" className="scroll-mt-24 mb-8 sm:mb-12 lg:mb-16">
               <h2 className="text-3xl font-black text-gray-900 mb-6">Our History</h2>
               <div className="prose prose-slate max-w-none text-gray-600">
                  <p className="mb-4">
@@ -54,8 +51,7 @@ export default function AboutPage() {
               </div>
            </section>
 
-           {/* What We Do */}
-           <section id="what-we-do" className="scroll-mt-24 mb-16">
+           <section id="what-we-do" className="scroll-mt-24 mb-8 sm:mb-12 lg:mb-16">
               <h2 className="text-3xl font-black text-gray-900 mb-6">What We Do</h2>
               <div className="prose prose-slate max-w-none text-gray-600">
                  <p className="mb-6">
@@ -117,8 +113,9 @@ export default function AboutPage() {
               </div>
            </section>
 
-            {/* Our Team */}
-            <section id="our-team" className="scroll-mt-24 mb-16">
+           <OfferSection />
+
+           <section id="our-team" className="scroll-mt-24 mb-8 sm:mb-12 lg:mb-16">
               <h2 className="text-3xl font-black text-gray-900 mb-6">Our Team</h2>
               <div className="prose prose-slate max-w-none text-gray-600">
                  <p className="mb-8">
@@ -128,7 +125,6 @@ export default function AboutPage() {
                  </p>
 
                  <div className="space-y-8">
-                    {/* Authors */}
                     <AuthorBio />
               </div>
               </div>
@@ -138,7 +134,6 @@ export default function AboutPage() {
 
         </main>
 
-        {/* Sidebar */}
         <aside className="w-full lg:w-[320px] shrink-0">
            <div className="sticky top-24">
               <TableOfContents />

@@ -58,7 +58,6 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
 
   const items = (streamsData as StreamsResponse).items?.length > 0 ? (streamsData as StreamsResponse).items : mockStreams;
 
-  // Group items by league
   const groupedStreams = items.reduce((acc: Record<number, { league: typeof items[0]['league']; matches: typeof items }>, item: StreamItem) => {
     const leagueId = item.league.id;
     if (!acc[leagueId]) {
@@ -76,12 +75,9 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Sidebar */}
         <Sidebar leagueData={leagues} _featuredTip={null} mode="predictions" />
 
-        {/* Main Content */}
         <div className="flex-1">
-          {/* Hero Banner */}
           <div className="relative rounded-[24px] sm:rounded-[32px] overflow-hidden mb-8 min-h-[240px] sm:min-h-[300px] flex items-center p-6 sm:p-8 lg:p-12">
              <div className="absolute inset-0 z-0">
                 <img 
@@ -102,10 +98,8 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
              </div>
           </div>
 
-          {/* Date Filter */}
           <StreamsDateFilter initialDate={date} />
 
-          {/* Streams List */}
           {groupedList.length === 0 ? (
             <div className="bg-white rounded-2xl border border-slate-200/60 p-12 text-center shadow-sm">
               <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100">
@@ -124,16 +118,15 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
             </div>
           )}
 
-          {/* SEO Content */}
           <div className="mt-8 sm:mt-12 bg-white rounded-[24px] sm:rounded-3xl border border-slate-100 p-6 sm:p-8 lg:p-12 shadow-sm">
              <h2 className="text-xl sm:text-2xl font-black text-slate-800 mb-6">Live Streams {new Date(date).toLocaleDateString('en-GB')}</h2>
              
              <div className="space-y-4 sm:space-y-6 text-slate-600 leading-relaxed text-sm sm:text-base">
                 <p>
-                  <strong className="text-slate-800">APWin</strong> delivers the <strong className="text-slate-800">top options for watching football live and for free</strong>. With the information on our platform, users who like to enjoy football live can know where they can watch today&apos;s games for free and follow their favourite team closely.
+                  <strong className="text-slate-800">OddinsOdds</strong> delivers the <strong className="text-slate-800">top options for watching football live and for free</strong>. With the information on our platform, users who like to enjoy football live can know where they can watch today&apos;s games for free and follow their favourite team closely.
                 </p>
                 <p>
-                  In addition to providing the complete list of channels that will show today&apos;s games, APWin also allows you to watch football live and online in HD on mobile devices such as cell phones, tablets and even on your computer. Everything is directly connected to our website.
+                  In addition to providing the complete list of channels that will show today&apos;s games, OddinsOdds also allows you to watch football live and online in HD on mobile devices such as cell phones, tablets and even on your computer. Everything is directly connected to our website.
                 </p>
                 
                 <h3 className="text-base sm:text-lg font-bold text-slate-800 !mt-6 sm:!mt-8">Here are some important considerations for watching football matches in HD today:</h3>

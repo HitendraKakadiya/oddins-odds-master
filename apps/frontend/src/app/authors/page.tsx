@@ -1,4 +1,5 @@
 import AuthorCard from '@/components/Authors/AuthorCard';
+import OfferSection from '@/components/About/OfferSection';
 
 export default function AuthorsPage() {
   const authors = [
@@ -26,9 +27,8 @@ export default function AuthorsPage() {
   ];
 
   return (
-    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-16 pb-6 sm:pb-8">
       
-      {/* Header */}
       <div className="text-center mb-10 sm:mb-16">
         <h1 className="text-2xl sm:text-4xl md:text-5xl font-black text-slate-900 mb-3 sm:mb-4 leading-tight">OddinsOdds Authors</h1>
         <p className="text-slate-500 font-medium text-xs sm:text-base max-w-2xl mx-auto px-4">
@@ -36,8 +36,7 @@ export default function AuthorsPage() {
         </p>
       </div>
 
-      {/* Authors Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto mb-16 sm:mb-20">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto mb-16 sm:mb-20">
         {authors.map((author) => (
           <AuthorCard 
             key={author.id}
@@ -47,6 +46,10 @@ export default function AuthorsPage() {
             link={author.link}
           />
         ))}
+      </div>
+
+      <div className="max-w-7xl mx-auto">
+        <OfferSection />
       </div>
 
 
