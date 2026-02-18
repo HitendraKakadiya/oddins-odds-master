@@ -1,5 +1,6 @@
-import { getMatchDetail, type MatchDetailResponse, type WhereToWatchItem, type Market, type Prediction, type H2HMatch } from '@/lib/api';
-import PredictionCard from '@/components/PredictionCard';
+import { getMatchDetail, type MatchDetailResponse } from '@/lib/api';
+import MatchHeader from '@/components/match/MatchHeader';
+import MatchContent from '@/components/match/MatchContent';
 import Link from 'next/link';
 
 // ISR: Revalidate every 2 minutes for live updates
@@ -21,275 +22,50 @@ export default async function MatchDetailPage({ params }: PageProps) {
   } catch (error) {
     console.error(`Failed to fetch match ${matchId}:`, error);
     
-    // Provide mock data for our custom IDs if fetch fails
-    if (matchId >= 9000 && matchId <= 9300) {
-      const mockMatches: Record<number, MatchDetailResponse> = {
-        9001: {
+    // Provide some minimal mock data if fetch fails completely for non-existent IDs
+    if (!matchData) {
+       matchData = {
           match: {
-            matchId: 9001,
+            matchId,
             kickoffAt: new Date().toISOString(),
             status: 'UPCOMING',
-            league: { name: 'Saudi Pro League', slug: 'saudi-pro-league', country: { name: 'Saudi Arabia' } },
-            homeTeam: { name: 'Al Ahli', slug: 'al-ahli' },
-            awayTeam: { name: 'Al Hazm', slug: 'al-hazm' },
+            league: { id: 0, name: 'Premier League', slug: 'premier-league', country: { name: 'England' } },
+            homeTeam: { id: 0, name: 'Home Team', slug: 'home-team' },
+            awayTeam: { id: 0, name: 'Away Team', slug: 'away-team' },
             score: { home: 0, away: 0 }
-          },
-          whereToWatch: [{ name: 'SSC Sport', url: '#' }, { name: 'Shahid', url: '#' }]
-        },
-        9002: {
-          match: {
-            matchId: 9002,
-            kickoffAt: new Date().toISOString(),
-            status: 'UPCOMING',
-            league: { name: 'Saudi Pro League', slug: 'saudi-pro-league', country: { name: 'Saudi Arabia' } },
-            homeTeam: { name: 'Al Akhdoud', slug: 'al-akhdoud' },
-            awayTeam: { name: 'Al Hilal', slug: 'al-hilal' },
-            score: { home: 0, away: 0 }
-          },
-          whereToWatch: [{ name: 'SSC Sport', url: '#' }]
-        },
-        9101: {
-          match: {
-            matchId: 9101,
-            kickoffAt: new Date().toISOString(),
-            status: 'UPCOMING',
-            league: { name: 'Egyptian Premier League', slug: 'egyptian-premier-league', country: { name: 'Egypt' } },
-            homeTeam: { name: 'Ceramica Cleopatra', slug: 'ceramica-cleopatra' },
-            awayTeam: { name: 'Ghazl El Mehalla', slug: 'ghazl-el-mehalla' },
-            score: { home: 0, away: 0 }
-          },
-          whereToWatch: [{ name: 'OnTime Sports', url: '#' }]
-        },
-        9102: {
-          match: {
-            matchId: 9102,
-            kickoffAt: new Date().toISOString(),
-            status: 'UPCOMING',
-            league: { name: 'Egyptian Premier League', slug: 'egyptian-premier-league', country: { name: 'Egypt' } },
-            homeTeam: { name: 'Wadi Degla', slug: 'wadi-degla' },
-            awayTeam: { name: 'Al-Mokawloon', slug: 'al-mokawloon' },
-            score: { home: 0, away: 0 }
-          },
-          whereToWatch: [{ name: 'OnTime Sports', url: '#' }]
-        },
-        9201: {
-          match: {
-            matchId: 9201,
-            kickoffAt: new Date().toISOString(),
-            status: 'UPCOMING',
-            league: { name: 'Liga 1', slug: 'liga-1', country: { name: 'Romania' } },
-            homeTeam: { name: 'FCSB', slug: 'fcsb' },
-            awayTeam: { name: 'Botosani', slug: 'botosani' },
-            score: { home: 0, away: 0 }
-          },
-          whereToWatch: [{ name: 'Digi Sport', url: '#' }]
-        }
-      };
-      
-      matchData = mockMatches[matchId] || {
-        match: {
-          matchId,
-          kickoffAt: new Date().toISOString(),
-          status: 'UPCOMING',
-          league: { name: 'Mock League', slug: 'mock-league', country: { name: 'Mock Country' } },
-          homeTeam: { name: 'Home Team', slug: 'home-team' },
-          awayTeam: { name: 'Away Team', slug: 'away-team' },
-          score: { home: 0, away: 0 }
-        }
-      };
+          }
+       };
     }
   }
 
-  if (!matchData) {
+  if (!matchData || !matchData.match) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="card text-center py-12">
-          <p className="text-gray-500 text-lg">Match not found</p>
-          <Link href="/streams" className="text-brand-indigo font-bold hover:underline mt-4 inline-block">
-            Return to Streams
-          </Link>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+        <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+           <span className="text-4xl text-slate-300">🔎</span>
         </div>
+        <h1 className="text-3xl font-black text-slate-800 mb-4">Match not found</h1>
+        <p className="text-slate-400 font-bold mb-8">We couldn't find the details for this match. It might have been postponed or removed.</p>
+        <Link href="/predictions" className="bg-brand-indigo text-white px-8 py-4 rounded-2xl font-black shadow-lg shadow-brand-indigo/20 hover:scale-105 transition-transform inline-block">
+          Return to Predictions
+        </Link>
       </div>
     );
   }
 
-  const { match, oddsLatest, predictions, h2h, whereToWatch } = matchData;
-  const kickoffTime = new Date(match.kickoffAt);
-  const isLive = match.status === 'LIVE';
-  const isFinished = match.status === 'FT';
-
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Match Header */}
-      <div className="card mb-8">
-        {/* League Info */}
-        <div className="flex items-center justify-between mb-6">
-          <Link href={`/league/${match.league.country.name.toLowerCase()}/${match.league.slug}`} className="flex items-center space-x-2 text-gray-600 hover:text-primary-600">
-            {match.league.logoUrl && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={match.league.logoUrl} alt="" className="w-6 h-6 object-contain" />
-            )}
-            <span className="font-medium">{match.league.name}</span>
-          </Link>
-          <div className="text-sm text-gray-600">
-            {kickoffTime.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
-          </div>
-        </div>
+    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16 bg-[#F8FAFC]">
+      <div className="max-w-7xl mx-auto">
+        {/* Premium Match Header */}
+        <MatchHeader 
+          match={matchData.match} 
+          prevMatchId={matchId > 1 ? matchId - 1 : undefined}
+          nextMatchId={matchId + 1}
+        />
 
-        {/* Teams & Score */}
-        <div className="grid grid-cols-7 gap-4 items-center mb-4">
-          {/* Home Team */}
-          <div className="col-span-3 flex items-center justify-end space-x-3">
-            <Link href={`/team/${match.homeTeam.slug}`} className="text-right hover:text-primary-600">
-              <h2 className="text-2xl font-bold">{match.homeTeam.name}</h2>
-            </Link>
-            {match.homeTeam.logoUrl && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={match.homeTeam.logoUrl} alt="" className="w-16 h-16 object-contain" />
-            )}
-          </div>
-
-          {/* Score/Status */}
-          <div className="col-span-1 text-center">
-            {isFinished || isLive ? (
-              <div>
-                <div className="text-4xl font-bold text-gray-900">
-                  {match.score.home} - {match.score.away}
-                </div>
-                {isLive && (
-                  <div className="text-sm text-red-500 font-bold animate-pulse mt-1">
-                    LIVE {match.elapsed}&apos;
-                  </div>
-                )}
-                {isFinished && (
-                  <div className="text-sm text-gray-500 mt-1">Full Time</div>
-                )}
-              </div>
-            ) : (
-              <div className="text-2xl font-bold text-gray-400">vs</div>
-            )}
-          </div>
-
-          {/* Away Team */}
-          <div className="col-span-3 flex items-center space-x-3">
-            {match.awayTeam.logoUrl && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={match.awayTeam.logoUrl} alt="" className="w-16 h-16 object-contain" />
-            )}
-            <Link href={`/team/${match.awayTeam.slug}`} className="hover:text-primary-600">
-              <h2 className="text-2xl font-bold">{match.awayTeam.name}</h2>
-            </Link>
-          </div>
-        </div>
-
-        {/* Match Status Badge */}
-        <div className="text-center">
-          <span className={`inline-block px-4 py-1 rounded-full text-sm font-medium ${
-            isLive ? 'bg-red-100 text-red-800' :
-            isFinished ? 'bg-gray-100 text-gray-800' :
-            'bg-blue-100 text-blue-800'
-          }`}>
-            {match.status}
-          </span>
-        </div>
+        {/* Tabbed Content (Statistics, Form, H2H, Standings) */}
+        <MatchContent matchData={matchData} />
       </div>
-
-      {/* Where to Watch */}
-      {whereToWatch && whereToWatch.length > 0 && (
-        <section className="mb-8">
-          <div className="card">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">📺 Where to Watch</h2>
-            <div className="flex flex-wrap gap-3">
-              {whereToWatch.map((channel: WhereToWatchItem, index: number) => (
-                <a
-                  key={index}
-                  href={channel.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-primary-50 hover:bg-primary-100 text-primary-700 px-4 py-2 rounded-lg font-medium transition-colors"
-                >
-                  {channel.name}
-                </a>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Latest Odds */}
-      {oddsLatest && (
-        <section className="mb-8">
-          <div className="card">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-900">Latest Odds</h2>
-              <span className="text-sm text-gray-500">
-                From {oddsLatest.bookmaker.name} • Updated {new Date(oddsLatest.capturedAt).toLocaleString()}
-              </span>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {oddsLatest.markets.map((market: Market, index: number) => (
-                <div key={index} className="bg-gray-50 rounded-lg p-3">
-                  <div className="text-xs text-gray-500 mb-1">{market.marketKey}</div>
-                  {market.selection && (
-                    <div className="font-medium text-gray-900 text-sm mb-1">{market.selection}</div>
-                  )}
-                  <div className="text-lg font-bold text-primary-600">{market.oddValue.toFixed(2)}</div>
-                  {market.impliedProb && (
-                    <div className="text-xs text-gray-500">{(market.impliedProb * 100).toFixed(0)}%</div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Predictions */}
-      {predictions && predictions.length > 0 && (
-        <section className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-gray-900">Our Predictions</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {predictions.map((prediction: Prediction, index: number) => (
-              <PredictionCard key={index} prediction={prediction} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Head to Head */}
-      {h2h && h2h.length > 0 && (
-        <section className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Head to Head</h2>
-          <div className="card overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Date</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Competition</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Home</th>
-                  <th className="text-center py-3 px-4 text-sm font-semibold text-gray-600">Score</th>
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-600">Away</th>
-                </tr>
-              </thead>
-              <tbody>
-                {h2h.map((match: H2HMatch, index: number) => (
-                  <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
-                    <td className="py-3 px-4 text-sm">{new Date(match.date).toLocaleDateString()}</td>
-                    <td className="py-3 px-4 text-sm">{match.competition}</td>
-                    <td className="py-3 px-4 text-sm font-medium">{match.homeTeam}</td>
-                    <td className="py-3 px-4 text-sm text-center font-bold">
-                      {match.homeScore} - {match.awayScore}
-                    </td>
-                    <td className="py-3 px-4 text-sm font-medium">{match.awayTeam}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      )}
     </div>
   );
 }
