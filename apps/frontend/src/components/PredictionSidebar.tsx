@@ -48,8 +48,12 @@ export default function PredictionSidebar({ leagues }: PredictionSidebarProps) {
           
           <div className="flex items-center justify-between mb-6">
              <div className="flex flex-col items-center gap-2 w-[80px]">
-                <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100 shadow-sm text-lg">
-                   {currentPrediction.homeTeam.logo}
+                <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100 shadow-sm text-lg overflow-hidden p-1">
+                   {currentPrediction.homeTeam.logo && typeof currentPrediction.homeTeam.logo === 'string' && currentPrediction.homeTeam.logo.startsWith('http') ? (
+                      <img src={currentPrediction.homeTeam.logo} alt={currentPrediction.homeTeam.name} className="w-full h-full object-contain" />
+                   ) : (
+                      currentPrediction.homeTeam.logo
+                   )}
                 </div>
                 <span className="text-[10px] font-black text-center line-clamp-1">{currentPrediction.homeTeam.name}</span>
              </div>
@@ -62,8 +66,12 @@ export default function PredictionSidebar({ leagues }: PredictionSidebarProps) {
              </div>
 
              <div className="flex flex-col items-center gap-2 w-[80px]">
-                <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100 shadow-sm text-lg">
-                   {currentPrediction.awayTeam.logo}
+                <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center border border-slate-100 shadow-sm text-lg overflow-hidden p-1">
+                   {currentPrediction.awayTeam.logo && typeof currentPrediction.awayTeam.logo === 'string' && currentPrediction.awayTeam.logo.startsWith('http') ? (
+                      <img src={currentPrediction.awayTeam.logo} alt={currentPrediction.awayTeam.name} className="w-full h-full object-contain" />
+                   ) : (
+                      currentPrediction.awayTeam.logo
+                   )}
                 </div>
                 <span className="text-[10px] font-black text-center line-clamp-1">{currentPrediction.awayTeam.name}</span>
              </div>

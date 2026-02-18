@@ -77,6 +77,7 @@ export async function predictionsRoutes(server: FastifyInstance) {
         l.name as league_name,
         l.slug as league_slug,
         c.name as country_name,
+        c.code as country_code,
         ht.id as home_team_id,
         ht.name as home_team_name,
         ht.slug as home_team_slug,
@@ -105,13 +106,14 @@ export async function predictionsRoutes(server: FastifyInstance) {
       params
     );
 
-    const items = result.rows.map((row: { match_id: number; prediction_id: number; kickoff_at: string; league_name: string; league_slug: string; country_name: string; home_team_id: number; home_team_name: string; home_team_slug: string; home_team_logo: string | null; away_team_id: number; away_team_name: string; away_team_slug: string; away_team_logo: string | null; market_key: string; line: string | number | null; selection: string; probability: number | string; confidence: number | string; is_premium: boolean | null }) => ({
+    const items = result.rows.map((row: { match_id: number; prediction_id: number; kickoff_at: string; league_name: string; league_slug: string; country_name: string; country_code: string; home_team_id: number; home_team_name: string; home_team_slug: string; home_team_logo: string | null; away_team_id: number; away_team_name: string; away_team_slug: string; away_team_logo: string | null; market_key: string; line: string | number | null; selection: string; probability: number | string; confidence: number | string; is_premium: boolean | null }) => ({
       matchId: row.match_id,
       kickoffAt: row.kickoff_at,
       league: {
         name: row.league_name,
         slug: row.league_slug,
         countryName: row.country_name,
+        countryCode: row.country_code,
       },
       homeTeam: {
         id: row.home_team_id,

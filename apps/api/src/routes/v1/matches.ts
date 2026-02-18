@@ -6,6 +6,9 @@ interface TodayQuery {
   tz?: string;
   page?: string;
   pageSize?: string;
+  leagueId?: string;
+  market?: string;
+  minOdds?: string;
 }
 
 interface FeaturedTipsQuery {
@@ -15,7 +18,7 @@ interface FeaturedTipsQuery {
 export async function matchesRoutes(server: FastifyInstance) {
   // GET /v1/matches/today
   server.get<{ Querystring: TodayQuery }>('/matches/today', async (request) => {
-    const { date, page = '1', pageSize = '20' } = request.query;
+    const { date, leagueId, market, minOdds, page = '1', pageSize = '20' } = request.query;
 
     // Default to today if no date provided
     const targetDate = date || new Date().toISOString().split('T')[0];
@@ -24,14 +27,65 @@ export async function matchesRoutes(server: FastifyInstance) {
     const pageSizeNum = Math.min(100, Math.max(1, parseInt(pageSize, 10)));
     const offset = (pageNum - 1) * pageSizeNum;
 
+    // Market mapping
+    const marketMap: Record<string, string> = {
+      '1X2': 'FT_1X2',
+      'Double Chance': 'DC',
+      'Both Teams to Score': 'BTTS',
+      'Over 2.5': 'OU_GOALS',
+      'Under 2.5': 'OU_GOALS',
+      'Over 1.5': 'OU_GOALS',
+      'Correct Score': 'CS',
+      'Over 9.5 Corners': 'OU_CORNERS',
+      'Under 9.5 Corners': 'OU_CORNERS',
+    };
+    const dbMarketKey = market ? marketMap[market] : null;
+
+    // Build filter clauses
+    const conditions = [`DATE(m.kickoff_at) = $1`];
+    const params: (string | number)[] = [targetDate];
+    let paramIdx = 2;
+
+    if (leagueId) {
+      conditions.push(`l.provider_league_id = $${paramIdx++}`);
+      params.push(leagueId);
+    }
+
+    if (dbMarketKey) {
+      conditions.push(`EXISTS (
+        SELECT 1 FROM match_predictions mp 
+        JOIN markets mk ON mp.market_id = mk.id 
+        WHERE mp.match_id = m.id AND mk.key = $${paramIdx++}
+      )`);
+      params.push(dbMarketKey);
+    }
+
+    if (minOdds) {
+      const minOddsVal = parseFloat(minOdds);
+      if (!isNaN(minOddsVal)) {
+        conditions.push(`EXISTS (
+          SELECT 1 FROM odds_snapshots os
+          JOIN odds_snapshot_lines osl ON os.id = osl.snapshot_id
+          WHERE os.match_id = m.id 
+          AND osl.odd_value > $${paramIdx++}
+        )`);
+        params.push(minOddsVal);
+      }
+    }
+
+    const whereClause = `WHERE ${conditions.join(' AND ')}`;
+
     // Get total count
     const countResult = await query(
-      `SELECT COUNT(*) as total FROM matches WHERE DATE(kickoff_at) = $1`,
-      [targetDate]
+      `SELECT COUNT(*) as total FROM matches m 
+       JOIN leagues l ON m.league_id = l.id
+       ${whereClause}`,
+      params
     );
     const total = parseInt(countResult.rows[0].total, 10);
 
     // Query matches for the given date with pagination
+    params.push(pageSizeNum, offset);
     const result = await query(
       `SELECT 
         m.id as match_id,
@@ -66,10 +120,10 @@ export async function matchesRoutes(server: FastifyInstance) {
       JOIN teams ht ON m.home_team_id = ht.id
       JOIN teams at ON m.away_team_id = at.id
       LEFT JOIN tips t ON m.id = t.match_id AND t.published_at IS NOT NULL
-      WHERE DATE(m.kickoff_at) = $1
+      ${whereClause}
       ORDER BY m.kickoff_at ASC
-      LIMIT $2 OFFSET $3`,
-      [targetDate, pageSizeNum, offset]
+      LIMIT $${paramIdx++} OFFSET $${paramIdx++}`,
+      params
     );
 
     const matches = result.rows.map((row: { match_id: number; provider_fixture_id: number | null; kickoff_at: string; status: string; elapsed: number | null; home_goals: number | null; away_goals: number | null; league_id: number; league_name: string; league_slug: string; league_type: string; league_logo: string | null; country_name: string; country_code: string; country_flag: string | null; home_team_id: number; home_team_name: string; home_team_slug: string; home_team_logo: string | null; away_team_id: number; away_team_name: string; away_team_slug: string; away_team_logo: string | null; tip_id: number | null; tip_title: string | null; tip_is_premium: boolean | null }) => ({

@@ -16,6 +16,30 @@ interface TeamTabParams {
 }
 
 export async function teamsRoutes(server: FastifyInstance) {
+  // GET /v1/teams/featured
+  server.get('/teams/featured', async () => {
+    const result = await query(
+      `SELECT 
+        t.id,
+        t.name,
+        t.slug,
+        t.logo_url as "logoUrl",
+        c.name as "countryName"
+      FROM teams t
+      JOIN countries c ON t.country_id = c.id
+      ORDER BY t.id ASC
+      LIMIT 6`
+    );
+
+    return result.rows.map(row => ({
+      id: row.id,
+      name: row.name,
+      slug: row.slug,
+      logo: row.logoUrl || '⚽',
+      country: row.countryName
+    }));
+  });
+
   // GET /v1/teams
   server.get<{ Querystring: TeamsQuery }>('/teams', async (request) => {
     const { query: searchQuery, leagueSlug } = request.query;

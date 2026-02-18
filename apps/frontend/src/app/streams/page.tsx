@@ -75,7 +75,11 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
-        <Sidebar leagueData={leagues} _featuredTip={null} mode="predictions" />
+        <Sidebar 
+          leagueData={Array.isArray(leagues) ? leagues : (leagues.items || [])} 
+          initialTotal={Array.isArray(leagues) ? 0 : (leagues.total || 0)}
+          mode="predictions" 
+        />
 
         <div className="flex-1">
           <div className="relative rounded-[24px] sm:rounded-[32px] overflow-hidden mb-8 min-h-[240px] sm:min-h-[300px] flex items-center p-6 sm:p-8 lg:p-12">

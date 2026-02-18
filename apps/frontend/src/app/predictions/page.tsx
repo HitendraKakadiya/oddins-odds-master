@@ -128,7 +128,8 @@ export default async function PredictionsPage({
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Sidebar */}
         <Sidebar 
-          leagueData={leaguesData} 
+          leagueData={Array.isArray(leaguesData) ? leaguesData : (leaguesData.items || [])} 
+          initialTotal={Array.isArray(leaguesData) ? 0 : (leaguesData.total || 0)}
           featuredTips={displayPredictions.slice(0, 3)} 
           streams={streamsMock}
           mode="predictions"

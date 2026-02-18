@@ -7,7 +7,15 @@ export type FilterType =
   | 'Win Either Halves' | 'Double Chance' | 'Both Teams to Score' | 'Sure 2 Odds' 
   | 'Over 9.5 Corners' | 'Under 9.5 Corners' | 'Correct Score' | 'HT/FT' | 'DNB' | 'Handicap' | 'Draw';
 
-export function MatchFilter() {
+export function MatchFilter({ leagues = [] }: { leagues?: any[] }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  
+  const selectedLeague = searchParams.get('leagueId') || '';
+  const selectedMarket = searchParams.get('market') || '';
+  const selectedMinOdds = searchParams.get('minOdds') || '';
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
 
@@ -16,6 +24,38 @@ export function MatchFilter() {
     'Over 2.5', 'Under 2.5', 'Over 1.5', 'Correct Score', 
     'HT/FT', 'DNB', 'Handicap', 'Draw', 'Over 9.5 Corners', 'Under 9.5 Corners'
   ];
+
+  const handleFilterClick = (filter: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (selectedMarket === filter) {
+      params.delete('market');
+    } else {
+      params.set('market', filter);
+    }
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
+  const handleLeagueChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    const val = e.target.value;
+    if (val) {
+      params.set('leagueId', val);
+    } else {
+      params.delete('leagueId');
+    }
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
+  const handleOddsChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    const val = e.target.value;
+    if (val) {
+      params.set('minOdds', val);
+    } else {
+      params.delete('minOdds');
+    }
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
   const handleScroll = () => {
     if (scrollRef.current) {
@@ -31,6 +71,9 @@ export function MatchFilter() {
     }
   };
 
+  // Flatten leagues from country groups
+  const allLeagues = leagues.flatMap(group => group.leagues || []);
+
   return (
     <div className="flex flex-col gap-6 mb-10">
       <div className="relative bg-slate-50/40 rounded-[24px] p-4 border border-slate-100/80">
@@ -42,7 +85,12 @@ export function MatchFilter() {
           {filters.map((filter) => (
             <button
               key={filter}
-              className="px-5 py-2.5 rounded-xl bg-white border border-slate-200/60 text-[11px] font-bold text-slate-500 whitespace-nowrap hover:border-brand-indigo hover:text-brand-indigo transition-all shadow-sm active:scale-95"
+              onClick={() => handleFilterClick(filter)}
+              className={`px-5 py-2.5 rounded-xl border text-[11px] font-bold whitespace-nowrap transition-all shadow-sm active:scale-95 ${
+                selectedMarket === filter 
+                  ? 'bg-brand-indigo border-brand-indigo text-white shadow-brand-indigo/20' 
+                  : 'bg-white border-slate-200/60 text-slate-500 hover:border-brand-indigo hover:text-brand-indigo'
+              }`}
             >
               {filter}
             </button>
@@ -78,8 +126,15 @@ export function MatchFilter() {
       
       <div className="flex gap-4">
         <div className="relative flex-1 max-w-[220px]">
-          <select className="w-full bg-white border border-slate-200/60 rounded-2xl px-5 py-3.5 text-sm font-bold text-slate-800 appearance-none focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/5 outline-none transition-all shadow-sm">
-            <option>All Leagues</option>
+          <select 
+            value={selectedLeague}
+            onChange={handleLeagueChange}
+            className="w-full bg-white border border-slate-200/60 rounded-2xl px-5 py-3.5 text-sm font-bold text-slate-800 appearance-none focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/5 outline-none transition-all shadow-sm"
+          >
+            <option value="">All Leagues</option>
+            {allLeagues.map((league: any) => (
+              <option key={league.id} value={league.id}>{league.name}</option>
+            ))}
           </select>
           <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,8 +144,15 @@ export function MatchFilter() {
         </div>
         
         <div className="relative flex-1 max-w-[220px]">
-          <select className="w-full bg-white border border-slate-200/60 rounded-2xl px-5 py-3.5 text-sm font-bold text-slate-800 appearance-none focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/5 outline-none transition-all shadow-sm">
-            <option>All Odds</option>
+          <select 
+            value={selectedMinOdds}
+            onChange={handleOddsChange}
+            className="w-full bg-white border border-slate-200/60 rounded-2xl px-5 py-3.5 text-sm font-bold text-slate-800 appearance-none focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/5 outline-none transition-all shadow-sm"
+          >
+            <option value="">All Odds</option>
+            <option value="1.5">Odds &gt; 1.5</option>
+            <option value="2.0">Odds &gt; 2.0</option>
+            <option value="3.0">Odds &gt; 3.0</option>
           </select>
           <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

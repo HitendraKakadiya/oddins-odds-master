@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { LeagueGroup } from './MatchCard';
-import { getLiveTodayMatches } from '@/lib/api';
+import { getTodayMatches } from '@/lib/api';
 import type { MatchData } from '@/lib/api';
 
 interface MatchListInfiniteProps {
@@ -10,13 +10,19 @@ interface MatchListInfiniteProps {
   initialPage: number;
   initialTotal: number;
   selectedDate: string;
+  leagueId?: string;
+  market?: string;
+  minOdds?: string;
 }
 
 export default function MatchListInfinite({
   initialMatches,
   initialPage,
   initialTotal,
-  selectedDate
+  selectedDate,
+  leagueId,
+  market,
+  minOdds
 }: MatchListInfiniteProps) {
   const [matches, setMatches] = useState<MatchData[]>(initialMatches);
   const [page, setPage] = useState(initialPage);
@@ -53,13 +59,13 @@ export default function MatchListInfinite({
     setLoading(true);
     try {
       const nextPage = page + 1;
-      const response = await getLiveTodayMatches(selectedDate, nextPage, 20);
+      const response = await getTodayMatches(selectedDate, nextPage, 20, leagueId, market, minOdds);
       
       if (response && response.matches) {
         setMatches(prev => [...prev, ...response.matches]);
         setPage(nextPage);
         setTotal(response.total);
-        setHasMore(matches.length + response.matches.length < response.total);
+        setHasMore((matches.length + response.matches.length) < response.total);
       } else {
         setHasMore(false);
       }
@@ -69,7 +75,7 @@ export default function MatchListInfinite({
     } finally {
       setLoading(false);
     }
-  }, [page, loading, hasMore, selectedDate, matches.length]);
+  }, [page, loading, hasMore, selectedDate, leagueId, market, minOdds, matches.length]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -88,13 +94,13 @@ export default function MatchListInfinite({
     return () => observer.disconnect();
   }, [loadMore, hasMore]);
 
-  // Reset state when date changes (if handled by parent)
+  // Reset state when date or filters change (handled by parent)
   useEffect(() => {
     setMatches(initialMatches);
     setPage(initialPage);
     setTotal(initialTotal);
     setHasMore(initialMatches.length < initialTotal);
-  }, [initialMatches, initialPage, initialTotal]);
+  }, [initialMatches, initialPage, initialTotal, selectedDate, leagueId, market, minOdds]);
 
   const groupedMatches = getGroupedMatches(matches);
 

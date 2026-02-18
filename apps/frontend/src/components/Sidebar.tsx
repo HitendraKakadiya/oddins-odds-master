@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import type { LeaguesResponse } from '@/lib/api';
-import { getLiveLeagues, getStreams } from '@/lib/api';
+import { getLeagues, getStreams } from '@/lib/api';
 
 interface SidebarProps {
   leagueData: LeaguesResponse[];
@@ -29,19 +29,19 @@ const mockCompetitions = [
 
 export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [], streams = [], initialStreamsTotal = 0, mode = 'default' }: SidebarProps) {
   // Leagues State
-  const [competitions, setCompetitions] = useState<LeaguesResponse[]>(leagueData);
+  const [competitions, setCompetitions] = useState<LeaguesResponse[]>(leagueData || []);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(initialTotal);
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(leagueData.length < initialTotal);
+  const [hasMore, setHasMore] = useState((leagueData || []).length < initialTotal);
   const loaderRef = useRef<HTMLDivElement>(null);
 
   // Sync Leagues State with Props
   useEffect(() => {
-    setCompetitions(leagueData);
+    setCompetitions(leagueData || []);
     setTotal(initialTotal);
     setPage(1);
-    setHasMore(leagueData.length < initialTotal);
+    setHasMore((leagueData || []).length < initialTotal);
   }, [leagueData, initialTotal]);
 
   // Streams State
@@ -62,7 +62,7 @@ export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [openCountries, setOpenCountries] = useState<string[]>(() => {
-    return leagueData.slice(0, 5).map(group => group.country.name);
+    return (leagueData || []).slice(0, 5).map(group => group.country.name);
   });
 
   // Load More Leagues
@@ -72,7 +72,7 @@ export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [
     setLoading(true);
     try {
       const nextPage = page + 1;
-      const response = await getLiveLeagues(nextPage, 20);
+      const response = await getLeagues(nextPage, 20);
       
       if (response && response.items) {
         setCompetitions(prev => [...prev, ...response.items]);
@@ -181,63 +181,30 @@ export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [
   ];
   
   // ... displayPredictions mapping ...
-  const displayPredictions = featuredTips.length > 0 
-    ? featuredTips.map(tip => {
-        // ... (same mapping)
-        const kickoffDate = tip.kickoffAt ? new Date(tip.kickoffAt) : null;
-        return {
-          id: tip.id,
-          leagueName: tip.leagueName || 'Unknown League',
-          time: kickoffDate ? kickoffDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : '00:00',
-          date: kickoffDate ? kickoffDate.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : today.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }),
-          homeTeam: { 
-            name: tip.homeTeam?.name || 'Home', 
-            logo: tip.homeTeam?.logoUrl ? <img src={tip.homeTeam.logoUrl} className="w-8 h-8 object-contain" /> : '⚽' 
-          },
-          awayTeam: { 
-            name: tip.awayTeam?.name || 'Away', 
-            logo: tip.awayTeam?.logoUrl ? <img src={tip.awayTeam.logoUrl} className="w-8 h-8 object-contain" /> : '⚽' 
-          },
-          prediction: tip.title || 'Match Winner',
-          countdown: 'LIVE', 
-          countryCode: tip.countryCode
-        };
-      })
-    : [
-        {
-            id: 1,
-            leagueName: 'Greek Super League',
-            time: '22:00',
-            date: today.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }),
-            homeTeam: { name: 'Asteras Tripolis', logo: '⚽' },
-            awayTeam: { name: 'Olympiakos Piraeus', logo: '⚽' },
-            prediction: 'Over 2.5 Goals',
-            countdown: '1m 41s',
-            countryCode: 'GR'
-        },
-        {
-            id: 2,
-            leagueName: 'Premier League',
-            time: '21:30',
-            date: today.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }),
-            homeTeam: { name: 'Manchester City', logo: '⚽' },
-            awayTeam: { name: 'Arsenal', logo: '⚽' },
-            prediction: 'Home Win',
-            countdown: '15m 20s',
-            countryCode: 'GB'
-        },
-        {
-            id: 3,
-            leagueName: 'La Liga',
-            time: '23:00',
-            date: today.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }),
-            homeTeam: { name: 'Real Madrid', logo: '⚽' },
-            awayTeam: { name: 'Barcelona', logo: '⚽' },
-            prediction: 'Both Teams To Score',
-            countdown: '45m 10s',
-            countryCode: 'ES'
-        }
-    ];
+  const displayPredictions = (featuredTips || []).map(tip => {
+    const kickoffDate = tip.kickoffAt ? new Date(tip.kickoffAt) : null;
+    // Handle FeaturedTip, Prediction, and raw Match objects
+    const leagueName = tip.leagueName || tip.league?.name || 'Unknown League';
+    const predictionText = tip.title || tip.selection || tip.featuredTip?.title || 'Analyzing match...';
+    
+    return {
+      id: tip.id || tip.matchId,
+      leagueName: leagueName,
+      time: kickoffDate ? kickoffDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : '00:00',
+      date: kickoffDate ? kickoffDate.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : today.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }),
+      homeTeam: { 
+        name: tip.homeTeam?.name || 'Home', 
+        logo: tip.homeTeam?.logoUrl ? <img src={tip.homeTeam.logoUrl} className="w-8 h-8 object-contain" /> : '⚽' 
+      },
+      awayTeam: { 
+        name: tip.awayTeam?.name || 'Away', 
+        logo: tip.awayTeam?.logoUrl ? <img src={tip.awayTeam.logoUrl} className="w-8 h-8 object-contain" /> : '⚽' 
+      },
+      prediction: predictionText,
+      countdown: 'LIVE', 
+      countryCode: tip.countryCode || tip.league?.countryCode || tip.league?.country?.code
+    };
+  });
 
   // ... rest of code ....
   
@@ -248,117 +215,127 @@ export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [
 
   return (
     <aside className="w-full lg:w-[380px] flex flex-col gap-6">
-      <div className="bg-gradient-to-br from-[#6366F1] to-[#4F46E5] rounded-[28px] p-4 text-white overflow-hidden relative shadow-xl shadow-brand-indigo/30 border border-white/20">
-         {/* ... content ... */}
-         <div className="flex items-center justify-center gap-2 mb-4">
-          <div className="bg-white/20 p-1.5 rounded-lg backdrop-blur-sm border border-white/10">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5S19.832 5.477 21 6.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
+      {displayPredictions.length > 0 && (
+        <div className="bg-gradient-to-br from-[#6366F1] to-[#4F46E5] rounded-[28px] p-4 text-white overflow-hidden relative shadow-xl shadow-brand-indigo/30 border border-white/20">
+           {/* ... content ... */}
+           <div className="flex items-center justify-center gap-2 mb-4">
+            <div className="bg-white/20 p-1.5 rounded-lg backdrop-blur-sm border border-white/10">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5S19.832 5.477 21 6.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+            </div>
+            <h3 className="font-black text-lg sm:text-xl tracking-tight">Prediction of the day</h3>
           </div>
-          <h3 className="font-black text-lg sm:text-xl tracking-tight">Prediction of the day</h3>
-        </div>
-
-        <div className="bg-white rounded-2xl p-4 shadow-lg mb-4 border border-white/30 text-slate-900">
-          <div className="flex items-start gap-2.5 mb-3 border-b border-slate-100 pb-3">
-             <div className="w-8 h-8 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center text-brand-indigo shadow-sm overflow-hidden">
-                {currentPrediction.countryCode ? (
-                  <img 
-                    src={`https://flagcdn.com/${currentPrediction.countryCode.toLowerCase()}.svg`} 
-                    alt="" 
-                    className="w-5 h-4 object-cover rounded-sm" 
-                  />
-                ) : (
-                  <span className="text-lg">⚽</span>
-                )}
-             </div>
-             <div>
-                <div className="text-sm sm:text-base font-black text-slate-800 leading-tight">{currentPrediction.leagueName}</div>
-                <div className="flex items-center gap-2 mt-0.5 text-slate-400 font-bold text-[10px]">
-                   <div className="flex items-center gap-1">
-                      <svg className="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                      {currentPrediction.time}
-                   </div>
-                   <div className="flex items-center gap-1">
-                      <svg className="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                      {currentPrediction.date}
+  
+          <div className="bg-white rounded-2xl p-4 shadow-lg mb-4 border border-white/30 text-slate-900">
+            <div className="flex items-start gap-2.5 mb-3 border-b border-slate-100 pb-3">
+               <div className="w-8 h-8 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center text-brand-indigo shadow-sm overflow-hidden">
+                  {currentPrediction.countryCode ? (
+                    <img 
+                      src={`https://flagcdn.com/${currentPrediction.countryCode.toLowerCase()}.svg`} 
+                      alt="" 
+                      className="w-5 h-4 object-cover rounded-sm" 
+                    />
+                  ) : (
+                    <span className="text-lg">⚽</span>
+                  )}
+               </div>
+               <div>
+                  <div className="text-sm sm:text-base font-black text-slate-800 leading-tight">{currentPrediction.leagueName}</div>
+                  <div className="flex items-center gap-2 mt-0.5 text-slate-400 font-bold text-[10px]">
+                     <div className="flex items-center gap-1">
+                        <svg className="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        {currentPrediction.time}
+                     </div>
+                     <div className="flex items-center gap-1">
+                        <svg className="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                        {currentPrediction.date}
+                     </div>
+                  </div>
+               </div>
+            </div>
+  
+            <div className="flex items-center justify-between gap-1 mb-4 mt-4">
+              <div className="flex flex-col items-center text-center w-[100px]">
+                <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-full mb-2 flex items-center justify-center text-xl shadow-sm overflow-hidden p-2">
+                  {typeof currentPrediction.homeTeam.logo === 'string' && currentPrediction.homeTeam.logo.startsWith('http') ? (
+                    <img src={currentPrediction.homeTeam.logo} alt={currentPrediction.homeTeam.name} className="w-full h-full object-contain" />
+                  ) : (
+                    currentPrediction.homeTeam.logo
+                  )}
+                </div>
+                <div className="text-sm sm:text-base font-black text-slate-800 leading-tight line-clamp-2">
+                  {currentPrediction.homeTeam.name}
+                </div>
+              </div>
+  
+              <div className="flex flex-col items-center justify-center flex-shrink-0 px-2">
+                <div className="text-xs sm:text-sm font-black text-slate-300 mb-0.5">V.S</div>
+                <div className="text-xs sm:text-sm font-bold text-slate-800 bg-slate-50 px-2 py-0.5 rounded-full border border-slate-100 shadow-inner">
+                   {currentPrediction.countdown}
+                </div>
+              </div>
+  
+              <div className="flex flex-col items-center text-center w-[100px]">
+                <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-full mb-2 flex items-center justify-center text-xl shadow-sm overflow-hidden p-2">
+                  {typeof currentPrediction.awayTeam.logo === 'string' && currentPrediction.awayTeam.logo.startsWith('http') ? (
+                    <img src={currentPrediction.awayTeam.logo} alt={currentPrediction.awayTeam.name} className="w-full h-full object-contain" />
+                  ) : (
+                    currentPrediction.awayTeam.logo
+                  )}
+                </div>
+                <div className="text-sm sm:text-base font-black text-slate-800 leading-tight line-clamp-2">
+                  {currentPrediction.awayTeam.name}
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-4 text-center bg-slate-50 rounded-xl p-3 border border-slate-100 mb-4">
+               <div className="text-[10px] sm:text-xs text-slate-400 font-black uppercase tracking-widest mb-1">Prediction</div>
+               <div className="font-black text-lg sm:text-xl text-slate-900 leading-tight">{currentPrediction.prediction}</div>
+            </div>
+  
+            <button className="w-full bg-brand-pink text-white py-3 rounded-xl font-black text-xs sm:text-sm uppercase tracking-[0.15em] shadow-lg shadow-brand-pink/20 hover:scale-[1.01] transition-all active:scale-[0.99]">
+              See Prediction
+            </button>
+          </div>
+  
+          <div className="flex flex-col items-center gap-3">
+             <div className="flex items-center gap-4">
+                <button 
+                  onClick={prevSlide}
+                  className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-all active:scale-90"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                
+                <div className="flex flex-col items-center gap-2">
+                   <div className="text-sm sm:text-base font-black text-white/80">{currentSlide + 1} / {displayPredictions.length}</div>
+                   <div className="flex items-center gap-1.5">
+                      {displayPredictions.map((_, idx) => (
+                         <button 
+                           key={idx}
+                           onClick={() => setCurrentSlide(idx)}
+                           className={`h-1.5 rounded-full transition-all border border-white/10 ${idx === currentSlide ? 'w-6 bg-white' : 'w-1.5 bg-white/20'}`}
+                         />
+                      ))}
                    </div>
                 </div>
+  
+                <button 
+                  onClick={nextSlide}
+                  className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-all active:scale-90"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
              </div>
           </div>
-
-          <div className="flex items-center justify-between gap-1 mb-4 mt-4">
-            <div className="flex flex-col items-center text-center w-[100px]">
-              <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-full mb-2 flex items-center justify-center text-xl shadow-sm overflow-hidden p-2">
-                {currentPrediction.homeTeam.logo}
-              </div>
-              <div className="text-sm sm:text-base font-black text-slate-800 leading-tight line-clamp-2">
-                {currentPrediction.homeTeam.name}
-              </div>
-            </div>
-
-            <div className="flex flex-col items-center justify-center flex-shrink-0 px-2">
-              <div className="text-xs sm:text-sm font-black text-slate-300 mb-0.5">V.S</div>
-              <div className="text-xs sm:text-sm font-bold text-slate-800 bg-slate-50 px-2 py-0.5 rounded-full border border-slate-100 shadow-inner">
-                 {currentPrediction.countdown}
-              </div>
-            </div>
-
-            <div className="flex flex-col items-center text-center w-[100px]">
-              <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-full mb-2 flex items-center justify-center text-xl shadow-sm overflow-hidden p-2">
-                {currentPrediction.awayTeam.logo}
-              </div>
-              <div className="text-sm sm:text-base font-black text-slate-800 leading-tight line-clamp-2">
-                {currentPrediction.awayTeam.name}
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-4 text-center bg-slate-50 rounded-xl p-3 border border-slate-100 mb-4">
-             <div className="text-[10px] sm:text-xs text-slate-400 font-black uppercase tracking-widest mb-1">Prediction</div>
-             <div className="font-black text-lg sm:text-xl text-slate-900 leading-tight">{currentPrediction.prediction}</div>
-          </div>
-
-          <button className="w-full bg-brand-pink text-white py-3 rounded-xl font-black text-xs sm:text-sm uppercase tracking-[0.15em] shadow-lg shadow-brand-pink/20 hover:scale-[1.01] transition-all active:scale-[0.99]">
-            See Prediction
-          </button>
         </div>
-
-        <div className="flex flex-col items-center gap-3">
-           <div className="flex items-center gap-4">
-              <button 
-                onClick={prevSlide}
-                className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-all active:scale-90"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              
-              <div className="flex flex-col items-center gap-2">
-                 <div className="text-sm sm:text-base font-black text-white/80">{currentSlide + 1} / {mockPredictions.length}</div>
-                 <div className="flex items-center gap-1.5">
-                    {displayPredictions.map((_, idx) => (
-                       <button 
-                         key={idx}
-                         onClick={() => setCurrentSlide(idx)}
-                         className={`h-1.5 rounded-full transition-all border border-white/10 ${idx === currentSlide ? 'w-6 bg-white' : 'w-1.5 bg-white/20'}`}
-                       />
-                    ))}
-                 </div>
-              </div>
-
-              <button 
-                onClick={nextSlide}
-                className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-all active:scale-90"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-           </div>
-        </div>
-      </div>
+      )}
 
       {mode === 'default' ? (
         <>

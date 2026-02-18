@@ -8,15 +8,8 @@ interface Team {
   slug: string;
 }
 
-export default function FeaturedTeams() {
-  const teams: Team[] = [
-    { id: 1, name: 'Bologna', country: 'Italy', logo: '⚽', slug: 'bologna' },
-    { id: 2, name: 'The Strongest', country: 'Bolivia', logo: '⚽', slug: 'the-strongest' },
-    { id: 3, name: 'Banfield', country: 'Argentina', logo: '⚽', slug: 'banfield' },
-    { id: 4, name: 'Instituto', country: 'Argentina', logo: '⚽', slug: 'instituto' },
-    { id: 5, name: 'Albacete Balompié', country: 'Spain', logo: '⚽', slug: 'albacete' },
-    { id: 6, name: 'Bayer Leverkusen', country: 'Germany', logo: '⚽', slug: 'leverkusen' },
-  ];
+export default function FeaturedTeams({ initialTeams = [] }: { initialTeams?: Team[] }) {
+  const teams = initialTeams;
 
   return (
     <section className="mt-12">
@@ -38,8 +31,12 @@ export default function FeaturedTeams() {
                 href={`/teams/${team.slug}`}
                 className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 hover:border-brand-indigo hover:shadow-md transition-all group"
               >
-                <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-2xl shadow-sm border border-slate-100 group-hover:bg-brand-indigo/5 transition-colors">
-                  {team.logo}
+                <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-xs font-black text-slate-400 shadow-sm border border-slate-100 group-hover:bg-brand-indigo/5 transition-colors overflow-hidden">
+                  {team.logo && team.logo.startsWith('http') ? (
+                    <img src={team.logo} alt={team.name} className="w-8 h-8 object-contain" />
+                  ) : (
+                    <span className="text-xl">{team.logo || team.name.substring(0, 2).toUpperCase()}</span>
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-[13px] font-black text-slate-800 line-clamp-1 group-hover:text-brand-indigo transition-colors">

@@ -5,25 +5,31 @@ import MatchListInfinite from '@/components/MatchListInfinite';
 import FAQAccordion from '@/components/FAQAccordion';
 import HighlightBanner from '@/components/HighlightBanner';
 import FeaturedTeams from '@/components/FeaturedTeams';
-import { getLiveTodayMatches, getLiveLeagues, getFeaturedTips, getStreams } from '@/lib/api';
+import { getTodayMatches, getLeagues, getFeaturedTips, getStreams, getFeaturedTeams, getPredictions } from '@/lib/api';
 
-export default async function HomePage({ searchParams }: { searchParams: { date?: string } }) {
+export default async function HomePage({ searchParams }: { searchParams: { date?: string; leagueId?: string; market?: string; minOdds?: string } }) {
   let selectedDate = searchParams.date || new Date().toISOString().split('T')[0];
+  const selectedLeague = searchParams.leagueId;
+  const selectedMarket = searchParams.market || '';
+  const selectedMinOdds = searchParams.minOdds || '';
 
-  // Fetch data from live third-party proxy APIs
+  // Fetch data from local database via API
   let matches: any[] = [];
   let leaguesData: any = { items: [], total: 0, page: 1, pageSize: 50 };
   let tipsData: any[] = [];
   let streamsData: any[] = [];
+  let featuredTeams: any[] = [];
   let streamsTotal = 0;
   let pagination = { page: 1, pageSize: 20, total: 0 };
 
   try {
-    const [matchesRes, leaguesRes, tipsRes, streamsRes] = await Promise.all([
-      getLiveTodayMatches(selectedDate, 1, 20).catch(err => { console.error('Matches fetch failed:', err); return { matches: [], total: 0, page: 1, pageSize: 20, date: selectedDate }; }),
-      getLiveLeagues(1, 20).catch(err => { console.error('Leagues fetch failed:', err); return { items: [], total: 0, page: 1, pageSize: 20 }; }),
+    const [matchesRes, leaguesRes, tipsRes, streamsRes, featuredRes, predictionsRes] = await Promise.all([
+      getTodayMatches(selectedDate, 1, 20, selectedLeague, selectedMarket, selectedMinOdds).catch(err => { console.error('Matches fetch failed:', err); return { matches: [], total: 0, page: 1, pageSize: 20, date: selectedDate }; }),
+      getLeagues(1, 50).catch(err => { console.error('Leagues fetch failed:', err); return { items: [], total: 0, page: 1, pageSize: 50 }; }),
       getFeaturedTips(selectedDate).catch(err => { console.error('Tips fetch failed:', err); return { tips: [] }; }),
-      getStreams(selectedDate).catch(err => { console.error('Streams fetch failed:', err); return { items: [], total: 10 }; }) // fallback with total=0
+      getStreams(selectedDate).catch(err => { console.error('Streams fetch failed:', err); return { items: [], total: 10 }; }), 
+      getFeaturedTeams().catch(err => { console.error('Featured teams fetch failed:', err); return []; }),
+      getPredictions({ date: selectedDate, pageSize: 5 }).catch(err => { console.error('Predictions fetch failed:', err); return { items: [] }; })
     ]);
 
     // Smart Fallback Handling:
@@ -40,9 +46,14 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
       total: matchesRes?.total || 0 
     };
     leaguesData = leaguesRes || { items: [], total: 0, page: 1, pageSize: 20 };
-    tipsData = tipsRes?.tips || [];
+    const autoTips = (predictionsRes?.items && predictionsRes.items.length > 0) 
+      ? predictionsRes.items 
+      : matches.slice(0, 3);
+      
+    tipsData = (tipsRes?.tips && tipsRes.tips.length > 0) ? tipsRes.tips : autoTips;
     streamsData = streamsRes?.items || [];
     streamsTotal = streamsRes?.total || 0;
+    featuredTeams = featuredRes || [];
   } catch (error) {
     console.error('Failed to fetch home page data:', error);
   }
@@ -58,11 +69,6 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
     icon: '⚽'
   }));
 
-  const streamsMock = [
-    { id: 1, home: 'Real Madrid', away: 'Barcelona', time: 'LIVE', icon: '⚽' },
-    { id: 2, home: 'Lakers', away: 'Warriors', time: '22:00', icon: '🏀' },
-    { id: 3, home: 'Djokovic', away: 'Nadal', time: '23:30', icon: '🎾' },
-  ];
 
   return (
     <div className="bg-transparent">
@@ -83,7 +89,7 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
               Today&apos;s Matches
             </h1>
 
-            <MatchFilter />
+            <MatchFilter leagues={leaguesData.items} />
             <DateSelector selectedDate={selectedDate} />
 
             <div className="space-y-6">
@@ -92,10 +98,13 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
                 initialPage={pagination.page}
                 initialTotal={pagination.total}
                 selectedDate={selectedDate}
+                leagueId={selectedLeague}
+                market={selectedMarket}
+                minOdds={selectedMinOdds}
               />
             </div>
 
-            <FeaturedTeams />
+            <FeaturedTeams initialTeams={featuredTeams} />
 
             <div className="mt-12">
               <HighlightBanner />

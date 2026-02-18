@@ -5,6 +5,10 @@
 import { fetchAPI } from './client';
 import { TeamDetailResponse, TabResponse } from './types';
 
+export async function getFeaturedTeams(): Promise<any[]> {
+    return fetchAPI<any[]>('/v1/teams/featured');
+}
+
 export async function getTeams(query?: string, leagueSlug?: string) {
     const searchParams = new URLSearchParams();
     if (query) searchParams.set('query', query);
