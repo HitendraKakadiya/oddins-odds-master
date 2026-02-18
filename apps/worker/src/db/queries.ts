@@ -177,3 +177,71 @@ export async function recordSyncError(
   );
 }
 
+// Upsert Prediction Model
+export async function upsertPredictionModel(
+  client: PoolClient,
+  name: string,
+  version: string,
+  source: string,
+  isActive: boolean
+): Promise<number> {
+  const result = await client.query(
+    `INSERT INTO prediction_models (name, version, source, is_active)
+     VALUES ($1, $2, $3, $4)
+     ON CONFLICT (name, version, source) DO UPDATE SET is_active = $4
+     RETURNING id`,
+    [name, version, source, isActive]
+  );
+  return result.rows[0].id;
+}
+
+// Upsert Market
+export async function upsertMarket(
+  client: PoolClient,
+  providerMarketId: number,
+  name: string,
+  key: string,
+  isLineMarket: boolean
+): Promise<number> {
+  const result = await client.query(
+    `INSERT INTO markets (provider_market_id, name, key, is_line_market)
+     VALUES ($1, $2, $3, $4)
+     ON CONFLICT (provider_market_id) DO UPDATE SET 
+       name = EXCLUDED.name, 
+       key = EXCLUDED.key, 
+       is_line_market = EXCLUDED.is_line_market
+     RETURNING id`,
+    [providerMarketId, name, key, isLineMarket]
+  );
+  return result.rows[0].id;
+}
+
+// Upsert Match Prediction
+export async function upsertMatchPrediction(
+  client: PoolClient,
+  matchId: number,
+  modelId: number,
+  marketId: number,
+  line: number | null,
+  selection: string,
+  payload: any,
+  probability: number | null,
+  confidence: number | null
+): Promise<void> {
+  // We use a DELETE then INSERT approach to be safe about the unique constraint 
+  // on match_predictions which may or may exclude the 'line' column in its unique index.
+  await client.query(
+    `DELETE FROM match_predictions 
+     WHERE match_id = $1 AND model_id = $2 AND market_id = $3 AND selection = $4`,
+    [matchId, modelId, marketId, selection]
+  );
+
+  await client.query(
+    `INSERT INTO match_predictions (
+      match_id, model_id, market_id, line, selection, payload, probability, confidence, generated_at
+    )
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())`,
+    [matchId, modelId, marketId, line, selection, JSON.stringify(payload), probability, confidence]
+  );
+}
+

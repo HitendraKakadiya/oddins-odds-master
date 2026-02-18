@@ -1,8 +1,9 @@
-import { api, type Prediction } from '@/lib/api';
+import { api, type Prediction, getStreams } from '@/lib/api';
 import CompactPredictionCard from '@/components/CompactPredictionCard';
 import FeaturedPredictionCard from '@/components/FeaturedPredictionCard';
 import PredictionDateSelector from '@/components/PredictionDateSelector';
 import Sidebar from '@/components/Sidebar';
+import PredictionsListContainer from '@/components/PredictionsListContainer';
 import Link from 'next/link';
 
 // ISR: Revalidate every 60 seconds
@@ -23,105 +24,42 @@ export default async function PredictionsPage({
 }) {
   const page = parseInt(searchParams.page || '1', 10);
   const pageSize = 12;
+  const selectedDate = searchParams.date || new Date().toISOString().split('T')[0];
 
-  // Fetch predictions with filters
-  const predictionsData = await api.predictions.getPredictions({
-    date: searchParams.date,
-    region: searchParams.region,
-    leagueSlug: searchParams.leagueSlug,
-    marketKey: searchParams.marketKey,
-    page,
-    pageSize,
-  }).catch(() => ({ page: 1, pageSize, total: 0, items: [] }));
-
-  // Fetch leagues for filter
-  const leaguesData = await api.leagues.getLeagues().catch(() => []);
+  // Fetch data in parallel from local database
+  const [predictionsData, leaguesData, featuredTipsData, streamsRes, fallbackData] = await Promise.all([
+    api.predictions.getPredictions({
+      date: selectedDate, // Use selectedDate as default if searchParams.date is missing
+      region: searchParams.region,
+      leagueSlug: searchParams.leagueSlug,
+      marketKey: searchParams.marketKey,
+      page,
+      pageSize,
+    }).catch(() => ({ page: 1, pageSize, total: 0, items: [] })),
+    api.leagues.getLiveLeagues(1, 100, selectedDate).catch(() => ({ items: [], total: 0 })),
+    api.predictions.getFeaturedTips(selectedDate).catch(() => ({ tips: [] })),
+    getStreams(selectedDate, undefined, 1, 10).catch(() => ({ items: [], total: 0 })),
+    api.predictions.getPredictions({ pageSize: 2 }).catch(() => ({ page: 1, pageSize: 2, total: 0, items: [] }))
+  ]);
 
   const predictions = predictionsData.items || [];
+  const fallbacks = fallbackData.items || [];
 
-  const streamsMock = [
-    { id: 1, home: 'Real Madrid', away: 'Barcelona', time: 'LIVE', icon: '⚽' },
-    { id: 2, home: 'Lakers', away: 'Warriors', time: '22:00', icon: '🏀' },
-    { id: 3, home: 'Djokovic', away: 'Nadal', time: '23:30', icon: '🎾' },
-  ];
+  // Use featured tips first, then top 2 from current day, then global top 2
+  const featuredPredictions = (featuredTipsData.tips && featuredTipsData.tips.length > 0)
+    ? featuredTipsData.tips.slice(0, 2)
+    : (predictions.length > 0 ? predictions.slice(0, 2) : fallbacks.slice(0, 2));
 
-  const mockFeatured = [
-    {
-      matchId: 99901,
-      kickoffAt: new Date().toISOString(),
-      league: { name: 'Premier League', slug: 'england-premier-league', countryName: 'England' },
-      homeTeam: { name: 'Manchester City', logoUrl: 'https://media.api-sports.io/football/teams/50.png' },
-      awayTeam: { name: 'Arsenal', logoUrl: 'https://media.api-sports.io/football/teams/42.png' },
-      selection: 'Home Win'
-    },
-    {
-      matchId: 99902,
-      kickoffAt: new Date().toISOString(),
-      league: { name: 'La Liga', slug: 'spain-la-liga', countryName: 'Spain' },
-      homeTeam: { name: 'Real Madrid', logoUrl: 'https://media.api-sports.io/football/teams/541.png' },
-      awayTeam: { name: 'Barcelona', logoUrl: 'https://media.api-sports.io/football/teams/529.png' },
-      selection: 'Over 2.5 Goals'
-    },
-    {
-      matchId: 99903,
-      kickoffAt: new Date().toISOString(),
-      league: { name: 'Bundesliga', slug: 'germany-bundesliga', countryName: 'Germany' },
-      homeTeam: { name: 'Bayern Munich', logoUrl: 'https://media.api-sports.io/football/teams/157.png' },
-      awayTeam: { name: 'Dortmund', logoUrl: 'https://media.api-sports.io/football/teams/165.png' },
-      selection: 'Home Win'
-    },
-    {
-      matchId: 99904,
-      kickoffAt: new Date().toISOString(),
-      league: { name: 'Serie A', slug: 'italy-serie-a', countryName: 'Italy' },
-      homeTeam: { name: 'Inter Milan', logoUrl: 'https://media.api-sports.io/football/teams/505.png' },
-      awayTeam: { name: 'AC Milan', logoUrl: 'https://media.api-sports.io/football/teams/489.png' },
-      selection: 'Both Teams To Score'
-    },
-    {
-      matchId: 99905,
-      kickoffAt: new Date().toISOString(),
-      league: { name: 'Ligue 1', slug: 'france-ligue-1', countryName: 'France' },
-      homeTeam: { name: 'PSG', logoUrl: 'https://media.api-sports.io/football/teams/85.png' },
-      awayTeam: { name: 'Marseille', logoUrl: 'https://media.api-sports.io/football/teams/81.png' },
-      selection: 'Home Win'
-    },
-    {
-      matchId: 99906,
-      kickoffAt: new Date().toISOString(),
-      league: { name: 'Eredivisie', slug: 'netherlands-eredivisie', countryName: 'Netherlands' },
-      homeTeam: { name: 'Ajax', logoUrl: 'https://media.api-sports.io/football/teams/194.png' },
-      awayTeam: { name: 'PSV', logoUrl: 'https://media.api-sports.io/football/teams/197.png' },
-      selection: 'Over 2.5 Goals'
-    }
-  ];
-
-  const mockAll = [
-    ...mockFeatured,
-    {
-      matchId: 99907,
-      kickoffAt: new Date().toISOString(),
-      league: { name: 'Primeira Liga', slug: 'portugal-primeira-liga', countryName: 'Portugal' },
-      homeTeam: { name: 'Benfica', logoUrl: 'https://media.api-sports.io/football/teams/211.png' },
-      awayTeam: { name: 'Porto', logoUrl: 'https://media.api-sports.io/football/teams/212.png' },
-      selection: 'Under 3.5 Goals'
-    },
-    {
-      matchId: 99908,
-      kickoffAt: new Date().toISOString(),
-      league: { name: 'MLS', slug: 'usa-mls', countryName: 'USA' },
-      homeTeam: { name: 'LA Galaxy', logoUrl: 'https://media.api-sports.io/football/teams/1603.png' },
-      awayTeam: { name: 'LAFC', logoUrl: 'https://media.api-sports.io/football/teams/1608.png' },
-      selection: 'Home Win'
-    }
-  ];
-
-  // Merge API predictions with mock data for demonstration if needed
-  const displayPredictions = predictions.length > 0 ? predictions : mockAll;
-  // Box only shows top 2
-  const featuredPredictions = displayPredictions.slice(0, 2);
-  // List shows everything else
-  const listPredictions = displayPredictions.slice(2);
+  // Format streams for Sidebar
+  const sidebarStreams = (streamsRes.items || []).map((item: any) => ({
+    id: item.matchId,
+    home: item.homeTeam?.name || 'Home',
+    away: item.awayTeam?.name || 'Away',
+    time: item.kickoffAt && new Date(item.kickoffAt) > new Date() ? 
+      new Date(item.kickoffAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }) : 
+      'LIVE',
+    icon: '⚽'
+  }));
 
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -130,9 +68,11 @@ export default async function PredictionsPage({
         <Sidebar 
           leagueData={Array.isArray(leaguesData) ? leaguesData : (leaguesData.items || [])} 
           initialTotal={Array.isArray(leaguesData) ? 0 : (leaguesData.total || 0)}
-          featuredTips={displayPredictions.slice(0, 3)} 
-          streams={streamsMock}
+          featuredTips={featuredPredictions.slice(0, 3)} 
+          streams={sidebarStreams}
+          initialStreamsTotal={streamsRes.total || 0}
           mode="predictions"
+          date={selectedDate}
         />
 
         {/* Main Content Area */}
@@ -145,7 +85,7 @@ export default async function PredictionsPage({
               <span className="text-brand-indigo">Predictions</span>
             </div>
             <h1 className="text-3xl font-black text-brand-dark-blue mb-8 leading-tight">
-              Today&apos;s Football Predictions | Betting Tips For {searchParams.date || '04/02/2026'}
+              Today&apos;s Football Predictions | Betting Tips For {selectedDate}
             </h1>
           </div>
 
@@ -174,21 +114,16 @@ export default async function PredictionsPage({
           </div>
 
           {/* All Predictions List */}
-          <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden mb-10">
-            <div className="divide-y divide-slate-100">
-              {listPredictions.map((prediction: any) => (
-                <CompactPredictionCard key={prediction.matchId} prediction={prediction} />
-              ))}
-            </div>
-            
-            {listPredictions.length > 0 && (
-              <div className="p-8 border-t border-slate-50 bg-slate-50/30 flex justify-center">
-                <button className="bg-white text-brand-indigo border-2 border-brand-indigo/10 hover:border-brand-indigo px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all hover:bg-brand-indigo/5 shadow-lg shadow-brand-indigo/5">
-                  See more predictions
-                </button>
-              </div>
-            )}
-          </div>
+          <PredictionsListContainer 
+            initialPredictions={predictions}
+            initialPage={page}
+            initialTotal={predictionsData.total}
+            pageSize={pageSize}
+            date={searchParams.date}
+            region={searchParams.region}
+            leagueSlug={searchParams.leagueSlug}
+            marketKey={searchParams.marketKey}
+          />
 
           {/* SEO Content Section */}
           <article className="mt-12 mb-16">

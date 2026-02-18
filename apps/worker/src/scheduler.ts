@@ -8,6 +8,7 @@ import cron from 'node-cron';
 import { logger } from './logger';
 import { syncDailyFixtures, syncFixturesWindow } from './jobs/syncDailyFixtures';
 import { syncOdds } from './jobs/syncOdds';
+import { syncPredictions } from './jobs/syncPredictions';
 import { cleanupOldData } from './jobs/cleanup';
 
 export function startScheduler() {
@@ -33,6 +34,16 @@ export function startScheduler() {
         }
     });
 
+    // Sync Predictions: Every hour at minute 45
+    cron.schedule('45 * * * *', async () => {
+        logger.info('Running scheduled job: sync:predictions');
+        try {
+            await syncPredictions();
+        } catch (error) {
+            logger.error('Scheduled job sync:predictions failed', error);
+        }
+    });
+
     // Cleanup: Every day at 03:00 AM
     cron.schedule('0 3 * * *', async () => {
         logger.info('Running scheduled job: cleanup:old_data');
@@ -46,5 +57,6 @@ export function startScheduler() {
     logger.info('Scheduler started. Jobs configured:');
     logger.info('- sync:daily_fixtures (Every hour at :00)');
     logger.info('- sync:odds (Every hour at :30)');
+    logger.info('- sync:predictions (Every hour at :45)');
     logger.info('- cleanup:old_data (Daily at 03:00)');
 }

@@ -136,6 +136,10 @@ class APIFootballClient {
   async getFixturesByDate(date: string): Promise<unknown> {
     return this.fetchWithRetry(`/fixtures?date=${date}`);
   }
+
+  async getPredictions(params: { fixture: number }): Promise<unknown> {
+    return this.fetchWithRetry(`/predictions?fixture=${params.fixture}`);
+  }
 }
 
 export const apiFootballClient = new APIFootballClient();

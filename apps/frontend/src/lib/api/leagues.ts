@@ -13,10 +13,11 @@ export async function getLeagues(page?: number, pageSize?: number): Promise<{ pa
     return fetchAPI<{ page: number; pageSize: number; total: number; items: LeaguesResponse[] }>(`/v1/leagues${query ? `?${query}` : ''}`);
 }
 
-export async function getLiveLeagues(page?: number, pageSize?: number): Promise<{ page: number; pageSize: number; total: number; items: LeaguesResponse[] }> {
+export async function getLiveLeagues(page?: number, pageSize?: number, date?: string): Promise<{ page: number; pageSize: number; total: number; items: LeaguesResponse[] }> {
     const params = new URLSearchParams();
     if (page) params.set('page', page.toString());
     if (pageSize) params.set('pageSize', pageSize.toString());
+    if (date) params.set('date', date);
     const query = params.toString();
     return fetchAPI<{ page: number; pageSize: number; total: number; items: LeaguesResponse[] }>(`/v1/live/leagues${query ? `?${query}` : ''}`);
 }

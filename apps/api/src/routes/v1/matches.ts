@@ -196,6 +196,7 @@ export async function matchesRoutes(server: FastifyInstance) {
         ht.logo_url as home_team_logo,
         at.name as away_team_name,
         at.logo_url as away_team_logo,
+        c.name as country_name,
         c.code as country_code
       FROM tips t
       JOIN matches m ON t.match_id = m.id
@@ -220,8 +221,12 @@ export async function matchesRoutes(server: FastifyInstance) {
         isPremium: row.is_premium,
         publishedAt: row.published_at,
         kickoffAt: row.kickoff_at,
-        leagueName: row.league_name,
-        leagueSlug: row.league_slug,
+        league: {
+          name: row.league_name,
+          slug: row.league_slug,
+          countryName: row.country_name,
+          countryCode: row.country_code,
+        },
         homeTeam: {
           name: row.home_team_name,
           logoUrl: row.home_team_logo,
@@ -230,7 +235,7 @@ export async function matchesRoutes(server: FastifyInstance) {
           name: row.away_team_name,
           logoUrl: row.away_team_logo,
         },
-        countryCode: row.country_code,
+        selection: row.title, // Use title as selection for now
       })),
     };
   });

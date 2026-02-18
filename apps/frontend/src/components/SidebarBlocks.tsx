@@ -8,26 +8,14 @@ interface DailyTipProps {
   featuredTips?: any[];
 }
 
-const mockPredictions = [
-  {
-    id: 1,
-    leagueName: 'Greek Super League',
-    time: '22:00',
-    date: new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }),
-    homeTeam: { name: 'Asteras Tripolis', logo: '⚽' },
-    awayTeam: { name: 'Olympiakos Piraeus', logo: '⚽' },
-    prediction: 'Over 2.5 Goals',
-    countdown: '1m 41s',
-    countryCode: 'GR'
-  }
-];
 
 export function FeaturedTipsSlider({ featuredTips = [] }: DailyTipProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const today = new Date();
 
-  const displayPredictions = featuredTips.length > 0 
-    ? featuredTips.map(tip => {
+  if (featuredTips.length === 0) return null;
+
+  const displayPredictions = featuredTips.map(tip => {
         const kickoffDate = tip.kickoffAt ? new Date(tip.kickoffAt) : null;
         return {
           id: tip.id,
@@ -46,8 +34,7 @@ export function FeaturedTipsSlider({ featuredTips = [] }: DailyTipProps) {
           countdown: 'LIVE', 
           countryCode: tip.countryCode
         };
-      })
-    : mockPredictions;
+      });
 
   const currentPrediction = displayPredictions[currentSlide];
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % displayPredictions.length);

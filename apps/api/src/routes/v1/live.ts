@@ -180,8 +180,10 @@ export async function liveRoutes(server: FastifyInstance) {
     });
 
     // GET /v1/live/leagues
-    server.get<{ Querystring: { page?: string; pageSize?: string } }>('/live/leagues', async (request) => {
-        const { page = '1', pageSize = '50' } = request.query;
+    server.get<{ Querystring: { date?: string; page?: string; pageSize?: string } }>('/live/leagues', async (request) => {
+        const { date, page = '1', pageSize = '50' } = request.query;
+        let targetDate = date || new Date().toISOString().split('T')[0];
+
         const pageNum = Math.max(1, parseInt(page, 10));
         const pageSizeNum = Math.min(200, Math.max(1, parseInt(pageSize, 10)));
         const offset = (pageNum - 1) * pageSizeNum;
@@ -199,25 +201,29 @@ export async function liveRoutes(server: FastifyInstance) {
             // Let's verify original logic in Step 24:
             // "paginated = allGrouped.slice(offset)" -> Pagination is on Country Groups.
 
-            // 1. Get unique countries with leagues, paginated
+            // 1. Get unique countries with leagues that HAVE matches on targetDate, paginated
             const countriesQuery = `
-                SELECT c.id, c.name, c.code, c.flag_url, COUNT(l.id) as league_count
+                SELECT c.id, c.name, c.code, c.flag_url, COUNT(DISTINCT l.id) as league_count
                 FROM countries c
                 JOIN leagues l ON l.country_id = c.id
+                JOIN matches m ON m.league_id = l.id
+                WHERE m.kickoff_at >= $1::date AND m.kickoff_at < ($1::date + INTERVAL '1 day')
                 GROUP BY c.id, c.name, c.code, c.flag_url
                 ORDER BY c.name
-                LIMIT $1 OFFSET $2
+                LIMIT $2 OFFSET $3
             `;
 
             const countQuery = `
                 SELECT COUNT(DISTINCT c.id) 
                 FROM countries c
                 JOIN leagues l ON l.country_id = c.id
+                JOIN matches m ON m.league_id = l.id
+                WHERE m.kickoff_at >= $1::date AND m.kickoff_at < ($1::date + INTERVAL '1 day')
             `;
 
             const [countriesResult, countResult] = await Promise.all([
-                client.query(countriesQuery, [pageSizeNum, offset]),
-                client.query(countQuery)
+                client.query(countriesQuery, [targetDate, pageSizeNum, offset]),
+                client.query(countQuery, [targetDate])
             ]);
 
             const total = parseInt(countResult.rows[0].count, 10);
@@ -231,12 +237,14 @@ export async function liveRoutes(server: FastifyInstance) {
 
             if (countryIds.length > 0) {
                 const leaguesQuery = `
-                    SELECT l.id, l.country_id, l.provider_league_id, l.name, l.type, l.logo_url
+                    SELECT DISTINCT l.id, l.country_id, l.provider_league_id, l.name, l.type, l.logo_url
                     FROM leagues l
+                    JOIN matches m ON m.league_id = l.id
                     WHERE l.country_id = ANY($1)
+                    AND m.kickoff_at >= $2::date AND m.kickoff_at < ($2::date + INTERVAL '1 day')
                     ORDER BY l.name
                 `;
-                const leaguesResult = await client.query(leaguesQuery, [countryIds]);
+                const leaguesResult = await client.query(leaguesQuery, [countryIds, targetDate]);
 
                 for (const row of leaguesResult.rows) {
                     if (!leaguesByCountry[row.country_id]) {

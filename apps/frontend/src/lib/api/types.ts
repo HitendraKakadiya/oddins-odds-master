@@ -59,14 +59,19 @@ export interface FeaturedTipsResponse {
         matchId: number;
         title: string;
         shortReason?: string | null;
+        selection?: string | null;
         isPremium: boolean;
         confidence?: number | null;
         publishedAt?: string | null;
         kickoffAt?: string | null;
-        leagueName?: string | null;
+        league?: {
+            name: string;
+            slug: string;
+            countryName: string;
+            countryCode?: string | null;
+        } | null;
         homeTeam?: { name: string; logoUrl?: string | null } | null;
         awayTeam?: { name: string; logoUrl?: string | null } | null;
-        countryCode?: string | null;
     }>;
 }
 

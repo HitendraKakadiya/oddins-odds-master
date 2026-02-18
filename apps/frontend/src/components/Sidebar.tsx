@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import type { LeaguesResponse } from '@/lib/api';
-import { getLeagues, getStreams } from '@/lib/api';
+import { getLeagues, getStreams, getLiveLeagues } from '@/lib/api';
 
 interface SidebarProps {
   leagueData: LeaguesResponse[];
@@ -12,22 +12,11 @@ interface SidebarProps {
   streams?: Array<{ id: number; home: string; away: string; time: string; icon: string }>;
   initialStreamsTotal?: number;
   mode?: 'default' | 'predictions';
+  date?: string; // Added date prop
 }
 
-const mockCompetitions = [
-  { country: { name: 'Algeria', flagUrl: 'https://flagcdn.com/dz.svg' }, leagues: [{ id: 101, name: 'Ligue 1', slug: 'algeria-ligue-1', logoUrl: null, type: 'league' }] },
-  { country: { name: 'Argentina', flagUrl: 'https://flagcdn.com/ar.svg' }, leagues: [{ id: 102, name: 'Liga Profesional', slug: 'argentina-liga-profesional', logoUrl: null, type: 'league' }, { id: 103, name: 'Primera B Nacional', slug: 'argentina-primera-b', logoUrl: null, type: 'league' }] },
-  { country: { name: 'Botswana', flagUrl: 'https://flagcdn.com/bw.svg' }, leagues: [{ id: 104, name: 'Premier League', slug: 'botswana-premier-league', logoUrl: null, type: 'league' }] },
-  { country: { name: 'Brazil', flagUrl: 'https://flagcdn.com/br.svg' }, leagues: [{ id: 105, name: 'Série A', slug: 'brazil-serie-a', logoUrl: null, type: 'league' }, { id: 106, name: 'Série B', slug: 'brazil-serie-b', logoUrl: null, type: 'league' }] },
-  { country: { name: 'Cameroon', flagUrl: 'https://flagcdn.com/cm.svg' }, leagues: [{ id: 107, name: 'Elite One', slug: 'cameroon-elite-one', logoUrl: null, type: 'league' }] },
-  { country: { name: 'England', flagUrl: 'https://flagcdn.com/gb-eng.svg' }, leagues: [{ id: 108, name: 'Premier League', slug: 'england-premier-league', logoUrl: null, type: 'league' }, { id: 109, name: 'Championship', slug: 'england-championship', logoUrl: null, type: 'league' }] },
-  { country: { name: 'France', flagUrl: 'https://flagcdn.com/fr.svg' }, leagues: [{ id: 110, name: 'Ligue 1', slug: 'france-ligue-1', logoUrl: null, type: 'league' }, { id: 111, name: 'Ligue 2', slug: 'france-ligue-2', logoUrl: null, type: 'league' }] },
-  { country: { name: 'Germany', flagUrl: 'https://flagcdn.com/de.svg' }, leagues: [{ id: 112, name: 'Bundesliga', slug: 'germany-bundesliga', logoUrl: null, type: 'league' }, { id: 113, name: '2. Bundesliga', slug: 'germany-2-bundesliga', logoUrl: null, type: 'league' }] },
-  { country: { name: 'Italy', flagUrl: 'https://flagcdn.com/it.svg' }, leagues: [{ id: 114, name: 'Serie A', slug: 'italy-serie-a', logoUrl: null, type: 'league' }, { id: 115, name: 'Serie B', slug: 'italy-serie-b', logoUrl: null, type: 'league' }] },
-  { country: { name: 'Spain', flagUrl: 'https://flagcdn.com/es.svg' }, leagues: [{ id: 116, name: 'La Liga', slug: 'spain-la-liga', logoUrl: null, type: 'league' }, { id: 117, name: 'Segunda División', slug: 'spain-segunda', logoUrl: null, type: 'league' }] },
-];
 
-export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [], streams = [], initialStreamsTotal = 0, mode = 'default' }: SidebarProps) {
+export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [], streams = [], initialStreamsTotal = 0, date, mode = 'default' }: SidebarProps) {
   // Leagues State
   const [competitions, setCompetitions] = useState<LeaguesResponse[]>(leagueData || []);
   const [page, setPage] = useState(1);
@@ -72,7 +61,7 @@ export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [
     setLoading(true);
     try {
       const nextPage = page + 1;
-      const response = await getLeagues(nextPage, 20);
+      const response = await (mode === 'predictions' ? getLiveLeagues(nextPage, 20, date) : getLeagues(nextPage, 20));
       
       if (response && response.items) {
         setCompetitions(prev => [...prev, ...response.items]);
@@ -88,7 +77,7 @@ export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [
     } finally {
       setLoading(false);
     }
-  }, [page, loading, hasMore, competitions.length]);
+  }, [page, loading, hasMore, competitions.length, mode, date]);
 
   // Load More Streams
   const loadMoreStreams = useCallback(async () => {
@@ -176,9 +165,6 @@ export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [
 
   // ... (rest of code usually identical until return) ...
   const today = new Date();
-  const mockPredictions = [
-     // ...
-  ];
   
   // ... displayPredictions mapping ...
   const displayPredictions = (featuredTips || []).map(tip => {
@@ -395,7 +381,7 @@ export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [
               <h3 className="font-bold text-lg sm:text-xl text-slate-800">Football Leagues</h3>
             </div>
             <div className="flex flex-col h-[500px] overflow-y-auto">
-              {(competitions.length > 0 ? competitions : mockCompetitions).map((group) => (
+              {competitions.map((group) => (
                   <div key={group.country.name}>
                      {group.leagues.map((league) => (
                         <Link 

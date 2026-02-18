@@ -10,6 +10,7 @@
     "sync:odds": "tsx --env-file=../../.env src/index.ts sync:odds",
     "cleanup": "tsx --env-file=../../.env src/index.ts cleanup",
     "scheduler": "tsx --env-file=../../.env src/index.ts scheduler",
+    "sync:predictions": "tsx --env-file=../../.env src/index.ts sync:predictions",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
     "lint": "eslint src --ext .ts"

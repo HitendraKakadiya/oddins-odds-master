@@ -84,7 +84,12 @@ export default function FeaturedPredictionCard({ prediction }: FeaturedPredictio
              </div>
           </div>
 
-          <div className="text-[11px] font-bold text-white/40 italic">Match Analysis & Insights</div>
+          <div className="text-lg font-black text-brand-pink mt-2 uppercase tracking-tight">
+            {prediction.selection === 'Home' ? `${prediction.homeTeam.name} Win` : 
+             prediction.selection === 'Away' ? `${prediction.awayTeam.name} Win` : 
+             prediction.selection}
+          </div>
+          <div className="text-[11px] font-bold text-white/40 italic mt-1">Match Analysis & Insights</div>
       </div>
 
       {/* Footer bar for the card */}
