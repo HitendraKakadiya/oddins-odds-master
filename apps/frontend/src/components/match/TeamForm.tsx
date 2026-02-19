@@ -134,35 +134,38 @@ function MatchRow({ match, currentTeamId }: { match: DetailedRecentMatch; curren
   const opponent = isHome ? match.awayTeam : match.homeTeam;
   
   return (
-    <div className="flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors group">
-      <div className="flex items-center gap-4 flex-1">
-        <span className="text-[10px] font-bold text-slate-300 w-24">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 sm:px-6 py-4 hover:bg-slate-50 transition-colors group gap-2 sm:gap-0">
+      <div className="flex items-center gap-3 sm:gap-4 flex-1 w-full sm:w-auto">
+        <span className="text-[9px] sm:text-[10px] font-bold text-slate-300 w-16 sm:w-24 shrink-0">
           {new Date(match.kickoffAt).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
         </span>
-        <div className="flex items-center gap-3">
-          <div className="w-20 text-right">
-             <span className={`text-[11px] font-black truncate block ${isHome ? 'text-slate-800' : 'text-slate-400'}`}>
+        <div className="flex items-center gap-2 sm:gap-3 flex-1 sm:flex-initial min-w-0">
+          <div className="w-16 sm:w-20 text-right">
+             <span className={`text-[10px] sm:text-[11px] font-black truncate block ${isHome ? 'text-slate-800' : 'text-slate-400'}`}>
                 {match.homeTeam.name}
              </span>
           </div>
-          <div className="flex items-center gap-1.5 bg-slate-100 px-2 py-0.5 rounded text-[11px] font-black text-slate-600">
+          <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-100 px-2 py-0.5 rounded text-[10px] sm:text-[11px] font-black text-slate-600 shrink-0">
             <span>{match.score.home}</span>
             <span className="text-slate-300">:</span>
             <span>{match.score.away}</span>
           </div>
-          <div className="w-20 text-left">
-             <span className={`text-[11px] font-black truncate block ${!isHome ? 'text-slate-800' : 'text-slate-400'}`}>
+          <div className="w-16 sm:w-20 text-left">
+             <span className={`text-[10px] sm:text-[11px] font-black truncate block ${!isHome ? 'text-slate-800' : 'text-slate-400'}`}>
                 {match.awayTeam.name}
              </span>
           </div>
         </div>
       </div>
       
-      <div className="flex items-center gap-3">
-        {opponent.logoUrl && (
-            <img src={opponent.logoUrl} alt={opponent.name} className="w-5 h-5 object-contain grayscale opacity-30 group-hover:opacity-100 group-hover:grayscale-0 transition-all" />
-        )}
-        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black text-white shadow-sm
+      <div className="flex items-center gap-3 self-end sm:self-auto">
+        <div className="flex items-center gap-2">
+           <span className="text-[9px] font-bold text-slate-300 sm:hidden uppercase tabular-nums">Opponent</span>
+           {opponent.logoUrl && (
+               <img src={opponent.logoUrl} alt={opponent.name} className="w-4 h-4 sm:w-5 sm:h-5 object-contain grayscale opacity-30 group-hover:opacity-100 group-hover:grayscale-0 transition-all" />
+           )}
+        </div>
+        <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-[9px] sm:text-[10px] font-black text-white shadow-sm
           ${match.result === 'W' ? 'bg-emerald-500 shadow-emerald-100' : 
             match.result === 'D' ? 'bg-amber-500 shadow-amber-100' : 
             'bg-rose-500 shadow-rose-100'}`}>
@@ -188,33 +191,33 @@ function StatComparisonCard({ title, homeValue, awayValue, homeTeam, awayTeam, u
   const percentLabel = Math.abs(Math.round(diff || 0));
 
   return (
-    <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-      <div className="bg-brand-indigo py-3 px-6 text-center">
-        <h4 className="text-[11px] font-black text-white uppercase tracking-wider">{title}</h4>
+    <div className="bg-white rounded-[24px] md:rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+      <div className="bg-brand-indigo py-2.5 md:py-3 px-6 text-center">
+        <h4 className="text-[10px] md:text-[11px] font-black text-white uppercase tracking-wider">{title}</h4>
       </div>
-      <div className="p-6">
-        <div className="flex items-center justify-between mb-4">
-           <div className="text-center">
+      <div className="p-5 md:p-6">
+        <div className="flex flex-col sm:flex-row items-center justify-between mb-4 gap-4 sm:gap-0">
+           <div className="flex sm:flex-col items-center gap-3 sm:gap-2">
               {homeTeam.logoUrl && (
-                  <img src={homeTeam.logoUrl} alt={homeTeam.name} className="w-8 h-8 object-contain mx-auto mb-2" />
+                  <img src={homeTeam.logoUrl} alt={homeTeam.name} className="w-6 h-6 sm:w-8 sm:h-8 object-contain" />
               )}
-              <div className="text-lg font-black text-slate-800">{homeValue}{unit}</div>
+              <div className="text-base sm:text-lg font-black text-slate-800">{homeValue}{unit}</div>
            </div>
 
-           <div className="flex-1 px-8 text-center">
-              <div className="text-[10px] font-black text-brand-indigo uppercase mb-1">
+           <div className="flex-1 px-4 md:px-8 text-center">
+              <div className="text-[9px] md:text-[10px] font-black text-brand-indigo uppercase mb-0.5 md:mb-1">
                  {percentLabel}% Better
               </div>
-              <div className="text-[10px] font-bold text-slate-400 leading-tight">
-                 {betterTeam.name} is {percentLabel}% better in terms of {title}
+              <div className="text-[9px] md:text-[10px] font-bold text-slate-400 leading-tight max-w-[150px] mx-auto">
+                 {betterTeam.id === homeTeam.id ? homeTeam.name : awayTeam.name} is {percentLabel}% better in {title}
               </div>
            </div>
 
-           <div className="text-center">
+           <div className="flex sm:flex-col items-center gap-3 sm:gap-2">
               {awayTeam.logoUrl && (
-                  <img src={awayTeam.logoUrl} alt={awayTeam.name} className="w-8 h-8 object-contain mx-auto mb-2" />
+                  <img src={awayTeam.logoUrl} alt={awayTeam.name} className="w-6 h-6 sm:w-8 sm:h-8 object-contain" />
               )}
-              <div className="text-lg font-black text-slate-800">{awayValue}{unit}</div>
+              <div className="text-base sm:text-lg font-black text-slate-800">{awayValue}{unit}</div>
            </div>
         </div>
         

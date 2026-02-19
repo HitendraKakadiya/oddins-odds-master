@@ -79,22 +79,22 @@ export default function Standings({ standings }: StandingsProps) {
              ))}
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto -mx-4 sm:mx-0">
              <table className="w-full">
                 <thead>
                    <tr className="text-left border-b border-slate-100">
-                      <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 w-10">#</th>
+                      <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 w-8 sm:w-10">#</th>
                       <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2">Team</th>
-                      <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 text-center">MP</th>
-                      <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 text-center">W</th>
-                      <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 text-center">D</th>
-                      <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 text-center">L</th>
-                      <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 text-center">GF</th>
-                      <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 text-center">GA</th>
-                      <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 text-center">GD</th>
+                      <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 text-center w-8 sm:w-12">MP</th>
+                      <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 text-center hidden md:table-cell">W</th>
+                      <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 text-center hidden md:table-cell">D</th>
+                      <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 text-center hidden md:table-cell">L</th>
+                      <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 text-center hidden lg:table-cell">GF</th>
+                      <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 text-center hidden lg:table-cell">GA</th>
+                      <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 text-center hidden sm:table-cell">GD</th>
                       <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 text-center">Pts</th>
-                      <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 text-center">PPG</th>
-                      <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 text-center">Last 5</th>
+                      <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 text-center hidden xl:table-cell">PPG</th>
+                      <th className="pb-4 text-[10px] font-black text-slate-400 uppercase px-2 text-center sm:text-left">Form</th>
                    </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
@@ -103,29 +103,29 @@ export default function Standings({ standings }: StandingsProps) {
                       return (
                          <tr key={row.team.id} className="hover:bg-slate-50/50 transition-colors">
                             <td className="py-4 text-[11px] font-bold text-slate-400 px-2">{row.rank}</td>
-                            <td className="py-4 px-2">
-                               <div className="flex items-center gap-3">
+                            <td className="py-4 px-2 min-w-[120px] sm:min-w-0">
+                               <div className="flex items-center gap-2 sm:gap-3">
                                   {row.team.logoUrl && (
-                                     <img src={row.team.logoUrl} alt={row.team.name} className="w-6 h-6 object-contain" />
+                                     <img src={row.team.logoUrl} alt="" className="w-5 h-5 sm:w-6 sm:h-6 object-contain" />
                                   )}
-                                  <span className="text-[11px] font-black text-slate-700">{row.team.name}</span>
+                                  <span className="text-[11px] font-black text-slate-700 truncate max-w-[100px] sm:max-w-none">{row.team.name}</span>
                                </div>
                             </td>
                             <td className="py-4 text-[11px] font-bold text-slate-600 px-2 text-center">{data.played}</td>
-                            <td className="py-4 text-[11px] font-bold text-slate-600 px-2 text-center">{data.wins}</td>
-                            <td className="py-4 text-[11px] font-bold text-slate-600 px-2 text-center">{data.draws}</td>
-                            <td className="py-4 text-[11px] font-bold text-slate-600 px-2 text-center">{data.losses}</td>
-                            <td className="py-4 text-[11px] font-bold text-slate-600 px-2 text-center">{data.gf}</td>
-                            <td className="py-4 text-[11px] font-bold text-slate-600 px-2 text-center">{data.ga}</td>
-                            <td className="py-4 text-[11px] font-bold text-slate-600 px-2 text-center">{data.gd}</td>
+                            <td className="py-4 text-[11px] font-bold text-slate-600 px-2 text-center hidden md:table-cell">{data.wins}</td>
+                            <td className="py-4 text-[11px] font-bold text-slate-600 px-2 text-center hidden md:table-cell">{data.draws}</td>
+                            <td className="py-4 text-[11px] font-bold text-slate-600 px-2 text-center hidden md:table-cell">{data.losses}</td>
+                            <td className="py-4 text-[11px] font-bold text-slate-600 px-2 text-center hidden lg:table-cell">{data.gf}</td>
+                            <td className="py-4 text-[11px] font-bold text-slate-600 px-2 text-center hidden lg:table-cell">{data.ga}</td>
+                            <td className="py-4 text-[11px] font-bold text-slate-600 px-2 text-center hidden sm:table-cell">{data.gd}</td>
                             <td className="py-4 text-[11px] font-black text-slate-800 px-2 text-center">{data.points}</td>
-                            <td className="py-4 text-[11px] font-bold text-slate-600 px-2 text-center">{data.ppg.toFixed(2)}</td>
+                            <td className="py-4 text-[11px] font-bold text-slate-600 px-2 text-center hidden xl:table-cell">{data.ppg.toFixed(2)}</td>
                             <td className="py-4 px-2">
-                               <div className="flex items-center justify-center gap-1.5">
+                               <div className="flex items-center justify-center sm:justify-start gap-1">
                                   {row.form.map((res, i) => (
                                      <div 
                                         key={i} 
-                                        className={`w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-black text-white ${getFormColor(res)}`}
+                                        className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center text-[7px] sm:text-[8px] font-black text-white shrink-0 ${getFormColor(res)}`}
                                      >
                                         {res}
                                      </div>
