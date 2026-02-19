@@ -1,4 +1,8 @@
-'use client';
+import type { LeagueStats } from '@/lib/api/types';
+
+interface MatchStatsOverviewProps {
+  stats?: LeagueStats | null;
+}
 
 interface StatCardProps {
   label: string;
@@ -7,7 +11,7 @@ interface StatCardProps {
   color?: string;
 }
 
-function StatCard({ label, value, leagueAverage, color = 'brand-indigo' }: StatCardProps) {
+function StatCard({ label, value, color = 'brand-indigo' }: StatCardProps) {
   return (
     <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-hidden flex flex-col items-center">
       <div className={`w-full bg-${color} py-3 text-center`}>
@@ -15,29 +19,29 @@ function StatCard({ label, value, leagueAverage, color = 'brand-indigo' }: StatC
       </div>
       <div className="p-6 text-center">
         <div className="text-2xl font-black text-slate-800 mb-1">{value}</div>
-        {leagueAverage && (
-          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
-            League: {leagueAverage}
-          </div>
-        )}
+        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
+          League Average
+        </div>
       </div>
     </div>
   );
 }
 
-export default function MatchStatsOverview() {
-  const stats = [
-    { label: 'Goal Average', value: '3.89', leagueAverage: '3.53' },
-    { label: 'Both Teams to Score', value: '61%', leagueAverage: '67%' },
-    { label: 'Over 1.5+', value: '93%', leagueAverage: '88%', color: 'brand-indigo' },
-    { label: 'Over 2.5+', value: '75%', leagueAverage: '69%' },
-    { label: 'Cards', value: '-1.78', leagueAverage: '0' },
-    { label: 'Corners', value: '3', leagueAverage: '8.37' }
+export default function MatchStatsOverview({ stats }: MatchStatsOverviewProps) {
+  if (!stats) return null;
+
+  const data = [
+    { label: 'Goal Average', value: stats.goalsAvg },
+    { label: 'BTTS Rate', value: `${stats.bttsRate}%` },
+    { label: 'Over 1.5+', value: `${stats.over15Rate}%` },
+    { label: 'Over 2.5+', value: `${stats.over25Rate}%` },
+    { label: 'Corners', value: '8.4', color: 'slate-400' }, // Placeholder for corners as not in seed yet
+    { label: 'Cards', value: '3.2', color: 'slate-400' }  // Placeholder for cards
   ];
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
-      {stats.map((stat, idx) => (
+      {data.map((stat, idx) => (
         <StatCard key={idx} {...stat} />
       ))}
     </div>

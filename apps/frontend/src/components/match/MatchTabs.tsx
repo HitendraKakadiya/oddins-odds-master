@@ -6,10 +6,10 @@ interface MatchTabsProps {
 }
 
 const tabs = [
-  { id: 'statistics', label: 'Statistics' },
-  { id: 'form', label: 'Form' },
-  { id: 'h2h', label: 'Head to Head' },
-  { id: 'standings', label: 'Standings' }
+  { id: 'Statistics', label: 'Statistics' },
+  { id: 'Form', label: 'Form' },
+  { id: 'Head to Head', label: 'Head to Head' },
+  { id: 'Standings', label: 'Standings' }
 ];
 
 export default function MatchTabs({ activeTab, onTabChange }: MatchTabsProps) {

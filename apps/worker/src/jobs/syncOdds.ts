@@ -10,6 +10,10 @@ import { apiFootballClient } from '../provider/apiFootballClient';
 import { withLock } from '../orchestration/locks';
 import { ensureProviderSource, updateSyncState } from '../db/queries';
 import { PoolClient } from 'pg';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 interface OddsResponse {
   fixture: {
@@ -73,6 +77,21 @@ async function upsertBookmaker(
   return result.rows[0].id;
 }
 
+const MARKET_KEY_MAP: Record<number, string> = {
+  1: 'FT_1X2',
+  5: 'OU_GOALS',
+  8: 'BTTS',
+  12: 'DC',
+  10: 'CS',
+  11: 'DNB',
+  20: 'HT_FT',
+  4: 'HANDICAP',
+  16: 'ASIAN_HANDICAP',
+  13: 'OU_CORNERS',
+  14: 'OU_CARDS',
+  2: 'HOME_AWAY',
+};
+
 // Upsert market
 async function upsertMarket(
   client: PoolClient,
@@ -80,7 +99,8 @@ async function upsertMarket(
   name: string,
   isLineMarket: boolean = false
 ): Promise<number> {
-  const key = slugify(name);
+  // Use mapped key if available, otherwise slugify the name
+  const key = MARKET_KEY_MAP[providerMarketId] || slugify(name);
 
   const result = await client.query(
     `INSERT INTO markets (provider_market_id, name, key, is_line_market)
@@ -190,7 +210,7 @@ export async function syncOdds(): Promise<void> {
         const upcomingFixtures = await getUpcomingFixtures(client);
         logger.info(`Found ${upcomingFixtures.length} upcoming fixtures to fetch odds for`);
 
-        const capturedAt = new Date();
+        const capturedAt = dayjs().utc().toDate();
         const bookmakersCache = new Map<number, number>();
         const marketsCache = new Map<number, number>();
 

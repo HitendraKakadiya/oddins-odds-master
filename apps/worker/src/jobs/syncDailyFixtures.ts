@@ -11,6 +11,10 @@ import { apiFootballClient } from '../provider/apiFootballClient';
 import { withLock } from '../orchestration/locks';
 import { ensureProviderSource, updateSyncState, upsertCountry, upsertLeague, upsertSeason, upsertSeasonCoverage } from '../db/queries';
 import { PoolClient } from 'pg';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+dayjs.extend(utc);
 
 interface FixtureResponse {
     fixture: {
@@ -182,8 +186,8 @@ export async function syncDailyFixtures(date?: string): Promise<void> {
     const JOB_NAME = 'sync:daily_fixtures';
     const ENTITY_NAME = 'daily_fixtures';
 
-    // Default to today if not provided
-    const targetDate = date || new Date().toISOString().split('T')[0];
+    // Default to today (UTC) if not provided
+    const targetDate = date || dayjs().utc().format('YYYY-MM-DD');
 
     logger.setContext({ job: JOB_NAME, date: targetDate });
     logger.info(`Starting daily fixtures sync for ${targetDate}`);
@@ -378,23 +382,21 @@ export async function syncDailyFixtures(date?: string): Promise<void> {
 
 
 export async function syncFixturesWindow(daysBack: number = 10, daysForward: number = 14): Promise<void> {
-    const today = new Date();
-    const startDate = new Date(today);
-    startDate.setDate(today.getDate() - daysBack);
-    const endDate = new Date(today);
-    endDate.setDate(today.getDate() + daysForward);
+    const today = dayjs().utc();
+    const startDate = today.subtract(daysBack, 'day');
+    const endDate = today.add(daysForward, 'day');
 
-    logger.info(`Starting sync window from ${startDate.toISOString().split('T')[0]} to ${endDate.toISOString().split('T')[0]}`);
+    logger.info(`Starting sync window from ${startDate.format('YYYY-MM-DD')} to ${endDate.format('YYYY-MM-DD')}`);
 
-    let currentDate = new Date(startDate);
-    while (currentDate <= endDate) {
-        const dateString = currentDate.toISOString().split('T')[0];
+    let currentDate = startDate;
+    while (currentDate.isBefore(endDate) || currentDate.isSame(endDate, 'day')) {
+        const dateString = currentDate.format('YYYY-MM-DD');
         try {
             await syncDailyFixtures(dateString);
         } catch (error) {
             logger.error(`Failed to sync fixtures for ${dateString}: ${error}`);
         }
-        currentDate.setDate(currentDate.getDate() + 1);
+        currentDate = currentDate.add(1, 'day');
     }
     logger.info('Sync window completed');
 }

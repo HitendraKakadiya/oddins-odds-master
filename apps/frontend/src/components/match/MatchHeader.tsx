@@ -7,9 +7,13 @@ interface MatchHeaderProps {
   match: MatchData;
   prevMatchId?: number;
   nextMatchId?: number;
+  stats?: {
+    home: { overall: { winRate: number } };
+    away: { overall: { winRate: number } };
+  } | null;
 }
 
-export default function MatchHeader({ match, prevMatchId, nextMatchId }: MatchHeaderProps) {
+export default function MatchHeader({ match, prevMatchId, nextMatchId, stats }: MatchHeaderProps) {
   const kickoffTime = new Date(match.kickoffAt);
   const formattedDate = kickoffTime.toLocaleDateString('en-GB', {
     weekday: 'short',
@@ -33,8 +37,20 @@ export default function MatchHeader({ match, prevMatchId, nextMatchId }: MatchHe
         >
           <div className="w-16 h-24 rounded-full bg-white border-2 border-slate-200 shadow-lg flex flex-col items-center justify-center transition-all hover:border-brand-indigo hover:scale-105">
             <div className="flex -space-x-2 mb-2">
-               <div className="w-6 h-6 rounded-full bg-slate-100 border border-white flex items-center justify-center text-[10px]">⚽</div>
-               <div className="w-6 h-6 rounded-full bg-slate-200 border border-white flex items-center justify-center text-[10px]">⚽</div>
+              <div className="w-7 h-7 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center overflow-hidden shadow-sm">
+                {match.homeTeam.logoUrl ? (
+                  <img src={match.homeTeam.logoUrl} alt={match.homeTeam.name} className="w-full h-full object-contain" />
+                ) : (
+                  <svg className="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#e2e8f0"/><text x="12" y="16" textAnchor="middle" fontSize="10" fill="#94a3b8">⚽</text></svg>
+                )}
+              </div>
+              <div className="w-7 h-7 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center overflow-hidden shadow-sm">
+                {match.awayTeam.logoUrl ? (
+                  <img src={match.awayTeam.logoUrl} alt={match.awayTeam.name} className="w-full h-full object-contain" />
+                ) : (
+                  <svg className="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#e2e8f0"/><text x="12" y="16" textAnchor="middle" fontSize="10" fill="#94a3b8">⚽</text></svg>
+                )}
+              </div>
             </div>
             <div className="text-brand-indigo mb-1">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,8 +69,20 @@ export default function MatchHeader({ match, prevMatchId, nextMatchId }: MatchHe
         >
           <div className="w-16 h-24 rounded-full bg-white border-2 border-slate-200 shadow-lg flex flex-col items-center justify-center transition-all hover:border-brand-indigo hover:scale-105">
             <div className="flex -space-x-2 mb-2">
-               <div className="w-6 h-6 rounded-full bg-slate-100 border border-white flex items-center justify-center text-[10px]">⚽</div>
-               <div className="w-6 h-6 rounded-full bg-slate-200 border border-white flex items-center justify-center text-[10px]">⚽</div>
+              <div className="w-7 h-7 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center overflow-hidden shadow-sm">
+                {match.homeTeam.logoUrl ? (
+                  <img src={match.homeTeam.logoUrl} alt={match.homeTeam.name} className="w-full h-full object-contain" />
+                ) : (
+                  <svg className="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#e2e8f0"/><text x="12" y="16" textAnchor="middle" fontSize="10" fill="#94a3b8">⚽</text></svg>
+                )}
+              </div>
+              <div className="w-7 h-7 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center overflow-hidden shadow-sm">
+                {match.awayTeam.logoUrl ? (
+                  <img src={match.awayTeam.logoUrl} alt={match.awayTeam.name} className="w-full h-full object-contain" />
+                ) : (
+                  <svg className="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#e2e8f0"/><text x="12" y="16" textAnchor="middle" fontSize="10" fill="#94a3b8">⚽</text></svg>
+                )}
+              </div>
             </div>
             <div className="text-brand-indigo mb-1">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,11 +136,11 @@ export default function MatchHeader({ match, prevMatchId, nextMatchId }: MatchHe
             <div className="flex flex-col items-center mb-4">
                <div className="relative w-24 h-12 overflow-hidden mb-2">
                   <div className="absolute inset-0 border-[6px] border-slate-100 rounded-t-full"></div>
-                  <div className="absolute inset-0 border-[6px] border-orange-500 rounded-t-full" style={{ clipPath: 'inset(0 50% 0 0)' }}></div>
+                  <div className="absolute inset-0 border-[6px] border-orange-500 rounded-t-full" style={{ clipPath: `inset(0 ${100 - (stats?.home.overall.winRate || 50)}% 0 0)` }}></div>
                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-300 rounded-full"></div>
                </div>
                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                  5 out of 10
+                  {(stats?.home.overall.winRate ? (stats.home.overall.winRate / 10).toFixed(1) : '5.0')} out of 10
                   <svg className="w-3 h-3 text-slate-200" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
                </div>
             </div>
@@ -165,11 +193,11 @@ export default function MatchHeader({ match, prevMatchId, nextMatchId }: MatchHe
             <div className="flex flex-col items-center mb-4">
                <div className="relative w-24 h-12 overflow-hidden mb-2">
                   <div className="absolute inset-0 border-[6px] border-slate-100 rounded-t-full"></div>
-                  <div className="absolute inset-0 border-[6px] border-red-500 rounded-t-full" style={{ clipPath: 'inset(0 0 0 70%)' }}></div>
+                  <div className="absolute inset-0 border-[6px] border-red-500 rounded-t-full" style={{ clipPath: `inset(0 0 0 ${100 - (stats?.away.overall.winRate || 50)}%)` }}></div>
                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-300 rounded-full"></div>
                </div>
                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                  3 out of 10
+                  {(stats?.away.overall.winRate ? (stats.away.overall.winRate / 10).toFixed(1) : '5.0')} out of 10
                   <svg className="w-3 h-3 text-slate-200" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
                </div>
             </div>

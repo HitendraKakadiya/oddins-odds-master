@@ -24,20 +24,6 @@ export async function liveRoutes(server: FastifyInstance) {
         const pageSizeNum = Math.min(100, Math.max(1, parseInt(pageSize, 10)));
         const offset = (pageNum - 1) * pageSizeNum;
 
-        // Map UI market to DB key
-        const marketMap: Record<string, string> = {
-            '1X2': 'FT_1X2',
-            'Double Chance': 'DC',
-            'Both Teams to Score': 'BTTS',
-            'Over 2.5': 'OU_GOALS',
-            'Under 2.5': 'OU_GOALS',
-            'Over 1.5': 'OU_GOALS',
-            'Correct Score': 'CS',
-            'Over 9.5 Corners': 'OU_CORNERS',
-            'Under 9.5 Corners': 'OU_CORNERS',
-        };
-        const dbMarketKey = market ? marketMap[market] : null;
-
         const client = await pool.connect();
 
         try {
@@ -53,27 +39,58 @@ export async function liveRoutes(server: FastifyInstance) {
                 params.push(leagueId);
             }
 
-            if (dbMarketKey) {
-                // For simplicity, we'll just check if there's a prediction for this market
-                filters.push(`EXISTS (
-                    SELECT 1 FROM match_predictions mp 
-                    JOIN markets mk ON mp.market_id = mk.id 
-                    WHERE mp.match_id = m.id AND mk.key = $${paramIdx++}
-                )`);
-                params.push(dbMarketKey);
-            }
+            if (market || minOdds) {
+                let oddsSubQuery = `
+                  SELECT 1 FROM odds_snapshots os
+                  JOIN odds_snapshot_lines osl ON os.id = osl.snapshot_id
+                  JOIN markets mk ON osl.market_id = mk.id
+                  WHERE os.match_id = m.id
+                `;
 
-            if (minOdds) {
-                const minOddsVal = parseFloat(minOdds);
-                if (!isNaN(minOddsVal)) {
-                    filters.push(`EXISTS (
-                        SELECT 1 FROM odds_snapshots os
-                        JOIN odds_snapshot_lines osl ON os.id = osl.snapshot_id
-                        WHERE os.match_id = m.id 
-                        AND osl.odd_value > $${paramIdx++}
-                    )`);
-                    params.push(minOddsVal);
+                if (market === 'Sure 2 Odds') {
+                    oddsSubQuery += ` AND osl.odd_value BETWEEN 1.90 AND 2.20`;
+                } else if (market === 'Draw') {
+                    oddsSubQuery += ` AND mk.key = 'FT_1X2' AND osl.selection = 'Draw'`;
+                } else if (market) {
+                    const marketMap: Record<string, { key: string; selection?: string; line?: number }> = {
+                        '1X2': { key: 'FT_1X2' },
+                        'Double Chance': { key: 'DC' },
+                        'Both Teams to Score': { key: 'BTTS' },
+                        'Over 2.5': { key: 'OU_GOALS', selection: 'Over', line: 2.5 },
+                        'Under 2.5': { key: 'OU_GOALS', selection: 'Under', line: 2.5 },
+                        'Over 1.5': { key: 'OU_GOALS', selection: 'Over', line: 1.5 },
+                        'Correct Score': { key: 'CS' },
+                        'HT/FT': { key: 'HT_FT' },
+                        'DNB': { key: 'DNB' },
+                        'Handicap': { key: 'HANDICAP' },
+                        'Over 9.5 Corners': { key: 'OU_CORNERS', selection: 'Over', line: 9.5 },
+                        'Under 9.5 Corners': { key: 'OU_CORNERS', selection: 'Under', line: 9.5 },
+                    };
+
+                    const config = marketMap[market];
+                    if (config) {
+                        oddsSubQuery += ` AND mk.key = $${paramIdx++}`;
+                        params.push(config.key);
+                        if (config.selection) {
+                            oddsSubQuery += ` AND osl.selection = $${paramIdx++}`;
+                            params.push(config.selection);
+                        }
+                        if (config.line) {
+                            oddsSubQuery += ` AND osl.line = $${paramIdx++}`;
+                            params.push(config.line);
+                        }
+                    }
                 }
+
+                if (minOdds) {
+                    const minOddsVal = parseFloat(minOdds);
+                    if (!isNaN(minOddsVal)) {
+                        oddsSubQuery += ` AND osl.odd_value >= $${paramIdx++}`;
+                        params.push(minOddsVal);
+                    }
+                }
+
+                filters.push(`EXISTS (${oddsSubQuery})`);
             }
 
             const filterClause = filters.join(' AND ');

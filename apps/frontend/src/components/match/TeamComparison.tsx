@@ -1,8 +1,16 @@
 'use client';
 
-import type { MatchData } from '@/lib/api/types';
+import type { MatchData, TeamStats } from '@/lib/api/types';
 
-interface TeamStatsProps {
+interface TeamComparisonProps {
+  match: MatchData;
+  homeStats?: TeamStats | null;
+  awayStats?: TeamStats | null;
+  homeStatsSource?: 'league' | 'all' | 'any';
+  awayStatsSource?: 'league' | 'all' | 'any';
+}
+
+interface StatRowProps {
   label: string;
   overall: string | number;
   homeAway: string | number;
@@ -10,7 +18,7 @@ interface TeamStatsProps {
   highlight?: boolean;
 }
 
-function StatRow({ label, overall, homeAway, awayHome, highlight }: TeamStatsProps) {
+function StatRow({ label, overall, homeAway, awayHome, highlight }: StatRowProps) {
   return (
     <div className={`grid grid-cols-4 py-3 px-4 ${highlight ? 'bg-emerald-50/50' : ''}`}>
       <div className="col-span-1 text-[11px] font-black text-slate-800 uppercase tracking-tight flex items-center">{label}</div>
@@ -21,52 +29,40 @@ function StatRow({ label, overall, homeAway, awayHome, highlight }: TeamStatsPro
   );
 }
 
-function FormDot({ result }: { result: 'W' | 'L' | 'D' }) {
-  const colors = {
+function FormDot({ result }: { result: string }) {
+  const colors: Record<string, string> = {
     W: 'bg-emerald-500',
     L: 'bg-rose-500',
     D: 'bg-amber-500'
   };
   return (
-    <div className={`w-6 h-6 rounded-full ${colors[result]} flex items-center justify-center text-[10px] font-black text-white shadow-sm`}>
+    <div className={`w-6 h-6 rounded-full ${colors[result] || 'bg-slate-200'} flex items-center justify-center text-[10px] font-black text-white shadow-sm`}>
       {result}
     </div>
   );
 }
 
-export default function TeamComparison({ match }: { match: MatchData }) {
-  const homeStats = [
-    { label: 'Win %', overall: '26%', homeAway: '23%', awayHome: '29%', highlight: true },
-    { label: 'Goals', overall: '3.15', homeAway: '3.08', awayHome: '3.21' },
-    { label: 'Scored', overall: '1.26', homeAway: '1.08', awayHome: '1.43', highlight: true },
-    { label: 'Conceded', overall: '1.89', homeAway: '2', awayHome: '1.79', highlight: true },
-    { label: 'Both Teams to Score', overall: '63%', homeAway: '62%', awayHome: '64%' },
-    { label: 'Without Conceding', overall: '19%', homeAway: '23%', awayHome: '14%', highlight: true },
-    { label: 'Failed to Score', overall: '26%', homeAway: '23%', awayHome: '29%' },
-    { label: '1st to Score', overall: '22%', homeAway: '15%', awayHome: '29%', highlight: true },
-    { label: 'xG', overall: '-0.39', homeAway: '0.61', awayHome: '0' },
-    { label: 'xGA', overall: '-0.48', homeAway: '0.52', awayHome: '0' }
-  ];
+const mapStatsData = (stats: TeamStats) => [
+  { label: 'Win %', overall: `${stats.overall.winRate || 0}%`, homeAway: `${stats.home.winRate || 0}%`, awayHome: `${stats.away.winRate || 0}%`, highlight: true },
+  { label: 'Goals', overall: (stats.overall.scoredAvg + stats.overall.concededAvg).toFixed(2), homeAway: (stats.home.scoredAvg + stats.home.concededAvg).toFixed(2), awayHome: (stats.away.scoredAvg + stats.away.concededAvg).toFixed(2) },
+  { label: 'Scored', overall: stats.overall.scoredAvg || 0, homeAway: stats.home.scoredAvg || 0, awayHome: stats.away.scoredAvg || 0, highlight: true },
+  { label: 'Conceded', overall: stats.overall.concededAvg || 0, homeAway: stats.home.concededAvg || 0, awayHome: stats.away.concededAvg || 0, highlight: true },
+  { label: 'BTTS %', overall: `${stats.overall.bttsRate || 0}%`, homeAway: `${stats.home.bttsRate || 0}%`, awayHome: `${stats.away.bttsRate || 0}%` },
+  { label: 'Clean Sheets', overall: `${stats.overall.cleanSheetRate || 0}%`, homeAway: `${stats.home.cleanSheetRate || 0}%`, awayHome: `${stats.away.cleanSheetRate || 0}%`, highlight: true },
+  { label: 'Failed to Score', overall: `${stats.overall.failedToScoreRate || 0}%`, homeAway: `${stats.home.failedToScoreRate || 0}%`, awayHome: `${stats.away.failedToScoreRate || 0}%` },
+  { label: 'xG', overall: '0.00', homeAway: '0.00', awayHome: '0.00' }, // Placeholder
+  { label: 'xGA', overall: '0.00', homeAway: '0.00', awayHome: '0.00' }  // Placeholder
+];
 
-  const awayStats = [
-    { label: 'Win %', overall: '0%', homeAway: '0%', awayHome: '0%', highlight: true },
-    { label: 'Goals', overall: '4.32', homeAway: '4.23', awayHome: '4.42' },
-    { label: 'Scored', overall: '0.72', homeAway: '0.85', awayHome: '0.58', highlight: true },
-    { label: 'Conceded', overall: '3.6', homeAway: '3.38', awayHome: '3.83', highlight: true },
-    { label: 'Both Teams to Score', overall: '56%', homeAway: '62%', awayHome: '50%' },
-    { label: 'Without Conceding', overall: '0%', homeAway: '0%', awayHome: '0%', highlight: true },
-    { label: 'Failed to Score', overall: '44%', homeAway: '38%', awayHome: '50%' },
-    { label: '1st to Score', overall: '22%', homeAway: '38%', awayHome: '17%', highlight: true },
-    { label: 'xG', overall: '-0.39', homeAway: '0.61', awayHome: '0' },
-    { label: 'xGA', overall: '-0.48', homeAway: '0.52', awayHome: '0' }
-  ];
+export default function TeamComparison({ match, homeStats, awayStats, homeStatsSource, awayStatsSource }: TeamComparisonProps) {
+  if (!homeStats || !awayStats) return null;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
       {/* Home Team Section */}
       <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden flex flex-col">
         <div className="bg-brand-indigo py-4 text-center">
-          <span className="text-white text-sm font-black uppercase tracking-widest">Home Team</span>
+          <span className="text-white text-sm font-black uppercase tracking-widest">Home Team Stats</span>
         </div>
         <div className="p-8 pb-0">
           <div className="flex items-center gap-6 mb-8">
@@ -80,14 +76,19 @@ export default function TeamComparison({ match }: { match: MatchData }) {
             <div>
               <h3 className="text-2xl font-black text-slate-800 mb-1">{match.homeTeam.name}</h3>
               <div className="text-xs font-bold text-slate-400 capitalize">{match.league.country.name} - {match.league.name}</div>
+              {(homeStatsSource === 'all' || homeStatsSource === 'any') && (
+                <div className="mt-1 inline-flex items-center gap-1 bg-amber-50 border border-amber-200 text-amber-600 text-[10px] font-black uppercase tracking-wide px-2 py-0.5 rounded-full">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  Historical data (all competitions)
+                </div>
+              )}
             </div>
           </div>
 
           <div className="space-y-4 mb-8">
-            {/* Form & PPG Header */}
             <div className="grid grid-cols-4 px-4 text-[10px] font-black text-slate-300 uppercase tracking-widest">
               <div>Form</div>
-              <div className="text-center col-span-2">Last 5</div>
+              <div className="text-center col-span-2">Last 5 Matches</div>
               <div className="text-center">PPG</div>
             </div>
 
@@ -95,14 +96,10 @@ export default function TeamComparison({ match }: { match: MatchData }) {
             <div className="grid grid-cols-4 items-center px-4 bg-slate-50/50 py-3 rounded-2xl">
               <div className="text-[11px] font-black text-slate-800 uppercase italic">Overall</div>
               <div className="col-span-2 flex justify-center gap-1.5">
-                <FormDot result="W" />
-                <FormDot result="L" />
-                <FormDot result="W" />
-                <FormDot result="L" />
-                <FormDot result="W" />
+                {(homeStats.last5 || []).map((r, i) => <FormDot key={i} result={r} />)}
               </div>
               <div className="flex justify-center">
-                <div className="bg-brand-indigo/10 text-brand-indigo px-3 py-1 rounded-lg text-xs font-black">1.04</div>
+                <div className="bg-brand-indigo/10 text-brand-indigo px-3 py-1 rounded-lg text-xs font-black">{homeStats.overall.ppg || 0}</div>
               </div>
             </div>
 
@@ -110,44 +107,39 @@ export default function TeamComparison({ match }: { match: MatchData }) {
             <div className="grid grid-cols-4 items-center px-4 py-1">
               <div className="text-[11px] font-black text-slate-400 uppercase italic">Home</div>
               <div className="col-span-2 flex justify-center gap-1.5">
-                <FormDot result="L" />
-                <FormDot result="W" />
-                <FormDot result="L" />
-                <FormDot result="L" />
-                <FormDot result="L" />
+                {(homeStats.last5Home || []).map((r, i) => <FormDot key={i} result={r} />)}
               </div>
               <div className="flex justify-center">
-                <div className="bg-rose-50 text-rose-500 px-3 py-1 rounded-lg text-xs font-black">0.92</div>
+                <div className={`px-3 py-1 rounded-lg text-xs font-black ${(homeStats.home.ppg || 0) >= 1.5 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-500'}`}>
+                  {homeStats.home.ppg || 0}
+                </div>
               </div>
             </div>
 
-            {/* Away Form */}
-            <div className="grid grid-cols-4 items-center px-4 py-1">
+             {/* Away Form */}
+             <div className="grid grid-cols-4 items-center px-4 py-1">
               <div className="text-[11px] font-black text-slate-400 uppercase italic">Away</div>
               <div className="col-span-2 flex justify-center gap-1.5">
-                <FormDot result="W" />
-                <FormDot result="L" />
-                <FormDot result="W" />
-                <FormDot result="W" />
-                <FormDot result="L" />
+                {(homeStats.last5Away || []).map((r, i) => <FormDot key={i} result={r} />)}
               </div>
               <div className="flex justify-center">
-                <div className="bg-brand-indigo/10 text-brand-indigo px-3 py-1 rounded-lg text-xs font-black">1.14</div>
+                <div className={`px-3 py-1 rounded-lg text-xs font-black ${(homeStats.away.ppg || 0) >= 1.5 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-500'}`}>
+                  {homeStats.away.ppg || 0}
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Stats Table Headers */}
-        <div className="grid grid-cols-4 px-8 py-3 bg-slate-50/30 border-y border-slate-50 text-[10px] font-black text-slate-300 uppercase tracking-widest">
+        <div className="grid grid-cols-4 px-8 py-1 bg-slate-50/30 border-y border-slate-50 text-[10px] font-black text-slate-300 uppercase tracking-widest">
           <div>Stats</div>
-          <div className="text-center">Overall</div>
+          <div className="text-center">Total</div>
           <div className="text-center">Home</div>
           <div className="text-center">Away</div>
         </div>
 
         <div className="divide-y divide-slate-50 px-4 pb-8">
-          {homeStats.map((stat, idx) => (
+          {mapStatsData(homeStats).map((stat, idx) => (
             <StatRow key={idx} {...stat} />
           ))}
         </div>
@@ -156,7 +148,7 @@ export default function TeamComparison({ match }: { match: MatchData }) {
       {/* Away Team Section */}
       <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden flex flex-col">
         <div className="bg-brand-indigo py-4 text-center">
-          <span className="text-white text-sm font-black uppercase tracking-widest">Away Team</span>
+          <span className="text-white text-sm font-black uppercase tracking-widest">Away Team Stats</span>
         </div>
         <div className="p-8 pb-0">
           <div className="flex items-center gap-6 mb-8">
@@ -170,29 +162,30 @@ export default function TeamComparison({ match }: { match: MatchData }) {
             <div>
               <h3 className="text-2xl font-black text-slate-800 mb-1">{match.awayTeam.name}</h3>
               <div className="text-xs font-bold text-slate-400 capitalize">{match.league.country.name} - {match.league.name}</div>
+              {(awayStatsSource === 'all' || awayStatsSource === 'any') && (
+                <div className="mt-1 inline-flex items-center gap-1 bg-amber-50 border border-amber-200 text-amber-600 text-[10px] font-black uppercase tracking-wide px-2 py-0.5 rounded-full">
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  Historical data (all competitions)
+                </div>
+              )}
             </div>
           </div>
 
           <div className="space-y-4 mb-8">
-             {/* Form & PPG Header */}
-             <div className="grid grid-cols-4 px-4 text-[10px] font-black text-slate-300 uppercase tracking-widest">
+            <div className="grid grid-cols-4 px-4 text-[10px] font-black text-slate-300 uppercase tracking-widest">
               <div>Form</div>
-              <div className="text-center col-span-2">Last 5</div>
+              <div className="text-center col-span-2">Last 5 Matches</div>
               <div className="text-center">PPG</div>
             </div>
 
             {/* Overall Form */}
-            <div className="grid grid-cols-4 items-center px-4 bg-rose-50/30 py-3 rounded-2xl border border-rose-100/50">
+            <div className="grid grid-cols-4 items-center px-4 bg-slate-50/50 py-3 rounded-2xl">
               <div className="text-[11px] font-black text-slate-800 uppercase italic">Overall</div>
               <div className="col-span-2 flex justify-center gap-1.5">
-                <FormDot result="L" />
-                <FormDot result="L" />
-                <FormDot result="D" />
-                <FormDot result="L" />
-                <FormDot result="L" />
+                {(awayStats.last5 || []).map((r, i) => <FormDot key={i} result={r} />)}
               </div>
               <div className="flex justify-center">
-                <div className="bg-rose-500 text-white px-3 py-1 rounded-lg text-xs font-black shadow-sm">0.08</div>
+                <div className="bg-brand-indigo/10 text-brand-indigo px-3 py-1 rounded-lg text-xs font-black">{awayStats.overall.ppg || 0}</div>
               </div>
             </div>
 
@@ -200,45 +193,40 @@ export default function TeamComparison({ match }: { match: MatchData }) {
             <div className="grid grid-cols-4 items-center px-4 py-1">
               <div className="text-[11px] font-black text-slate-400 uppercase italic">Home</div>
               <div className="col-span-2 flex justify-center gap-1.5">
-                <FormDot result="L" />
-                <FormDot result="D" />
-                <FormDot result="L" />
-                <FormDot result="L" />
-                <FormDot result="D" />
+                {(awayStats.last5Home || []).map((r, i) => <FormDot key={i} result={r} />)}
               </div>
               <div className="flex justify-center">
-                <div className="bg-rose-50 text-rose-500 px-3 py-1 rounded-lg text-xs font-black">0.15</div>
+                <div className={`px-3 py-1 rounded-lg text-xs font-black ${(awayStats.home.ppg || 0) >= 1.5 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-500'}`}>
+                  {awayStats.home.ppg || 0}
+                </div>
               </div>
             </div>
 
-            {/* Away Form */}
-            <div className="grid grid-cols-4 items-center px-4 py-1">
+             {/* Away Form */}
+             <div className="grid grid-cols-4 items-center px-4 py-1">
               <div className="text-[11px] font-black text-slate-400 uppercase italic">Away</div>
               <div className="col-span-2 flex justify-center gap-1.5">
-                <FormDot result="L" />
-                <FormDot result="L" />
-                <FormDot result="L" />
-                <FormDot result="L" />
-                <FormDot result="L" />
+                {(awayStats.last5Away || []).map((r, i) => <FormDot key={i} result={r} />)}
               </div>
               <div className="flex justify-center">
-                <div className="bg-rose-500 text-white px-3 py-1 rounded-lg text-xs font-black shadow-sm">0</div>
+                <div className={`px-3 py-1 rounded-lg text-xs font-black ${(awayStats.away.ppg || 0) >= 1.5 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-500'}`}>
+                  {awayStats.away.ppg || 0}
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Stats Table Headers */}
-        <div className="grid grid-cols-4 px-8 py-3 bg-slate-50/30 border-y border-slate-50 text-[10px] font-black text-slate-300 uppercase tracking-widest">
+        <div className="grid grid-cols-4 px-8 py-1 bg-slate-50/30 border-y border-slate-50 text-[10px] font-black text-slate-300 uppercase tracking-widest">
           <div>Stats</div>
-          <div className="text-center">Overall</div>
+          <div className="text-center">Total</div>
           <div className="text-center">Home</div>
           <div className="text-center">Away</div>
         </div>
 
         <div className="divide-y divide-slate-50 px-4 pb-8">
-          {awayStats.map((stat, idx) => (
-            <StatRow key={idx} {...stat} highlight={stat.highlight} />
+          {mapStatsData(awayStats).map((stat, idx) => (
+            <StatRow key={idx} {...stat} />
           ))}
         </div>
       </div>

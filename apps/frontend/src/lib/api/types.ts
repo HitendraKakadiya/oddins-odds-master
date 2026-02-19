@@ -109,6 +109,18 @@ export interface ArticlesResponse {
     items: Article[];
 }
 
+export interface StandingsSplit {
+    played: number;
+    wins: number;
+    draws: number;
+    losses: number;
+    gf: number;
+    ga: number;
+    gd: number;
+    points: number;
+    ppg: number;
+}
+
 export interface StandingsRow {
     rank: number;
     team: {
@@ -117,13 +129,10 @@ export interface StandingsRow {
         logoUrl?: string | null;
         name: string;
     };
-    played: number;
-    wins: number;
-    draws: number;
-    losses: number;
-    gf: number;
-    ga: number;
-    points: number;
+    overall: StandingsSplit;
+    home: StandingsSplit;
+    away: StandingsSplit;
+    form: string[];
 }
 
 export interface FAQItem {
@@ -175,12 +184,24 @@ export interface OddsLatest {
 }
 
 export interface H2HMatch {
+    id: number;
     date: string;
     competition: string;
-    homeTeam: string;
+    homeTeam: { id: number; name: string; logoUrl?: string | null };
+    awayTeam: { id: number; name: string; logoUrl?: string | null };
     homeScore: number;
     awayScore: number;
-    awayTeam: string;
+}
+
+export interface H2HSummary {
+    total: number;
+    homeTeam: { wins: number; cleanSheets: number };
+    awayTeam: { wins: number; cleanSheets: number };
+    draws: number;
+    btts: number;
+    over05: number;
+    over15: number;
+    over25: number;
 }
 
 export interface Prediction {
@@ -208,12 +229,74 @@ export interface Prediction {
     [key: string]: unknown;
 }
 
+export interface TeamStatsDetail {
+    played: number;
+    wins: number;
+    draws: number;
+    losses: number;
+    scored: number;
+    conceded: number;
+    btts: number;
+    cleanSheets: number;
+    failedToScore: number;
+    ppg: number;
+    winRate: number;
+    scoredAvg: number;
+    concededAvg: number;
+    bttsRate: number;
+    cleanSheetRate: number;
+    failedToScoreRate: number;
+    over05Rate: number;
+    over15Rate: number;
+    over25Rate: number;
+    over35Rate: number;
+    over45Rate: number;
+    over55Rate: number;
+}
+
+export interface DetailedRecentMatch {
+    id: number;
+    kickoffAt: string;
+    homeTeam: { id: number; name: string; logoUrl?: string };
+    awayTeam: { id: number; name: string; logoUrl?: string };
+    score: { home: number; away: number };
+    leagueName: string;
+    result: 'W' | 'L' | 'D';
+    isHome: boolean;
+}
+
+export interface TeamStats {
+    overall: TeamStatsDetail;
+    home: TeamStatsDetail;
+    away: TeamStatsDetail;
+    last5: string[];
+    last5Home: string[];
+    last5Away: string[];
+    recentMatchesDetailed: DetailedRecentMatch[];
+}
+
+export interface LeagueStats {
+    goalsAvg: string;
+    bttsRate: number;
+    over25Rate: number;
+    over15Rate: number;
+}
+
 export interface MatchDetailResponse {
     match: MatchData;
     oddsLatest?: OddsLatest | null;
     predictions?: Prediction[] | null;
     h2h?: H2HMatch[] | null;
+    h2hSummary?: H2HSummary | null;
+    standings?: StandingsRow[] | null;
     whereToWatch?: WhereToWatchItem[] | null;
+    stats?: {
+        home: TeamStats;
+        away: TeamStats;
+        homeStatsSource?: 'league' | 'all' | 'any';
+        awayStatsSource?: 'league' | 'all' | 'any';
+        league: LeagueStats;
+    } | null;
 }
 
 export interface PredictionsResponse {

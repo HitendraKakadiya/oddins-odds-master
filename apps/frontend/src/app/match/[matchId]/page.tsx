@@ -61,6 +61,7 @@ export default async function MatchDetailPage({ params }: PageProps) {
           match={matchData.match} 
           prevMatchId={matchId > 1 ? matchId - 1 : undefined}
           nextMatchId={matchId + 1}
+          stats={matchData.stats}
         />
 
         {/* Tabbed Content (Statistics, Form, H2H, Standings) */}

@@ -22,7 +22,7 @@ export function startScheduler() {
         } catch (error) {
             logger.error('Scheduled job sync:daily_fixtures failed', error);
         }
-    });
+    }, { timezone: 'UTC' });
 
     // Sync Odds: Every hour at minute 30
     cron.schedule('30 * * * *', async () => {
@@ -32,7 +32,7 @@ export function startScheduler() {
         } catch (error) {
             logger.error('Scheduled job sync:odds failed', error);
         }
-    });
+    }, { timezone: 'UTC' });
 
     // Sync Predictions: Every hour at minute 45
     cron.schedule('45 * * * *', async () => {
@@ -42,7 +42,7 @@ export function startScheduler() {
         } catch (error) {
             logger.error('Scheduled job sync:predictions failed', error);
         }
-    });
+    }, { timezone: 'UTC' });
 
     // Cleanup: Every day at 03:00 AM
     cron.schedule('0 3 * * *', async () => {
@@ -52,11 +52,11 @@ export function startScheduler() {
         } catch (error) {
             logger.error('Scheduled job cleanup:old_data failed', error);
         }
-    });
+    }, { timezone: 'UTC' });
 
-    logger.info('Scheduler started. Jobs configured:');
-    logger.info('- sync:daily_fixtures (Every hour at :00)');
-    logger.info('- sync:odds (Every hour at :30)');
-    logger.info('- sync:predictions (Every hour at :45)');
-    logger.info('- cleanup:old_data (Daily at 03:00)');
+    logger.info('Scheduler started. Jobs configured (UTC):');
+    logger.info('- sync:daily_fixtures (Every hour at :00 UTC)');
+    logger.info('- sync:odds (Every hour at :30 UTC)');
+    logger.info('- sync:predictions (Every hour at :45 UTC)');
+    logger.info('- cleanup:old_data (Daily at 03:00 UTC)');
 }
