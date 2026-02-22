@@ -30,7 +30,7 @@ export default function CompactPredictionCard({ prediction }: CompactPredictionC
   });
 
   return (
-    <Link href={`/match/${prediction.matchId}`} className="group py-6 flex items-center gap-6 transition-all hover:bg-slate-50/50 px-4">
+    <Link href={`/predictions/${prediction.matchId}`} className="group py-6 flex items-center gap-6 transition-all hover:bg-slate-50/50 px-4">
        <div className="relative w-[180px] h-[100px] rounded-xl overflow-hidden shadow-lg border border-slate-200 bg-slate-900 shrink-0">
           <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-indigo-950 opacity-90"></div>
           <div className="relative z-10 h-full flex items-center justify-center gap-3">

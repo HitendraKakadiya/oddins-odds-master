@@ -143,5 +143,63 @@ export async function predictionsRoutes(server: FastifyInstance) {
       items,
     };
   });
+
+  server.get<{ Params: { matchId: string } }>('/predictions/:matchId/detail', async (request, reply) => {
+    const { matchId } = request.params;
+
+    // Get basic match and prediction info
+    const matchResult = await query(
+      `SELECT 
+        m.id as match_id,
+        m.kickoff_at,
+        l.name as league_name,
+        l.slug as league_slug,
+        c.name as country_name,
+        ht.name as home_team_name,
+        ht.logo_url as home_team_logo,
+        at.name as away_team_name,
+        at.logo_url as away_team_logo,
+        mk.key as market_key,
+        mp.line,
+        mp.selection,
+        mp.probability,
+        mp.confidence,
+        t.title as tip_title,
+        t.short_reason as tip_reason,
+        t.is_premium
+      FROM match_predictions mp
+      JOIN matches m ON mp.match_id = m.id
+      JOIN leagues l ON m.league_id = l.id
+      JOIN countries c ON l.country_id = c.id
+      JOIN teams ht ON m.home_team_id = ht.id
+      JOIN teams at ON m.away_team_id = at.id
+      JOIN markets mk ON mp.market_id = mk.id
+      LEFT JOIN tips t ON m.id = t.match_id
+      WHERE m.id = $1
+      ORDER BY mp.confidence DESC`,
+      [matchId]
+    );
+
+    if (matchResult.rows.length === 0) {
+      return reply.status(404).send({ error: 'Predictions not found for this match' });
+    }
+
+    const predictions = matchResult.rows.map(row => ({
+      matchId: row.match_id,
+      marketKey: row.market_key,
+      line: row.line,
+      selection: row.selection,
+      probability: row.probability,
+      confidence: row.confidence,
+      title: row.tip_title,
+      shortExplanation: row.tip_reason || 'Based on recent form and statistical analysis',
+      isPremium: row.is_premium || false,
+    }));
+
+    return {
+      matchId: parseInt(matchId, 10),
+      predictions,
+    };
+  });
 }
 

@@ -29,3 +29,7 @@ export async function getFeaturedTips(date?: string): Promise<FeaturedTipsRespon
     const dateParam = date || new Date().toISOString().split('T')[0];
     return fetchAPI<FeaturedTipsResponse>(`/v1/tips/featured?date=${dateParam}`);
 }
+
+export async function getPredictionDetail(matchId: number): Promise<{ predictions: any[] }> {
+    return fetchAPI<{ predictions: any[] }>(`/v1/predictions/${matchId}/detail`);
+}

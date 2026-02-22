@@ -31,7 +31,7 @@ export default function FeaturedPredictionCard({ prediction }: FeaturedPredictio
   });
 
   return (
-    <Link href={`/match/${prediction.matchId}`} className="block relative h-[320px] rounded-[32px] overflow-hidden group shadow-xl hover:shadow-2xl transition-all border border-slate-200/60 bg-[#1F1D36]">
+    <Link href={`/predictions/${prediction.matchId}`} className="block relative h-[320px] rounded-[32px] overflow-hidden group shadow-xl hover:shadow-2xl transition-all border border-slate-200/60 bg-[#1F1D36]">
       {/* Background with gradient and patterns */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#2D2A4A] to-[#1F1D36]"></div>
       
