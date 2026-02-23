@@ -92,31 +92,38 @@ export default function WorldwideLeagueDirectory() {
 
                 {openGroups.includes(group.region) && (
                   <div className="divide-y divide-slate-50 px-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                    {group.leagues.map((league) => (
-                      <div key={league.id} className="group flex items-center justify-between p-4 hover:bg-slate-50 transition-all rounded-xl cursor-pointer">
-                        <div className="flex items-center gap-4">
-                          <button className="text-slate-300 hover:text-brand-pink transition-colors">
-                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.54 1.118l-3.976-2.888a1 1 0 00-1.175 0l-3.976 2.888c-.784.57-1.838-.196-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.382-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                             </svg>
-                          </button>
-                          <div className="w-8 h-8 rounded-full bg-white border border-slate-100 flex items-center justify-center overflow-hidden shadow-sm">
-                            <img src={league.logoUrl} alt="" className="w-5 h-5 object-contain" />
-                          </div>
-                          <Link href={`/predictions?leagueSlug=${league.slug}`} className="text-sm font-bold text-slate-600 group-hover:text-brand-indigo transition-colors">
-                            {league.name}
-                          </Link>
-                        </div>
-                        <svg 
-                          className="w-4 h-4 text-slate-200 group-hover:text-brand-indigo transition-all transform group-hover:translate-x-1" 
-                          fill="none" 
-                          stroke="currentColor" 
-                          viewBox="0 0 24 24"
+                    {group.leagues.map((league) => {
+                      const countrySlug = group.region.toLowerCase().replace(/\s+/g, '-');
+                      return (
+                        <Link 
+                          key={league.id} 
+                          href={`/leagues/${countrySlug}/${league.slug}`}
+                          className="group flex items-center justify-between p-4 hover:bg-slate-50 transition-all rounded-xl cursor-pointer"
                         >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </div>
-                    ))}
+                          <div className="flex items-center gap-4">
+                            <button className="text-slate-300 hover:text-brand-pink transition-colors" onClick={(e) => e.preventDefault()}>
+                               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.54 1.118l-3.976-2.888a1 1 0 00-1.175 0l-3.976 2.888c-.784.57-1.838-.196-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.382-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                               </svg>
+                            </button>
+                            <div className="w-8 h-8 rounded-full bg-white border border-slate-100 flex items-center justify-center overflow-hidden shadow-sm">
+                              <img src={league.logoUrl || ''} alt="" className="w-5 h-5 object-contain" />
+                            </div>
+                            <span className="text-sm font-bold text-slate-600 group-hover:text-brand-indigo transition-colors">
+                              {league.name}
+                            </span>
+                          </div>
+                          <svg 
+                            className="w-4 h-4 text-slate-200 group-hover:text-brand-indigo transition-all transform group-hover:translate-x-1" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </Link>
+                      );
+                    })}
                   </div>
                 )}
               </div>
