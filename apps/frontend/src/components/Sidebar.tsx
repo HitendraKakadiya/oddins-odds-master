@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import type { LeaguesResponse } from '@/lib/api';
+import Image from 'next/image';
+import type { LeaguesResponse, Prediction } from '@/lib/api';
 
 interface SidebarProps {
   leagueData: LeaguesResponse[];
-  _featuredTip?: unknown;
+  _featuredTip?: Prediction;
   streams?: Array<{ id: number; home: string; away: string; time: string; icon: string }>;
   mode?: 'default' | 'predictions';
 }
@@ -230,7 +231,13 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
                         >
                           <div className="flex items-center gap-4">
                             {league.logoUrl ? (
-                              <img src={league.logoUrl} alt={league.name} className="w-8 h-8 object-contain rounded shadow-sm border border-slate-100" />
+                              <Image 
+                                src={league.logoUrl} 
+                                alt={league.name} 
+                                width={32} 
+                                height={32} 
+                                className="w-8 h-8 object-contain rounded shadow-sm border border-slate-100" 
+                              />
                             ) : (
                               <div className="w-9 h-9 bg-slate-100 rounded-xl flex items-center justify-center text-[10px] font-black text-slate-400 group-hover:bg-brand-indigo/10 group-hover:text-brand-indigo transition-all border border-slate-200/50">
                                   {league.name.substring(0,2).toUpperCase()}
@@ -268,7 +275,13 @@ export default function Sidebar({ leagueData, _featuredTip, streams = [], mode =
                       <div className="flex items-center gap-4">
                         <div className="w-7 h-7 bg-slate-50 rounded-lg flex items-center justify-center text-base shadow-sm group-hover:scale-110 transition-transform">
                           {group.country.flagUrl ? (
-                            <img src={group.country.flagUrl} alt="" className="w-5 h-4 object-cover rounded-sm" />
+                            <Image 
+                              src={group.country.flagUrl} 
+                              alt="" 
+                              width={20} 
+                              height={16} 
+                              className="w-5 h-4 object-cover rounded-sm" 
+                            />
                           ) : (
                             <span>🏳️</span>
                           )}

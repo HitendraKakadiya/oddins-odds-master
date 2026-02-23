@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import StreamsMatchRow from './StreamsMatchRow';
 import type { StreamItem } from '@/lib/api';
 
@@ -24,7 +25,7 @@ export default function StreamsLeagueGroup({ league, matches }: StreamsLeagueGro
       >
         <div className="flex items-center gap-2 sm:gap-3">
           {league.logoUrl ? (
-            <img src={league.logoUrl} alt="" className="w-5 h-5 sm:w-6 sm:h-6 object-contain" />
+            <Image src={league.logoUrl} alt="" width={24} height={24} className="w-5 h-5 sm:w-6 sm:h-6 object-contain" />
           ) : (
             <div className="w-5 h-5 sm:w-6 sm:h-6 bg-white rounded-full flex items-center justify-center text-[9px] sm:text-[10px] font-bold text-brand-indigo shadow-sm">
               ⚽

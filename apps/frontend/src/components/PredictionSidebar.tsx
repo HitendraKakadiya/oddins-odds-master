@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import type { LeaguesResponse } from '@/lib/api';
 
 interface PredictionSidebarProps {
@@ -109,7 +110,7 @@ export default function PredictionSidebar({ leagues }: PredictionSidebarProps) {
                   >
                      <div className="flex items-center gap-3">
                         <span className="text-base grayscale group-hover:grayscale-0 transition-all">
-                           {country.country.flagUrl ? <img src={country.country.flagUrl} alt="" className="w-4 h-3 object-cover rounded-sm shadow-sm" /> : '🏳️'}
+                           {country.country.flagUrl ? <Image src={country.country.flagUrl} alt="" width={16} height={12} className="w-4 h-3 object-cover rounded-sm shadow-sm" /> : '🏳️'}
                         </span>
                         <span className="text-sm font-bold text-slate-700 group-hover:text-brand-indigo transition-colors">{country.country.name}</span>
                      </div>

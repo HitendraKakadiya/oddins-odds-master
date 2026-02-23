@@ -1,25 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
+import type { Prediction } from '@/lib/api';
 
 interface CompactPredictionCardProps {
-  prediction: {
-    matchId: number;
-    kickoffAt: string;
-    league: {
-      name: string;
-      slug: string;
-      countryName: string;
-    };
-    homeTeam: {
-      name: string;
-      logoUrl?: string | null;
-    };
-    awayTeam: {
-      name: string;
-      logoUrl?: string | null;
-    };
-  };
+  prediction: Prediction;
 }
 
 export default function CompactPredictionCard({ prediction }: CompactPredictionCardProps) {
@@ -34,12 +20,20 @@ export default function CompactPredictionCard({ prediction }: CompactPredictionC
        <div className="relative w-full sm:w-[180px] h-[120px] sm:h-[100px] rounded-xl overflow-hidden shadow-lg border border-slate-200 bg-slate-900 shrink-0">
           <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-indigo-950 opacity-90"></div>
           <div className="relative z-10 h-full flex items-center justify-center gap-4 sm:gap-3">
-             <div className="w-12 h-12 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20 overflow-hidden shadow-inner">
-                {prediction.homeTeam.logoUrl ? <img src={prediction.homeTeam.logoUrl} alt="" className="w-8 h-8 sm:w-6 sm:h-6 object-contain" /> : <span className="text-xl sm:text-xs">⚽</span>}
+             <div className="w-12 h-12 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20 overflow-hidden shadow-inner relative">
+                {prediction.homeTeam?.logoUrl ? (
+                  <Image src={prediction.homeTeam.logoUrl} alt="" fill className="object-contain p-2" />
+                ) : (
+                  <span className="text-xl sm:text-xs">⚽</span>
+                )}
              </div>
              <span className="text-[12px] sm:text-[10px] font-black text-white italic opacity-30">VS</span>
-             <div className="w-12 h-12 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20 overflow-hidden shadow-inner">
-                {prediction.awayTeam.logoUrl ? <img src={prediction.awayTeam.logoUrl} alt="" className="w-8 h-8 sm:w-6 sm:h-6 object-contain" /> : <span className="text-xl sm:text-xs">⚽</span>}
+             <div className="w-12 h-12 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20 overflow-hidden shadow-inner relative">
+                {prediction.awayTeam?.logoUrl ? (
+                  <Image src={prediction.awayTeam.logoUrl} alt="" fill className="object-contain p-2" />
+                ) : (
+                  <span className="text-xl sm:text-xs">⚽</span>
+                )}
              </div>
           </div>
           <div className="absolute top-2 left-2 bg-brand-pink text-white text-[8px] sm:text-[9px] font-black px-2 py-0.5 rounded shadow-sm tracking-widest">PREDICTION</div>
@@ -49,13 +43,13 @@ export default function CompactPredictionCard({ prediction }: CompactPredictionC
           <div className="flex items-center gap-2 mb-1.5 sm:mb-2 text-wrap">
              <span className="text-brand-pink font-bold">+</span>
              <span className="text-[10px] sm:text-[11px] font-black text-slate-400 uppercase tracking-widest flex flex-wrap items-center">
-               {prediction.league.name} 
+               {prediction.league?.name} 
                <span className="opacity-30 px-1 items-center">•</span> 
                {date}
              </span>
           </div>
           <h4 className="text-base sm:text-lg font-black text-slate-800 group-hover:text-brand-indigo transition-colors line-clamp-2 leading-tight">
-             {prediction.homeTeam.name} vs {prediction.awayTeam.name} Prediction | {prediction.league.name} | {date.split('/')[0]}/{date.split('/')[1]}
+             {prediction.homeTeam?.name} vs {prediction.awayTeam?.name} Prediction | {prediction.league?.name} | {date.split('/')[0]}/{date.split('/')[1]}
           </h4>
        </div>
 

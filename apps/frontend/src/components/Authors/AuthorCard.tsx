@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface AuthorCardProps {
   name: string;
@@ -12,7 +13,7 @@ export default function AuthorCard({ name, role, imageUrl, link }: AuthorCardPro
     <div className="bg-white rounded-3xl p-6 sm:p-8 text-center border border-slate-100 shadow-sm hover:shadow-md transition-shadow flex flex-col items-center">
       <div className="w-24 h-24 rounded-full overflow-hidden mb-6 bg-slate-100 border-4 border-slate-50 relative">
         {imageUrl ? (
-            <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
+            <Image src={imageUrl} alt={name} fill className="object-cover" />
         ) : (
             <div className="w-full h-full flex items-center justify-center text-4xl bg-gradient-to-br from-indigo-100 to-purple-50">
                👨‍💻

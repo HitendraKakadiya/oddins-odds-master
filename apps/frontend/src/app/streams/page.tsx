@@ -1,4 +1,5 @@
 import { api, type StreamItem, type StreamsResponse } from '@/lib/api';
+import Image from 'next/image';
 import StreamsDateFilter from '@/components/StreamsDateFilter';
 import StreamsLeagueGroup from '@/components/StreamsLeagueGroup';
 import Sidebar from '@/components/Sidebar';
@@ -75,15 +76,17 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
-        <Sidebar leagueData={leagues} _featuredTip={null} mode="predictions" />
+        <Sidebar leagueData={leagues} _featuredTip={undefined} mode="predictions" />
 
         <div className="flex-1">
           <div className="relative rounded-[24px] sm:rounded-[32px] overflow-hidden mb-8 min-h-[240px] sm:min-h-[300px] flex items-center p-6 sm:p-8 lg:p-12">
              <div className="absolute inset-0 z-0">
-                <img 
+                <Image 
                   src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000" 
                   alt="Football stadium background" 
-                  className="w-full h-full object-cover"
+                  fill
+                  priority
+                  className="object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-brand-dark-blue/90 via-brand-dark-blue/70 to-transparent"></div>
              </div>

@@ -137,7 +137,7 @@ export default async function PredictionsPage({
         {/* Sidebar */}
         <Sidebar 
           leagueData={leaguesData} 
-          _featuredTip={displayPredictions[0] as any} 
+          _featuredTip={displayPredictions[0]} 
           streams={streamsMock}
           mode="predictions"
         />
@@ -172,7 +172,7 @@ export default async function PredictionsPage({
                 
                 <div className="p-6 lg:p-10 bg-slate-50/50">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {featuredPredictions.map((prediction: any) => (
+                    {featuredPredictions.map((prediction: Prediction) => (
                       <FeaturedPredictionCard key={prediction.matchId} prediction={prediction} />
                     ))}
                   </div>
@@ -183,7 +183,7 @@ export default async function PredictionsPage({
           {/* All Predictions List */}
           <div className="bg-white rounded-[24px] sm:rounded-[32px] border border-slate-100 shadow-sm overflow-hidden mb-10">
             <div className="divide-y divide-slate-100">
-              {listPredictions.map((prediction: any) => (
+              {listPredictions.map((prediction: Prediction) => (
                 <CompactPredictionCard key={prediction.matchId} prediction={prediction} />
               ))}
             </div>

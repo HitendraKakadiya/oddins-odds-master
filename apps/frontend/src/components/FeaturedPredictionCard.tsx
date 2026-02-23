@@ -1,26 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
+import type { Prediction } from '@/lib/api';
 
 interface FeaturedPredictionCardProps {
-  prediction: {
-    matchId: number;
-    kickoffAt: string;
-    league: {
-      name: string;
-      slug: string;
-      countryName: string;
-    };
-    homeTeam: {
-      name: string;
-      logoUrl?: string | null;
-    };
-    awayTeam: {
-      name: string;
-      logoUrl?: string | null;
-    };
-    selection: string;
-  };
+  prediction: Prediction;
 }
 
 export default function FeaturedPredictionCard({ prediction }: FeaturedPredictionCardProps) {
@@ -44,7 +29,7 @@ export default function FeaturedPredictionCard({ prediction }: FeaturedPredictio
       {/* Decorative center badge */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-[#444070] px-4 sm:px-6 py-1 sm:py-1.5 rounded-b-2xl border-x border-b border-white/10 z-20 shadow-lg shadow-black/20">
          <div className="text-[8px] sm:text-[9px] font-black tracking-[0.15em] sm:tracking-[0.2em] text-white text-center uppercase whitespace-nowrap">
-            {prediction.league.countryName} <span className="opacity-40 px-1">•</span> {prediction.league.name}
+            {prediction.league?.countryName} <span className="opacity-40 px-1">•</span> {prediction.league?.name}
          </div>
       </div>
 
@@ -53,14 +38,14 @@ export default function FeaturedPredictionCard({ prediction }: FeaturedPredictio
           
           <div className="flex items-center justify-between gap-2 sm:gap-4 w-full px-1">
              <div className="flex flex-col items-center gap-2 sm:gap-3 flex-1">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/10 backdrop-blur-md rounded-xl sm:rounded-2xl flex items-center justify-center border border-white/10 shadow-xl group-hover:scale-110 transition-transform duration-500">
-                   {prediction.homeTeam.logoUrl ? (
-                     <img src={prediction.homeTeam.logoUrl} alt="" className="w-8 h-8 sm:w-10 sm:h-10 object-contain drop-shadow-lg" />
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/10 backdrop-blur-md rounded-xl sm:rounded-2xl flex items-center justify-center border border-white/10 shadow-xl group-hover:scale-110 transition-transform duration-500 relative">
+                   {prediction.homeTeam?.logoUrl ? (
+                     <Image src={prediction.homeTeam.logoUrl} alt="" fill className="object-contain p-3 drop-shadow-lg" />
                    ) : (
                      <span className="text-xl sm:text-2xl">⚽</span>
                    )}
                 </div>
-                <span className="text-[10px] sm:text-xs font-black text-center line-clamp-2 max-w-[80px] sm:max-w-[100px] leading-tight h-7 sm:h-8 flex items-center">{prediction.homeTeam.name}</span>
+                <span className="text-[10px] sm:text-xs font-black text-center line-clamp-2 max-w-[80px] sm:max-w-[100px] leading-tight h-7 sm:h-8 flex items-center">{prediction.homeTeam?.name}</span>
              </div>
 
              <div className="flex flex-col items-center gap-2 sm:gap-4">
@@ -73,14 +58,14 @@ export default function FeaturedPredictionCard({ prediction }: FeaturedPredictio
              </div>
 
              <div className="flex flex-col items-center gap-2 sm:gap-3 flex-1">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/10 backdrop-blur-md rounded-xl sm:rounded-2xl flex items-center justify-center border border-white/10 shadow-xl group-hover:scale-110 transition-transform duration-500">
-                   {prediction.awayTeam.logoUrl ? (
-                     <img src={prediction.awayTeam.logoUrl} alt="" className="w-8 h-8 sm:w-10 sm:h-10 object-contain drop-shadow-lg" />
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/10 backdrop-blur-md rounded-xl sm:rounded-2xl flex items-center justify-center border border-white/10 shadow-xl group-hover:scale-110 transition-transform duration-500 relative">
+                   {prediction.awayTeam?.logoUrl ? (
+                     <Image src={prediction.awayTeam.logoUrl} alt="" fill className="object-contain p-3 drop-shadow-lg" />
                    ) : (
                      <span className="text-xl sm:text-2xl">⚽</span>
                    )}
                 </div>
-                <span className="text-[10px] sm:text-xs font-black text-center line-clamp-2 max-w-[80px] sm:max-w-[100px] leading-tight h-7 sm:h-8 flex items-center">{prediction.awayTeam.name}</span>
+                <span className="text-[10px] sm:text-xs font-black text-center line-clamp-2 max-w-[80px] sm:max-w-[100px] leading-tight h-7 sm:h-8 flex items-center">{prediction.awayTeam?.name}</span>
              </div>
           </div>
 
@@ -91,7 +76,7 @@ export default function FeaturedPredictionCard({ prediction }: FeaturedPredictio
       <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 bg-white border-t border-slate-100 flex items-center justify-between z-20">
          <div className="flex items-center gap-2 overflow-hidden">
             <span className="text-xs">🏳️</span>
-            <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 truncate">{prediction.league.name} • {date}</span>
+            <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 truncate">{prediction.league?.name} • {date}</span>
          </div>
          <div className="text-brand-indigo font-black text-[9px] sm:text-[10px] group-hover:underline whitespace-nowrap ml-2 sm:ml-4 flex-shrink-0">
             See Details →

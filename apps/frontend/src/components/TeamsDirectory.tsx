@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface Team {
   id: number;
@@ -97,8 +98,8 @@ export default function TeamsDirectory() {
                 className="w-full flex items-center justify-between p-4 bg-[#E2E1FF]/40 hover:bg-[#E2E1FF]/60 rounded-2xl transition-all"
               >
                 <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded shadow-sm overflow-hidden flex items-center justify-center bg-white border border-slate-100">
-                    {group.flagUrl && <img src={group.flagUrl} alt="" className="w-full h-full object-cover" />}
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded shadow-sm overflow-hidden relative flex items-center justify-center bg-white border border-slate-100">
+                    {group.flagUrl && <Image src={group.flagUrl} alt="" fill className="object-cover" />}
                   </div>
                   <span className="text-xs sm:text-sm font-black text-slate-700">{group.league}</span>
                 </div>
@@ -123,7 +124,7 @@ export default function TeamsDirectory() {
                            </svg>
                         </button>
                         <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white border border-slate-100 flex items-center justify-center overflow-hidden shadow-sm shrink-0">
-                          <img src={team.logoUrl} alt="" className="w-4 h-4 sm:w-5 sm:h-5 object-contain" />
+                          <Image src={team.logoUrl} alt="" width={20} height={20} className="w-4 h-4 sm:w-5 sm:h-5 object-contain" />
                         </div>
                         <Link href={`/team/${team.slug}`} className="text-xs sm:text-sm font-bold text-slate-600 group-hover:text-brand-indigo transition-colors line-clamp-1">
                           {team.name}

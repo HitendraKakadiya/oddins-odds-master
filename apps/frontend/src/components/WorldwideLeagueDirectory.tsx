@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface League {
   id: number;
@@ -105,8 +106,8 @@ export default function WorldwideLeagueDirectory() {
                 className="w-full flex items-center justify-between p-4 bg-[#E2E1FF]/40 hover:bg-[#E2E1FF]/60 rounded-2xl transition-all"
               >
                 <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded shadow-sm overflow-hidden flex items-center justify-center bg-white text-[10px] sm:text-xs">
-                    {group.flagUrl ? <img src={group.flagUrl} alt="" className="w-full h-full object-cover" /> : group.icon}
+                  <div className="w-5 h-5 sm:w-6 sm:h-6 rounded shadow-sm overflow-hidden relative flex items-center justify-center bg-white text-[10px] sm:text-xs">
+                    {group.flagUrl ? <Image src={group.flagUrl} alt="" fill className="object-cover" /> : group.icon}
                   </div>
                   <span className="text-xs sm:text-sm font-black text-slate-700">{group.region}</span>
                 </div>
@@ -131,7 +132,7 @@ export default function WorldwideLeagueDirectory() {
                            </svg>
                         </button>
                         <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white border border-slate-100 flex items-center justify-center overflow-hidden shadow-sm shrink-0">
-                          <img src={league.logoUrl} alt="" className="w-4 h-4 sm:w-5 sm:h-5 object-contain" />
+                          <Image src={league.logoUrl} alt="" width={20} height={20} className="w-4 h-4 sm:w-5 sm:h-5 object-contain" />
                         </div>
                         <Link href={`/predictions?leagueSlug=${league.slug}`} className="text-xs sm:text-sm font-bold text-slate-600 group-hover:text-brand-indigo transition-colors line-clamp-1">
                           {league.name}

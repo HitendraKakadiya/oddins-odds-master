@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface StreamsMatchRowProps {
   match: {
@@ -48,7 +49,7 @@ export default function StreamsMatchRow({ match }: StreamsMatchRowProps) {
           <div className="flex items-center gap-2 sm:gap-3 flex-1 justify-end">
              <span className="font-bold text-slate-700 text-xs sm:text-base text-right leading-tight">{match.homeTeam.name}</span>
              {match.homeTeam.logoUrl ? (
-               <img src={match.homeTeam.logoUrl} alt="" className="w-5 h-5 sm:w-6 sm:h-6 object-contain shrink-0" />
+               <Image src={match.homeTeam.logoUrl} alt="" width={24} height={24} className="w-5 h-5 sm:w-6 sm:h-6 object-contain shrink-0" />
              ) : (
                <div className="w-5 h-5 sm:w-6 sm:h-6 bg-slate-100 rounded-full flex items-center justify-center text-[8px] font-bold text-slate-400 shrink-0">
                  {match.homeTeam.name.substring(0, 1)}
@@ -60,7 +61,7 @@ export default function StreamsMatchRow({ match }: StreamsMatchRowProps) {
           
           <div className="flex items-center gap-2 sm:gap-3 flex-1 justify-start">
              {match.awayTeam.logoUrl ? (
-               <img src={match.awayTeam.logoUrl} alt="" className="w-5 h-5 sm:w-6 sm:h-6 object-contain shrink-0" />
+               <Image src={match.awayTeam.logoUrl} alt="" width={24} height={24} className="w-5 h-5 sm:w-6 sm:h-6 object-contain shrink-0" />
              ) : (
                <div className="w-5 h-5 sm:w-6 sm:h-6 bg-slate-100 rounded-full flex items-center justify-center text-[8px] font-bold text-slate-400 shrink-0">
                  {match.awayTeam.name.substring(0, 1)}

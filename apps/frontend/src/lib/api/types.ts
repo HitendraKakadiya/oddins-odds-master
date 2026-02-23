@@ -170,12 +170,12 @@ export interface H2HMatch {
 
 export interface Prediction {
     id?: number;
-    matchId?: number;
+    matchId: number;
     title?: string;
     shortReason?: string | null;
     isPremium?: boolean;
     confidence?: number | null;
-    kickoffAt?: string;
+    kickoffAt: string;
     league?: {
         name: string;
         slug?: string;
