@@ -1,10 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import { query } from '../../db';
 
-interface StreamsQuery {
-  region?: string;
-  date?: string;
-}
+
 
 export async function streamsRoutes(server: FastifyInstance) {
   server.get<{ Querystring: { region?: string; date?: string; page?: string; pageSize?: string } }>('/streams', async (request) => {
@@ -65,7 +62,7 @@ export async function streamsRoutes(server: FastifyInstance) {
       queryParams
     );
 
-    const items = result.rows.map((row: any) => ({
+    const items = result.rows.map((row) => ({
       league: {
         id: row.league_id,
         name: row.league_name,
@@ -83,6 +80,7 @@ export async function streamsRoutes(server: FastifyInstance) {
         slug: row.away_team_slug,
         logoUrl: row.away_team_logo,
       },
+      payload: {} as Record<string, unknown>, // Added payload property with an empty object, cast to Record<string, unknown> to satisfy the type hint.
       whereToWatch: [
         { name: 'Sky Sports', url: 'https://www.skysports.com' },
         { name: 'BT Sport', url: 'https://www.bt.com/sport' },

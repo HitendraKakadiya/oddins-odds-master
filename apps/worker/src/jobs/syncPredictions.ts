@@ -17,6 +17,26 @@ import {
 } from '../db/queries';
 import { PoolClient } from 'pg';
 
+interface TeamData {
+    id: number;
+    name: string;
+    logo: string;
+    last_5: {
+        form: string;
+        att: string;
+        def: string;
+        goals: {
+            for: { total: number; average: string };
+            against: { total: number; average: string };
+        };
+    };
+    league: {
+        form: string;
+        fixtures: { played: number; wins: number; draws: number; loses: number };
+        goals: { for: { total: number; average: string }; against: { total: number; average: string } };
+    };
+}
+
 interface PredictionResponse {
     predictions: {
         winner: {
@@ -46,29 +66,11 @@ interface PredictionResponse {
         season: number;
     };
     teams: {
-        home: {
-            id: number;
-            name: string;
-            logo: string;
-            last_5: {
-                form: string;
-                att: string;
-                def: string;
-                goals: {
-                    for: { total: number; average: string };
-                    against: { total: number; average: string };
-                };
-            };
-            league: {
-                form: string;
-                fixtures: { played: number; wins: number; draws: number; loses: number };
-                goals: { for: any; against: any };
-            };
-        };
-        away: any;
+        home: TeamData;
+        away: TeamData;
     };
-    comparison: any;
-    h2h: any[];
+    comparison: Record<string, { home: string; away: string }>;
+    h2h: unknown[];
 }
 
 interface PredictionAPIResponse {
@@ -132,7 +134,7 @@ export async function syncPredictions(): Promise<void> {
 
                 // Pre-cache central markets
                 const marketFT1X2 = await upsertMarket(client, 1, 'Match Winner', 'FT_1X2', false);
-                const marketBTTS = await upsertMarket(client, 8, 'Both Teams Score', 'BTTS', false);
+                await upsertMarket(client, 8, 'Both Teams Score', 'BTTS', false);
                 const marketOU25 = await upsertMarket(client, 5, 'Goals Over/Under', 'OU_GOALS', true);
 
                 let predictionsCount = 0;
@@ -219,8 +221,8 @@ export async function syncPredictions(): Promise<void> {
                         // Wait 100ms between calls
                         await new Promise(resolve => setTimeout(resolve, 100));
 
-                    } catch (err: any) {
-                        logger.error(`Error syncing prediction for fixture ${providerFixtureId}`, err);
+                    } catch (err: unknown) {
+                        logger.error(`Error syncing prediction for fixture ${providerFixtureId}`, err instanceof Error ? err : new Error(String(err)));
                         fixturesSkipped++;
                     }
                 }

@@ -144,17 +144,34 @@ async function getTeamStatsSummary(teamId: number, leagueId: number) {
     );
   }
 
-  const stats = {
+  const stats: {
+    overall: { played: number; wins: number; draws: number; losses: number; scored: number; conceded: number; btts: number; cleanSheets: number; failedToScore: number; ppg: number; over05: number; over15: number; over25: number; over35: number; over45: number; over55: number; winRate?: number; scoredAvg?: number; concededAvg?: number; bttsRate?: number; cleanSheetRate?: number; failedToScoreRate?: number; over05Rate?: number; over15Rate?: number; over25Rate?: number; over35Rate?: number; over45Rate?: number; over55Rate?: number };
+    home: { played: number; wins: number; draws: number; losses: number; scored: number; conceded: number; btts: number; cleanSheets: number; failedToScore: number; ppg: number; over05: number; over15: number; over25: number; over35: number; over45: number; over55: number; winRate?: number; scoredAvg?: number; concededAvg?: number; bttsRate?: number; cleanSheetRate?: number; failedToScoreRate?: number; over05Rate?: number; over15Rate?: number; over25Rate?: number; over35Rate?: number; over45Rate?: number; over55Rate?: number };
+    away: { played: number; wins: number; draws: number; losses: number; scored: number; conceded: number; btts: number; cleanSheets: number; failedToScore: number; ppg: number; over05: number; over15: number; over25: number; over35: number; over45: number; over55: number; winRate?: number; scoredAvg?: number; concededAvg?: number; bttsRate?: number; cleanSheetRate?: number; failedToScoreRate?: number; over05Rate?: number; over15Rate?: number; over25Rate?: number; over35Rate?: number; over45Rate?: number; over55Rate?: number };
+    last5: string[];
+    last5Home: string[];
+    last5Away: string[];
+    recentMatchesDetailed: Array<{
+      id: number;
+      kickoffAt: Date;
+      homeTeam: { id: number; name: string; logoUrl: string | null };
+      awayTeam: { id: number; name: string; logoUrl: string | null };
+      score: { home: number | null; away: number | null };
+      leagueName: string;
+      result: string;
+      isHome: boolean;
+    }>
+  } = {
     overall: { played: 0, wins: 0, draws: 0, losses: 0, scored: 0, conceded: 0, btts: 0, cleanSheets: 0, failedToScore: 0, ppg: 0, over05: 0, over15: 0, over25: 0, over35: 0, over45: 0, over55: 0 },
     home: { played: 0, wins: 0, draws: 0, losses: 0, scored: 0, conceded: 0, btts: 0, cleanSheets: 0, failedToScore: 0, ppg: 0, over05: 0, over15: 0, over25: 0, over35: 0, over45: 0, over55: 0 },
     away: { played: 0, wins: 0, draws: 0, losses: 0, scored: 0, conceded: 0, btts: 0, cleanSheets: 0, failedToScore: 0, ppg: 0, over05: 0, over15: 0, over25: 0, over35: 0, over45: 0, over55: 0 },
-    last5: [] as string[],
-    last5Home: [] as string[],
-    last5Away: [] as string[],
-    recentMatchesDetailed: [] as any[]
+    last5: [],
+    last5Home: [],
+    last5Away: [],
+    recentMatchesDetailed: []
   };
 
-  recentMatches.rows.forEach((m: any, idx: number) => {
+  recentMatches.rows.forEach((m, idx: number) => {
     const isHome = m.home_team_id === teamId;
     const scored = isHome ? m.home_goals : m.away_goals;
     const conceded = isHome ? m.away_goals : m.home_goals;
@@ -177,7 +194,7 @@ async function getTeamStatsSummary(teamId: number, leagueId: number) {
       isHome: isHome
     });
 
-    const update = (obj: any) => {
+    const update = (obj: { played: number; scored: number; conceded: number; wins: number; draws: number; losses: number; ppg: number; btts: number; cleanSheets: number; failedToScore: number; over05: number; over15: number; over25: number; over35: number; over45: number; over55: number }) => {
       obj.played++;
       obj.scored += scored;
       obj.conceded += conceded;
@@ -202,7 +219,7 @@ async function getTeamStatsSummary(teamId: number, leagueId: number) {
     else update(stats.away);
   });
 
-  const finalize = (obj: any) => {
+  const finalize = (obj: { played: number; wins: number; ppg: number; scored: number; conceded: number; btts: number; cleanSheets: number; failedToScore: number; over05: number; over15: number; over25: number; over35: number; over45: number; over55: number; winRate?: number; scoredAvg?: number; concededAvg?: number; bttsRate?: number; cleanSheetRate?: number; failedToScoreRate?: number; over05Rate?: number; over15Rate?: number; over25Rate?: number; over35Rate?: number; over45Rate?: number; over55Rate?: number }) => {
     if (obj.played > 0) {
       obj.ppg = parseFloat((obj.ppg / obj.played).toFixed(2));
       obj.winRate = Math.round((obj.wins / obj.played) * 100);
@@ -357,7 +374,7 @@ export async function matchDetailRoutes(server: FastifyInstance) {
           slug: firstRow.bookmaker_slug,
         },
         capturedAt: firstRow.captured_at,
-        markets: oddsResult.rows.map((r: any) => ({
+        markets: oddsResult.rows.map((r) => ({
           marketKey: r.market_key,
           line: r.line,
           selection: r.selection,
@@ -383,7 +400,7 @@ export async function matchDetailRoutes(server: FastifyInstance) {
       [matchId]
     );
 
-    const predictions = predictionsResult.rows.map((r: any) => ({
+    const predictions = predictionsResult.rows.map((r) => ({
       matchId: parseInt(matchId, 10),
       marketKey: r.market_key,
       line: r.line,
@@ -418,7 +435,7 @@ export async function matchDetailRoutes(server: FastifyInstance) {
       [matchId, row.home_team_id, row.away_team_id]
     );
 
-    const h2h = h2hResult.rows.map((r: any) => ({
+    const h2h = h2hResult.rows.map((r) => ({
       id: r.id,
       date: r.kickoff_at,
       competition: r.competition,

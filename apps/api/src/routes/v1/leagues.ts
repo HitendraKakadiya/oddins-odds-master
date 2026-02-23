@@ -31,7 +31,7 @@ export async function leaguesRoutes(server: FastifyInstance) {
     );
 
     // Group by country
-    const groupedMap: Map<string, any> = new Map();
+    const groupedMap: Map<string, { country: { name: string; code: string; flagUrl: string | null }; leagues: { id: number; name: string; slug: string; logoUrl: string | null; type: string }[] }> = new Map();
 
     for (const row of result.rows) {
       const countryKey = row.country_name;
@@ -47,7 +47,7 @@ export async function leaguesRoutes(server: FastifyInstance) {
         });
       }
 
-      groupedMap.get(countryKey).leagues.push({
+      groupedMap.get(countryKey)!.leagues.push({
         id: row.league_id,
         name: row.league_name,
         slug: row.league_slug,

@@ -224,7 +224,7 @@ export async function upsertMatchPrediction(
   marketId: number,
   line: number | null,
   selection: string,
-  payload: any,
+  payload: Record<string, unknown>,
   probability: number | null,
   confidence: number | null
 ): Promise<void> {

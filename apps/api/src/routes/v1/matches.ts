@@ -232,7 +232,7 @@ export async function matchesRoutes(server: FastifyInstance) {
 
     return {
       date: targetDate,
-      tips: result.rows.map((row: any) => ({
+      tips: result.rows.map((row) => ({
         id: row.id,
         matchId: row.match_id,
         title: row.title,

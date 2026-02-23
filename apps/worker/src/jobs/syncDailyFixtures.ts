@@ -9,7 +9,7 @@ import { getPool } from '../db/pool';
 import { logger } from '../logger';
 import { apiFootballClient } from '../provider/apiFootballClient';
 import { withLock } from '../orchestration/locks';
-import { ensureProviderSource, updateSyncState, upsertCountry, upsertLeague, upsertSeason, upsertSeasonCoverage } from '../db/queries';
+import { ensureProviderSource, updateSyncState, upsertCountry, upsertLeague, upsertSeason } from '../db/queries';
 import { PoolClient } from 'pg';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';

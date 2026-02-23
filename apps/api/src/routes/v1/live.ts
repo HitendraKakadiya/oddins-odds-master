@@ -17,8 +17,8 @@ export async function liveRoutes(server: FastifyInstance) {
 
     // GET /v1/live/matches
     server.get<{ Querystring: { date?: string; leagueId?: string; market?: string; minOdds?: string; maxOdds?: string; page?: string; pageSize?: string } }>('/live/matches', async (request) => {
-        const { date, leagueId, market, minOdds, maxOdds, page = '1', pageSize = '20' } = request.query;
-        let targetDate = date || new Date().toISOString().split('T')[0];
+        const { date, leagueId, market, minOdds, page = '1', pageSize = '20' } = request.query;
+        const targetDate = date || new Date().toISOString().split('T')[0];
 
         const pageNum = Math.max(1, parseInt(page, 10));
         const pageSizeNum = Math.min(100, Math.max(1, parseInt(pageSize, 10)));
@@ -29,7 +29,7 @@ export async function liveRoutes(server: FastifyInstance) {
         try {
             // Build filter clauses
             const filters = [];
-            const params: any[] = [targetDate];
+            const params: unknown[] = [targetDate];
             let paramIdx = 2;
 
             filters.push(`m.kickoff_at >= $1::date AND m.kickoff_at < ($1::date + INTERVAL '1 day')`);
@@ -199,7 +199,7 @@ export async function liveRoutes(server: FastifyInstance) {
     // GET /v1/live/leagues
     server.get<{ Querystring: { date?: string; page?: string; pageSize?: string } }>('/live/leagues', async (request) => {
         const { date, page = '1', pageSize = '50' } = request.query;
-        let targetDate = date || new Date().toISOString().split('T')[0];
+        const targetDate = date || new Date().toISOString().split('T')[0];
 
         const pageNum = Math.max(1, parseInt(page, 10));
         const pageSizeNum = Math.min(200, Math.max(1, parseInt(pageSize, 10)));
@@ -250,7 +250,7 @@ export async function liveRoutes(server: FastifyInstance) {
             // We can do this with a second query using ANY(country_ids)
 
             const countryIds = countries.map(c => c.id);
-            let leaguesByCountry: Record<number, any[]> = {};
+            const leaguesByCountry: Record<number, unknown[]> = {};
 
             if (countryIds.length > 0) {
                 const leaguesQuery = `

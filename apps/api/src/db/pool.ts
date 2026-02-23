@@ -13,7 +13,7 @@ export function getPool(): Pool {
 
         pool = new Pool(config);
 
-        pool.on('error', (err: any) => {
+        pool.on('error', (err: Error) => {
             console.error('Unexpected error on idle client', err);
             process.exit(-1);
         });

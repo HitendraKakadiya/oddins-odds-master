@@ -6,7 +6,7 @@
 
 import cron from 'node-cron';
 import { logger } from './logger';
-import { syncDailyFixtures, syncFixturesWindow } from './jobs/syncDailyFixtures';
+import { syncFixturesWindow } from './jobs/syncDailyFixtures';
 import { syncOdds } from './jobs/syncOdds';
 import { syncPredictions } from './jobs/syncPredictions';
 import { cleanupOldData } from './jobs/cleanup';
