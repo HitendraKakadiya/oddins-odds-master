@@ -1,4 +1,4 @@
-import { getTeamDetail } from '@/lib/api';
+import { getTeamDetail, type MatchData } from '@/lib/api';
 import MatchCard from '@/components/MatchCard';
 import Link from 'next/link';
 
@@ -121,7 +121,7 @@ export default async function TeamDetailPage({ params }: PageProps) {
             </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {recentMatches.slice(0, 6).map((match: any) => (
+            {recentMatches.slice(0, 6).map((match: MatchData) => (
               <MatchCard key={match.matchId} match={match} />
             ))}
           </div>

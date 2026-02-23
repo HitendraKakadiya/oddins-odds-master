@@ -1,87 +1,54 @@
-import { getLeagues } from '@/lib/api';
+'use client';
+
+import PopularLeaguesList from '@/components/PopularLeaguesList';
+import WorldwideLeagueDirectory from '@/components/WorldwideLeagueDirectory';
 import Link from 'next/link';
 
-// ISR: Revalidate every 6 hours
-export const revalidate = 21600;
-
-export default async function LeaguesPage() {
-  const leaguesData = await getLeagues().catch(() => []);
-
+export default function LeaguesPage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">Football Leagues</h1>
-        <p className="text-lg text-gray-600">
-          Browse leagues from around the world
+    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Header & Breadcrumbs */}
+      <div className="flex flex-col mb-6 sm:mb-8">
+        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 bg-slate-50 self-start px-4 py-2 rounded-full border border-slate-100/60 shadow-inner">
+          <Link href="/" className="hover:text-brand-indigo transition-colors">Home</Link>
+          <span className="text-slate-200">/</span>
+          <span className="text-brand-indigo">Leagues</span>
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-black text-brand-dark-blue leading-tight">
+          Football Leagues & Competitions
+        </h1>
+        <p className="text-slate-500 font-bold text-xs sm:text-sm mt-2">
+          Browse predictions and statistics by league from all around the world
         </p>
       </div>
 
-      {/* Leagues by Country */}
-      <div className="space-y-8">
-        {leaguesData.map((group: any) => (
-          <div key={group.country.name} className="card">
-            {/* Country Header */}
-            <div className="flex items-center space-x-3 mb-6">
-              {group.country.flagUrl && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={group.country.flagUrl}
-                  alt={group.country.name}
-                  className="w-8 h-6 object-cover rounded"
-                />
-              )}
-              <h2 className="text-2xl font-bold text-gray-900">{group.country.name}</h2>
-            </div>
+      <div className="flex flex-col lg:flex-row gap-8 mb-8">
+        {/* Sidebar: Popular Leagues */}
+        <aside className="w-full lg:w-[380px] shrink-0">
+          <PopularLeaguesList />
+        </aside>
 
-            {/* Leagues Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {group.leagues.map((league: any) => (
-                <Link
-                  key={league.id}
-                  href={`/league/${group.country.name.toLowerCase()}/${league.slug}`}
-                  className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  {league.logoUrl && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={league.logoUrl}
-                      alt={league.name}
-                      className="w-12 h-12 object-contain"
-                    />
-                  )}
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900">{league.name}</h3>
-                    {league.type && (
-                      <span className="text-sm text-gray-500">{league.type}</span>
-                    )}
-                  </div>
-                  <svg
-                    className="w-5 h-5 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </Link>
-              ))}
-            </div>
-          </div>
-        ))}
+        {/* Main Content: Worldwide Directory */}
+        <main className="flex-1 min-w-0">
+          <WorldwideLeagueDirectory />
+        </main>
       </div>
 
-      {/* Empty State */}
-      {leaguesData.length === 0 && (
-        <div className="card text-center py-12">
-          <p className="text-gray-500 text-lg">No leagues available</p>
+      {/* More About Leagues Section - Full Width */}
+      <div className="bg-white rounded-[24px] sm:rounded-[32px] border border-slate-100 shadow-sm p-6 sm:p-8 lg:p-10">
+        <h2 className="text-xl sm:text-2xl font-black text-slate-800 mb-6">More About Leagues</h2>
+        <div className="space-y-4 sm:space-y-6 text-slate-600 leading-relaxed text-sm sm:text-base">
+          <p>
+            Don&apos;t miss out on the world&apos;s greatest football leagues! <strong>OddinsOdds</strong> covers the stats of the most popular leagues, including the <Link href="/predictions?leagueSlug=premier-league" className="text-brand-indigo font-bold hover:underline">English Premier League</Link>, <Link href="/predictions?leagueSlug=la-liga" className="text-brand-indigo font-bold hover:underline">Spanish La Liga</Link>, the <Link href="/predictions?leagueSlug=australian-a-league" className="text-brand-indigo font-bold hover:underline">Australian League</Link>, <Link href="/predictions?leagueSlug=american-mls" className="text-brand-indigo font-bold hover:underline">American MLS</Link> and the <Link href="/predictions?leagueSlug=brazilian-serie-a" className="text-brand-indigo font-bold hover:underline">Brazilian Serie A</Link>.
+          </p>
+          <p>
+            If you&apos;re looking for the football competition with the most matches with Over 2.5 Goals, most corners, or the most draws, then you can find it all on <strong>OddinsOdds&apos;s</strong> league pages.
+          </p>
+          <p>
+            We cover well over 100 leagues, with over 1,000 matches per month for you to take the most advantage from the statistics. Use it all to make the best betting tips and win the big bucks in your next <strong>football betting</strong>.
+          </p>
         </div>
-      )}
+      </div>
     </div>
   );
 }

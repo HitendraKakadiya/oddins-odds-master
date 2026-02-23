@@ -1,4 +1,4 @@
-import { getTeamDetail, getTeamTab } from '@/lib/api';
+import { getTeamDetail, getTeamTab, type MatchData, type TabItem } from '@/lib/api';
 import MatchCard from '@/components/MatchCard';
 import Link from 'next/link';
 
@@ -92,7 +92,7 @@ export default async function TeamTabPage({ params }: PageProps) {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {items.map((match: any) => (
+                {items.map((match: MatchData) => (
                   <MatchCard key={match.matchId} match={match} />
                 ))}
               </div>
@@ -119,7 +119,7 @@ export default async function TeamTabPage({ params }: PageProps) {
                     </tr>
                   </thead>
                   <tbody>
-                    {items.map((item: any, index: number) => (
+                    {items.map((item: TabItem, index: number) => (
                       <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
                         <td className="py-3 px-4 text-sm">
                           {new Date(item.kickoffAt).toLocaleDateString()}

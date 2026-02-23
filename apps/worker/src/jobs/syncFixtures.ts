@@ -216,10 +216,10 @@ export async function syncFixtures(): Promise<void> {
               });
 
               // Fetch fixtures from API
-              const rawResponse: FixturesAPIResponse = await apiFootballClient.getFixtures({
+              const rawResponse = await apiFootballClient.getFixtures({
                 league: league.id,
                 season,
-              });
+              }) as FixturesAPIResponse;
               apiCallsMade++;
 
               const fixtures = rawResponse.response || [];
@@ -228,7 +228,7 @@ export async function syncFixtures(): Promise<void> {
               // Get season ID and league ID
               const seasonId = await getSeasonId(client, league.id, season);
               const leagueId = await getLeagueId(client, league.id);
-              
+
               if (!seasonId || !leagueId) {
                 logger.warn(`Season or league not found for ${league.id} year ${season}, skipping`);
                 continue;
@@ -277,21 +277,21 @@ export async function syncFixtures(): Promise<void> {
                   );
                   fixturesUpserted++;
 
-                } catch (itemError: any) {
+                } catch (itemError: unknown) {
                   logger.warn('Failed to process fixture item', {
                     fixtureId: item.fixture.id,
-                    error: itemError.message,
+                    error: itemError instanceof Error ? itemError.message : String(itemError),
                   });
                   fixturesSkipped++;
                   // Continue with next item
                 }
               }
-            } catch (leagueError: any) {
+            } catch (leagueError: unknown) {
               logger.warn('Failed to process league/season', {
                 leagueId: league.id,
                 leagueName: league.name,
                 season,
-                error: leagueError.message,
+                error: leagueError instanceof Error ? leagueError.message : String(leagueError),
               });
               // Continue with next league/season
             }
@@ -321,7 +321,7 @@ export async function syncFixtures(): Promise<void> {
           fixturesSkipped,
           apiCallsMade,
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         await client.query('ROLLBACK');
         throw error;
       } finally {
@@ -336,7 +336,7 @@ export async function syncFixtures(): Promise<void> {
 
     logger.info('Job completed successfully');
     process.exit(0);
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error('Job failed', error);
     process.exit(1);
   } finally {

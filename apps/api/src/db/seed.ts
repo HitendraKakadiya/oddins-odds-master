@@ -31,11 +31,6 @@ function addDays(date: Date, days: number): Date {
   return result;
 }
 
-// Helper to format date as YYYY-MM-DD
-function formatDate(date: Date): string {
-  return date.toISOString().split('T')[0];
-}
-
 // Helper to format datetime as ISO string
 function formatDateTime(date: Date): string {
   return date.toISOString();
@@ -43,14 +38,14 @@ function formatDateTime(date: Date): string {
 
 async function seed() {
   const client = await pool.connect();
-  
+
   try {
     await client.query('BEGIN');
-    
+
     console.log('🌱 Starting database seed...\n');
-    
+
     const counts: Record<string, number> = {};
-    
+
     // ==================== COUNTRIES ====================
     console.log('📍 Seeding countries...');
     const countries = [
@@ -61,7 +56,7 @@ async function seed() {
       { name: 'France', code: 'FR', flag_url: 'https://media.api-sports.io/flags/fr.svg' },
       { name: 'World', code: null, flag_url: null },
     ];
-    
+
     const countryIds: Record<string, number> = {};
     for (const country of countries) {
       const res = await client.query(
@@ -74,7 +69,7 @@ async function seed() {
       countryIds[country.name] = res.rows[0].id;
     }
     counts.countries = countries.length;
-    
+
     // ==================== LEAGUES ====================
     console.log('🏆 Seeding leagues...');
     const leagues = [
@@ -86,7 +81,7 @@ async function seed() {
       { provider_id: 2, country: 'World', name: 'UEFA Champions League', type: 'Cup', slug: 'champions-league', logo: 'https://media.api-sports.io/football/leagues/2.png' },
       { provider_id: 3, country: 'World', name: 'UEFA Europa League', type: 'Cup', slug: 'europa-league', logo: 'https://media.api-sports.io/football/leagues/3.png' },
     ];
-    
+
     const leagueIds: Record<string, number> = {};
     for (const league of leagues) {
       const res = await client.query(
@@ -100,12 +95,12 @@ async function seed() {
       leagueIds[league.slug] = res.rows[0].id;
     }
     counts.leagues = leagues.length;
-    
+
     // ==================== SEASONS ====================
     console.log('📅 Seeding seasons...');
     const currentYear = new Date().getFullYear();
     const seasonIds: Record<string, number> = {};
-    
+
     for (const [slug, leagueId] of Object.entries(leagueIds)) {
       const res = await client.query(
         `INSERT INTO seasons (league_id, year, start_date, end_date, is_current)
@@ -116,7 +111,7 @@ async function seed() {
         [leagueId, currentYear, `${currentYear}-08-01`, `${currentYear + 1}-05-31`, true]
       );
       seasonIds[slug] = res.rows[0].id;
-      
+
       // Insert season coverage
       await client.query(
         `INSERT INTO season_coverage (season_id, fixtures, events, lineups, stats_fixtures, stats_players, standings, injuries, predictions, odds)
@@ -126,7 +121,7 @@ async function seed() {
       );
     }
     counts.seasons = Object.keys(seasonIds).length;
-    
+
     // ==================== VENUES ====================
     console.log('🏟️  Seeding venues...');
     const venues = [
@@ -139,7 +134,7 @@ async function seed() {
       { provider_id: 743, name: 'Signal Iduna Park', city: 'Dortmund', capacity: 81365, surface: 'grass' },
       { provider_id: 700, name: 'Allianz Arena', city: 'Munich', capacity: 75000, surface: 'grass' },
     ];
-    
+
     const venueIds: Record<number, number> = {};
     for (const venue of venues) {
       const res = await client.query(
@@ -153,7 +148,7 @@ async function seed() {
       venueIds[venue.provider_id] = res.rows[0].id;
     }
     counts.venues = venues.length;
-    
+
     // ==================== TEAMS ====================
     console.log('⚽ Seeding teams...');
     const teams = [
@@ -163,25 +158,25 @@ async function seed() {
       { provider_id: 49, country: 'England', venue_id: 562, name: 'Chelsea', short: 'CHE', slug: 'chelsea', logo: 'https://media.api-sports.io/football/teams/49.png', league: 'premier-league' },
       { provider_id: 42, country: 'England', venue_id: 655, name: 'Arsenal', short: 'ARS', slug: 'arsenal', logo: 'https://media.api-sports.io/football/teams/42.png', league: 'premier-league' },
       { provider_id: 50, country: 'England', venue_id: null, name: 'Manchester City', short: 'MCI', slug: 'manchester-city', logo: 'https://media.api-sports.io/football/teams/50.png', league: 'premier-league' },
-      
+
       // La Liga
       { provider_id: 541, country: 'Spain', venue_id: 738, name: 'Real Madrid', short: 'RMA', slug: 'real-madrid', logo: 'https://media.api-sports.io/football/teams/541.png', league: 'la-liga' },
       { provider_id: 529, country: 'Spain', venue_id: 1492, name: 'Barcelona', short: 'BAR', slug: 'barcelona', logo: 'https://media.api-sports.io/football/teams/529.png', league: 'la-liga' },
       { provider_id: 530, country: 'Spain', venue_id: null, name: 'Atlético Madrid', short: 'ATM', slug: 'atletico-madrid', logo: 'https://media.api-sports.io/football/teams/530.png', league: 'la-liga' },
-      
+
       // Bundesliga
       { provider_id: 157, country: 'Germany', venue_id: 700, name: 'Bayern Munich', short: 'BAY', slug: 'bayern-munich', logo: 'https://media.api-sports.io/football/teams/157.png', league: 'bundesliga' },
       { provider_id: 165, country: 'Germany', venue_id: 743, name: 'Borussia Dortmund', short: 'BVB', slug: 'borussia-dortmund', logo: 'https://media.api-sports.io/football/teams/165.png', league: 'bundesliga' },
-      
+
       // Serie A
       { provider_id: 489, country: 'Italy', venue_id: null, name: 'AC Milan', short: 'MIL', slug: 'ac-milan', logo: 'https://media.api-sports.io/football/teams/489.png', league: 'serie-a' },
       { provider_id: 505, country: 'Italy', venue_id: null, name: 'Inter', short: 'INT', slug: 'inter', logo: 'https://media.api-sports.io/football/teams/505.png', league: 'serie-a' },
-      
+
       // Ligue 1
       { provider_id: 85, country: 'France', venue_id: null, name: 'Paris Saint Germain', short: 'PSG', slug: 'psg', logo: 'https://media.api-sports.io/football/teams/85.png', league: 'ligue-1' },
       { provider_id: 81, country: 'France', venue_id: null, name: 'Marseille', short: 'MAR', slug: 'marseille', logo: 'https://media.api-sports.io/football/teams/81.png', league: 'ligue-1' },
     ];
-    
+
     const teamIds: Record<string, number> = {};
     for (const team of teams) {
       const res = await client.query(
@@ -195,7 +190,7 @@ async function seed() {
       teamIds[team.slug] = res.rows[0].id;
     }
     counts.teams = teams.length;
-    
+
     // ==================== SEASON_TEAMS ====================
     console.log('🔗 Linking teams to seasons...');
     let seasonTeamsCount = 0;
@@ -211,7 +206,7 @@ async function seed() {
       seasonTeamsCount++;
     }
     counts.season_teams = seasonTeamsCount;
-    
+
     // ==================== MATCHES ====================
     console.log('⚽ Seeding matches...');
     const today = new Date();
@@ -229,9 +224,9 @@ async function seed() {
       ht_home: number | null;
       ht_away: number | null;
     }> = [];
-    
+
     let fixtureId = 1000000;
-    
+
     // Past week matches (completed)
     const pastMatches = [
       { home: 'manchester-united', away: 'liverpool', league: 'premier-league', days: -5, home_goals: 2, away_goals: 1, ht_home: 1, ht_away: 0, venue: 556 },
@@ -245,7 +240,7 @@ async function seed() {
       { home: 'manchester-city', away: 'arsenal', league: 'premier-league', days: -3, home_goals: 3, away_goals: 1, ht_home: 2, ht_away: 0, venue: null },
       { home: 'borussia-dortmund', away: 'bayern-munich', league: 'bundesliga', days: -6, home_goals: 0, away_goals: 1, ht_home: 0, ht_away: 0, venue: 743 },
     ];
-    
+
     for (const match of pastMatches) {
       matchData.push({
         provider_id: fixtureId++,
@@ -262,7 +257,7 @@ async function seed() {
         ht_away: match.ht_away,
       });
     }
-    
+
     // Today's matches
     const todayMatches = [
       { home: 'arsenal', away: 'manchester-united', league: 'premier-league', hours: 15, venue: 655 },
@@ -276,7 +271,7 @@ async function seed() {
       { home: 'inter', away: 'ac-milan', league: 'serie-a', hours: 14, venue: null },
       { home: 'marseille', away: 'psg', league: 'ligue-1', hours: 17, venue: null },
     ];
-    
+
     for (const match of todayMatches) {
       const kickoff = new Date(today);
       kickoff.setHours(match.hours, 0, 0, 0);
@@ -295,7 +290,7 @@ async function seed() {
         ht_away: null,
       });
     }
-    
+
     // Upcoming matches (next 7 days)
     const upcomingMatches = [
       { home: 'manchester-united', away: 'chelsea', league: 'premier-league', days: 1, hours: 15, venue: 556 },
@@ -311,7 +306,7 @@ async function seed() {
       { home: 'barcelona', away: 'real-madrid', league: 'la-liga', days: 5, hours: 21, venue: 1492 },
       { home: 'bayern-munich', away: 'borussia-dortmund', league: 'bundesliga', days: 6, hours: 18, venue: 700 },
     ];
-    
+
     for (const match of upcomingMatches) {
       const kickoff = addDays(today, match.days);
       kickoff.setHours(match.hours, 0, 0, 0);
@@ -330,7 +325,7 @@ async function seed() {
         ht_away: null,
       });
     }
-    
+
     const matchIds: Record<number, number> = {};
     for (const match of matchData) {
       const res = await client.query(
@@ -363,7 +358,7 @@ async function seed() {
       matchIds[match.provider_id] = res.rows[0].id;
     }
     counts.matches = matchData.length;
-    
+
     // ==================== TEAM_MATCH_STATS ====================
     console.log('📊 Seeding team match stats...');
     let statsCount = 0;
@@ -372,7 +367,7 @@ async function seed() {
       const matchId = matchIds[match.provider_id];
       const homeTeamId = teamIds[match.home_slug];
       const awayTeamId = teamIds[match.away_slug];
-      
+
       const homeStats = {
         shots_on_goal: Math.floor(Math.random() * 8) + 3,
         shots_off_goal: Math.floor(Math.random() * 5) + 2,
@@ -386,7 +381,7 @@ async function seed() {
         red_cards: Math.random() > 0.9 ? 1 : 0,
       };
       homeStats.total_shots = homeStats.shots_on_goal + homeStats.shots_off_goal;
-      
+
       const awayStats = {
         shots_on_goal: Math.floor(Math.random() * 8) + 3,
         shots_off_goal: Math.floor(Math.random() * 5) + 2,
@@ -400,7 +395,7 @@ async function seed() {
         red_cards: Math.random() > 0.9 ? 1 : 0,
       };
       awayStats.total_shots = awayStats.shots_on_goal + awayStats.shots_off_goal;
-      
+
       await client.query(
         `INSERT INTO team_match_stats (match_id, team_id, is_home, stats)
          VALUES ($1, $2, true, $3), ($1, $4, false, $5)
@@ -410,14 +405,14 @@ async function seed() {
       statsCount += 2;
     }
     counts.team_match_stats = statsCount;
-    
+
     // ==================== BOOKMAKERS ====================
     console.log('🎰 Seeding bookmakers...');
     const bookmakers = [
       { provider_id: 8, name: 'Bet365', slug: 'bet365' },
       { provider_id: 5, name: 'William Hill', slug: 'william-hill' },
     ];
-    
+
     const bookmakerIds: Record<string, number> = {};
     for (const bookmaker of bookmakers) {
       const res = await client.query(
@@ -430,7 +425,7 @@ async function seed() {
       bookmakerIds[bookmaker.slug] = res.rows[0].id;
     }
     counts.bookmakers = bookmakers.length;
-    
+
     // ==================== MARKETS ====================
     console.log('📈 Seeding markets...');
     const markets = [
@@ -440,7 +435,7 @@ async function seed() {
       { provider_id: 12, name: 'Corners Over/Under', key: 'OU_CORNERS', is_line: true },
       { provider_id: 15, name: 'Cards Over/Under', key: 'OU_CARDS', is_line: true },
     ];
-    
+
     const marketIds: Record<string, number> = {};
     for (const market of markets) {
       const res = await client.query(
@@ -453,23 +448,23 @@ async function seed() {
       marketIds[market.key] = res.rows[0].id;
     }
     counts.markets = markets.length;
-    
+
     // ==================== ODDS SNAPSHOTS ====================
     console.log('💰 Seeding odds snapshots...');
     let snapshotCount = 0;
     let linesCount = 0;
-    
+
     // Create odds for 20 matches (mix of past, today, upcoming)
     const matchesWithOdds = matchData.slice(0, 20);
-    
+
     for (const match of matchesWithOdds) {
       const matchId = matchIds[match.provider_id];
-      
+
       // Create 2 snapshots per match (one early, one recent)
       for (let i = 0; i < 2; i++) {
         const capturedAt = addDays(match.kickoff, -2 + i);
-        
-        for (const [bookmakerSlug, bookmakerId] of Object.entries(bookmakerIds)) {
+
+        for (const [, bookmakerId] of Object.entries(bookmakerIds)) {
           const snapshotRes = await client.query(
             `INSERT INTO odds_snapshots (match_id, bookmaker_id, captured_at, source, is_live)
              VALUES ($1, $2, $3, $4, $5)
@@ -478,12 +473,12 @@ async function seed() {
           );
           const snapshotId = snapshotRes.rows[0].id;
           snapshotCount++;
-          
+
           // FT_1X2 lines
           const homeOdd = 1.5 + Math.random() * 3;
           const drawOdd = 2.5 + Math.random() * 2;
           const awayOdd = 1.5 + Math.random() * 3;
-          
+
           await client.query(
             `INSERT INTO odds_snapshot_lines (snapshot_id, market_id, line, selection, odd_value, implied_prob, is_suspended)
              VALUES 
@@ -498,11 +493,11 @@ async function seed() {
             ]
           );
           linesCount += 3;
-          
+
           // OU_GOALS lines (2.5)
           const overOdd = 1.7 + Math.random() * 0.6;
           const underOdd = 1.7 + Math.random() * 0.6;
-          
+
           await client.query(
             `INSERT INTO odds_snapshot_lines (snapshot_id, market_id, line, selection, odd_value, implied_prob, is_suspended)
              VALUES 
@@ -515,11 +510,11 @@ async function seed() {
             ]
           );
           linesCount += 2;
-          
+
           // BTTS lines
           const bttsYesOdd = 1.6 + Math.random() * 0.8;
           const bttsNoOdd = 1.6 + Math.random() * 0.8;
-          
+
           await client.query(
             `INSERT INTO odds_snapshot_lines (snapshot_id, market_id, line, selection, odd_value, implied_prob, is_suspended)
              VALUES 
@@ -537,14 +532,14 @@ async function seed() {
     }
     counts.odds_snapshots = snapshotCount;
     counts.odds_snapshot_lines = linesCount;
-    
+
     // ==================== PREDICTION MODELS ====================
     console.log('🤖 Seeding prediction models...');
     const models = [
       { name: 'Oddins ML v1', version: '1.0.0', source: 'internal', is_active: true },
       { name: 'API-Football Predictions', version: '1.0.0', source: 'api-football', is_active: false },
     ];
-    
+
     const modelIds: Record<string, number> = {};
     for (const model of models) {
       const res = await client.query(
@@ -557,24 +552,24 @@ async function seed() {
       modelIds[model.name] = res.rows[0].id;
     }
     counts.prediction_models = models.length;
-    
+
     // ==================== MATCH PREDICTIONS ====================
     console.log('🔮 Seeding match predictions...');
     let predictionCount = 0;
-    
+
     // Create predictions for 20 matches
     for (const match of matchesWithOdds) {
       const matchId = matchIds[match.provider_id];
       const modelId = modelIds['Oddins ML v1'];
-      
+
       // FT_1X2 prediction
       const homeWinProb = 0.2 + Math.random() * 0.5;
       const drawProb = 0.15 + Math.random() * 0.25;
       const awayWinProb = 1 - homeWinProb - drawProb;
-      
+
       const selection = homeWinProb > awayWinProb ? 'Home' : 'Away';
       const probability = Math.max(homeWinProb, awayWinProb);
-      
+
       await client.query(
         `INSERT INTO match_predictions (match_id, model_id, market_id, line, selection, payload, probability, confidence, generated_at)
          VALUES ($1, $2, $3, NULL, $4, $5, $6, $7, $8)`,
@@ -596,7 +591,7 @@ async function seed() {
         ]
       );
       predictionCount++;
-      
+
       // OU_GOALS prediction
       const overProb = 0.4 + Math.random() * 0.3;
       await client.query(
@@ -616,18 +611,17 @@ async function seed() {
       predictionCount++;
     }
     counts.match_predictions = predictionCount;
-    
+
     // ==================== TIPS ====================
     console.log('💡 Seeding tips...');
     let tipCount = 0;
-    
+
     // Create tips for 10 matches
     for (const match of matchesWithOdds.slice(0, 10)) {
       const matchId = matchIds[match.provider_id];
-      
+
       const isPremium = Math.random() > 0.6;
-      const confidence = 60 + Math.floor(Math.random() * 30);
-      
+
       const titles = [
         'Strong Home Win Expected',
         'Value in Draw Market',
@@ -635,7 +629,7 @@ async function seed() {
         'Both Teams to Score',
         'Away Team Undervalued',
       ];
-      
+
       const reasons = [
         'Home team in excellent form with 4 wins in last 5 matches',
         'Both teams struggling defensively, high-scoring game expected',
@@ -643,7 +637,7 @@ async function seed() {
         'Away team has strong away record this season',
         'Key injuries to home side could impact result',
       ];
-      
+
       await client.query(
         `INSERT INTO tips (match_id, prediction_id, title, short_reason, tip_rank, published_at, is_premium)
          VALUES ($1, NULL, $2, $3, $4, $5, $6)`,
@@ -659,10 +653,10 @@ async function seed() {
       tipCount++;
     }
     counts.tips = tipCount;
-    
+
     // ==================== ARTICLES ====================
     console.log('📝 Seeding articles...');
-    
+
     const academyArticles = [
       {
         slug: 'understanding-asian-handicaps',
@@ -700,7 +694,7 @@ async function seed() {
         body: '# In-Play Betting Strategies\n\nLive betting offers unique opportunities...\n\n## Watching the Game\n\nAlways watch the match when betting in-play...',
       },
     ];
-    
+
     for (const article of academyArticles) {
       await client.query(
         `INSERT INTO articles (type, slug, title, summary, body_md, category, published_at, updated_at, seo_title, seo_description)
@@ -716,7 +710,7 @@ async function seed() {
         ]
       );
     }
-    
+
     const blogArticles = [
       {
         slug: 'premier-league-week-20-preview',
@@ -754,7 +748,7 @@ async function seed() {
         body: '# Weekend Accumulator Tips\n\nLooking for an accumulator this weekend?\n\n## Our Picks\n\nWe\'ve identified four strong selections...',
       },
     ];
-    
+
     for (const article of blogArticles) {
       await client.query(
         `INSERT INTO articles (type, slug, title, summary, body_md, category, published_at, updated_at, seo_title, seo_description)
@@ -771,10 +765,10 @@ async function seed() {
       );
     }
     counts.articles = academyArticles.length + blogArticles.length;
-    
+
     // ==================== USERS ====================
     console.log('👤 Seeding users...');
-    
+
     const userRes = await client.query(
       `INSERT INTO users (email, password_hash, display_name, role, created_at)
        VALUES ('demo@oddins.local', '$2b$10$abcdefghijklmnopqrstuvwxyz', 'Demo User', 'user', $1)
@@ -784,7 +778,7 @@ async function seed() {
     );
     const userId = userRes.rows[0].id;
     counts.users = 1;
-    
+
     // User preferences
     await client.query(
       `INSERT INTO user_preferences (user_id, timezone, default_markets, default_leagues)
@@ -796,7 +790,7 @@ async function seed() {
         JSON.stringify([39, 140, 78]),
       ]
     );
-    
+
     // User favourites
     const favCreatedAt = formatDateTime(addDays(today, -30));
     await client.query(
@@ -809,7 +803,7 @@ async function seed() {
       [userId, teamIds['manchester-united'].toString(), teamIds['liverpool'].toString(), leagueIds['premier-league'].toString(), favCreatedAt]
     );
     counts.user_favourites = 3;
-    
+
     // Alerts
     await client.query(
       `INSERT INTO alerts (user_id, type, match_id, league_id, market_id, threshold, is_enabled, created_at)
@@ -824,31 +818,31 @@ async function seed() {
       ]
     );
     counts.alerts = 1;
-    
+
     // ==================== PROVIDER SOURCES ====================
     console.log('🔌 Seeding provider sources...');
-    
+
     await client.query(
       `INSERT INTO provider_sources (name, base_url)
        VALUES ('api-football', 'https://v3.football.api-sports.io')
        ON CONFLICT (name) DO UPDATE SET base_url = 'https://v3.football.api-sports.io'`
     );
     counts.provider_sources = 1;
-    
+
     await client.query('COMMIT');
-    
+
     console.log('\n✅ Seed completed successfully!\n');
     console.log('📊 Summary:');
     for (const [table, count] of Object.entries(counts)) {
       console.log(`   ${table}: ${count}`);
     }
-    
+
     console.log('\n🔗 Example URLs to test:');
     console.log(`   League: england/premier-league`);
     console.log(`   Team: manchester-united, liverpool, real-madrid`);
     console.log(`   Match IDs: ${Object.values(matchIds).slice(0, 5).join(', ')}`);
     console.log(`   Today's date: ${getToday()}`);
-    
+
   } catch (error) {
     await client.query('ROLLBACK');
     console.error('❌ Seed failed:', error);

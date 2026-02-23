@@ -56,10 +56,10 @@ const LeagueResponseItemSchema = z.object({
 // API response envelope
 export const LeaguesResponseSchema = z.object({
   get: z.string().optional(),
-  parameters: z.any().optional(),
-  errors: z.any().optional(),
+  parameters: z.unknown().optional(),
+  errors: z.unknown().optional(),
   results: z.number().optional(),
-  paging: z.any().optional(),
+  paging: z.unknown().optional(),
   response: z.array(LeagueResponseItemSchema),
 }).passthrough();
 
@@ -67,20 +67,20 @@ export type LeaguesResponse = z.infer<typeof LeaguesResponseSchema>;
 export type LeagueResponseItem = z.infer<typeof LeagueResponseItemSchema>;
 
 // Helper to normalize coverage flags
-export function normalizeCoverage(coverage: any) {
-  const c = coverage || {};
-  const fixtures = c.fixtures || {};
-  
+export function normalizeCoverage(coverage: unknown) {
+  const c = coverage as Record<string, unknown> || {};
+  const fixtures = (c.fixtures as Record<string, unknown>) || {};
+
   return {
     fixtures: true, // Always assume we can fetch fixtures
-    events: fixtures.events || false,
-    lineups: fixtures.lineups || false,
-    stats_fixtures: fixtures.statistics_fixtures || false,
-    stats_players: fixtures.statistics_players || false,
-    standings: c.standings || false,
-    injuries: c.injuries || false,
-    predictions: c.predictions || false,
-    odds: c.odds || false,
+    events: (fixtures.events as boolean) || false,
+    lineups: (fixtures.lineups as boolean) || false,
+    stats_fixtures: (fixtures.statistics_fixtures as boolean) || false,
+    stats_players: (fixtures.statistics_players as boolean) || false,
+    standings: (c.standings as boolean) || false,
+    injuries: (c.injuries as boolean) || false,
+    predictions: (c.predictions as boolean) || false,
+    odds: (c.odds as boolean) || false,
   };
 }
 

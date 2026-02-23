@@ -45,7 +45,7 @@ async function getPlayerId(
   providerPlayerId: number | null
 ): Promise<number | null> {
   if (!providerPlayerId) return null;
-  
+
   const result = await client.query(
     `SELECT id FROM players WHERE provider_player_id = $1`,
     [providerPlayerId]
@@ -87,7 +87,7 @@ async function insertMatchEvent(
 }
 
 // Get completed matches without events
-async function getCompletedMatches(client: PoolClient, limit: number = 1000): Promise<Array<{matchId: number, providerFixtureId: number}>> {
+async function getCompletedMatches(client: PoolClient, limit: number = 1000): Promise<Array<{ matchId: number, providerFixtureId: number }>> {
   const result = await client.query(
     `SELECT m.id as match_id, m.provider_fixture_id
      FROM matches m
@@ -100,7 +100,7 @@ async function getCompletedMatches(client: PoolClient, limit: number = 1000): Pr
      LIMIT $1`,
     [limit]
   );
-  return result.rows.map((row: any) => ({
+  return result.rows.map((row: { match_id: number; provider_fixture_id: number }) => ({
     matchId: row.match_id,
     providerFixtureId: row.provider_fixture_id
   }));
@@ -143,13 +143,13 @@ export async function syncEvents(): Promise<void> {
             });
 
             // Fetch events from API
-            const rawResponse: EventsAPIResponse = await apiFootballClient.getFixtureEvents({
+            const rawResponse = await apiFootballClient.getFixtureEvents({
               fixture: match.providerFixtureId,
-            });
+            }) as EventsAPIResponse;
             apiCallsMade++;
 
             const events = rawResponse.response || [];
-            
+
             if (events.length === 0) {
               logger.info(`No events for match ${match.providerFixtureId}`);
               matchesSkipped++;
@@ -187,11 +187,11 @@ export async function syncEvents(): Promise<void> {
                 );
                 eventsInserted++;
 
-              } catch (eventError: any) {
+              } catch (eventError: unknown) {
                 logger.warn('Failed to process event', {
                   matchId: match.matchId,
                   eventType: event.type,
-                  error: eventError.message,
+                  error: eventError instanceof Error ? eventError.message : String(eventError),
                 });
                 // Continue with next event
               }
@@ -202,10 +202,10 @@ export async function syncEvents(): Promise<void> {
             // Rate limiting: wait 100ms between requests
             await new Promise(resolve => setTimeout(resolve, 100));
 
-          } catch (matchError: any) {
+          } catch (matchError: unknown) {
             logger.warn('Failed to process match', {
               matchId: match.matchId,
-              error: matchError.message,
+              error: matchError instanceof Error ? matchError.message : String(matchError),
             });
             matchesSkipped++;
             // Continue with next match
@@ -235,7 +235,7 @@ export async function syncEvents(): Promise<void> {
           matchesProcessed,
           matchesSkipped,
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         await client.query('ROLLBACK');
         throw error;
       } finally {
@@ -250,7 +250,7 @@ export async function syncEvents(): Promise<void> {
 
     logger.info('Job completed successfully');
     process.exit(0);
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error('Job failed', error);
     process.exit(1);
   } finally {

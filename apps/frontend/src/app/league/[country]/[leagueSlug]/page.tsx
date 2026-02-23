@@ -1,4 +1,4 @@
-import { getLeagueDetail } from '@/lib/api';
+import { getLeagueDetail, type StandingsRow, type MatchData, type FAQItem } from '@/lib/api';
 import MatchCard from '@/components/MatchCard';
 import Link from 'next/link';
 
@@ -65,7 +65,7 @@ export default async function LeagueDetailPage({ params }: PageProps) {
               </tr>
             </thead>
             <tbody>
-              {standings.map((row: any) => (
+              {standings.map((row: StandingsRow) => (
                 <tr key={row.team.id} className="border-b border-gray-100 hover:bg-gray-50">
                   <td className="py-3 px-2 text-sm">{row.rank}</td>
                   <td className="py-3 px-2">
@@ -130,7 +130,7 @@ export default async function LeagueDetailPage({ params }: PageProps) {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {fixtures.slice(0, 6).map((match: any) => (
+            {fixtures.slice(0, 6).map((match: MatchData) => (
               <MatchCard key={match.matchId} match={match} />
             ))}
           </div>
@@ -146,7 +146,7 @@ export default async function LeagueDetailPage({ params }: PageProps) {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {results.slice(0, 6).map((match: any) => (
+            {results.slice(0, 6).map((match: MatchData) => (
               <MatchCard key={match.matchId} match={match} />
             ))}
           </div>
@@ -158,7 +158,7 @@ export default async function LeagueDetailPage({ params }: PageProps) {
         <section className="mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
           <div className="space-y-4">
-            {faq.map((item: any, index: number) => (
+            {faq.map((item: FAQItem, index: number) => (
               <div key={index} className="card">
                 <h3 className="font-semibold text-lg mb-2">{item.q}</h3>
                 <p className="text-gray-600">{item.a}</p>

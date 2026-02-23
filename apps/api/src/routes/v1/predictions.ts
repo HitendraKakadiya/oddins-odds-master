@@ -20,39 +20,39 @@ export async function predictionsRoutes(server: FastifyInstance) {
       page = '1',
       pageSize = '50',
     } = request.query;
-    
+
     const pageNum = Math.max(1, parseInt(page, 10));
     const pageSizeNum = Math.min(200, Math.max(1, parseInt(pageSize, 10)));
     const offset = (pageNum - 1) * pageSizeNum;
-    
+
     // Build WHERE clause dynamically
     const conditions: string[] = ['mp.generated_at IS NOT NULL'];
-    const params: any[] = [];
+    const params: (string | number)[] = [];
     let paramIndex = 1;
-    
+
     if (date) {
       conditions.push(`DATE(m.kickoff_at) = $${paramIndex++}`);
       params.push(date);
     }
-    
+
     if (leagueSlug) {
       conditions.push(`l.slug = $${paramIndex++}`);
       params.push(leagueSlug);
     }
-    
+
     if (marketKey) {
       conditions.push(`mk.key = $${paramIndex++}`);
       params.push(marketKey);
     }
-    
+
     if (region) {
       // Region filter on country name (simplified)
       conditions.push(`c.name ILIKE $${paramIndex++}`);
       params.push(`%${region}%`);
     }
-    
+
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
-    
+
     // Get total count
     const countResult = await query(
       `SELECT COUNT(DISTINCT mp.id) as total
@@ -64,9 +64,9 @@ export async function predictionsRoutes(server: FastifyInstance) {
        ${whereClause}`,
       params
     );
-    
+
     const total = parseInt(countResult.rows[0].total, 10);
-    
+
     // Get paginated results
     params.push(pageSizeNum, offset);
     const result = await query(
@@ -104,8 +104,8 @@ export async function predictionsRoutes(server: FastifyInstance) {
       LIMIT $${paramIndex++} OFFSET $${paramIndex++}`,
       params
     );
-    
-    const items = result.rows.map((row: any) => ({
+
+    const items = result.rows.map((row: { match_id: number; prediction_id: number; kickoff_at: string; league_name: string; league_slug: string; country_name: string; home_team_id: number; home_team_name: string; home_team_slug: string; home_team_logo: string | null; away_team_id: number; away_team_name: string; away_team_slug: string; away_team_logo: string | null; market_key: string; line: string | number | null; selection: string; probability: number | string; confidence: number | string; is_premium: boolean | null }) => ({
       matchId: row.match_id,
       kickoffAt: row.kickoff_at,
       league: {
@@ -133,7 +133,7 @@ export async function predictionsRoutes(server: FastifyInstance) {
       shortExplanation: `Based on recent form and statistical analysis`,
       isPremium: row.is_premium || false,
     }));
-    
+
     return {
       page: pageNum,
       pageSize: pageSizeNum,

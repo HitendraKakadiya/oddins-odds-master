@@ -10,18 +10,18 @@ export async function streamsRoutes(server: FastifyInstance) {
   server.get<{ Querystring: StreamsQuery }>('/streams', async (request) => {
     const { region, date } = request.query;
     const targetDate = date || new Date().toISOString().split('T')[0];
-    
+
     const conditions: string[] = ['DATE(m.kickoff_at) = $1'];
-    const params: any[] = [targetDate];
+    const params: (string)[] = [targetDate];
     let paramIndex = 2;
-    
+
     if (region) {
       conditions.push(`c.name ILIKE $${paramIndex++}`);
       params.push(`%${region}%`);
     }
-    
+
     const whereClause = conditions.join(' AND ');
-    
+
     const result = await query(
       `SELECT 
         l.name as league_name,
@@ -45,8 +45,8 @@ export async function streamsRoutes(server: FastifyInstance) {
       ORDER BY m.kickoff_at ASC`,
       params
     );
-    
-    const items = result.rows.map((row: any) => ({
+
+    const items = result.rows.map((row: { league_name: string; league_slug: string; match_id: number; kickoff_at: string; home_team_id: number; home_team_name: string; home_team_slug: string; home_team_logo: string | null; away_team_id: number; away_team_name: string; away_team_slug: string; away_team_logo: string | null }) => ({
       league: {
         name: row.league_name,
         slug: row.league_slug,
@@ -70,7 +70,7 @@ export async function streamsRoutes(server: FastifyInstance) {
         { name: 'BT Sport', url: 'https://www.bt.com/sport' },
       ],
     }));
-    
+
     return {
       date: targetDate,
       region,

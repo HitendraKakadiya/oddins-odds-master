@@ -84,7 +84,7 @@ async function main() {
         printUsage();
         process.exit(1);
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error('Worker execution failed', error);
     process.exit(1);
   }

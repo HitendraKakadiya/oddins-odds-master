@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "tsx src/index.ts",
-    "sync:leagues": "tsx src/index.ts sync:leagues",
+    "dev": "tsx --env-file=../../.env src/index.ts",
+    "sync:leagues": "tsx --env-file=../../.env src/index.ts sync:leagues",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
     "lint": "eslint src --ext .ts"
@@ -22,4 +22,3 @@
     "typescript": "^5.3.3"
   }
 }
-

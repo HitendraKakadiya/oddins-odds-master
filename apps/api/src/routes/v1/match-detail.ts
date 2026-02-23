@@ -8,7 +8,7 @@ interface MatchParams {
 export async function matchDetailRoutes(server: FastifyInstance) {
   server.get<{ Params: MatchParams }>('/match/:matchId', async (request, reply) => {
     const { matchId } = request.params;
-    
+
     // Get match details
     const matchResult = await query(
       `SELECT 
@@ -44,13 +44,13 @@ export async function matchDetailRoutes(server: FastifyInstance) {
       LIMIT 1`,
       [matchId]
     );
-    
+
     if (matchResult.rows.length === 0) {
       return reply.status(404).send({ error: 'Match not found' });
     }
-    
+
     const row = matchResult.rows[0];
-    
+
     const match = {
       matchId: row.match_id,
       providerFixtureId: row.provider_fixture_id,
@@ -86,7 +86,7 @@ export async function matchDetailRoutes(server: FastifyInstance) {
         away: row.away_goals,
       },
     };
-    
+
     // Get latest odds
     const oddsResult = await query(
       `SELECT 
@@ -107,7 +107,7 @@ export async function matchDetailRoutes(server: FastifyInstance) {
       LIMIT 20`,
       [matchId]
     );
-    
+
     let oddsLatest = null;
     if (oddsResult.rows.length > 0) {
       const firstRow = oddsResult.rows[0];
@@ -117,16 +117,16 @@ export async function matchDetailRoutes(server: FastifyInstance) {
           slug: firstRow.bookmaker_slug,
         },
         capturedAt: firstRow.captured_at,
-        markets: oddsResult.rows.map((r: any) => ({
+        markets: oddsResult.rows.map((r: { captured_at: string; bookmaker_name: string; bookmaker_slug: string; market_key: string; line: string | number | null; selection: string; odd_value: number | string; implied_prob: number | string | null }) => ({
           marketKey: r.market_key,
           line: r.line,
           selection: r.selection,
-          oddValue: parseFloat(r.odd_value),
-          impliedProb: r.implied_prob ? parseFloat(r.implied_prob) : null,
+          oddValue: parseFloat(String(r.odd_value)),
+          impliedProb: r.implied_prob ? parseFloat(String(r.implied_prob)) : null,
         })),
       };
     }
-    
+
     // Get predictions
     const predictionsResult = await query(
       `SELECT 
@@ -148,8 +148,8 @@ export async function matchDetailRoutes(server: FastifyInstance) {
       ORDER BY mp.confidence DESC`,
       [matchId]
     );
-    
-    const predictions = predictionsResult.rows.map((r: any) => ({
+
+    const predictions = predictionsResult.rows.map((r: { id: number; market_key: string; line: string | number | null; selection: string; probability: number | string; confidence: number | string; league_name: string; league_slug: string; country_name: string }) => ({
       matchId: parseInt(matchId, 10),
       kickoffAt: row.kickoff_at,
       league: {
@@ -167,7 +167,7 @@ export async function matchDetailRoutes(server: FastifyInstance) {
       shortExplanation: 'Based on recent form and statistical analysis',
       isPremium: false,
     }));
-    
+
     // Get H2H (simplified - last 5 matches between these teams)
     const h2hResult = await query(
       `SELECT 
@@ -209,8 +209,8 @@ export async function matchDetailRoutes(server: FastifyInstance) {
       LIMIT 5`,
       [matchId, row.home_team_id, row.away_team_id]
     );
-    
-    const h2h = h2hResult.rows.map((r: any) => ({
+
+    const h2h = h2hResult.rows.map((r: { match_id: number; provider_fixture_id: number | null; kickoff_at: string; status: string; elapsed: number | null; league_id: number; league_name: string; league_slug: string; league_type: string; league_logo: string | null; country_name: string; country_code: string; country_flag: string | null; home_team_id: number; home_team_name: string; home_team_slug: string; home_team_logo: string | null; away_team_id: number; away_team_name: string; away_team_slug: string; away_team_logo: string | null; home_goals: number | null; away_goals: number | null }) => ({
       matchId: r.match_id,
       providerFixtureId: r.provider_fixture_id,
       kickoffAt: r.kickoff_at,
@@ -245,7 +245,7 @@ export async function matchDetailRoutes(server: FastifyInstance) {
         away: r.away_goals,
       },
     }));
-    
+
     return {
       match,
       oddsLatest,

@@ -60,7 +60,7 @@ async function upsertBookmaker(
   name: string
 ): Promise<number> {
   const slug = slugify(name);
-  
+
   const result = await client.query(
     `INSERT INTO bookmakers (provider_bookmaker_id, name, slug)
      VALUES ($1, $2, $3)
@@ -81,7 +81,7 @@ async function upsertMarket(
   isLineMarket: boolean = false
 ): Promise<number> {
   const key = slugify(name);
-  
+
   const result = await client.query(
     `INSERT INTO markets (provider_market_id, name, key, is_line_market)
      VALUES ($1, $2, $3, $4)
@@ -135,7 +135,7 @@ async function createOddsLine(
 ): Promise<void> {
   // Calculate implied probability
   const impliedProb = 1 / oddValue;
-  
+
   await client.query(
     `INSERT INTO odds_snapshot_lines (snapshot_id, market_id, line, selection, odd_value, implied_prob)
      VALUES ($1, $2, $3, $4, $5, $6)`,
@@ -155,7 +155,7 @@ async function getUpcomingFixtures(client: PoolClient): Promise<number[]> {
      LIMIT 1000`,
     []
   );
-  return result.rows.map((row: any) => row.provider_fixture_id);
+  return result.rows.map((row: { provider_fixture_id: number }) => row.provider_fixture_id);
 }
 
 export async function syncOdds(): Promise<void> {
@@ -196,17 +196,17 @@ export async function syncOdds(): Promise<void> {
 
         // Process each fixture (limit to first 100 to avoid excessive API usage)
         const fixturesLimit = Math.min(upcomingFixtures.length, 100);
-        
+
         for (let i = 0; i < fixturesLimit; i++) {
           const providerFixtureId = upcomingFixtures[i];
-          
+
           try {
             logger.info(`Fetching odds for fixture ${providerFixtureId} (${i + 1}/${fixturesLimit})`);
 
             // Fetch odds from API
-            const rawResponse: OddsAPIResponse = await apiFootballClient.getOdds({
+            const rawResponse = await apiFootballClient.getOdds({
               fixture: providerFixtureId,
-            });
+            }) as OddsAPIResponse;
             apiCallsMade++;
 
             if (!rawResponse.response || rawResponse.response.length === 0) {
@@ -216,7 +216,7 @@ export async function syncOdds(): Promise<void> {
             }
 
             const oddsData = rawResponse.response[0];
-            
+
             // Get match ID
             const matchId = await getMatchId(client, providerFixtureId);
             if (!matchId) {
@@ -266,10 +266,10 @@ export async function syncOdds(): Promise<void> {
             // Rate limiting: wait 200ms between requests
             await new Promise(resolve => setTimeout(resolve, 200));
 
-          } catch (fixtureError: any) {
+          } catch (fixtureError: unknown) {
             logger.warn('Failed to process fixture odds', {
               fixtureId: providerFixtureId,
-              error: fixtureError.message,
+              error: fixtureError instanceof Error ? fixtureError.message : String(fixtureError),
             });
             fixturesSkipped++;
             // Continue with next fixture
@@ -310,7 +310,7 @@ export async function syncOdds(): Promise<void> {
           fixturesProcessed,
           fixturesSkipped,
         };
-      } catch (error: any) {
+      } catch (error: unknown) {
         await client.query('ROLLBACK');
         throw error;
       } finally {
@@ -325,7 +325,7 @@ export async function syncOdds(): Promise<void> {
 
     logger.info('Job completed successfully');
     process.exit(0);
-  } catch (error: any) {
+  } catch (error: unknown) {
     logger.error('Job failed', error);
     process.exit(1);
   } finally {
