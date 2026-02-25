@@ -1,16 +1,28 @@
 name: CI
 
+# Only pull_request: one run per PR open/sync. (Push to same branch would duplicate runs.)
 on:
-  push:
-    branches: [main, develop]
   pull_request:
     branches: [main, develop]
 
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+
 jobs:
   lint-and-build:
+    name: Lint & Build
     runs-on: ubuntu-latest
+    concurrency:
+      group: ci-pr-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
       
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -21,6 +33,18 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: 9.15.0
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
       
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -31,3 +55,127 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: TypeScript check
+        run: pnpm -r exec tsc --noEmit
+
+  e2e-tests:
+    name: E2E Tests
+    needs: lint-and-build
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ci-pr-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: oddins_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.15.0
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build application
+        run: pnpm build
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/oddins_test
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+        working-directory: apps/frontend
+
+      - name: Start application for E2E tests
+        run: |
+          cd apps/frontend && pnpm start &
+          npx wait-on http://localhost:3000 --timeout 60000
+        env:
+          NODE_ENV: production
+          NEXT_PUBLIC_API_URL: https://api.oddins-odds.com
+
+      - name: Run E2E tests
+        id: e2e
+        run: pnpm test:e2e
+        env:
+          E2E_BASE_URL: http://localhost:3000
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-${{ github.run_number }}
+          path: apps/frontend/playwright-report/
+          retention-days: 14
+
+      - name: Configure AWS credentials (for SES)
+        if: always()
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::545586473769:role/github-actions-deploy
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Send E2E test report email (SES)
+        if: always()
+        env:
+          SES_FROM: ${{ secrets.SES_FROM_EMAIL }}
+          SES_TO: ${{ secrets.SES_TO_EMAILS }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ -z "$SES_FROM" ]; then
+            echo "SES_FROM_EMAIL not set, skipping email"
+            exit 0
+          fi
+          TO_ADDRESSES="${SES_TO:-urieah.avni@gmail.com,elad.s.avni@gmail.com}"
+          cat << EOF > /tmp/ses-message.json
+          {
+            "Subject": { "Data": "CI E2E: ${{ steps.e2e.outcome }} - oddins-odds PR #${{ github.event.pull_request.number }} (${{ github.sha }})", "Charset": "UTF-8" },
+            "Body": {
+              "Text": {
+                "Data": "E2E tests finished: ${{ steps.e2e.outcome }}\n\nWorkflow: ${{ github.workflow }}\nPR: #${{ github.event.pull_request.number }}\nRun: $RUN_URL\nCommit: ${{ github.sha }}\n\nDownload the playwright-report-${{ github.run_number }} artifact from the run above for the full report.",
+                "Charset": "UTF-8"
+              }
+            }
+          }
+          EOF
+          if ! aws ses send-email \
+            --from "$SES_FROM" \
+            --destination "ToAddresses=$TO_ADDRESSES" \
+            --message file:///tmp/ses-message.json; then
+            echo "::warning::SES send failed. If CI runs never get email, ensure the IAM role trust policy allows pull_request (see tests_docs/AWS_OIDC_SETUP.md §6)."
+            exit 1
+          fi
+          echo "E2E report email sent to $TO_ADDRESSES"
