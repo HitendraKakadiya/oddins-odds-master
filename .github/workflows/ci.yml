@@ -3,7 +3,7 @@ name: CI
 # Only pull_request: one run per PR open/sync. (Push to same branch would duplicate runs.)
 on:
   pull_request:
-    branches: [main, api-creation]
+    branches: [main, develop]
 
 permissions:
   id-token: write
