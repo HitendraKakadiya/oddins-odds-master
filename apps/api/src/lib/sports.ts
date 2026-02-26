@@ -68,6 +68,45 @@ export async function getLiveMatchesDirect(date: string) {
     }));
 }
 
+export async function getFixtureDetailDirect(fixtureId: number) {
+    const data: any = await fetchFromSportsProvider(`/fixtures?id=${fixtureId}`);
+
+    if (!data.response || data.response.length === 0) return null;
+
+    const item = data.response[0];
+    return {
+        matchId: item.fixture.id,
+        providerFixtureId: item.fixture.id,
+        kickoffAt: item.fixture.date,
+        status: item.fixture.status.short,
+        elapsed: item.fixture.status.elapsed,
+        league: {
+            id: item.league.id,
+            name: item.league.name,
+            slug: item.league.name.toLowerCase().replace(/\s+/g, '-'),
+            logoUrl: item.league.logo,
+            country: {
+                name: item.league.country,
+                flagUrl: item.league.flag
+            }
+        },
+        homeTeam: {
+            id: item.teams.home.id,
+            name: item.teams.home.name,
+            logoUrl: item.teams.home.logo
+        },
+        awayTeam: {
+            id: item.teams.away.id,
+            name: item.teams.away.name,
+            logoUrl: item.teams.away.logo
+        },
+        score: {
+            home: item.goals.home,
+            away: item.goals.away
+        }
+    };
+}
+
 /**
  * Fetch predictions for a specific fixture
  */
@@ -77,7 +116,6 @@ export async function getPredictionsDirect(fixtureId: number) {
     if (!data.response || data.response.length === 0) return null;
 
     const prediction = data.response[0].predictions;
-    const teams = data.response[0].teams;
 
     return {
         matchId: fixtureId,
@@ -100,104 +138,194 @@ export async function getPredictionsDirect(fixtureId: number) {
  * Fetch full prediction detail (stats, h2h, predictions) for a fixture
  */
 export async function getFullPredictionDetailDirect(fixtureId: number) {
-    const data: any = await fetchFromSportsProvider(`/predictions?fixture=${fixtureId}`);
+    let predictionData: any = null;
+    let fixture: any = null;
+    try {
+        predictionData = await fetchFromSportsProvider(`/predictions?fixture=${fixtureId}`);
+    } catch (err) {
+        console.warn(`Failed to fetch predictions for fixture ${fixtureId}:`, (err as any).message);
+    }
+    if (!predictionData || !predictionData.response || predictionData.response.length === 0) {
+        fixture = await getFixtureDetailDirect(fixtureId);
+        if (!fixture) {
+            fixture = {
+                id: fixtureId,
+                date: new Date().toISOString(),
+                status: { short: 'NS', elapsed: 0 }
+            };
+        }
 
-    if (!data.response || data.response.length === 0) return null;
+        return {
+            match: mapMatch(fixture, null, null, null),
+            stats: {
+                home: getEmptyTeamStats(),
+                away: getEmptyTeamStats(),
+                comparison: {}
+            },
+            predictions: [],
+            h2h: []
+        };
+    }
 
-    const res = data.response[0];
-    const fixture = res.fixture;
+    const res = predictionData.response[0];
+    fixture = res.fixture;
     const league = res.league;
     const teams = res.teams;
     const predictions = res.predictions;
     const comparison = res.comparison;
     const h2h = res.h2h || [];
 
+    // If fixture info is missing from predictions (some plans/endpoints), fetch it explicitly
+    if (!fixture) {
+        fixture = await getFixtureDetailDirect(fixtureId);
+    }
+
+    if (!fixture) {
+        // Fallback construct if even getter fails
+        fixture = {
+            id: fixtureId,
+            date: new Date().toISOString(),
+            status: { short: 'NS', elapsed: 0 }
+        };
+    }
+
     // Map match data
-    const match = {
-        matchId: fixture.id,
-        providerFixtureId: fixture.id,
-        kickoffAt: fixture.date,
-        status: fixture.status.short,
-        elapsed: fixture.status.elapsed,
-        league: {
-            id: league.id,
-            name: league.name,
-            slug: league.name.toLowerCase().replace(/\s+/g, '-'),
-            logoUrl: league.logo,
-            country: {
-                name: league.country,
-                flagUrl: league.flag
-            }
-        },
-        homeTeam: {
-            id: teams.home.id,
-            name: teams.home.name,
-            logoUrl: teams.home.logo
-        },
-        awayTeam: {
-            id: teams.away.id,
-            name: teams.away.name,
-            logoUrl: teams.away.logo
-        },
-        score: {
-            home: res.goals.home,
-            away: res.goals.away
-        }
-    };
+    const match = mapMatch(fixture, league, teams, res);
 
     // Helper to map team stats
     const mapTeamStats = (side: 'home' | 'away') => {
-        const team = teams[side];
-        const leagueStats = team.league;
+        const team = teams?.[side];
+        const leagueStats = team?.league;
+        const formStr = leagueStats?.form || '';
+
+        // Parse form string "WLDWW" into ["W", "L", "D", "W", "W"]
+        const parseForm = (str: string) => str ? str.split('').reverse().slice(0, 5) : [];
+
+        const mapDetail = (node: any) => ({
+            played: node?.fixtures?.played?.total || 0,
+            wins: node?.fixtures?.wins?.total || 0,
+            draws: node?.fixtures?.draws?.total || 0,
+            losses: node?.fixtures?.loses?.total || 0,
+            scored: node?.goals?.for?.total?.total || 0,
+            conceded: node?.goals?.against?.total?.total || 0,
+            ppg: node?.fixtures?.played?.total > 0 ?
+                parseFloat(((node?.fixtures?.wins?.total * 3 + node?.fixtures?.draws?.total) / node?.fixtures?.played?.total).toFixed(2)) : 0,
+            winRate: node?.fixtures?.played?.total > 0 ? Math.round((node?.fixtures?.wins?.total / node?.fixtures?.played?.total) * 100) : 0,
+            scoredAvg: parseFloat(node?.goals?.for?.average?.total || '0'),
+            concededAvg: parseFloat(node?.goals?.against?.average?.total || '0'),
+            cleanSheets: node?.clean_sheet?.total || 0,
+            failedToScore: node?.failed_to_score?.total || 0,
+            btts: 0,
+            bttsRate: 0,
+            cleanSheetRate: node?.fixtures?.played?.total > 0 ? Math.round((node?.clean_sheet?.total / node?.fixtures?.played?.total) * 100) : 0,
+            failedToScoreRate: node?.fixtures?.played?.total > 0 ? Math.round((node?.failed_to_score?.total / node?.fixtures?.played?.total) * 100) : 0,
+            over05Rate: 0,
+            over15Rate: 0,
+            over25Rate: 0,
+            over35Rate: 0,
+            over45Rate: 0,
+            over55Rate: 0,
+        });
+
         return {
-            overall: {
-                played: leagueStats.fixtures.played.total,
-                wins: leagueStats.fixtures.wins.total,
-                draws: leagueStats.fixtures.draws.total,
-                losses: leagueStats.fixtures.loses.total,
-                scored: leagueStats.goals.for.total.total,
-                conceded: leagueStats.goals.against.total.total,
-                ppg: leagueStats.fixtures.played.total > 0 ?
-                    parseFloat(((leagueStats.fixtures.wins.total * 3 + leagueStats.fixtures.draws.total) / leagueStats.fixtures.played.total).toFixed(2)) : 0,
-                winRate: Math.round((leagueStats.fixtures.wins.total / leagueStats.fixtures.played.total) * 100),
-                scoredAvg: parseFloat(leagueStats.goals.for.average.total),
-                concededAvg: parseFloat(leagueStats.goals.against.average.total),
-                cleanSheets: leagueStats.clean_sheet.total,
-                failedToScore: leagueStats.failed_to_score.total,
-                btts: 0, // Not explicitly in this node
-            },
-            recentMatchesDetailed: [] // API-Football doesn't provide these here in detail, leaving empty to avoid crashes
+            overall: mapDetail(leagueStats),
+            home: mapDetail(leagueStats?.fixtures?.home),
+            away: mapDetail(leagueStats?.fixtures?.away),
+            last5: parseForm(formStr),
+            last5Home: parseForm(leagueStats?.fixtures?.home?.form || ''),
+            last5Away: parseForm(leagueStats?.fixtures?.away?.form || ''),
+            recentMatchesDetailed: []
         };
     };
 
     const stats = {
         home: mapTeamStats('home'),
         away: mapTeamStats('away'),
-        comparison: comparison
+        comparison: comparison || {}
     };
 
     // Map predictions to array
-    const mappedPredictions = [
+    const mappedPredictions = predictions ? [
         {
-            matchId: fixture.id,
-            selection: predictions.winner.name,
-            probability: parseInt(predictions.percent.home),
+            matchId: fixture?.id || fixtureId,
+            selection: predictions?.winner?.name || 'N/A',
+            probability: predictions?.percent?.home ? parseInt(predictions.percent.home) : 0,
             confidence: 0.85,
-            shortExplanation: predictions.advice
+            shortExplanation: predictions?.advice || 'Analysis coming soon...'
         }
-    ];
+    ] : [];
 
     // Map H2H matches
-    const mappedH2H = h2h.map((h: any) => ({
-        id: h.fixture.id,
-        date: h.fixture.date,
-        competition: h.league.name,
-        homeTeam: { id: h.teams.home.id, name: h.teams.home.name, logoUrl: h.teams.home.logo },
-        awayTeam: { id: h.teams.away.id, name: h.teams.away.name, logoUrl: h.teams.away.logo },
-        homeScore: h.goals.home,
-        awayScore: h.goals.away
+    const mappedH2H = (h2h || []).map((h: any) => ({
+        id: h?.fixture?.id,
+        date: h?.fixture?.date,
+        competition: h?.league?.name,
+        homeTeam: { id: h?.teams?.home?.id, name: h?.teams?.home?.name, logoUrl: h?.teams?.home?.logo },
+        awayTeam: { id: h?.teams?.away?.id, name: h?.teams?.away?.name, logoUrl: h?.teams?.away?.logo },
+        homeScore: h?.goals?.home,
+        awayScore: h?.goals?.away
     }));
 
+    function mapMatch(fixture: any, league: any, teams: any, res: any) {
+        const fId = fixture?.id || fixture?.matchId || fixtureId;
+        const statusStr = fixture?.status?.short || (typeof fixture?.status === 'string' ? fixture.status : 'NS');
+        const elapsedVal = fixture?.status?.elapsed || fixture?.elapsed || 0;
+        const kickoff = fixture?.date || fixture?.kickoffAt || new Date().toISOString();
+
+        return {
+            matchId: fId,
+            providerFixtureId: fId,
+            kickoffAt: kickoff,
+            status: statusStr,
+            elapsed: elapsedVal,
+            league: {
+                id: league?.id || fixture?.league?.id || 0,
+                name: league?.name || fixture?.league?.name || 'Unknown League',
+                slug: (league?.name || fixture?.league?.name || 'unknown-league').toLowerCase().replace(/\s+/g, '-'),
+                logoUrl: league?.logo || fixture?.league?.logoUrl || '',
+                country: {
+                    name: league?.country || fixture?.league?.country?.name || '',
+                    flagUrl: league?.flag || fixture?.league?.country?.flagUrl || ''
+                }
+            },
+            homeTeam: {
+                id: teams?.home?.id || fixture?.homeTeam?.id || 0,
+                name: teams?.home?.name || fixture?.homeTeam?.name || 'Home Team',
+                logoUrl: teams?.home?.logo || fixture?.homeTeam?.logoUrl || ''
+            },
+            awayTeam: {
+                id: teams?.away?.id || fixture?.awayTeam?.id || 0,
+                name: teams?.away?.name || fixture?.awayTeam?.name || 'Away Team',
+                logoUrl: teams?.away?.logo || fixture?.awayTeam?.logoUrl || ''
+            },
+            score: {
+                home: res?.goals?.home ?? fixture?.score?.home ?? 0,
+                away: res?.goals?.away ?? fixture?.score?.away ?? 0
+            }
+        };
+    }
+
+    function getEmptyTeamStatsDetail() {
+        return {
+            played: 0, wins: 0, draws: 0, losses: 0, scored: 0, conceded: 0,
+            btts: 0, cleanSheets: 0, failedToScore: 0, ppg: 0, winRate: 0,
+            scoredAvg: 0, concededAvg: 0, bttsRate: 0, cleanSheetRate: 0,
+            failedToScoreRate: 0, over05Rate: 0, over15Rate: 0, over25Rate: 0,
+            over35Rate: 0, over45Rate: 0, over55Rate: 0
+        };
+    }
+
+    function getEmptyTeamStats() {
+        return {
+            overall: getEmptyTeamStatsDetail(),
+            home: getEmptyTeamStatsDetail(),
+            away: getEmptyTeamStatsDetail(),
+            last5: [],
+            last5Home: [],
+            last5Away: [],
+            recentMatchesDetailed: []
+        };
+    }
     return {
         match,
         stats,

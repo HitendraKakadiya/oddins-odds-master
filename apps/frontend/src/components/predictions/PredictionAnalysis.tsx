@@ -45,30 +45,40 @@ export default function PredictionAnalysis({ match, predictions }: PredictionAna
           </h2>
 
           <div className="space-y-6">
-             {predictions.map((pred, index) => (
-                <div key={index} className="bg-white rounded-3xl border border-slate-100 shadow-sm p-8 flex flex-col md:flex-row gap-6 relative overflow-hidden group hover:border-brand-indigo/20 transition-all duration-300">
-                   <div className="absolute top-0 left-0 w-2 h-full bg-brand-pink opacity-80"></div>
-                   <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-4">
-                         <span className="text-2xl">👉</span>
-                         <h3 className="text-xl md:text-2xl font-black text-slate-800">Our prediction is: {pred.selection || pred.title}</h3>
-                      </div>
-                      <p className="text-slate-600 text-lg leading-relaxed pl-10">
-                         {pred.shortReason || "Expert analysis for this selection based on recent form, head-to-head statistics, and tactical considerations. Both teams have shown specific patterns that make this market particularly attractive for today's match."}
-                      </p>
-                      {pred.confidence && (
-                        <div className="mt-4 pl-10 flex items-center gap-2">
-                           <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Confidence:</span>
-                           <div className="flex gap-1">
-                              {[...Array(5)].map((_, i) => (
-                                 <div key={i} className={`w-3 h-3 rounded-full ${i < (pred.confidence || 0) / 20 ? 'bg-brand-pink' : 'bg-slate-100'}`}></div>
-                              ))}
+             {predictions && predictions.length > 0 ? (
+                predictions.map((pred, index) => (
+                   <div key={index} className="bg-white rounded-3xl border border-slate-100 shadow-sm p-8 flex flex-col md:flex-row gap-6 relative overflow-hidden group hover:border-brand-indigo/20 transition-all duration-300">
+                      <div className="absolute top-0 left-0 w-2 h-full bg-brand-pink opacity-80"></div>
+                      <div className="flex-1">
+                         <div className="flex items-center gap-3 mb-4">
+                            <span className="text-2xl">👉</span>
+                            <h3 className="text-xl md:text-2xl font-black text-slate-800">Our prediction is: {pred.selection || pred.title}</h3>
+                         </div>
+                         <p className="text-slate-600 text-lg leading-relaxed pl-10">
+                            {pred.shortReason || "Expert analysis for this selection based on recent form, head-to-head statistics, and tactical considerations. Both teams have shown specific patterns that make this market particularly attractive for today's match."}
+                         </p>
+                         {pred.confidence && (
+                           <div className="mt-4 pl-10 flex items-center gap-2">
+                              <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Confidence:</span>
+                              <div className="flex gap-1">
+                                 {[...Array(5)].map((_, i) => (
+                                    <div key={i} className={`w-3 h-3 rounded-full ${i < (pred.confidence || 0) / 20 ? 'bg-brand-pink' : 'bg-slate-100'}`}></div>
+                                 ))}
+                              </div>
                            </div>
-                        </div>
-                      )}
+                         )}
+                      </div>
                    </div>
+                ))
+             ) : (
+                <div className="bg-slate-50/50 rounded-3xl border border-dotted border-slate-200 p-12 text-center">
+                   <div className="text-4xl mb-4">🔮</div>
+                   <h3 className="text-xl font-black text-slate-800 mb-2">Predictions are being prepared</h3>
+                   <p className="text-slate-500 max-w-md mx-auto">
+                      Our expert analysis for this match is currently being processed. Check back shortly for data-driven betting tips and insights.
+                   </p>
                 </div>
-             ))}
+             )}
           </div>
        </div>
     </div>

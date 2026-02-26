@@ -34,12 +34,12 @@ export default function H2HComparison({ homeTeam, awayTeam, homeStats, awayStats
                 <div className="w-full space-y-6">
                    <div className="flex items-center justify-between border-b border-slate-50 pb-4">
                       <span className="text-sm font-black text-slate-500 uppercase tracking-widest italic">Form</span>
-                      <FormCircles results={homeStats.last5} size="md" />
+                      <FormCircles results={homeStats?.last5 || []} size="md" />
                    </div>
 
-                   <MetricRow label="Overall" ppg={homeStats.overall.ppg} results={homeStats.last5} />
-                   <MetricRow label="Home" ppg={homeStats.home.ppg} results={homeStats.last5Home} />
-                   <MetricRow label="Away" ppg={homeStats.away.ppg} results={homeStats.last5Away} />
+                   <MetricRow label="Overall" ppg={homeStats?.overall?.ppg || 0} results={homeStats?.last5 || []} />
+                   <MetricRow label="Home" ppg={homeStats?.home?.ppg || 0} results={homeStats?.last5Home || []} />
+                   <MetricRow label="Away" ppg={homeStats?.away?.ppg || 0} results={homeStats?.last5Away || []} />
                 </div>
 
                 <button className="mt-10 bg-brand-pink text-white px-8 py-3 rounded-full font-black text-sm shadow-lg shadow-brand-pink/30 hover:scale-105 transition-transform">
@@ -61,12 +61,12 @@ export default function H2HComparison({ homeTeam, awayTeam, homeStats, awayStats
                 <div className="w-full space-y-6">
                    <div className="flex items-center justify-between border-b border-slate-50 pb-4">
                       <span className="text-sm font-black text-slate-500 uppercase tracking-widest italic">Form</span>
-                      <FormCircles results={awayStats.last5} size="md" />
+                      <FormCircles results={awayStats?.last5 || []} size="md" />
                    </div>
 
-                   <MetricRow label="Overall" ppg={awayStats.overall.ppg} results={awayStats.last5} />
-                   <MetricRow label="Home" ppg={awayStats.home.ppg} results={awayStats.last5Home} />
-                   <MetricRow label="Away" ppg={awayStats.away.ppg} results={awayStats.last5Away} />
+                   <MetricRow label="Overall" ppg={awayStats?.overall?.ppg || 0} results={awayStats?.last5 || []} />
+                   <MetricRow label="Home" ppg={awayStats?.home?.ppg || 0} results={awayStats?.last5Home || []} />
+                   <MetricRow label="Away" ppg={awayStats?.away?.ppg || 0} results={awayStats?.last5Away || []} />
                 </div>
 
                 <button className="mt-10 bg-brand-pink text-white px-8 py-3 rounded-full font-black text-sm shadow-lg shadow-brand-pink/30 hover:scale-105 transition-transform">
