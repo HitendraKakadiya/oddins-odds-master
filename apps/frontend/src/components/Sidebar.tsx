@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import type { LeaguesResponse } from '@/lib/api';
-import { getLeagues, getStreams, getLiveLeagues } from '@/lib/api';
+import { getLeagues, getStreams, getLiveLeagues, getLiveStreams } from '@/lib/api';
 
 interface SidebarProps {
   leagueData: LeaguesResponse[];
@@ -61,7 +61,8 @@ export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [
     setLoading(true);
     try {
       const nextPage = page + 1;
-      const response = await (mode === 'predictions' ? getLiveLeagues(nextPage, 20, date) : getLeagues(nextPage, 20));
+      // const response = await (mode === 'predictions' ? getLiveLeagues(nextPage, 20, date) : getLeagues(nextPage, 20));
+      const response = await getLiveLeagues(nextPage, 20, date);
       
       if (response && response.items) {
         setCompetitions(prev => [...prev, ...response.items]);
@@ -91,7 +92,8 @@ export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [
       // But if `page.tsx` passes a selected date, we might need to know it. 
       // `Sidebar` doesn't currently receive `selectedDate` prop. 
       // Assuming "Today's Streams" implies today.
-      const response = await getStreams(undefined, undefined, nextPage, 20);
+      // const response = await getStreams(undefined, undefined, nextPage, 20);
+      const response = await getLiveStreams(date);
 
       if (response && response.items) {
           const newStreams = response.items.map(item => ({

@@ -37,14 +37,11 @@ export default function PredictionsListContainer({
     setLoading(true);
     try {
       const nextPage = page + 1;
-      const response = await api.predictions.getPredictions({
+      const response = await api.predictions.getLivePredictions(
         date,
-        region,
-        leagueSlug,
-        marketKey,
-        page: nextPage,
-        pageSize,
-      });
+        nextPage,
+        pageSize
+      );
 
       if (response && response.items) {
         setPredictions((prev) => [...prev, ...response.items]);

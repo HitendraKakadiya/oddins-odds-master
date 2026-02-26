@@ -24,19 +24,19 @@ export default async function PredictionDetailPage({ params }: PageProps) {
     return notFound();
   }
 
-  // Fetch data in parallel
+  // Fetch data in parallel from Live API
   const [matchData, predictionDetail, todayPredictionsRes] = await Promise.all([
-    getMatchDetail(matchId).catch(() => null),
-    api.predictions.getPredictionDetail(matchId).catch(() => ({ predictions: [] })),
-    api.predictions.getPredictions({ pageSize: 5 }).catch(() => ({ items: [] }))
+    api.matches.getLiveMatchDetail(matchId).catch(() => null),
+    api.predictions.getLivePredictions(new Date().toISOString().split('T')[0]).catch(() => ({ items: [] })), // Use list as fallback prediction detail for now if needed, though getLiveMatchDetail returns full details
+    api.predictions.getLivePredictions(new Date().toISOString().split('T')[0], 1, 5).catch(() => ({ items: [] }))
   ]);
 
   if (!matchData || !matchData.match) {
     return notFound();
   }
 
-  const { match, stats } = matchData;
-  const predictions = predictionDetail.predictions || [];
+  const { match, stats, predictions: livePredictions, h2h } = matchData;
+  const predictions = (livePredictions && livePredictions.length > 0) ? livePredictions : (predictionDetail as any).predictions || [];
   const todayPredictions = todayPredictionsRes.items || [];
 
   return (

@@ -5,13 +5,19 @@
 import { fetchAPI } from './client';
 import { StreamsResponse } from './types';
 
-export async function getStreams(date?: string, region?: string, page: number = 1, pageSize: number = 20): Promise<StreamsResponse> {
-    const searchParams = new URLSearchParams();
-    if (date) searchParams.set('date', date);
-    if (region) searchParams.set('region', region);
-    searchParams.set('page', page.toString());
-    searchParams.set('pageSize', pageSize.toString());
-
-    const query = searchParams.toString();
+export async function getStreams(region?: string, date?: string, page?: number, pageSize?: number): Promise<StreamsResponse> {
+    const params = new URLSearchParams();
+    if (region) params.set('region', region);
+    if (date) params.set('date', date);
+    if (page) params.set('page', page.toString());
+    if (pageSize) params.set('pageSize', pageSize.toString());
+    const query = params.toString();
     return fetchAPI<StreamsResponse>(`/v1/streams${query ? `?${query}` : ''}`);
+}
+
+export async function getLiveStreams(date?: string): Promise<StreamsResponse> {
+    const params = new URLSearchParams();
+    if (date) params.set('date', date);
+    const query = params.toString();
+    return fetchAPI<StreamsResponse>(`/v1/live/streams${query ? `?${query}` : ''}`);
 }

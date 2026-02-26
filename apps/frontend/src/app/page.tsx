@@ -5,7 +5,7 @@ import MatchListInfinite from '@/components/MatchListInfinite';
 import FAQAccordion from '@/components/FAQAccordion';
 import HighlightBanner from '@/components/HighlightBanner';
 import FeaturedTeams from '@/components/FeaturedTeams';
-import { getTodayMatches, getLeagues, getFeaturedTips, getStreams, getFeaturedTeams, getPredictions } from '@/lib/api';
+import { getTodayMatches, getLeagues, getFeaturedTips, getStreams, getFeaturedTeams, getPredictions, getLiveTodayMatches, getLiveLeagues, getLiveFeaturedTips, getLiveStreams, getLivePredictions } from '@/lib/api';
 
 export default async function HomePage({ searchParams }: { searchParams: { date?: string; leagueId?: string; market?: string; minOdds?: string } }) {
   let selectedDate = searchParams.date || new Date().toISOString().split('T')[0];
@@ -24,12 +24,12 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
 
   try {
     const [matchesRes, leaguesRes, tipsRes, streamsRes, featuredRes, predictionsRes] = await Promise.all([
-      getTodayMatches(selectedDate, 1, 20, selectedLeague, selectedMarket, selectedMinOdds).catch(err => { console.error('Matches fetch failed:', err); return { matches: [], total: 0, page: 1, pageSize: 20, date: selectedDate }; }),
-      getLeagues(1, 50).catch(err => { console.error('Leagues fetch failed:', err); return { items: [], total: 0, page: 1, pageSize: 50 }; }),
-      getFeaturedTips(selectedDate).catch(err => { console.error('Tips fetch failed:', err); return { tips: [] }; }),
-      getStreams(selectedDate).catch(err => { console.error('Streams fetch failed:', err); return { items: [], total: 10 }; }), 
+      getLiveTodayMatches(selectedDate, 1, 20, selectedLeague, selectedMarket, selectedMinOdds).catch(err => { console.error('Live matches fetch failed:', err); return { matches: [], total: 0, page: 1, pageSize: 20, date: selectedDate }; }),
+      getLiveLeagues(1, 400, selectedDate).catch(err => { console.error('Live leagues fetch failed:', err); return { items: [], total: 0, page: 1, pageSize: 50 }; }),
+      getLiveFeaturedTips(selectedDate).catch(err => { console.error('Tips fetch failed:', err); return { tips: [] }; }),
+      getLiveStreams(selectedDate).catch(err => { console.error('Streams fetch failed:', err); return { items: [], total: 10 }; }), 
       getFeaturedTeams().catch(err => { console.error('Featured teams fetch failed:', err); return []; }),
-      getPredictions({ date: selectedDate, pageSize: 5 }).catch(err => { console.error('Predictions fetch failed:', err); return { items: [] }; })
+      getLivePredictions(selectedDate).catch(err => { console.error('Predictions fetch failed:', err); return { items: [] }; })
     ]);
 
     // Smart Fallback Handling:

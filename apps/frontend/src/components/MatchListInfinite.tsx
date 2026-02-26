@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { LeagueGroup } from './MatchCard';
-import { getTodayMatches } from '@/lib/api';
+import { getTodayMatches, getLiveTodayMatches } from '@/lib/api';
 import type { MatchData } from '@/lib/api';
 
 interface MatchListInfiniteProps {
@@ -59,7 +59,8 @@ export default function MatchListInfinite({
     setLoading(true);
     try {
       const nextPage = page + 1;
-      const response = await getTodayMatches(selectedDate, nextPage, 20, leagueId, market, minOdds);
+      // const response = await getTodayMatches(selectedDate, nextPage, 20, leagueId, market, minOdds);
+      const response = await getLiveTodayMatches(selectedDate, nextPage, 20, leagueId, market, minOdds);
       
       if (response && response.matches) {
         setMatches(prev => [...prev, ...response.matches]);
@@ -118,7 +119,7 @@ export default function MatchListInfinite({
         ))
       ) : (
         <div className="card text-center py-12">
-           <p className="text-gray-500">No matches found for today.</p>
+           <p className="text-gray-500">No matches found for this date.</p>
         </div>
       )}
 

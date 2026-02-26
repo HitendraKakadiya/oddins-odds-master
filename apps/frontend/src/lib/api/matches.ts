@@ -32,3 +32,7 @@ export async function getLiveTodayMatches(date?: string, page?: number, pageSize
 export async function getMatchDetail(matchId: string | number): Promise<MatchDetailResponse> {
     return fetchAPI<MatchDetailResponse>(`/v1/match/${matchId}`);
 }
+
+export async function getLiveMatchDetail(matchId: string | number): Promise<MatchDetailResponse> {
+    return fetchAPI<MatchDetailResponse>(`/v1/live/match/${matchId}`);
+}

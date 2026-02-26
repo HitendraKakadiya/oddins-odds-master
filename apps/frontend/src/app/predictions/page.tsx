@@ -26,29 +26,20 @@ export default async function PredictionsPage({
   const pageSize = 12;
   const selectedDate = searchParams.date || new Date().toISOString().split('T')[0];
 
-  // Fetch data in parallel from local database
-  const [predictionsData, leaguesData, featuredTipsData, streamsRes, fallbackData] = await Promise.all([
-    api.predictions.getPredictions({
-      date: selectedDate, // Use selectedDate as default if searchParams.date is missing
-      region: searchParams.region,
-      leagueSlug: searchParams.leagueSlug,
-      marketKey: searchParams.marketKey,
-      page,
-      pageSize,
-    }).catch(() => ({ page: 1, pageSize, total: 0, items: [] })),
+  // Fetch data in parallel from Live API
+  const [predictionsData, leaguesData, featuredTipsData, streamsRes] = await Promise.all([
+    api.predictions.getLivePredictions(selectedDate).catch(() => ({ page: 1, pageSize, total: 0, items: [] })),
     api.leagues.getLiveLeagues(1, 100, selectedDate).catch(() => ({ items: [], total: 0 })),
-    api.predictions.getFeaturedTips(selectedDate).catch(() => ({ tips: [] })),
-    getStreams(selectedDate, undefined, 1, 10).catch(() => ({ items: [], total: 0 })),
-    api.predictions.getPredictions({ pageSize: 2 }).catch(() => ({ page: 1, pageSize: 2, total: 0, items: [] }))
+    api.predictions.getLiveFeaturedTips(selectedDate).catch(() => ({ tips: [] })),
+    api.streams.getLiveStreams(selectedDate).catch(() => ({ items: [], total: 0 }))
   ]);
 
   const predictions = predictionsData.items || [];
-  const fallbacks = fallbackData.items || [];
 
-  // Use featured tips first, then top 2 from current day, then global top 2
+  // Use featured tips first, then top 2 from current day
   const featuredPredictions = (featuredTipsData.tips && featuredTipsData.tips.length > 0)
     ? featuredTipsData.tips.slice(0, 2)
-    : (predictions.length > 0 ? predictions.slice(0, 2) : fallbacks.slice(0, 2));
+    : predictions.slice(0, 2);
 
   // Format streams for Sidebar
   const sidebarStreams = (streamsRes.items || []).map((item: any) => ({
