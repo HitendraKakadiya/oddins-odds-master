@@ -25,7 +25,8 @@ export async function leaguesRoutes(server: FastifyInstance) {
     const pageSizeNum = Math.min(200, Math.max(1, parseInt(pageSize, 10)));
     const offset = (pageNum - 1) * pageSizeNum;
 
-    const allLeagues = await getLeaguesDirect();
+    const leaguesFromDb = await getLeaguesDirect();
+    const allLeagues = leaguesFromDb || [];
 
     // Group by country
     const groupedMap: Map<string, { country: { name: string; code: string; flagUrl: string | null }; leagues: { id: number; name: string; slug: string; logoUrl: string | null; type: string }[] }> = new Map();
@@ -68,7 +69,7 @@ export async function leaguesRoutes(server: FastifyInstance) {
   // GET /v1/leagues/popular
   server.get('/leagues/popular', async () => {
     const popularLeagueIds = [39, 140, 135, 78, 61, 2, 3, 253, 71, 94, 88, 113]; // EPL, La Liga, Serie A, etc.
-    const allLeagues = await getLeaguesDirect();
+    const allLeagues = await getLeaguesDirect() || [];
 
     const filtered = allLeagues.filter((item: any) => popularLeagueIds.includes(item.league.id));
 
@@ -90,7 +91,7 @@ export async function leaguesRoutes(server: FastifyInstance) {
     const { countrySlug, leagueSlug } = request.params;
 
     // Resolve leagueId from slug
-    const allLeagues = await getLeaguesDirect();
+    const allLeagues = await getLeaguesDirect() || [];
     const found = allLeagues.find((item: any) =>
       slugify(item.league.name) === leagueSlug &&
       slugify(item.country.name) === countrySlug
@@ -101,7 +102,7 @@ export async function leaguesRoutes(server: FastifyInstance) {
     }
 
     const leagueId = found.league.id;
-    const currentSeason = found.seasons.find((s: any) => s.current)?.year || new Date().getFullYear();
+    const currentSeason = (found.seasons || []).find((s: any) => s.current)?.year || new Date().getFullYear();
 
     // Fetch data in parallel
     const [standingsRaw, fixtures, results, topScorers, topAssists] = await Promise.all([
@@ -120,13 +121,6 @@ export async function leaguesRoutes(server: FastifyInstance) {
         slug: slugify(row.team.name),
         logoUrl: row.team.logo,
       },
-      played: row.all.played,
-      wins: row.all.win,
-      draws: row.all.draw,
-      losses: row.all.lose,
-      gf: row.all.goals.for,
-      ga: row.all.goals.against,
-      points: row.points,
       overall: {
         played: row.all.played,
         wins: row.all.win,
@@ -134,8 +128,9 @@ export async function leaguesRoutes(server: FastifyInstance) {
         losses: row.all.lose,
         gf: row.all.goals.for,
         ga: row.all.goals.against,
+        gd: row.goalsDiff,
         points: row.points,
-        ppg: parseFloat((row.points / row.all.played).toFixed(2)) || 0
+        ppg: row.all.played > 0 ? parseFloat((row.points / row.all.played).toFixed(2)) : 0
       },
       home: {
         played: row.home.played,
@@ -144,8 +139,9 @@ export async function leaguesRoutes(server: FastifyInstance) {
         losses: row.home.lose,
         gf: row.home.goals.for,
         ga: row.home.goals.against,
-        points: row.home.points,
-        ppg: parseFloat((row.home.points / row.home.played).toFixed(2)) || 0
+        gd: row.home.goals.for - row.home.goals.against,
+        points: row.home.win * 3 + row.home.draw,
+        ppg: row.home.played > 0 ? parseFloat(((row.home.win * 3 + row.home.draw) / row.home.played).toFixed(2)) : 0
       },
       away: {
         played: row.away.played,
@@ -154,10 +150,11 @@ export async function leaguesRoutes(server: FastifyInstance) {
         losses: row.away.lose,
         gf: row.away.goals.for,
         ga: row.away.goals.against,
-        points: row.away.points,
-        ppg: parseFloat((row.away.points / row.away.played).toFixed(2)) || 0
+        gd: row.away.goals.for - row.away.goals.against,
+        points: row.away.win * 3 + row.away.draw,
+        ppg: row.away.played > 0 ? parseFloat(((row.away.win * 3 + row.away.draw) / row.away.played).toFixed(2)) : 0
       },
-      form: row.form ? row.form.split('').reverse() : []
+      form: row.form || []
     }));
 
     // Compute stats from standings

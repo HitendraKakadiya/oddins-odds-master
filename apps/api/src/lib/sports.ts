@@ -314,10 +314,28 @@ export function mapMatch(fixture: any, league: any, teams: any, res: any) {
     };
 }
 
+let leaguesCache: any[] | null = null;
+let lastLeaguesFetch = 0;
+const CACHE_TTL = 1000 * 60 * 60; // 1 hour
+
 export async function getLeaguesDirect() {
-    const data: any = await fetchFromSportsProvider('/leagues');
-    if (!data.response) return [];
-    return data.response;
+    const now = Date.now();
+    if (leaguesCache && (now - lastLeaguesFetch < CACHE_TTL)) {
+        return leaguesCache;
+    }
+
+    try {
+        const data: any = await fetchFromSportsProvider('/leagues');
+        if (data.response) {
+            leaguesCache = data.response;
+            lastLeaguesFetch = now;
+            return leaguesCache;
+        }
+    } catch (err) {
+        console.error('Failed to fetch leagues from provider:', err);
+    }
+
+    return leaguesCache || [];
 }
 
 export async function getLeagueStandingsDirect(leagueId: number, season: number) {
@@ -402,26 +420,23 @@ export async function getTopAssistsDirect(leagueId: number, season: number) {
 }
 
 export async function getTeamBySlugDirect(slug: string) {
-    // 1. Prioritize popular team mocks for guaranteed high-quality testing
-    const mockTeam = getMockTeamBySlug(slug);
-    if (mockTeam) return mockTeam;
-
-    // 2. Try direct Live Search for other teams
+    // Try direct Live Search for the team
     const searchTerm = slug.replace(/-/g, ' ');
     try {
         const data: any = await fetchFromSportsProvider(`/teams?search=${encodeURIComponent(searchTerm)}`);
         if (data.response && data.response.length > 0) {
-            const item = data.response[0];
+            const item = data.response.find((r: any) =>
+                r.team.name.toLowerCase().includes(searchTerm.toLowerCase())
+            ) || data.response[0];
+
             return {
                 id: item.team.id,
                 name: item.team.name,
                 logo: item.team.logo,
                 country: item.team.country || item.venue?.country || 'Unknown',
                 venue: item.venue,
-                // Default leagues for popular teams if not in response
-                leagues: item.team.id === 529 ? [{ name: 'La Liga', logo: 'https://media.api-sports.io/football/leagues/140.png' }] :
-                    item.team.id === 42 ? [{ name: 'Premier League', logo: 'https://media.api-sports.io/football/leagues/39.png' }] : [],
-                leagueId: item.team.id === 529 ? 140 : item.team.id === 42 ? 39 : undefined
+                leagues: [], // This can be populated via standings lookup if needed
+                leagueId: undefined
             };
         }
     } catch (err) {
@@ -429,28 +444,6 @@ export async function getTeamBySlugDirect(slug: string) {
     }
 
     return null;
-}
-
-function getMockTeamBySlug(slug: string) {
-    const mocks: Record<string, any> = {
-        'fc-barcelona': {
-            id: 529, name: 'Barcelona', logo: 'https://media.api-sports.io/football/teams/529.png', country: 'Spain',
-            venue: { name: 'Camp Nou', city: 'Barcelona' }, leagueId: 140,
-            leagues: [{ name: 'La Liga', logo: 'https://media.api-sports.io/football/leagues/140.png' }]
-        },
-        'real-madrid': {
-            id: 541, name: 'Real Madrid', logo: 'https://media.api-sports.io/football/teams/541.png', country: 'Spain',
-            venue: { name: 'Santiago Bernabéu', city: 'Madrid' }, leagueId: 140,
-            leagues: [{ name: 'La Liga', logo: 'https://media.api-sports.io/football/leagues/140.png' }]
-        },
-        'arsenal': {
-            id: 42, name: 'Arsenal', logo: 'https://media.api-sports.io/football/teams/42.png', country: 'England',
-            venue: { name: 'Emirates Stadium', city: 'London' }, leagueId: 39,
-            leagues: [{ name: 'Premier League', logo: 'https://media.api-sports.io/football/leagues/39.png' }]
-        },
-        // ... adding more if needed, but these are the ones for verification
-    };
-    return mocks[slug] || null;
 }
 
 export async function getTeamStatsDirect(teamId: number, leagueId: number, season: number) {
@@ -496,5 +489,42 @@ export async function getTeamSquadDirect(teamId: number) {
         console.warn(`Failed to fetch squad for team ${teamId}:`, (err as any).message);
     }
 
+    return [];
+}
+
+export async function getTeamsByLeagueDirect(leagueId: number, season: number) {
+    try {
+        const data: any = await fetchFromSportsProvider(`/teams?league=${leagueId}&season=${season}`);
+        if (data.response && data.response.length > 0) {
+            return data.response.map((item: any) => ({
+                id: item.team.id,
+                name: item.team.name,
+                slug: item.team.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''),
+                logoUrl: item.team.logo,
+                country: item.team.country || item.venue?.country || 'Unknown'
+            }));
+        }
+    } catch (err) {
+        console.warn(`Failed to fetch teams for league ${leagueId}:`, (err as any).message);
+    }
+    return [];
+}
+
+export async function getPopularTeamsDirect(ids: number[]) {
+    try {
+        const idBatch = ids.join('-');
+        const data: any = await fetchFromSportsProvider(`/teams?id=${idBatch}`);
+        if (data.response && data.response.length > 0) {
+            return data.response.map((item: any) => ({
+                id: item.team.id,
+                name: item.team.name,
+                slug: item.team.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''),
+                logoUrl: item.team.logo,
+                country: item.team.country || item.venue?.country || 'Unknown'
+            }));
+        }
+    } catch (err) {
+        console.warn(`Failed to fetch popular teams:`, (err as any).message);
+    }
     return [];
 }

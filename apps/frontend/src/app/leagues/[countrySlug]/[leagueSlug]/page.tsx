@@ -9,6 +9,7 @@ import LeagueStandingsTable from '@/components/leagues/LeagueStandingsTable';
 import LeagueStatsAnalysis from '@/components/leagues/LeagueStatsAnalysis';
 import LeagueMatchList from '@/components/leagues/LeagueMatchList';
 import LeagueFAQ from '@/components/leagues/LeagueFAQ';
+import LeagueMatches from '@/components/leagues/LeagueMatches';
 
 interface PageProps {
   params: {
@@ -91,17 +92,7 @@ export default function LeagueDetailPage({ params }: PageProps) {
 
         {activeTab === 'summary' && (
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-            <LeagueStandingsTable standings={data.standings.map(s => ({
-              ...s,
-              ppg: s.overall.ppg,
-              wins: s.overall.wins,
-              draws: s.overall.draws,
-              losses: s.overall.losses,
-              gf: s.overall.gf,
-              ga: s.overall.ga,
-              played: s.overall.played,
-              points: s.overall.points
-            }))} />
+            <LeagueStandingsTable standings={data.standings} />
             <LeagueStatsAnalysis 
               leagueName={data.league.name} 
               season={data.season?.year ? `${data.season.year}/${data.season.year+1}` : ''} 
@@ -117,15 +108,19 @@ export default function LeagueDetailPage({ params }: PageProps) {
           </div>
         )}
         
-        {activeTab !== 'summary' && (
-           <div className="bg-white rounded-[40px] border border-slate-100 shadow-sm p-20 text-center mb-12">
-              <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                 <svg className="w-10 h-10 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 00-2-2H5a2 2 0 00-2 2v10m14 0v-6a2 2 0 00-2-2h-2a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V5a2 2 0 00-2-2h-2a2 2 0 00-2 2v14" />
-                 </svg>
-              </div>
-              <h3 className="text-xl font-black text-slate-800 mb-2">Detailed {activeTab} incoming</h3>
-              <p className="text-slate-500 font-bold max-w-sm mx-auto">We are processing granular {activeTab} data for {data.league.name}. Check back shortly for deep-dive analysis.</p>
+        {activeTab === 'matches' && (
+           <LeagueMatches fixtures={data.fixtures} results={data.results} />
+        )}
+
+        {(activeTab === 'stats' || activeTab === 'corners') && (
+           <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+             <LeagueStatsAnalysis 
+               leagueName={data.league.name} 
+               season={data.season?.year ? `${data.season.year}/${data.season.year+1}` : ''} 
+               stats={data.statsSummary} 
+               detailedMode={activeTab}
+               standings={data.standings}
+             />
            </div>
         )}
       </div>

@@ -6,12 +6,15 @@ import {
   getTeamStatsDirect,
   getLeaguesDirect,
   getLeagueStandingsDirect,
-  getTeamSquadDirect
+  getTeamSquadDirect,
+  getTeamsByLeagueDirect,
+  getPopularTeamsDirect
 } from '../../lib/sports';
 
 interface TeamsQuery {
   query?: string;
   leagueSlug?: string;
+  leagueId?: string;
 }
 
 interface TeamParams {
@@ -26,31 +29,17 @@ interface TeamTabParams {
 export async function teamsRoutes(server: FastifyInstance) {
   // GET /v1/teams/featured
   server.get('/teams/featured', async () => {
-    const result = await query(
-      `SELECT 
-        t.id,
-        t.name,
-        t.slug,
-        t.logo_url as "logoUrl",
-        c.name as "countryName"
-      FROM teams t
-      JOIN countries c ON t.country_id = c.id
-      ORDER BY t.id ASC
-      LIMIT 6`
-    );
-
-    return result.rows.map(row => ({
-      id: row.id,
-      name: row.name,
-      slug: row.slug,
-      logo: row.logoUrl || '⚽',
-      country: row.countryName
-    }));
+    const popularIds = [529, 40, 541, 33, 157, 496, 85, 212, 42]; // Top clubs
+    return getPopularTeamsDirect(popularIds);
   });
 
   // GET /v1/teams
   server.get<{ Querystring: TeamsQuery }>('/teams', async (request) => {
-    const { query: searchQuery, leagueSlug } = request.query;
+    const { query: searchQuery, leagueSlug, leagueId } = request.query;
+
+    if (leagueId) {
+      return getTeamsByLeagueDirect(parseInt(leagueId), new Date().getFullYear());
+    }
 
     const conditions: string[] = [];
     const params: (string)[] = [];
@@ -95,16 +84,16 @@ export async function teamsRoutes(server: FastifyInstance) {
     const { teamSlug } = request.params;
 
     try {
-      // 1. Resolve Team ID via Live Search
+      // 1. Resolve Team ID via Live Search (slug usually matches name or provided slug)
       const liveTeam = await getTeamBySlugDirect(teamSlug);
       if (!liveTeam) {
-        return reply.status(404).send({ error: 'Team not found via live provider' });
+        return reply.status(404).send({ error: 'Team not found' });
       }
 
       // 2. Fetch Matches in parallel
       const [nextMatches, recentMatches] = await Promise.all([
-        getTeamMatchesDirect(liveTeam.id, 'next', 1).catch(() => []),
-        getTeamMatchesDirect(liveTeam.id, 'last', 5).catch(() => [])
+        getTeamMatchesDirect(liveTeam.id, 'next', 5).catch(() => []),
+        getTeamMatchesDirect(liveTeam.id, 'last', 10).catch(() => [])
       ]);
 
       // 3. Try to get stats from most frequent league in recent matches
@@ -118,14 +107,18 @@ export async function teamsRoutes(server: FastifyInstance) {
       };
 
       try {
-        const statsLeagueId = liveTeam.leagueId || (recentMatches?.length > 0 ?
-          recentMatches.map((m: any) => m.league?.id).filter(Boolean).sort((a: any, b: any) =>
-            recentMatches.filter((v: any) => v.league?.id === a).length - recentMatches.filter((v: any) => v.league?.id === b).length
-          ).pop() : 39);
+        // Find most common league ID from recent matches
+        const leagueCounts = new Map<number, number>();
+        recentMatches.forEach((m: any) => {
+          if (m.league?.id) {
+            leagueCounts.set(m.league.id, (leagueCounts.get(m.league.id) || 0) + 1);
+          }
+        });
+
+        const statsLeagueId = liveTeam.leagueId || [...leagueCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || 39;
 
         if (statsLeagueId) {
-          const liveStats = await getTeamStatsDirect(liveTeam.id, statsLeagueId, new Date().getFullYear());
-          const stats = Array.isArray(liveStats) ? liveStats[0] : liveStats;
+          const stats = await getTeamStatsDirect(liveTeam.id, statsLeagueId, new Date().getFullYear());
           if (stats && stats.fixtures) {
             statsSummary = {
               wins: stats.fixtures.wins?.total || 0,
@@ -145,7 +138,7 @@ export async function teamsRoutes(server: FastifyInstance) {
       const commonLeagueId = liveTeam.leagueId || (recentMatches[0]?.league?.id) || 39;
 
       const [standings, squad] = await Promise.all([
-        getLeagueStandingsDirect(commonLeagueId || 39, new Date().getFullYear()),
+        getLeagueStandingsDirect(commonLeagueId, new Date().getFullYear()),
         getTeamSquadDirect(liveTeam.id)
       ]);
 
@@ -159,9 +152,7 @@ export async function teamsRoutes(server: FastifyInstance) {
           venue: liveTeam.venue?.name || 'Unknown Stadium',
           city: liveTeam.venue?.city || 'Unknown City',
         },
-        competitions: liveTeam.leagues || [
-          { name: 'Premier League', logo: 'https://media.api-sports.io/football/leagues/39.png' }
-        ],
+        competitions: liveTeam.leagues || [],
         nextMatch: nextMatches[0] || null,
         recentMatches,
         statsSummary,
@@ -179,7 +170,6 @@ export async function teamsRoutes(server: FastifyInstance) {
     const { teamSlug, tab } = request.params;
 
     try {
-      // 1. Resolve Team ID
       const liveTeam = await getTeamBySlugDirect(teamSlug);
       if (!liveTeam) {
         return reply.status(404).send({ error: 'Team not found' });
@@ -197,22 +187,13 @@ export async function teamsRoutes(server: FastifyInstance) {
         case 'stats':
         case 'corners':
         case 'cards': {
-          // For live API, we might just return the overall stats for now as historical per-match stats 
-          // require iterating over fixtures which is heavy. 
-          // We'll return the summary stats formatted for the table.
-          const recent = await getTeamMatchesDirect(liveTeam.id, 'last', 10);
-          items = recent.map((m: any) => ({
-            kickoffAt: m.kickoffAt,
-            homeTeamName: m.homeTeam.name,
-            awayTeamName: m.awayTeam.name,
-            leagueName: m.league.name,
-            stats: {
-              score: `${m.score.home}-${m.score.away}`,
-              status: m.status
-            }
-          }));
+          // Fetch last 20 matches for detailed stats breakdown
+          items = await getTeamMatchesDirect(liveTeam.id, 'last', 20);
           break;
         }
+        case 'squads':
+          items = await getTeamSquadDirect(liveTeam.id);
+          break;
         default:
           items = [];
       }

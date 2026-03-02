@@ -12,6 +12,7 @@ export const revalidate = 600;
 interface PageProps {
   params: {
     teamSlug: string;
+    tab?: string;
   };
 }
 
@@ -108,7 +109,9 @@ export default async function TeamDetailPage({ params }: PageProps) {
           city={team.city}
         />
 
-        <TeamSquadList squad={squad || []} />
+        {(!params.tab || params.tab === 'squads') && (
+          <TeamSquadList squad={squad || []} />
+        )}
       </div>
     </div>
   );
