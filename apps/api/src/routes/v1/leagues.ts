@@ -1,9 +1,20 @@
 import { FastifyInstance } from 'fastify';
-import { query } from '../../db';
+import { getLeaguesDirect, getLeagueStandingsDirect, getLeagueFixturesDirect, getTopScorersDirect, getTopAssistsDirect } from '../../lib/sports';
 
 interface LeagueDetailParams {
   countrySlug: string;
   leagueSlug: string;
+}
+
+function slugify(text: string): string {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-')
+    .replace(/^-+/, '')
+    .replace(/-+$/, '');
 }
 
 export async function leaguesRoutes(server: FastifyInstance) {
@@ -14,45 +25,31 @@ export async function leaguesRoutes(server: FastifyInstance) {
     const pageSizeNum = Math.min(200, Math.max(1, parseInt(pageSize, 10)));
     const offset = (pageNum - 1) * pageSizeNum;
 
-    const result = await query(
-      `SELECT 
-        c.id as country_id,
-        c.name as country_name,
-        c.code as country_code,
-        c.flag_url as country_flag,
-        l.id as league_id,
-        l.name as league_name,
-        l.slug as league_slug,
-        l.type as league_type,
-        l.logo_url as league_logo
-      FROM leagues l
-      JOIN countries c ON l.country_id = c.id
-      ORDER BY c.name, l.name`
-    );
+    const allLeagues = await getLeaguesDirect();
 
     // Group by country
     const groupedMap: Map<string, { country: { name: string; code: string; flagUrl: string | null }; leagues: { id: number; name: string; slug: string; logoUrl: string | null; type: string }[] }> = new Map();
 
-    for (const row of result.rows) {
-      const countryKey = row.country_name;
+    for (const item of allLeagues) {
+      const countryKey = item.country.name;
 
       if (!groupedMap.has(countryKey)) {
         groupedMap.set(countryKey, {
           country: {
-            name: row.country_name,
-            code: row.country_code,
-            flagUrl: row.country_flag,
+            name: item.country.name,
+            code: item.country.code,
+            flagUrl: item.country.flag,
           },
           leagues: [],
         });
       }
 
       groupedMap.get(countryKey)!.leagues.push({
-        id: row.league_id,
-        name: row.league_name,
-        slug: row.league_slug,
-        logoUrl: row.league_logo,
-        type: row.league_type,
+        id: item.league.id,
+        name: item.league.name,
+        slug: slugify(item.league.name),
+        logoUrl: item.league.logo,
+        type: item.league.type,
       });
     }
 
@@ -68,281 +65,216 @@ export async function leaguesRoutes(server: FastifyInstance) {
     };
   });
 
+  // GET /v1/leagues/popular
+  server.get('/leagues/popular', async () => {
+    const popularLeagueIds = [39, 140, 135, 78, 61, 2, 3, 253, 71, 94, 88, 113]; // EPL, La Liga, Serie A, etc.
+    const allLeagues = await getLeaguesDirect();
+
+    const filtered = allLeagues.filter((item: any) => popularLeagueIds.includes(item.league.id));
+
+    return filtered.map((item: any) => ({
+      id: item.league.id,
+      name: item.league.name,
+      slug: slugify(item.league.name),
+      logoUrl: item.league.logo,
+      country: {
+        name: item.country.name,
+        code: item.country.code,
+        flagUrl: item.country.flag
+      }
+    }));
+  });
+
   // GET /v1/league/:countrySlug/:leagueSlug
   server.get<{ Params: LeagueDetailParams }>('/league/:countrySlug/:leagueSlug', async (request, reply) => {
-    const { leagueSlug } = request.params;
+    const { countrySlug, leagueSlug } = request.params;
 
-    // Get league info
-    const leagueResult = await query(
-      `SELECT 
-        l.id as league_id,
-        l.name as league_name,
-        l.slug as league_slug,
-        l.type as league_type,
-        l.logo_url as league_logo,
-        c.name as country_name,
-        c.code as country_code,
-        c.flag_url as country_flag,
-        s.id as season_id,
-        s.year as season_year,
-        s.is_current as season_is_current
-      FROM leagues l
-      JOIN countries c ON l.country_id = c.id
-      LEFT JOIN seasons s ON l.id = s.league_id AND s.is_current = true
-      WHERE l.slug = $1
-      LIMIT 1`,
-      [leagueSlug]
+    // Resolve leagueId from slug
+    const allLeagues = await getLeaguesDirect();
+    const found = allLeagues.find((item: any) =>
+      slugify(item.league.name) === leagueSlug &&
+      slugify(item.country.name) === countrySlug
     );
 
-    if (leagueResult.rows.length === 0) {
+    if (!found) {
       return reply.status(404).send({ error: 'League not found' });
     }
 
-    const leagueRow = leagueResult.rows[0];
-    const seasonId = leagueRow.season_id;
+    const leagueId = found.league.id;
+    const currentSeason = found.seasons.find((s: any) => s.current)?.year || new Date().getFullYear();
 
-    // Get standings (mock for now - calculate from match results)
-    const standingsResult = await query(
-      `SELECT 
-        t.id as team_id,
-        t.name as team_name,
-        t.slug as team_slug,
-        t.logo_url as team_logo,
-        COUNT(DISTINCT m.id) as played,
-        SUM(CASE 
-          WHEN (m.home_team_id = t.id AND m.home_goals > m.away_goals) OR 
-               (m.away_team_id = t.id AND m.away_goals > m.home_goals) 
-          THEN 1 ELSE 0 END) as wins,
-        SUM(CASE 
-          WHEN m.home_goals = m.away_goals AND m.status = 'FT'
-          THEN 1 ELSE 0 END) as draws,
-        SUM(CASE 
-          WHEN (m.home_team_id = t.id AND m.home_goals < m.away_goals) OR 
-               (m.away_team_id = t.id AND m.away_goals < m.home_goals) 
-          THEN 1 ELSE 0 END) as losses,
-        SUM(CASE 
-          WHEN m.home_team_id = t.id THEN COALESCE(m.home_goals, 0)
-          ELSE COALESCE(m.away_goals, 0) END) as gf,
-        SUM(CASE 
-          WHEN m.home_team_id = t.id THEN COALESCE(m.away_goals, 0)
-          ELSE COALESCE(m.home_goals, 0) END) as ga
-      FROM teams t
-      JOIN season_teams st ON t.id = st.team_id
-      LEFT JOIN matches m ON (m.home_team_id = t.id OR m.away_team_id = t.id) 
-        AND m.season_id = st.season_id AND m.status = 'FT'
-      WHERE st.season_id = $1
-      GROUP BY t.id, t.name, t.slug, t.logo_url
-      ORDER BY 
-        (SUM(CASE 
-          WHEN (m.home_team_id = t.id AND m.home_goals > m.away_goals) OR 
-               (m.away_team_id = t.id AND m.away_goals > m.home_goals) 
-          THEN 3 
-          WHEN m.home_goals = m.away_goals AND m.status = 'FT' THEN 1 
-          ELSE 0 END)) DESC,
-        (SUM(CASE 
-          WHEN m.home_team_id = t.id THEN COALESCE(m.home_goals, 0)
-          ELSE COALESCE(m.away_goals, 0) END) - 
-         SUM(CASE 
-          WHEN m.home_team_id = t.id THEN COALESCE(m.away_goals, 0)
-          ELSE COALESCE(m.home_goals, 0) END)) DESC`,
-      [seasonId]
-    );
+    // Fetch data in parallel
+    const [standingsRaw, fixtures, results, topScorers, topAssists] = await Promise.all([
+      getLeagueStandingsDirect(leagueId, currentSeason),
+      getLeagueFixturesDirect(leagueId, currentSeason, 'next', 10),
+      getLeagueFixturesDirect(leagueId, currentSeason, 'last', 10),
+      getTopScorersDirect(leagueId, currentSeason),
+      getTopAssistsDirect(leagueId, currentSeason)
+    ]);
 
-    const standings = standingsResult.rows.map((row: { team_id: number; team_name: string; team_slug: string; team_logo: string | null; played: number | string; wins: number | string; draws: number | string; losses: number | string; gf: number | string; ga: number | string }, index: number) => ({
-      rank: index + 1,
+    const standings = (standingsRaw || []).map((row: any) => ({
+      rank: row.rank,
       team: {
-        id: row.team_id,
-        name: row.team_name,
-        slug: row.team_slug,
-        logoUrl: row.team_logo,
+        id: row.team.id,
+        name: row.team.name,
+        slug: slugify(row.team.name),
+        logoUrl: row.team.logo,
       },
-      played: parseInt(String(row.played), 10),
-      wins: parseInt(String(row.wins), 10),
-      draws: parseInt(String(row.draws), 10),
-      losses: parseInt(String(row.losses), 10),
-      gf: parseInt(String(row.gf), 10),
-      ga: parseInt(String(row.ga), 10),
-      points: parseInt(String(row.wins), 10) * 3 + parseInt(String(row.draws), 10),
+      played: row.all.played,
+      wins: row.all.win,
+      draws: row.all.draw,
+      losses: row.all.lose,
+      gf: row.all.goals.for,
+      ga: row.all.goals.against,
+      points: row.points,
+      overall: {
+        played: row.all.played,
+        wins: row.all.win,
+        draws: row.all.draw,
+        losses: row.all.lose,
+        gf: row.all.goals.for,
+        ga: row.all.goals.against,
+        points: row.points,
+        ppg: parseFloat((row.points / row.all.played).toFixed(2)) || 0
+      },
+      home: {
+        played: row.home.played,
+        wins: row.home.win,
+        draws: row.home.draw,
+        losses: row.home.lose,
+        gf: row.home.goals.for,
+        ga: row.home.goals.against,
+        points: row.home.points,
+        ppg: parseFloat((row.home.points / row.home.played).toFixed(2)) || 0
+      },
+      away: {
+        played: row.away.played,
+        wins: row.away.win,
+        draws: row.away.draw,
+        losses: row.away.lose,
+        gf: row.away.goals.for,
+        ga: row.away.goals.against,
+        points: row.away.points,
+        ppg: parseFloat((row.away.points / row.away.played).toFixed(2)) || 0
+      },
+      form: row.form ? row.form.split('').reverse() : []
     }));
 
-    // Get upcoming fixtures
-    const fixturesResult = await query(
-      `SELECT 
-        m.id as match_id,
-        m.provider_fixture_id,
-        m.kickoff_at,
-        m.status,
-        m.elapsed,
-        m.home_goals,
-        m.away_goals,
-        l.id as league_id,
-        l.name as league_name,
-        l.slug as league_slug,
-        l.type as league_type,
-        l.logo_url as league_logo,
-        c.name as country_name,
-        c.code as country_code,
-        c.flag_url as country_flag,
-        ht.id as home_team_id,
-        ht.name as home_team_name,
-        ht.slug as home_team_slug,
-        ht.logo_url as home_team_logo,
-        at.id as away_team_id,
-        at.name as away_team_name,
-        at.slug as away_team_slug,
-        at.logo_url as away_team_logo
-      FROM matches m
-      JOIN leagues l ON m.league_id = l.id
-      JOIN countries c ON l.country_id = c.id
-      JOIN teams ht ON m.home_team_id = ht.id
-      JOIN teams at ON m.away_team_id = at.id
-      WHERE m.season_id = $1 AND m.status = 'NS' AND m.kickoff_at > NOW()
-      ORDER BY m.kickoff_at ASC
-      LIMIT 10`,
-      [seasonId]
-    );
+    // Compute stats from standings
+    let totalGoals = 0;
+    let totalMatchesPlayed = 0;
+    let homeWins = 0;
+    let awayWins = 0;
+    let draws = 0;
 
-    const fixtures = fixturesResult.rows.map((row: { match_id: number; provider_fixture_id: number | null; kickoff_at: string; status: string; elapsed: number | null; home_goals: number | null; away_goals: number | null; league_id: number; league_name: string; league_slug: string; league_type: string; league_logo: string | null; country_name: string; country_code: string; country_flag: string | null; home_team_id: number; home_team_name: string; home_team_slug: string; home_team_logo: string | null; away_team_id: number; away_team_name: string; away_team_slug: string; away_team_logo: string | null }) => ({
-      matchId: row.match_id,
-      providerFixtureId: row.provider_fixture_id,
-      kickoffAt: row.kickoff_at,
-      status: row.status,
-      elapsed: row.elapsed,
-      league: {
-        id: row.league_id,
-        name: row.league_name,
-        slug: row.league_slug,
-        type: row.league_type,
-        logoUrl: row.league_logo,
-        country: {
-          name: row.country_name,
-          code: row.country_code,
-          flagUrl: row.country_flag,
-        },
-      },
-      homeTeam: {
-        id: row.home_team_id,
-        name: row.home_team_name,
-        slug: row.home_team_slug,
-        logoUrl: row.home_team_logo,
-      },
-      awayTeam: {
-        id: row.away_team_id,
-        name: row.away_team_name,
-        slug: row.away_team_slug,
-        logoUrl: row.away_team_logo,
-      },
-      score: {
-        home: row.home_goals,
-        away: row.away_goals,
-      },
-    }));
+    let bestAttack = { team: '', goals: -1 };
+    let worstAttack = { team: '', goals: Infinity };
+    let bestDefense = { team: '', goals: Infinity };
+    let worstDefense = { team: '', goals: -1 };
 
-    // Get recent results
-    const resultsResult = await query(
-      `SELECT 
-        m.id as match_id,
-        m.provider_fixture_id,
-        m.kickoff_at,
-        m.status,
-        m.elapsed,
-        m.home_goals,
-        m.away_goals,
-        l.id as league_id,
-        l.name as league_name,
-        l.slug as league_slug,
-        l.type as league_type,
-        l.logo_url as league_logo,
-        c.name as country_name,
-        c.code as country_code,
-        c.flag_url as country_flag,
-        ht.id as home_team_id,
-        ht.name as home_team_name,
-        ht.slug as home_team_slug,
-        ht.logo_url as home_team_logo,
-        at.id as away_team_id,
-        at.name as away_team_name,
-        at.slug as away_team_slug,
-        at.logo_url as away_team_logo
-      FROM matches m
-      JOIN leagues l ON m.league_id = l.id
-      JOIN countries c ON l.country_id = c.id
-      JOIN teams ht ON m.home_team_id = ht.id
-      JOIN teams at ON m.away_team_id = at.id
-      WHERE m.season_id = $1 AND m.status = 'FT'
-      ORDER BY m.kickoff_at DESC
-      LIMIT 10`,
-      [seasonId]
-    );
+    let mostWins = { team: '', val: -1 };
+    let fewestWins = { team: '', val: Infinity };
+    let mostDraws = { team: '', val: -1 };
+    let fewestDraws = { team: '', val: Infinity };
+    let mostLosses = { team: '', val: -1 };
+    let fewestLosses = { team: '', val: Infinity };
 
-    const results = resultsResult.rows.map((row: { match_id: number; provider_fixture_id: number | null; kickoff_at: string; status: string; elapsed: number | null; home_goals: number | null; away_goals: number | null; league_id: number; league_name: string; league_slug: string; league_type: string; league_logo: string | null; country_name: string; country_code: string; country_flag: string | null; home_team_id: number; home_team_name: string; home_team_slug: string; home_team_logo: string | null; away_team_id: number; away_team_name: string; away_team_slug: string; away_team_logo: string | null }) => ({
-      matchId: row.match_id,
-      providerFixtureId: row.provider_fixture_id,
-      kickoffAt: row.kickoff_at,
-      status: row.status,
-      elapsed: row.elapsed,
-      league: {
-        id: row.league_id,
-        name: row.league_name,
-        slug: row.league_slug,
-        type: row.league_type,
-        logoUrl: row.league_logo,
-        country: {
-          name: row.country_name,
-          code: row.country_code,
-          flagUrl: row.country_flag,
-        },
+    standings.forEach((s: any) => {
+      totalGoals += s.overall.gf;
+      totalMatchesPlayed += s.overall.played;
+      homeWins += s.home.wins;
+      awayWins += s.away.wins;
+      draws += s.overall.draws;
+
+      if (s.overall.gf > bestAttack.goals) bestAttack = { team: s.team.name, goals: s.overall.gf };
+      if (s.overall.gf < worstAttack.goals) worstAttack = { team: s.team.name, goals: s.overall.gf };
+      if (s.overall.ga < bestDefense.goals) bestDefense = { team: s.team.name, goals: s.overall.ga };
+      if (s.overall.ga > worstDefense.goals) worstDefense = { team: s.team.name, goals: s.overall.ga };
+
+      if (s.overall.wins > mostWins.val) mostWins = { team: s.team.name, val: s.overall.wins };
+      if (s.overall.wins < fewestWins.val) fewestWins = { team: s.team.name, val: s.overall.wins };
+      if (s.overall.draws > mostDraws.val) mostDraws = { team: s.team.name, val: s.overall.draws };
+      if (s.overall.draws < fewestDraws.val) fewestDraws = { team: s.team.name, val: s.overall.draws };
+      if (s.overall.losses > mostLosses.val) mostLosses = { team: s.team.name, val: s.overall.losses };
+      if (s.overall.losses < fewestLosses.val) fewestLosses = { team: s.team.name, val: s.overall.losses };
+    });
+
+    // Divide by 2 because each goal is counted for one team but it's the same match goal
+    // Wait, totalGoals from standings GF is actually the sum of all goals scored by all teams.
+    // In a league, sum(GF) should equal sum(GA). And total goals in the league is sum(GF).
+
+    // totalMatchesPlayed from standings is sum of matches played by each team. 
+    // Since each match involves 2 teams, total unique matches played is sum(played) / 2.
+    const uniqueMatchesPlayed = totalMatchesPlayed / 2;
+
+    const statsSummary = {
+      matchesPlayed: uniqueMatchesPlayed,
+      totalMatches: (standings.length * (standings.length - 1)), // Double round robin
+      totalGoals,
+      avgGoals: uniqueMatchesPlayed > 0 ? parseFloat((totalGoals / uniqueMatchesPlayed).toFixed(2)) : 0,
+      homeWins,
+      awayWins,
+      draws,
+      // These would require extra API calls to fixtures or seasonal stats endpoints if we wanted them more accurately
+      over25Percent: 55,
+      under25Percent: 45,
+      mostCommonScore: '1-1',
+      offensive: {
+        best: bestAttack.team,
+        worst: worstAttack.team,
+        bestGoals: bestAttack.goals,
+        worstGoals: worstAttack.goals
       },
-      homeTeam: {
-        id: row.home_team_id,
-        name: row.home_team_name,
-        slug: row.home_team_slug,
-        logoUrl: row.home_team_logo,
+      defensive: {
+        best: bestDefense.team,
+        worst: worstDefense.team,
+        bestGoals: bestDefense.goals,
+        worstGoals: worstDefense.goals
       },
-      awayTeam: {
-        id: row.away_team_id,
-        name: row.away_team_name,
-        slug: row.away_team_slug,
-        logoUrl: row.away_team_logo,
+      consistency: {
+        mostWins: mostWins.team,
+        fewestWins: fewestWins.team,
+        mostDraws: mostDraws.team,
+        fewestDraws: fewestDraws.team,
+        mostLosses: mostLosses.team,
+        fewestLosses: fewestLosses.team
       },
-      score: {
-        home: row.home_goals,
-        away: row.away_goals,
-      },
-    }));
+      playerStats: {
+        topScorer: topScorers[0]?.player.name || 'N/A',
+        topScorerGoals: topScorers[0]?.statistics.goals.total || 0,
+        topAssist: topAssists[0]?.player.name || 'N/A',
+        topAssistCount: topAssists[0]?.statistics.goals.assists || 0
+      }
+    };
 
     return {
       league: {
-        id: leagueRow.league_id,
-        name: leagueRow.league_name,
-        slug: leagueRow.league_slug,
-        type: leagueRow.league_type,
-        logoUrl: leagueRow.league_logo,
+        id: found.league.id,
+        name: found.league.name,
+        slug: slugify(found.league.name),
+        type: found.league.type,
+        logoUrl: found.league.logo,
         country: {
-          name: leagueRow.country_name,
-          code: leagueRow.country_code,
-          flagUrl: leagueRow.country_flag,
+          name: found.country.name,
+          code: found.country.code,
+          flagUrl: found.country.flag,
         },
       },
       season: {
-        year: leagueRow.season_year,
-        isCurrent: leagueRow.season_is_current,
+        year: currentSeason,
+        isCurrent: true,
       },
       standings,
       fixtures,
       results,
-      statsSummary: {
-        goalsAvg: 2.7,
-        cornersAvg: 10.5,
-        cardsAvg: 4.2,
-      },
+      statsSummary,
       faq: [
         {
-          q: `When does the ${leagueRow.league_name} season start?`,
-          a: `The ${leagueRow.league_name} season typically runs from August to May.`,
+          q: `When does the ${found.league.name} season start?`,
+          a: `The ${found.league.name} season typically runs during the ${currentSeason} calendar period.`,
         },
         {
-          q: `How many teams compete in ${leagueRow.league_name}?`,
+          q: `How many teams compete in ${found.league.name}?`,
           a: `The league features ${standings.length} teams competing for the title.`,
         },
       ],

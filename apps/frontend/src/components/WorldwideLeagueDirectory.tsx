@@ -27,19 +27,21 @@ export default function WorldwideLeagueDirectory() {
     const fetchLeagues = async () => {
       try {
         const response = await getLeagues(1, 200);
-        const mappedGroups: Group[] = response.items.map(item => ({
-          region: item.country.name,
-          flagUrl: item.country.flagUrl,
-          leagues: item.leagues.map(l => ({
-            id: l.id,
-            name: l.name,
-            logoUrl: l.logoUrl || '',
-            slug: l.slug
-          }))
-        }));
-        setGroups(mappedGroups);
-        if (mappedGroups.length > 0) {
-          setOpenGroups([mappedGroups[0].region, mappedGroups[1]?.region].filter(Boolean) as string[]);
+        if (response && response.items) {
+          const mappedGroups: Group[] = response.items.map(item => ({
+            region: item.country?.name || 'International',
+            flagUrl: item.country?.flagUrl,
+            leagues: (item.leagues || []).map(l => ({
+              id: l.id,
+              name: l.name,
+              logoUrl: l.logoUrl || '',
+              slug: l.slug
+            }))
+          }));
+          setGroups(mappedGroups);
+          if (mappedGroups.length > 0) {
+            setOpenGroups([mappedGroups[0].region, mappedGroups[1]?.region].filter(Boolean) as string[]);
+          }
         }
       } catch (error) {
         console.error('Failed to fetch leagues:', error);

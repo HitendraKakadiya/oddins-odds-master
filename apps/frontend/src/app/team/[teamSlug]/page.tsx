@@ -1,6 +1,10 @@
-import { getTeamDetail, type MatchData } from '@/lib/api';
-import MatchCard from '@/components/MatchCard';
 import Link from 'next/link';
+import { getTeamDetail, getFeaturedTeams } from '@/lib/api';
+import TeamHeader from '@/components/team/TeamHeader';
+import TeamNavigation from '@/components/team/TeamNavigation';
+import TeamStandingsTable from '@/components/team/TeamStandingsTable';
+import TeamStatsSection from '@/components/team/TeamStatsSection';
+import TeamSquadList from '@/components/team/TeamSquadList';
 
 // ISR: Revalidate every 10 minutes
 export const revalidate = 600;
@@ -11,122 +15,101 @@ interface PageProps {
   };
 }
 
-const tabs = [
-  { key: 'overview', label: 'Overview' },
-  { key: 'fixtures', label: 'Fixtures' },
-  { key: 'results', label: 'Results' },
-  { key: 'stats', label: 'Stats' },
-  { key: 'corners', label: 'Corners' },
-  { key: 'cards', label: 'Cards' },
+const mainTabs = [
+  { key: 'summary', label: 'Summary' },
+  { key: 'matches', label: 'Matches', href: '/fixtures' },
+  { key: 'corners', label: 'Corners', href: '/corners' },
+  { key: 'stats', label: 'Stats', href: '/stats' },
+  { key: 'top-scorers', label: 'Top Scorers & Assists' },
+  { key: 'squads', label: 'Squads' },
 ];
 
 export default async function TeamDetailPage({ params }: PageProps) {
-  const teamData = await getTeamDetail(params.teamSlug);
+  let teamData: any = null;
+  let featuredTeams: any[] = [];
+  
+  try {
+    [teamData, featuredTeams] = await Promise.all([
+      getTeamDetail(params.teamSlug),
+      getFeaturedTeams().catch(() => [])
+    ]);
+  } catch (err) {
+    console.error(`Error fetching team ${params.teamSlug}:`, err);
+  }
 
   if (!teamData) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="card text-center py-12">
-          <p className="text-gray-500 text-lg">Team not found</p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="bg-white rounded-3xl p-12 text-center border border-gray-100 shadow-sm">
+          <p className="text-gray-500 text-lg font-bold">Team information is currently unavailable</p>
+          <p className="text-sm text-gray-400 mt-2">Try searching for the team again or check back later.</p>
         </div>
       </div>
     );
   }
 
-  const { team, nextMatch, recentMatches, statsSummary } = teamData;
+  const { team, nextMatch, statsSummary, standings, squad, competitions } = teamData;
+
+  // Calculate dynamic next/prev teams
+  const currentIndex = featuredTeams.findIndex(t => t.slug === params.teamSlug);
+  const prevTeam = currentIndex > 0 ? featuredTeams[currentIndex - 1] : featuredTeams[featuredTeams.length - 1];
+  const nextTeam = currentIndex < featuredTeams.length - 1 ? featuredTeams[currentIndex + 1] : featuredTeams[0];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Team Header */}
-      <div className="mb-8">
-        <div className="flex items-center space-x-6 mb-6">
-          {team.logoUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={team.logoUrl} alt={team.name} className="w-24 h-24 object-contain" />
-          )}
-          <div>
-            <h1 className="text-4xl font-bold text-gray-900">{team.name}</h1>
-          </div>
+    <div className="min-h-screen bg-[#F8F9FE] pb-20">
+      <TeamNavigation 
+        nextTeam={nextTeam ? { 
+          name: nextTeam.name, 
+          slug: nextTeam.slug, 
+          logoUrl: nextTeam.logo || nextTeam.logoUrl 
+        } : undefined} 
+        prevTeam={prevTeam ? { 
+          name: prevTeam.name, 
+          slug: prevTeam.slug, 
+          logoUrl: prevTeam.logo || prevTeam.logoUrl 
+        } : undefined}
+      />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
+        {/* Breadcrumbs */}
+        <div className="flex items-center space-x-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6">
+            <Link href="/" className="hover:text-primary-600 transition-colors">Home</Link>
+            <span className="text-gray-300">/</span>
+            <Link href="/teams" className="hover:text-primary-600 transition-colors">Teams</Link>
+            <span className="text-gray-300">/</span>
+            <span className="text-gray-900 font-black">{team.name}</span>
         </div>
 
-        {/* Tabs Navigation */}
-        <div className="border-b border-gray-200">
-          <nav className="flex space-x-8">
-            <span className="border-b-2 border-primary-600 py-4 px-1 text-sm font-medium text-primary-600">
-              Overview
-            </span>
-            {tabs.slice(1).map((tab) => (
-              <Link
-                key={tab.key}
-                href={`/team/${params.teamSlug}/${tab.key}`}
-                className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
-              >
-                {tab.label}
-              </Link>
+        <TeamHeader team={team} competitions={competitions || []} />
+
+        {/* Categories Tabs */}
+        <div className="bg-white rounded-3xl p-2 border border-gray-100 shadow-sm mb-8 inline-flex items-center flex-wrap">
+            {mainTabs.map((tab) => (
+                <Link
+                    key={tab.key}
+                    href={tab.href ? `/team/${params.teamSlug}${tab.href}` : `/team/${params.teamSlug}`}
+                    className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all duration-200 ${
+                        tab.key === 'summary' 
+                        ? 'bg-primary-50 text-primary-600' 
+                        : 'text-gray-500 hover:text-primary-600 hover:bg-primary-50/50'
+                    }`}
+                >
+                    {tab.label}
+                </Link>
             ))}
-          </nav>
         </div>
+
+        <TeamStandingsTable standings={standings || []} currentTeamId={team.id} />
+        
+        <TeamStatsSection 
+          teamName={team.name} 
+          stats={statsSummary} 
+          venue={team.venue}
+          city={team.city}
+        />
+
+        <TeamSquadList squad={squad || []} />
       </div>
-
-      {/* Stats Summary */}
-      {statsSummary && (
-        <section className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Season Stats</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            <div className="card text-center">
-              <div className="text-3xl font-bold text-green-600">{statsSummary.wins}</div>
-              <div className="text-sm text-gray-600 mt-1">Wins</div>
-            </div>
-            <div className="card text-center">
-              <div className="text-3xl font-bold text-gray-600">{statsSummary.draws}</div>
-              <div className="text-sm text-gray-600 mt-1">Draws</div>
-            </div>
-            <div className="card text-center">
-              <div className="text-3xl font-bold text-red-600">{statsSummary.losses}</div>
-              <div className="text-sm text-gray-600 mt-1">Losses</div>
-            </div>
-            <div className="card text-center">
-              <div className="text-3xl font-bold text-primary-600">{statsSummary.goalsScored}</div>
-              <div className="text-sm text-gray-600 mt-1">Goals For</div>
-            </div>
-            <div className="card text-center">
-              <div className="text-3xl font-bold text-orange-600">{statsSummary.goalsConceded}</div>
-              <div className="text-sm text-gray-600 mt-1">Goals Against</div>
-            </div>
-            <div className="card text-center">
-              <div className="text-3xl font-bold text-blue-600">{statsSummary.cleanSheets}</div>
-              <div className="text-sm text-gray-600 mt-1">Clean Sheets</div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Next Match */}
-      {nextMatch && (
-        <section className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Next Match</h2>
-          <div className="max-w-md">
-            <MatchCard match={nextMatch} />
-          </div>
-        </section>
-      )}
-
-      {/* Recent Matches */}
-      {recentMatches && recentMatches.length > 0 && (
-        <section className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-gray-900">Recent Matches</h2>
-            <Link href={`/team/${params.teamSlug}/results`} className="text-primary-600 hover:underline">
-              View all &rarr;
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {recentMatches.slice(0, 6).map((match: MatchData) => (
-              <MatchCard key={match.matchId} match={match} />
-            ))}
-          </div>
-        </section>
-      )}
     </div>
   );
 }

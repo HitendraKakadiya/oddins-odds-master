@@ -186,8 +186,8 @@ export async function liveRoutes(server: FastifyInstance) {
             const pagedMatches = matches.slice(offset, offset + pageSizeNum);
 
             const predictionPromises = pagedMatches.map(async (m, index) => {
-                // Only fetch real predictions for the first few items of the FIRST page to be safe
-                if (pageNum === 1 && index < 3) {
+                // Fetch real predictions for the first few items to provide rich data while staying safe
+                if (pageNum === 1 && index < 5) {
                     try {
                         const realPred = await getPredictionsDirect(m.matchId);
                         if (realPred) {
@@ -197,7 +197,7 @@ export async function liveRoutes(server: FastifyInstance) {
                                 advice: realPred.advice,
                                 probability: realPred.probabilities.home,
                                 confidence: 'High',
-                                shortExplanation: realPred.advice.slice(0, 100) + '...'
+                                shortExplanation: realPred.advice ? realPred.advice.slice(0, 100) + '...' : 'Live analysis available.'
                             };
                         }
                     } catch (err) {
@@ -205,13 +205,13 @@ export async function liveRoutes(server: FastifyInstance) {
                     }
                 }
 
-                // Fallback/Mock for others
+                // Fallback for others - clearly marked as live trend
                 return {
                     ...m,
-                    selection: m.score.home >= m.score.away ? 'Home Win' : 'Away Win',
-                    probability: '55%',
-                    confidence: 'Medium',
-                    shortExplanation: 'Based on recent team performance and live score trends.'
+                    selection: m.score.home >= m.score.away ? 'Home Win (Trend)' : 'Away Win (Trend)',
+                    probability: '50%+',
+                    confidence: 'Low',
+                    shortExplanation: 'Live trend analysis based on current match status.'
                 };
             });
 

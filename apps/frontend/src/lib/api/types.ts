@@ -147,19 +147,55 @@ export interface LeagueDetailResponse {
         logoUrl?: string | null;
         country: {
             name: string;
+            code?: string | null;
+            flagUrl?: string | null;
         };
     };
     season: {
         year: number;
+        isCurrent: boolean;
     };
     standings: StandingsRow[];
     fixtures: MatchData[];
     results: MatchData[];
-    statsSummary?: {
-        goalsAvg?: number | null;
-        cornersAvg?: number | null;
-        cardsAvg?: number | null;
-    } | null;
+    statsSummary: {
+        matchesPlayed: number;
+        totalMatches: number;
+        totalGoals: number;
+        avgGoals: number;
+        homeWins: number;
+        awayWins: number;
+        draws: number;
+        over25Percent: number;
+        under25Percent: number;
+        mostCommonScore: string;
+        offensive: {
+            best: string;
+            worst: string;
+            bestGoals: number;
+            worstGoals: number
+        };
+        defensive: {
+            best: string;
+            worst: string;
+            bestGoals: number;
+            worstGoals: number
+        };
+        consistency: {
+            mostWins: string;
+            fewestWins: string;
+            mostDraws: string;
+            fewestDraws: string;
+            mostLosses: string;
+            fewestLosses: string
+        };
+        playerStats: {
+            topScorer: string;
+            topScorerGoals: number;
+            topAssist: string;
+            topAssistCount: number;
+        };
+    };
     faq?: FAQItem[] | null;
 }
 

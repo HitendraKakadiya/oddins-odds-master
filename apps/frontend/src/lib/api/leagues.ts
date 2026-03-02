@@ -13,6 +13,10 @@ export async function getLeagues(page?: number, pageSize?: number): Promise<{ pa
     return fetchAPI<{ page: number; pageSize: number; total: number; items: LeaguesResponse[] }>(`/v1/leagues${query ? `?${query}` : ''}`);
 }
 
+export async function getPopularLeagues(): Promise<Array<{ id: number; name: string; slug: string; logoUrl: string; country: { name: string; code: string; flagUrl: string } }>> {
+    return fetchAPI<Array<{ id: number; name: string; slug: string; logoUrl: string; country: { name: string; code: string; flagUrl: string } }>>('/v1/leagues/popular');
+}
+
 export async function getLiveLeagues(page?: number, pageSize?: number, date?: string): Promise<{ page: number; pageSize: number; total: number; items: LeaguesResponse[] }> {
     const params = new URLSearchParams();
     if (page) params.set('page', page.toString());

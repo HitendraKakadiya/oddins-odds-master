@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { getLeagues } from '@/lib/api';
+import { getLeagues, getPopularLeagues } from '@/lib/api';
 
 interface PopularLeague {
   id: number;
@@ -19,17 +19,17 @@ export default function PopularLeaguesList() {
   useEffect(() => {
     const fetchPopular = async () => {
       try {
-        const response = await getLeagues(1, 12);
-        const flattened: PopularLeague[] = response.items.flatMap(group => 
-          group.leagues.map(l => ({
-            id: l.id,
-            name: l.name,
-            country: group.country.name,
-            logoUrl: l.logoUrl || '',
-            slug: l.slug
-          }))
-        ).slice(0, 12);
-        setLeagues(flattened);
+        const items = await getPopularLeagues();
+        if (items && Array.isArray(items)) {
+          const formatted: PopularLeague[] = items.map(item => ({
+            id: item.id,
+            name: item.name,
+            country: item.country?.name || 'Unknown',
+            logoUrl: item.logoUrl || '',
+            slug: item.slug
+          }));
+          setLeagues(formatted);
+        }
       } catch (error) {
         console.error('Failed to fetch popular leagues:', error);
       } finally {

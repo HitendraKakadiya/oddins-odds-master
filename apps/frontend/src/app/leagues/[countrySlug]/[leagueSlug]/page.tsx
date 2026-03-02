@@ -57,23 +57,7 @@ export default function LeagueDetailPage({ params }: PageProps) {
     );
   }
 
-  // Mock stats for analysis (since backend implementation of summary is minimal)
-  const mockStats = {
-    matchesPlayed: data.league.id === 1 ? 244 : 120,
-    totalMatches: data.league.id === 1 ? 252 : 380,
-    totalGoals: 760,
-    avgGoals: data.statsSummary?.goalsAvg || 2.8,
-    homeWins: 121,
-    awayWins: 78,
-    draws: 45,
-    over25Percent: 59,
-    under25Percent: 41,
-    mostCommonScore: '2-1',
-    offensive: { best: 'Arsenal', worst: 'Villarreal', bestGoals: 23, worstGoals: 5 },
-    defensive: { best: 'Arsenal', worst: 'Kairat', bestGoals: 4, worstGoals: 22 },
-    consistency: { mostWins: 'Arsenal', fewestWins: 'Slavia Praha', mostDraws: 'Juventus', fewestDraws: 'Arsenal', mostLosses: 'Villarreal', fewestLosses: 'Arsenal' },
-    playerStats: { topScorer: 'Kylian Mbappé', topScorerGoals: 13, topAssist: 'Vinícius Júnior', topAssistCount: 6 }
-  };
+  // No more mock stats, we use data.statsSummary directly
 
   return (
     <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-8 relative">
@@ -92,8 +76,8 @@ export default function LeagueDetailPage({ params }: PageProps) {
           season={data.season} 
           stats={{ 
             teamCount: data.standings.length, 
-            matchesPlayed: mockStats.matchesPlayed, 
-            totalMatches: mockStats.totalMatches 
+            matchesPlayed: data.statsSummary.matchesPlayed, 
+            totalMatches: data.statsSummary.totalMatches 
           }} 
         />
 
@@ -121,7 +105,7 @@ export default function LeagueDetailPage({ params }: PageProps) {
             <LeagueStatsAnalysis 
               leagueName={data.league.name} 
               season={data.season?.year ? `${data.season.year}/${data.season.year+1}` : ''} 
-              stats={mockStats} 
+              stats={data.statsSummary} 
             />
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">

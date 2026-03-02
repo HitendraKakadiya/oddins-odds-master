@@ -11,15 +11,15 @@ interface PopularTeam {
 }
 
 const popularTeams: PopularTeam[] = [
-  { id: 1, name: 'Barcelona', country: 'Spain', logoUrl: 'https://media.api-sports.io/football/teams/529.png', slug: 'fc-barcelona' },
-  { id: 2, name: 'Liverpool', country: 'England', logoUrl: 'https://media.api-sports.io/football/teams/40.png', slug: 'liverpool' },
-  { id: 3, name: 'Real Madrid', country: 'Spain', logoUrl: 'https://media.api-sports.io/football/teams/541.png', slug: 'real-madrid' },
-  { id: 4, name: 'Manchester United', country: 'England', logoUrl: 'https://media.api-sports.io/football/teams/33.png', slug: 'manchester-united' },
-  { id: 5, name: 'Bayern München', country: 'Germany', logoUrl: 'https://media.api-sports.io/football/teams/157.png', slug: 'bayern-munich' },
-  { id: 6, name: 'Juventus', country: 'Italy', logoUrl: 'https://media.api-sports.io/football/teams/496.png', slug: 'juventus' },
-  { id: 7, name: 'PSG', country: 'France', logoUrl: 'https://media.api-sports.io/football/teams/85.png', slug: 'psg' },
-  { id: 8, name: 'Porto', country: 'Portugal', logoUrl: 'https://media.api-sports.io/football/teams/212.png', slug: 'porto' },
-  { id: 9, name: 'São Paulo', country: 'Brazil', logoUrl: 'https://media.api-sports.io/football/teams/126.png', slug: 'sao-paulo' },
+  { id: 529, name: 'Barcelona', country: 'Spain', logoUrl: 'https://media.api-sports.io/football/teams/529.png', slug: 'fc-barcelona' },
+  { id: 40, name: 'Liverpool', country: 'England', logoUrl: 'https://media.api-sports.io/football/teams/40.png', slug: 'liverpool' },
+  { id: 541, name: 'Real Madrid', country: 'Spain', logoUrl: 'https://media.api-sports.io/football/teams/541.png', slug: 'real-madrid' },
+  { id: 33, name: 'Manchester United', country: 'England', logoUrl: 'https://media.api-sports.io/football/teams/33.png', slug: 'manchester-united' },
+  { id: 157, name: 'Bayern München', country: 'Germany', logoUrl: 'https://media.api-sports.io/football/teams/157.png', slug: 'bayern-munich' },
+  { id: 496, name: 'Juventus', country: 'Italy', logoUrl: 'https://media.api-sports.io/football/teams/496.png', slug: 'juventus' },
+  { id: 85, name: 'PSG', country: 'France', logoUrl: 'https://media.api-sports.io/football/teams/85.png', slug: 'psg' },
+  { id: 212, name: 'Porto', country: 'Portugal', logoUrl: 'https://media.api-sports.io/football/teams/212.png', slug: 'porto' },
+  { id: 42, name: 'Arsenal', country: 'England', logoUrl: 'https://media.api-sports.io/football/teams/42.png', slug: 'arsenal' },
 ];
 
 export default function PopularTeamsList() {
