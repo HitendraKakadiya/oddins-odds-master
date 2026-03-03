@@ -88,8 +88,8 @@ export function MatchFilter({ leagues = [] }: { leagues?: any[] }) {
               onClick={() => handleFilterClick(filter)}
               className={`px-5 py-2.5 rounded-xl border text-[11px] font-bold whitespace-nowrap transition-all shadow-sm active:scale-95 ${
                 selectedMarket === filter 
-                  ? 'bg-brand-indigo border-brand-indigo text-white shadow-brand-indigo/20' 
-                  : 'bg-white border-slate-200/60 text-slate-500 hover:border-brand-indigo hover:text-brand-indigo'
+                  ? 'bg-brand-emerald border-brand-emerald text-white shadow-brand-emerald/20' 
+                  : 'bg-white border-slate-200/60 text-slate-500 hover:border-brand-emerald hover:text-brand-emerald'
               }`}
             >
               {filter}
@@ -129,7 +129,7 @@ export function MatchFilter({ leagues = [] }: { leagues?: any[] }) {
           <select 
             value={selectedLeague}
             onChange={handleLeagueChange}
-            className="w-full bg-white border border-slate-200/60 rounded-2xl px-5 py-3.5 text-sm font-bold text-slate-800 appearance-none focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/5 outline-none transition-all shadow-sm"
+            className="w-full bg-white border border-slate-200/60 rounded-2xl px-5 py-3.5 text-sm font-bold text-slate-800 appearance-none focus:border-brand-emerald focus:ring-2 focus:ring-brand-emerald/5 outline-none transition-all shadow-sm"
           >
             <option value="">All Leagues</option>
             {allLeagues.map((league: any) => (
@@ -147,7 +147,7 @@ export function MatchFilter({ leagues = [] }: { leagues?: any[] }) {
           <select 
             value={selectedMinOdds}
             onChange={handleOddsChange}
-            className="w-full bg-white border border-slate-200/60 rounded-2xl px-5 py-3.5 text-sm font-bold text-slate-800 appearance-none focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/5 outline-none transition-all shadow-sm"
+            className="w-full bg-white border border-slate-200/60 rounded-2xl px-5 py-3.5 text-sm font-bold text-slate-800 appearance-none focus:border-brand-emerald focus:ring-2 focus:ring-brand-emerald/5 outline-none transition-all shadow-sm"
           >
             <option value="">All Odds</option>
             <option value="1.5">Odds &gt; 1.5</option>
@@ -217,7 +217,7 @@ export function DateSelector({ selectedDate }: { selectedDate?: string }) {
           onClick={() => handleDateClick(day.fullDate)}
           className={`flex-1 min-w-[100px] flex flex-col items-center py-5 px-3 transition-all border-r border-slate-100 last:border-0 ${
             day.active 
-              ? 'bg-brand-indigo text-white shadow-lg pointer-events-none' 
+              ? 'bg-brand-emerald text-white shadow-lg pointer-events-none' 
               : 'hover:bg-slate-50 active:scale-95'
           }`}
         >

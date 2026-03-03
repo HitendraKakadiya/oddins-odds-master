@@ -54,7 +54,7 @@ export default function TableOfContents() {
             onClick={(e) => scrollToSection(e, section.id)}
             className={`block text-sm transition-colors duration-200 ${
               activeSection === section.id
-                ? 'text-brand-pink font-bold border-l-2 border-brand-pink -ml-[18px] pl-[14px]'
+                ? 'text-brand-emerald font-bold border-l-2 border-brand-emerald -ml-[18px] pl-[14px]'
                 : 'text-gray-500 hover:text-gray-900'
             }`}
           >

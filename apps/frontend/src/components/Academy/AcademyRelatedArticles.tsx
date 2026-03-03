@@ -19,7 +19,7 @@ export default function AcademyRelatedArticles() {
             <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
               {article.icon}
             </div>
-            <h3 className="font-bold text-slate-800 text-sm group-hover:text-brand-indigo transition-colors leading-snug">
+            <h3 className="font-bold text-slate-800 text-sm group-hover:text-brand-emerald transition-colors leading-snug">
               {article.title}
             </h3>
           </div>

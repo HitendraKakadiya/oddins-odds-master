@@ -26,7 +26,7 @@ export default function StreamsLeagueGroup({ league, matches }: StreamsLeagueGro
           {league.logoUrl ? (
             <img src={league.logoUrl} alt="" className="w-6 h-6 object-contain" />
           ) : (
-            <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center text-[10px] font-bold text-brand-indigo shadow-sm">
+            <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center text-[10px] font-bold text-brand-emerald shadow-sm">
               ⚽
             </div>
           )}

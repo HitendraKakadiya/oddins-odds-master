@@ -27,7 +27,7 @@ export default function PredictionFilters({ searchParams, leagues }: PredictionF
   };
 
   const handleFilterChange = (key: string, value: string) => {
-    const params = { ...searchParams, [key]: value, page: '1' };
+    const params: Record<string, string | undefined> = { ...searchParams, [key]: value, page: '1' };
     if (!value) delete params[key];
     router.push(`/predictions${buildQueryString(params)}`);
   };
@@ -40,7 +40,7 @@ export default function PredictionFilters({ searchParams, leagues }: PredictionF
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Market</label>
           <select
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand-emerald/20 focus:border-brand-emerald outline-none transition-all"
             value={searchParams.marketKey || ''}
             onChange={(e) => handleFilterChange('marketKey', e.target.value)}
           >
@@ -57,7 +57,7 @@ export default function PredictionFilters({ searchParams, leagues }: PredictionF
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">League</label>
           <select
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand-emerald/20 focus:border-brand-emerald outline-none transition-all"
             value={searchParams.leagueSlug || ''}
             onChange={(e) => handleFilterChange('leagueSlug', e.target.value)}
           >
@@ -77,7 +77,7 @@ export default function PredictionFilters({ searchParams, leagues }: PredictionF
           <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
           <input
             type="date"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-brand-emerald/20 focus:border-brand-emerald outline-none transition-all"
             value={searchParams.date || ''}
             onChange={(e) => handleFilterChange('date', e.target.value)}
           />

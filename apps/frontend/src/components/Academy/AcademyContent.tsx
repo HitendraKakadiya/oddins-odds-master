@@ -22,7 +22,7 @@ export default function AcademyContent() {
             deep into team stats, player form, injuries, and weather before placing a bet. You&apos;re not just betting 
             with your gut, as you&apos;re using information to gain an edge.
           </p>
-          <p className="text-sm sm:text-base leading-relaxed font-medium bg-slate-50 p-6 rounded-2xl border border-slate-100 border-l-4 border-l-brand-indigo">
+          <p className="text-sm sm:text-base leading-relaxed font-medium bg-slate-50 p-6 rounded-2xl border border-slate-100 border-l-4 border-l-brand-emerald">
             If you&apos;re interested in a more mathematical edge, you&apos;ll be introduced to value betting and the <span className="font-bold text-slate-900 underline underline-offset-4 decoration-slate-200">Kelly Criterion</span>, which are tools that help you spot overpriced odds and calculate optimal stake sizes.
           </p>
         </div>
@@ -40,7 +40,7 @@ export default function AcademyContent() {
           <p className="text-sm sm:text-base leading-relaxed">
             Next, you&apos;ll learn about point spread betting, where you back a team to win by a specific margin or 
             avoid losing by too much. This is useful in high-scoring sports like basketball or American football. 
-            Then come the <Link href="/over-under" className="text-brand-indigo font-bold hover:underline">over-under bets</Link>, where your focus is on the combined score, not the match result.
+            Then come the <Link href="/over-under" className="text-brand-emerald font-bold hover:underline">over-under bets</Link>, where your focus is on the combined score, not the match result.
           </p>
           <p className="text-sm sm:text-base leading-relaxed">
             If you are an experienced bettor, the Academy explains parlay bets, where multiple selections are 

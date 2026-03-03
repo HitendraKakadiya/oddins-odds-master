@@ -11,7 +11,7 @@ interface StatCardProps {
   color?: string;
 }
 
-function StatCard({ label, value, color = 'brand-indigo' }: StatCardProps) {
+function StatCard({ label, value, color = 'brand-emerald' }: StatCardProps) {
   return (
     <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-hidden flex flex-col items-center">
       <div className={`w-full bg-${color} py-3 text-center`}>

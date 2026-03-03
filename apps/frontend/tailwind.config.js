@@ -21,10 +21,15 @@ module.exports = {
           900: '#0c4a6e',
         },
         brand: {
-          indigo: '#4F46E5',
-          pink: '#E91E63',
-          'light-indigo': '#F5F7FF',
-          'dark-blue': '#1A1D2E',
+          emerald: '#10B981',
+          'light-emerald': '#ECFDF5',
+          amber: '#F59E0B',
+          midnight: '#0F172A',
+          dark: '#1E293B',
+          surface: '#F8FAFC',
+          indigo: '#4F46E5', // Keep temporarily for compatibility
+          pink: '#E91E63',   // Keep temporarily for compatibility
+          'dark-blue': '#0F172A', // Map to midnight
         }
       },
     },

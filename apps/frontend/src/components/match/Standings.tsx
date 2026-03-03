@@ -35,13 +35,13 @@ export default function Standings({ standings }: StandingsProps) {
                   onClick={() => setActiveSubTab(tab)}
                   className={`px-4 py-3 text-[11px] font-black uppercase tracking-widest whitespace-nowrap transition-all relative ${
                      activeSubTab === tab 
-                        ? 'text-brand-indigo outline-none' 
+                        ? 'text-brand-emerald outline-none' 
                         : 'text-slate-400 hover:text-slate-600'
                   }`}
                >
                   {tab}
                   {activeSubTab === tab && (
-                     <div className="absolute bottom-0 left-0 w-full h-0.5 bg-brand-indigo rounded-full" />
+                     <div className="absolute bottom-0 left-0 w-full h-0.5 bg-brand-emerald rounded-full" />
                   )}
                </button>
             ))}
@@ -57,7 +57,7 @@ export default function Standings({ standings }: StandingsProps) {
 
       {/* Standings Table Container */}
       <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden">
-        <div className="bg-brand-indigo px-8 py-4">
+        <div className="bg-brand-emerald px-8 py-4">
           <h3 className="text-sm font-black text-white italic">{activeSubTab}</h3>
         </div>
         

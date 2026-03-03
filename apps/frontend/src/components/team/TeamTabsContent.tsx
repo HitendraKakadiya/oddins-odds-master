@@ -57,8 +57,8 @@ export default function TeamTabsContent({ team, standings, statsSummary, squad }
             onClick={() => setActiveTab(tab.key)}
             className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all duration-200 ${
               activeTab === tab.key 
-                ? 'bg-brand-light-indigo text-brand-indigo shadow-sm' 
-                : 'text-gray-500 hover:text-brand-indigo hover:bg-brand-light-indigo/50'
+                ? 'bg-brand-light-emerald text-brand-emerald shadow-sm' 
+                : 'text-gray-500 hover:text-brand-emerald hover:bg-brand-light-emerald/50'
             }`}
           >
             {tab.label}

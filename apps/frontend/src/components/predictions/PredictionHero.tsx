@@ -29,15 +29,15 @@ export default function PredictionHero({ match }: PredictionHeroProps) {
            backgroundImage: 'url("https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=2070&auto=format&fit=crop")',
          }}
        >
-          <div className="absolute inset-0 bg-brand-dark-blue/70 backdrop-blur-[1px]"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-dark-blue via-transparent to-brand-dark-blue/40"></div>
+          <div className="absolute inset-0 bg-brand-midnight/70 backdrop-blur-[1px]"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-midnight via-transparent to-brand-midnight/40"></div>
        </div>
 
        {/* Content */}
        <div className="relative z-10 h-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center text-white">
           <div className="text-sm font-black uppercase tracking-[0.3em] text-white/60 mb-6 flex flex-col items-center">
              <span className="mb-2">{match.league.name}</span>
-             <div className="w-12 h-0.5 bg-brand-pink rounded-full"></div>
+             <div className="w-12 h-0.5 bg-brand-emerald rounded-full"></div>
           </div>
 
           <div className="flex items-center justify-center gap-6 md:gap-24 mb-10 w-full max-w-5xl">

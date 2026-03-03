@@ -55,27 +55,16 @@ export default async function PredictionsPage({
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Sidebar */}
-        <Sidebar 
-          leagueData={Array.isArray(leaguesData) ? leaguesData : (leaguesData.items || [])} 
-          initialTotal={Array.isArray(leaguesData) ? 0 : (leaguesData.total || 0)}
-          featuredTips={featuredPredictions.slice(0, 3)} 
-          streams={sidebarStreams}
-          initialStreamsTotal={streamsRes.total || 0}
-          mode="predictions"
-          date={selectedDate}
-        />
-
         {/* Main Content Area */}
         <main className="flex-1 min-w-0">
           {/* Page Heading & Breadcrumb */}
           <div className="flex flex-col mb-8">
             <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 bg-slate-50 self-start px-4 py-2 rounded-full border border-slate-100/60 shadow-inner">
-              <Link href="/" className="hover:text-brand-indigo transition-colors">Home</Link>
+              <Link href="/" className="hover:text-brand-emerald transition-colors">Home</Link>
               <span className="text-slate-200">/</span>
-              <span className="text-brand-indigo">Predictions</span>
+              <span className="text-brand-emerald">Predictions</span>
             </div>
-            <h1 className="text-3xl font-black text-brand-dark-blue mb-8 leading-tight">
+            <h1 className="text-3xl font-black text-brand-midnight mb-8 leading-tight">
               Today&apos;s Football Predictions | Betting Tips For {selectedDate}
             </h1>
           </div>
@@ -84,9 +73,9 @@ export default async function PredictionsPage({
 
           {/* Featured Predictions Section */}
           <div className="mb-8">
-             <div className="bg-brand-indigo rounded-[32px] overflow-hidden shadow-xl shadow-brand-indigo/10 mb-8 border border-brand-indigo/5">
+             <div className="bg-brand-emerald rounded-[32px] overflow-hidden shadow-xl shadow-brand-emerald/10 mb-8 border border-brand-emerald/5">
                 <div className="flex items-center justify-center gap-3 py-4 bg-white/5 backdrop-blur-sm border-b border-white/10">
-                   <div className="p-1.5 bg-brand-pink rounded-lg shadow-lg shadow-brand-pink/20">
+                   <div className="p-1.5 bg-brand-emerald rounded-lg shadow-lg shadow-brand-emerald/20">
                       <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                       </svg>
@@ -123,103 +112,27 @@ export default async function PredictionsPage({
                   <h2 className="text-3xl font-black text-slate-900 mb-8 leading-tight">OddinsOdds Has the Best Football Predictions for Today</h2>
                   <div className="space-y-6 text-lg leading-relaxed">
                      <p>Looking for accurate football tips? <strong>OddinsOdds</strong> provides reliable, data-driven predictions to help you make smarter bets. Get free insights across popular markets, including <strong>1x2, over/under, handicaps, double chance, cards, and corners</strong>.</p>
-                     <p>You&apos;ll find free football tips covering a wide range of markets... and many other betting opportunities.</p>
+                     <p>Our experts analyze statistics, team performance, and market data to provide you with the most informed football tips for today&apos;s matches. Whether you&apos;re looking for major leagues or international competitions, <strong>OddinsOdds</strong> covers over 400 tournaments worldwide.</p>
                   </div>
 
-                  <div className="mt-16 pt-16 border-t border-slate-50 space-y-16">
-                    <div>
-                      <h3 className="text-2xl font-black text-slate-900 mb-8 uppercase tracking-tight">How to Give the Best Football Predictions for Today</h3>
-                      <div className="space-y-4 text-lg leading-relaxed">
-                        <p>Along with using the betting tips on our platform, it&apos;s also important to learn how to analyse matches yourself - whether you&apos;re betting on your favourite leagues or improving your football analysis skills.</p>
-                        <p>For example, you can specialise in a specific league or tournament, where you follow every match of each team, watch the highlights, and know which players are in good or poor form.</p>
-                        <p>By doing this consistently, step by step, you&apos;ll gradually become able to create your own football predictions for today with greater confidence and accuracy.</p>
+                  <div className="mt-16 pt-16 border-t border-slate-50">
+                    <h3 className="text-2xl font-black text-slate-900 mb-8 uppercase tracking-tight">Discover the Most Popular Football Markets</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 text-lg leading-relaxed">
+                      <div>
+                        <h4 className="font-black text-slate-800 mb-2">1&times;2 Predictions</h4>
+                        <p>Predicting the match winner or a draw remains the most popular way to bet. We provide detailed Win/Draw/Loss probabilities for every match.</p>
                       </div>
-                    </div>
-
-                    <div>
-                      <h3 className="text-2xl font-black text-slate-900 mb-8 uppercase tracking-tight">OddinsOdds Betting Tips: Discover the Most Popular Football Markets</h3>
-                      <div className="space-y-4 text-lg leading-relaxed">
-                        <p>Find the best football betting tips for <strong>today&apos;s matches</strong>, covering the most popular markets such as 1x2, over/under, handicap, corners, and many other valuable opportunities.</p>
-                        <p>We share today&apos;s football predictions, detailed statistics, team comparisons, and winning probabilities - all designed to help you bet successfully and achieve your long-awaited green.</p>
-                        <p>On this main page, you&apos;ll find all upcoming fixtures along with the free football tips carefully prepared by our team of expert analysts.</p>
-                        <p>Below, we&apos;ll show you how most of these betting markets work and how you can make the most of them in your daily predictions.</p>
+                      <div>
+                        <h4 className="font-black text-slate-800 mb-2">Over/Under Goals</h4>
+                        <p>Our analysts review scoring trends and defensive stats to provide accurate goal predictions for total match goals.</p>
                       </div>
-                    </div>
-
-                    <div>
-                      <h3 className="text-2xl font-black text-slate-900 mb-8 uppercase tracking-tight">Today&apos;s 1&times;2 Football Predictions</h3>
-                      <div className="space-y-4 text-lg leading-relaxed">
-                        <p>The 1&times;2 market, also known as the moneyline, is the most popular type of sports bet. Basically, it&apos;s about predicting who will win the match - or if the game will end in a draw. If your prediction is correct, your bet is a winner.</p>
-                        <p>And of course, we have a dedicated section for <strong>1&times;2 football predictions today</strong>. Enjoy it wisely and make informed decisions with every bet!</p>
+                      <div>
+                        <h4 className="font-black text-slate-800 mb-2">Both Teams to Score (BTTS)</h4>
+                        <p>A simple but effective market where we analyze offensive and defensive consistency to predict if both sides will find the net.</p>
                       </div>
-                    </div>
-
-                    <div>
-                      <h3 className="text-2xl font-black text-slate-900 mb-8 uppercase tracking-tight">Betting Tips on Goals: Over and Under</h3>
-                      <div className="space-y-4 text-lg leading-relaxed">
-                        <p>We also include total goals tips - also known as <strong>over/under betting</strong> - in our list of free football betting tips.</p>
-                        <p>Our analysts review all the data, study each team&apos;s playing style, and produce accurate goal predictions indicating how many goals are likely to be scored in a match.</p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h3 className="text-2xl font-black text-slate-900 mb-8 uppercase tracking-tight">Corner Betting Tips</h3>
-                      <div className="space-y-4 text-lg leading-relaxed">
-                        <p>In addition to the most common options, we also provide corner predictions for today&apos;s football matches - identifying games that may have either a high or low number of corners.</p>
-                        <p>Our experienced team analyses the most relevant data and uses deep insight to estimate the expected number of corners in each game.</p>
-                        <p>In fact, <strong>betting on corners</strong> has become one of the fastest-growing trends among football bettors worldwide.</p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h3 className="text-2xl font-black text-slate-900 mb-8 uppercase tracking-tight">Double Chance Predictions</h3>
-                      <div className="space-y-4 text-lg leading-relaxed">
-                        <p>Another great option for sports betting fans is the <strong>Double Chance Betting</strong> (also known as DC or Double Hypothesis). In this type of bet, you cover two out of the three possible outcomes of a football match within a single wager - reducing your risk while maintaining solid winning potential.</p>
-                        <p>Here&apos;s how it works:</p>
-                        <ul className="list-disc pl-6 space-y-2">
-                          <li><strong>1X (Home Win or Draw)</strong> - Your bet wins if the home team wins or if the match ends in a draw.</li>
-                          <li><strong>X2 (Draw or Away Win)</strong> - Your bet wins if the away team wins or if the match ends in a draw.</li>
-                          <li><strong>12 (Either Team to Win – No Draw)</strong> - Your bet wins if either team wins, as long as the match doesn&apos;t end in a draw.</li>
-                        </ul>
-                        <p>If you&apos;d like to explore this strategy further, we&apos;ve prepared a dedicated list featuring the best <strong>Double Chance predictions</strong> from matches around the world.</p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h3 className="text-2xl font-black text-slate-900 mb-8 uppercase tracking-tight">Both Teams to Score (BTTS) Predictions</h3>
-                      <div className="space-y-4 text-lg leading-relaxed">
-                        <p>The Both Teams to Score market, also known as BTTS, is one of the most popular football betting options among punters. The goal is simple: predict whether both teams in a match will score at least one goal each, regardless of who wins or what the final score is.</p>
-                        <p>In practice, you only need to choose between two options:</p>
-                        <ul className="list-disc pl-6 space-y-2">
-                          <li><strong>Yes</strong>: Both teams score at least one goal.</li>
-                          <li><strong>No</strong>: At least one of the teams fails to score.</li>
-                        </ul>
-                        <p>Check out our <strong>BTTS football tips</strong> section and take advantage of the best football betting opportunities for today.</p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h3 className="text-2xl font-black text-slate-900 mb-8 uppercase tracking-tight">Other Markets for Today&apos;s Football Predictions</h3>
-                      <div className="space-y-4 text-lg leading-relaxed">
-                        <p>Besides the markets mentioned above, we also cover a wide range of bets, including Asian handicap, half-time/full-time results, player to score, cards, and many more options.</p>
-                        <p>All our football betting decisions are shared right here. Our goal is to provide you with football predictions for {searchParams.date || 'today'}, giving you a clear overview of the key data and factors to consider - so you can decide which ones matter most to your betting strategy.</p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h3 className="text-2xl font-black text-slate-900 mb-8 uppercase tracking-tight">Other Football Predictions for Today</h3>
-                      <div className="space-y-4 text-lg leading-relaxed">
-                        <p>At <strong>OddinsOdds</strong>, you&apos;ll find an exclusive section with <strong>accumulator betting tips</strong>, perfect for those looking to increase their winnings by combining several football predictions into a single betting slip.</p>
-                        <p>In addition, if you&apos;re looking for a truly safe option, we also highlight the best <strong>prediction of the day</strong> - a simple single bet featuring the match with the highest probability of success on {searchParams.date || 'today'}.</p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h3 className="text-2xl font-black text-slate-900 mb-8 uppercase tracking-tight">Why We Share Football Tips for Today</h3>
-                      <div className="space-y-4 text-lg leading-relaxed">
-                        <p>We share our football predictions for today to make your betting experience simpler and more efficient, offering complete analyses of the most important matches.</p>
-                        <p>Our experts carefully study statistics, team performance, and the odds provided by top bookmakers, ensuring well-founded forecasts across multiple betting markets.</p>
-                        <p>Our mission is clear: to help you identify the best betting opportunities, save time, and increase your chances of success.</p>
+                      <div>
+                        <h4 className="font-black text-slate-800 mb-2">Corner & Card Tips</h4>
+                        <p>Beyond standard results, we offer insights into playstyles that lead to higher frequencies of corners and disciplinary actions.</p>
                       </div>
                     </div>
                   </div>
@@ -227,6 +140,15 @@ export default async function PredictionsPage({
             </div>
           </article>
         </main>
+
+        {/* Sidebar */}
+        <Sidebar 
+          leagueData={Array.isArray(leaguesData) ? leaguesData : (leaguesData.items || [])} 
+          initialTotal={Array.isArray(leaguesData) ? 0 : (leaguesData.total || 0)}
+          featuredTips={featuredPredictions.slice(0, 3)} 
+          mode="predictions"
+          date={selectedDate}
+        />
       </div>
     </div>
   );

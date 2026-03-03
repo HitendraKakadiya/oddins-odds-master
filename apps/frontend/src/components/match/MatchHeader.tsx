@@ -35,7 +35,7 @@ export default function MatchHeader({ match, prevMatchId, nextMatchId, stats }: 
           href={prevMatchId ? `/match/${prevMatchId}` : '#'}
           className="group flex flex-col items-center gap-2"
         >
-          <div className="w-16 h-24 rounded-full bg-white border-2 border-slate-200 shadow-lg flex flex-col items-center justify-center transition-all hover:border-brand-indigo hover:scale-105">
+          <div className="w-16 h-24 rounded-full bg-white border-2 border-slate-200 shadow-lg flex flex-col items-center justify-center transition-all hover:border-brand-emerald hover:scale-105">
             <div className="flex -space-x-2 mb-2">
               <div className="w-7 h-7 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center overflow-hidden shadow-sm">
                 {match.homeTeam.logoUrl ? (
@@ -52,7 +52,7 @@ export default function MatchHeader({ match, prevMatchId, nextMatchId, stats }: 
                 )}
               </div>
             </div>
-            <div className="text-brand-indigo mb-1">
+            <div className="text-brand-emerald mb-1">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
               </svg>
@@ -67,7 +67,7 @@ export default function MatchHeader({ match, prevMatchId, nextMatchId, stats }: 
           href={nextMatchId ? `/match/${nextMatchId}` : '#'}
           className="group flex flex-col items-center gap-2"
         >
-          <div className="w-16 h-24 rounded-full bg-white border-2 border-slate-200 shadow-lg flex flex-col items-center justify-center transition-all hover:border-brand-indigo hover:scale-105">
+          <div className="w-16 h-24 rounded-full bg-white border-2 border-slate-200 shadow-lg flex flex-col items-center justify-center transition-all hover:border-brand-emerald hover:scale-105">
             <div className="flex -space-x-2 mb-2">
               <div className="w-7 h-7 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center overflow-hidden shadow-sm">
                 {match.homeTeam.logoUrl ? (
@@ -84,7 +84,7 @@ export default function MatchHeader({ match, prevMatchId, nextMatchId, stats }: 
                 )}
               </div>
             </div>
-            <div className="text-brand-indigo mb-1">
+            <div className="text-brand-emerald mb-1">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
               </svg>
@@ -112,11 +112,11 @@ export default function MatchHeader({ match, prevMatchId, nextMatchId, stats }: 
             </div>
           </div>
           
-          <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 hover:bg-white hover:border-brand-indigo transition-all group">
-            <svg className="w-4 h-4 text-slate-300 group-hover:text-brand-indigo group-hover:fill-brand-indigo" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 hover:bg-white hover:border-brand-emerald transition-all group">
+            <svg className="w-4 h-4 text-slate-300 group-hover:text-brand-emerald group-hover:fill-brand-emerald" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
-            <span className="text-xs font-black text-slate-500 group-hover:text-brand-indigo">Favourite this Match</span>
+            <span className="text-xs font-black text-slate-500 group-hover:text-brand-emerald">Favourite this Match</span>
           </button>
         </div>
 
@@ -150,7 +150,7 @@ export default function MatchHeader({ match, prevMatchId, nextMatchId, stats }: 
 
           {/* VS & Match Info */}
           <div className="flex flex-col items-center justify-center w-full md:w-1/3 relative z-10 order-1 md:order-2">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-brand-indigo/5 rounded-full blur-3xl -z-10"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-brand-emerald/5 rounded-full blur-3xl -z-10"></div>
             
             <h1 className="text-lg md:text-xl font-black text-slate-800 text-center mb-4 max-w-[280px]">
               {match.homeTeam.name} vs {match.awayTeam.name} stats, standings and H2H

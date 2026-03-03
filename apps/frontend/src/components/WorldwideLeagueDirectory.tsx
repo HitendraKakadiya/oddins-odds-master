@@ -65,7 +65,7 @@ export default function WorldwideLeagueDirectory() {
       <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-hidden p-1">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4">
-             <div className="w-12 h-12 border-4 border-brand-indigo/10 border-t-brand-indigo rounded-full animate-spin"></div>
+             <div className="w-12 h-12 border-4 border-brand-emerald/10 border-t-brand-emerald rounded-full animate-spin"></div>
              <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Loading competitions...</p>
           </div>
         ) : (
@@ -103,7 +103,7 @@ export default function WorldwideLeagueDirectory() {
                           className="group flex items-center justify-between p-4 hover:bg-slate-50 transition-all rounded-xl cursor-pointer"
                         >
                           <div className="flex items-center gap-4">
-                            <button className="text-slate-300 hover:text-brand-pink transition-colors" onClick={(e) => e.preventDefault()}>
+                            <button className="text-slate-300 hover:text-brand-emerald transition-colors" onClick={(e) => e.preventDefault()}>
                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.54 1.118l-3.976-2.888a1 1 0 00-1.175 0l-3.976 2.888c-.784.57-1.838-.196-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.382-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                                </svg>
@@ -111,12 +111,12 @@ export default function WorldwideLeagueDirectory() {
                             <div className="w-8 h-8 rounded-full bg-white border border-slate-100 flex items-center justify-center overflow-hidden shadow-sm">
                               <img src={league.logoUrl || ''} alt="" className="w-5 h-5 object-contain" />
                             </div>
-                            <span className="text-sm font-bold text-slate-600 group-hover:text-brand-indigo transition-colors">
+                            <span className="text-sm font-bold text-slate-600 group-hover:text-brand-emerald transition-colors">
                               {league.name}
                             </span>
                           </div>
                           <svg 
-                            className="w-4 h-4 text-slate-200 group-hover:text-brand-indigo transition-all transform group-hover:translate-x-1" 
+                            className="w-4 h-4 text-slate-200 group-hover:text-brand-emerald transition-all transform group-hover:translate-x-1" 
                             fill="none" 
                             stroke="currentColor" 
                             viewBox="0 0 24 24"

@@ -13,7 +13,7 @@ interface TeamPreviewDetailProps {
 export default function TeamPreviewDetail({ teamName, leagueName, stats, recentMatches, isHome }: TeamPreviewDetailProps) {
   return (
     <div className="flex flex-col gap-6">
-       <h2 className="text-2xl md:text-3xl font-black text-brand-dark-blue">{teamName} Preview</h2>
+       <h2 className="text-2xl md:text-3xl font-black text-brand-midnight">{teamName} Preview</h2>
        
        <div className="prose prose-slate max-w-none text-slate-600 text-lg leading-relaxed">
           <p>
@@ -26,7 +26,7 @@ export default function TeamPreviewDetail({ teamName, leagueName, stats, recentM
        </div>
 
        <div className="mt-4">
-          <div className="bg-brand-indigo rounded-t-2xl px-6 py-4 flex items-center justify-between shadow-lg">
+          <div className="bg-brand-emerald rounded-t-2xl px-6 py-4 flex items-center justify-between shadow-lg">
              <h3 className="text-white font-black uppercase tracking-widest text-sm">{teamName}&apos;s Latest Results</h3>
           </div>
           <div className="bg-white border-x border-b border-slate-100 rounded-b-2xl overflow-hidden shadow-sm">

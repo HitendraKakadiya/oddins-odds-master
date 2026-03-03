@@ -42,7 +42,7 @@ export function MatchRow({ match }: MatchProps) {
           </div>
           <div className="flex flex-1 items-center gap-2 md:gap-10 justify-center min-w-0">
             <div className="flex items-center gap-2 md:gap-3 flex-1 justify-end min-w-0">
-              <span className="font-bold text-[13px] md:text-sm text-slate-800 group-hover:text-brand-indigo transition-colors truncate">{match.homeTeam.name}</span>
+              <span className="font-bold text-[13px] md:text-sm text-slate-800 group-hover:text-brand-emerald transition-colors truncate">{match.homeTeam.name}</span>
               <div className="w-8 h-8 md:w-9 md:h-9 bg-slate-50 rounded-lg md:rounded-xl flex items-center justify-center text-[9px] md:text-[10px] font-black text-slate-400 border border-slate-100 shrink-0 overflow-hidden">
                 {match.homeTeam.logoUrl ? (
                   <img src={match.homeTeam.logoUrl} alt="" className="w-5 h-5 md:w-6 md:h-6 object-contain" />
@@ -53,9 +53,9 @@ export function MatchRow({ match }: MatchProps) {
             </div>
             
             <div className="flex items-center gap-2 md:gap-4 font-black text-slate-900 bg-slate-50 px-3 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl border border-slate-100/60 shadow-inner shrink-0 tabular-nums text-[13px] md:text-sm">
-              <span className={match.score.home !== null ? 'text-brand-pink' : 'text-slate-300'}>{match.score.home ?? '-'}</span>
+              <span className={match.score.home !== null ? 'text-brand-emerald' : 'text-slate-300'}>{match.score.home ?? '-'}</span>
               <span className="text-slate-200">-</span>
-              <span className={match.score.away !== null ? 'text-brand-pink' : 'text-slate-300'}>{match.score.away ?? '-'}</span>
+              <span className={match.score.away !== null ? 'text-brand-emerald' : 'text-slate-300'}>{match.score.away ?? '-'}</span>
             </div>
 
             <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
@@ -66,7 +66,7 @@ export function MatchRow({ match }: MatchProps) {
                   match.awayTeam.name.substring(0,2).toUpperCase()
                 )}
               </div>
-              <span className="font-bold text-[13px] md:text-sm text-slate-800 group-hover:text-brand-indigo transition-colors truncate">{match.awayTeam.name}</span>
+              <span className="font-bold text-[13px] md:text-sm text-slate-800 group-hover:text-brand-emerald transition-colors truncate">{match.awayTeam.name}</span>
             </div>
           </div>
         </div>
@@ -81,11 +81,11 @@ export function MatchRow({ match }: MatchProps) {
       </div>
 
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 md:pl-16">
-        <div className="flex-1 bg-slate-50/80 rounded-xl p-3 md:p-3.5 text-center italic text-[10px] md:text-[11px] font-bold text-slate-500 border border-slate-100 group-hover:border-brand-indigo/20 transition-all shadow-sm">
+        <div className="flex-1 bg-slate-50/80 rounded-xl p-3 md:p-3.5 text-center italic text-[10px] md:text-[11px] font-bold text-slate-500 border border-slate-100 group-hover:border-brand-emerald/20 transition-all shadow-sm">
           &quot;{match.featuredTip?.title || 'Waiting for prediction analysis...'}&quot;
         </div>
         <div className="flex gap-2 justify-center sm:justify-start">
-            <button className="flex-1 sm:flex-none btn-pink !py-2 md:!py-2.5 !px-4 md:!px-5 !rounded-lg md:!rounded-xl text-[9px] md:text-[10px] uppercase font-black tracking-widest shadow-sm border border-brand-pink/10">Prediction</button>
+            <button className="flex-1 sm:flex-none btn-emerald !py-2 md:!py-2.5 !px-4 md:!px-5 !rounded-lg md:!rounded-xl text-[9px] md:text-[10px] uppercase font-black tracking-widest shadow-sm border border-brand-emerald/10">Prediction</button>
             <button className="flex-1 sm:flex-none bg-slate-50 text-slate-700 font-black py-2 md:py-2.5 px-4 md:px-5 rounded-lg md:rounded-xl text-[9px] md:text-[10px] uppercase tracking-widest hover:bg-slate-100 border border-slate-200/60 transition-all shadow-sm">Stats</button>
         </div>
       </div>
@@ -103,8 +103,8 @@ export function LeagueGroup({ leagueName, country, matches, initialOpen = false 
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center gap-3 md:gap-4">
-          <div className="p-2 md:p-2.5 bg-brand-indigo/10 rounded-lg md:rounded-xl shadow-inner border border-brand-indigo/5">
-            <svg className="w-4 h-4 md:w-5 md:h-5 text-brand-indigo" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="p-2 md:p-2.5 bg-brand-emerald/10 rounded-lg md:rounded-xl shadow-inner border border-brand-emerald/5">
+            <svg className="w-4 h-4 md:w-5 md:h-5 text-brand-emerald" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
             </svg>
           </div>
@@ -118,7 +118,7 @@ export function LeagueGroup({ leagueName, country, matches, initialOpen = false 
         </div>
 
         <button 
-          className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg md:rounded-xl bg-white border border-slate-200/60 text-slate-400 hover:text-brand-indigo hover:border-brand-indigo/30 transition-all shadow-sm active:scale-95"
+          className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg md:rounded-xl bg-white border border-slate-200/60 text-slate-400 hover:text-brand-emerald hover:border-brand-emerald/30 transition-all shadow-sm active:scale-95"
           onClick={(e) => {
             e.stopPropagation();
             setIsOpen(!isOpen);

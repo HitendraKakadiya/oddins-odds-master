@@ -29,7 +29,7 @@ export default function TeamForm({ homeTeam, awayTeam, homeStats, awayStats }: T
           onClick={() => setFilter('overall')}
           className={`px-8 py-2.5 rounded-2xl text-xs font-black transition-all ${
             filter === 'overall'
-              ? 'bg-brand-indigo text-white shadow-lg shadow-brand-indigo/20'
+              ? 'bg-brand-emerald text-white shadow-lg shadow-brand-emerald/20'
               : 'bg-white text-slate-400 border border-slate-100 hover:bg-slate-50'
           }`}
         >
@@ -39,7 +39,7 @@ export default function TeamForm({ homeTeam, awayTeam, homeStats, awayStats }: T
           onClick={() => setFilter('home_away')}
           className={`px-8 py-2.5 rounded-2xl text-xs font-black transition-all ${
             filter === 'home_away'
-              ? 'bg-brand-indigo text-white shadow-lg shadow-brand-indigo/20'
+              ? 'bg-brand-emerald text-white shadow-lg shadow-brand-emerald/20'
               : 'bg-white text-slate-400 border border-slate-100 hover:bg-slate-50'
           }`}
         >
@@ -50,7 +50,7 @@ export default function TeamForm({ homeTeam, awayTeam, homeStats, awayStats }: T
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         {/* Home Team Form */}
         <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden h-fit">
-          <div className="bg-brand-indigo px-8 py-4 flex items-center gap-3">
+          <div className="bg-brand-emerald px-8 py-4 flex items-center gap-3">
              {homeTeam.logoUrl && (
                 <div className="w-8 h-8 bg-white/10 rounded-lg p-1">
                    <img src={homeTeam.logoUrl} alt={homeTeam.name} className="w-full h-full object-contain" />
@@ -70,7 +70,7 @@ export default function TeamForm({ homeTeam, awayTeam, homeStats, awayStats }: T
 
         {/* Away Team Form */}
         <div className="bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden h-fit">
-          <div className="bg-brand-indigo px-8 py-4 flex items-center gap-3">
+          <div className="bg-brand-emerald px-8 py-4 flex items-center gap-3">
              {awayTeam.logoUrl && (
                 <div className="w-8 h-8 bg-white/10 rounded-lg p-1">
                    <img src={awayTeam.logoUrl} alt={awayTeam.name} className="w-full h-full object-contain" />
@@ -192,7 +192,7 @@ function StatComparisonCard({ title, homeValue, awayValue, homeTeam, awayTeam, u
 
   return (
     <div className="bg-white rounded-[24px] md:rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-      <div className="bg-brand-indigo py-2.5 md:py-3 px-6 text-center">
+      <div className="bg-brand-emerald py-2.5 md:py-3 px-6 text-center">
         <h4 className="text-[10px] md:text-[11px] font-black text-white uppercase tracking-wider">{title}</h4>
       </div>
       <div className="p-5 md:p-6">
@@ -205,7 +205,7 @@ function StatComparisonCard({ title, homeValue, awayValue, homeTeam, awayTeam, u
            </div>
 
            <div className="flex-1 px-4 md:px-8 text-center">
-              <div className="text-[9px] md:text-[10px] font-black text-brand-indigo uppercase mb-0.5 md:mb-1">
+              <div className="text-[9px] md:text-[10px] font-black text-brand-emerald uppercase mb-0.5 md:mb-1">
                  {percentLabel}% Better
               </div>
               <div className="text-[9px] md:text-[10px] font-bold text-slate-400 leading-tight max-w-[150px] mx-auto">

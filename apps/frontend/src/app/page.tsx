@@ -71,21 +71,16 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
 
 
   return (
-    <div className="bg-transparent">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-brand-surface pb-20">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar */}
-          <Sidebar 
-            leagueData={leaguesData.items || []} 
-            initialTotal={leaguesData.total || 0}
-            featuredTips={tipsData} 
-            streams={streams}
-            initialStreamsTotal={streamsTotal}
-          />
-
           {/* Main Content */}
-          <main className="flex-1 min-w-0">
-            <h1 className="text-3xl sm:text-4xl font-black text-brand-dark-blue mb-6 sm:mb-8 leading-tight">
+          <main className="flex-1 min-w-0 order-1 lg:order-1">
+            <div className="mb-10">
+              <FeaturedTeams initialTeams={featuredTeams} />
+            </div>
+
+            <h1 className="text-3xl sm:text-4xl font-black text-brand-midnight mb-6 sm:mb-8 leading-tight">
               Today&apos;s Matches
             </h1>
 
@@ -104,8 +99,6 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
               />
             </div>
 
-            <FeaturedTeams initialTeams={featuredTeams} />
-
             <div className="mt-12">
               <HighlightBanner />
             </div>
@@ -119,30 +112,6 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
                   </div>
                </div>
 
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-                  <section className="bg-white p-6 sm:p-10 rounded-[24px] sm:rounded-[32px] border border-slate-200/60 shadow-sm hover:shadow-md transition-all hover:border-slate-300 group">
-                     <h2 className="text-xl sm:text-2xl font-black text-slate-900 mb-4 sm:mb-5 flex items-center gap-3">
-                        <span className="w-10 h-10 sm:w-12 sm:h-12 bg-brand-indigo/10 rounded-xl sm:rounded-2xl flex items-center justify-center text-brand-indigo border border-brand-indigo/5 shadow-inner">📺</span>
-                        Where to watch live
-                     </h2>
-                     <p className="text-base sm:text-lg text-slate-500 mb-6 sm:mb-8 leading-relaxed font-medium">You don&apos;t need to search multiple websites. See where to watch each match live on TV, mobile, or betting sites.</p>
-                     <Link href="/streams" className="inline-flex items-center gap-2 text-brand-indigo font-bold text-sm sm:text-base bg-brand-light-indigo/50 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl hover:bg-brand-light-indigo transition-all border border-brand-indigo/10 hover:scale-[1.02]">
-                        Check live streams &rarr;
-                     </Link>
-                  </section>
-
-                  <section className="bg-white p-6 sm:p-10 rounded-[24px] sm:rounded-[32px] border border-slate-200/60 shadow-sm hover:shadow-md transition-all hover:border-slate-300 group">
-                     <h2 className="text-xl sm:text-2xl font-black text-slate-900 mb-4 sm:mb-5 flex items-center gap-3">
-                        <span className="w-10 h-10 sm:w-12 sm:h-12 bg-brand-pink/10 rounded-xl sm:rounded-2xl flex items-center justify-center text-brand-pink border border-brand-pink/5 shadow-inner">📚</span>
-                        Betting Academy
-                     </h2>
-                     <p className="text-base sm:text-lg text-slate-500 mb-6 sm:mb-8 leading-relaxed font-medium">Learn how to bet like a pro with articles on bankroll management, value analysis, and advanced strategies.</p>
-                     <Link href="/academy" className="inline-flex items-center gap-2 text-brand-pink font-bold text-sm sm:text-base bg-brand-pink/5 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl hover:bg-brand-pink/10 transition-all border border-brand-pink/10 hover:scale-[1.02]">
-                        Start learning &rarr;
-                     </Link>
-                  </section>
-               </div>
-
                <section className="bg-gradient-to-r from-slate-900 to-slate-800 p-12 rounded-[40px] text-white shadow-xl relative overflow-hidden group border border-slate-800">
                   <div className="relative z-10">
                     <h2 className="text-2xl sm:text-3xl font-black mb-3 sm:mb-4">Trusted Betting Sites 2026</h2>
@@ -151,8 +120,8 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
                        View Rankings
                     </Link>
                   </div>
-                  <div className="absolute -right-20 -top-20 w-80 h-80 bg-brand-pink/10 rounded-full blur-[80px] group-hover:bg-brand-pink/20 transition-all"></div>
-                  <div className="absolute -left-20 -bottom-20 w-64 h-64 bg-brand-indigo/10 rounded-full blur-[60px] group-hover:bg-brand-indigo/20 transition-all"></div>
+                  <div className="absolute -right-20 -top-20 w-80 h-80 bg-brand-emerald/10 rounded-full blur-[80px] group-hover:bg-brand-emerald/20 transition-all"></div>
+                  <div className="absolute -left-20 -bottom-20 w-64 h-64 bg-brand-emerald/10 rounded-full blur-[60px] group-hover:bg-brand-emerald/20 transition-all"></div>
                </section>
 
                <section>
@@ -165,6 +134,17 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
                </section>
             </article>
           </main>
+
+          {/* Sidebar */}
+          <aside className="lg:w-[380px] flex-shrink-0 order-2 lg:order-2">
+            <div className="sticky top-24">
+              <Sidebar 
+                leagueData={leaguesData.items || []} 
+                initialTotal={leaguesData.total || 0}
+                featuredTips={tipsData} 
+              />
+            </div>
+          </aside>
         </div>
       </div>
     </div>

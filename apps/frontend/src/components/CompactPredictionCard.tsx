@@ -42,20 +42,20 @@ export default function CompactPredictionCard({ prediction }: CompactPredictionC
                 {prediction.awayTeam.logoUrl ? <img src={prediction.awayTeam.logoUrl} alt="" className="w-6 h-6 object-contain" /> : <span className="text-xs">⚽</span>}
              </div>
           </div>
-          <div className="absolute top-2 left-2 bg-brand-pink text-white text-[8px] font-black px-2 py-0.5 rounded shadow-sm tracking-widest">PREDICTION</div>
+          <div className="absolute top-2 left-2 bg-brand-emerald text-white text-[8px] font-black px-2 py-0.5 rounded shadow-sm tracking-widest">PREDICTION</div>
        </div>
 
        <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2">
-             <span className="text-brand-pink font-bold">+</span>
+             <span className="text-brand-emerald font-bold">+</span>
              <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">{prediction.league.name} <span className="opacity-30 px-1">•</span> {date}</span>
           </div>
-          <h4 className="text-lg font-black text-slate-800 group-hover:text-brand-indigo transition-colors line-clamp-2 leading-tight">
+          <h4 className="text-lg font-black text-slate-800 group-hover:text-brand-emerald transition-colors line-clamp-2 leading-tight">
              {prediction.homeTeam.name} vs {prediction.awayTeam.name} Prediction | {prediction.league.name} | {date.split('/')[0]}/{date.split('/')[1]}
           </h4>
        </div>
 
-       <div className="hidden sm:flex w-10 h-10 rounded-full border border-slate-100 items-center justify-center text-slate-300 group-hover:bg-brand-indigo group-hover:text-white group-hover:border-brand-indigo transition-all shrink-0">
+       <div className="hidden sm:flex w-10 h-10 rounded-full border border-slate-100 items-center justify-center text-slate-300 group-hover:bg-brand-emerald group-hover:text-white group-hover:border-brand-emerald transition-all shrink-0">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 18l6-6-6-6" /></svg>
        </div>
     </Link>

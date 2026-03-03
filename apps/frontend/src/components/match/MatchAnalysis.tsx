@@ -59,7 +59,7 @@ export default function MatchAnalysis({ match, stats }: MatchAnalysisProps) {
         </p>
 
         <h3 className="text-xl font-black text-slate-800 pt-4">Stat Probabilities</h3>
-        <ul className="list-disc pl-5 space-y-3 marker:text-brand-indigo">
+        <ul className="list-disc pl-5 space-y-3 marker:text-brand-emerald">
           <li>
             <b className="text-slate-800">BTTS:</b> The league average for both teams scoring is {league?.bttsRate || 0}%.
           </li>
@@ -96,7 +96,7 @@ export default function MatchAnalysis({ match, stats }: MatchAnalysisProps) {
                     onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                     className="w-full px-8 py-5 flex items-center justify-between bg-white hover:bg-slate-50 transition-colors text-left"
                  >
-                    <span className="text-sm font-black text-brand-indigo leading-tight">{faq.q}</span>
+                    <span className="text-sm font-black text-brand-emerald leading-tight">{faq.q}</span>
                     <svg 
                        className={`w-5 h-5 text-slate-300 transition-transform ${openFaq === idx ? 'rotate-180' : ''}`} 
                        fill="none" 

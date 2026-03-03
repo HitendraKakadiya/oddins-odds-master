@@ -10,9 +10,9 @@ export default function AboutPage() {
       <div className="mb-6 sm:mb-8 transition-all duration-300">
          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 mb-3 sm:mb-4 leading-tight">About OddinsOdds</h1>
          <div className="flex flex-wrap items-center gap-2 text-[11px] sm:text-sm text-gray-500 font-bold bg-slate-50 self-start px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-slate-100/60 shadow-inner">
-            <Link href="/" className="hover:text-brand-pink transition-colors">Home</Link>
+            <Link href="/" className="hover:text-brand-emerald transition-colors">Home</Link>
             <span>/</span>
-            <span className="text-brand-pink">About OddinsOdds: independence and...</span>
+            <span className="text-brand-emerald">About OddinsOdds: independence and...</span>
          </div>
       </div>
 
@@ -70,7 +70,7 @@ export default function AboutPage() {
                     We evaluate the main bookmakers in the international markets in a technical and impartial way. We focus on the
                     <span className="font-bold text-gray-900"> bonuses offered, security, withdrawal methods, customer service, and platform quality</span>.
                  </p>
-                 <a href="#" className="flex items-center gap-2 text-brand-indigo font-bold hover:underline mb-10">
+                 <a href="#" className="flex items-center gap-2 text-brand-emerald font-bold hover:underline mb-10">
                     <span>💻</span> Check out our bookmakers reviews
                  </a>
 
@@ -79,7 +79,7 @@ export default function AboutPage() {
                     We publish daily football betting tips based on statistical analysis, market trends, and tactical reading of the
                     matches. No guessing—here, every tip has a foundation.
                  </p>
-                 <a href="/predictions" className="flex items-center gap-2 text-brand-indigo font-bold hover:underline mb-10">
+                 <a href="/predictions" className="flex items-center gap-2 text-brand-emerald font-bold hover:underline mb-10">
                     <span>⚽</span> Check the updated predictions
                  </a>
 
@@ -88,7 +88,7 @@ export default function AboutPage() {
                     In addition, we show you where to watch the games. We organize the broadcast data by championship and date,
                     with verified and updated links. Simple and practical.
                  </p>
-                 <a href="/streams" className="inline-block border border-brand-pink text-brand-pink font-bold px-3 py-1 rounded hover:bg-brand-pink hover:text-white transition-colors mb-10">
+                 <a href="/streams" className="inline-block border border-brand-emerald text-brand-emerald font-bold px-3 py-1 rounded hover:bg-brand-emerald hover:text-white transition-colors mb-10">
                     📺 See where to watch live
                  </a>
 
@@ -98,7 +98,7 @@ export default function AboutPage() {
                     Premier League, La Liga, Libertadores, and more. You can find everything from average goals and corners to
                     dynamic tables and performance graphs.
                  </p>
-                 <a href="/leagues" className="flex items-center gap-2 text-brand-indigo font-bold hover:underline mb-10">
+                 <a href="/leagues" className="flex items-center gap-2 text-brand-emerald font-bold hover:underline mb-10">
                     <span>📊</span> Explore leagues statistics
                  </a>
 
@@ -107,7 +107,7 @@ export default function AboutPage() {
                     Each club has its own page with everything you need: performance, home and away records, number of goals
                     scored and conceded, corner patterns, cards, and much more.
                  </p>
-                 <a href="/teams" className="flex items-center gap-2 text-brand-indigo font-bold hover:underline">
+                 <a href="/teams" className="flex items-center gap-2 text-brand-emerald font-bold hover:underline">
                     <span>🛡️</span> Check out team statistics
                  </a>
               </div>

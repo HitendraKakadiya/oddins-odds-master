@@ -58,7 +58,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-brand-dark-blue border-t border-white/5 mt-8 sm:mt-12 lg:mt-16 py-8 sm:py-12 lg:py-16 text-white">
+    <footer className="bg-brand-midnight border-t border-white/5 mt-8 sm:mt-12 lg:mt-16 py-8 sm:py-12 lg:py-16 text-white">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Footer Links Grid - Responsive */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-8">
@@ -70,7 +70,7 @@ export default function Footer() {
                   <li key={link.name}>
                     <Link 
                       href={link.href} 
-                      className="text-xs sm:text-sm text-gray-300 hover:text-brand-pink transition-colors block py-0.5"
+                      className="text-xs sm:text-sm text-gray-300 hover:text-brand-emerald transition-colors block py-0.5"
                     >
                       {link.name}
                     </Link>
@@ -84,7 +84,7 @@ export default function Footer() {
         {/* Footer Bottom - Logo and Copyright */}
         <div className="mt-8 sm:mt-12 lg:mt-16 pt-6 sm:pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-brand-indigo rounded-full flex items-center justify-center text-white font-bold text-xs border border-white/20 shadow-lg shadow-brand-indigo/20">OO</div>
+              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-brand-emerald rounded-full flex items-center justify-center text-white font-bold text-xs border border-white/20 shadow-lg shadow-brand-emerald/20">OO</div>
               <span className="font-bold text-white text-sm sm:text-base">OddinsOdds</span>
            </div>
            <p className="text-xs sm:text-sm text-gray-400 text-center sm:text-right">

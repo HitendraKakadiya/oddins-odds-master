@@ -19,11 +19,11 @@ export default function TodaysMatchesWidget() {
   ];
 
   return (
-    <div className="bg-brand-indigo rounded-xl overflow-hidden shadow-lg mt-0 lg:mt-8">
-      <div className="bg-brand-indigo p-4 text-center">
+    <div className="bg-brand-emerald rounded-xl overflow-hidden shadow-lg mt-0 lg:mt-8">
+      <div className="bg-brand-emerald p-4 text-center">
         <h3 className="text-white font-bold text-base">Today&apos;s Matches!</h3>
       </div>
-      <div className="p-3 bg-brand-indigo space-y-3">
+      <div className="p-3 bg-brand-emerald space-y-3">
         {matches.map((match) => (
           <div key={match.id} className="bg-white rounded-lg p-3 shadow-sm">
             <div className="flex items-center justify-between mb-2 border-b border-gray-100 pb-2">

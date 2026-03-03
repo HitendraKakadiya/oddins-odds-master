@@ -65,7 +65,7 @@ function MatchRow({ match, type }: { match: MatchData; type: 'fixtures' | 'resul
       <div className="flex-1 flex items-center justify-center gap-2 lg:gap-12 px-2">
         {/* Home Team */}
         <div className="flex-1 flex items-center justify-end gap-3 min-w-0">
-          <span className="text-sm lg:text-base font-black text-slate-700 text-right truncate group-hover:text-brand-indigo transition-colors">
+          <span className="text-sm lg:text-base font-black text-slate-700 text-right truncate group-hover:text-brand-emerald transition-colors">
             {match.homeTeam.name}
           </span>
           <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-white border border-slate-100 flex items-center justify-center p-1.5 shadow-sm shrink-0">
@@ -91,7 +91,7 @@ function MatchRow({ match, type }: { match: MatchData; type: 'fixtures' | 'resul
           <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-white border border-slate-100 flex items-center justify-center p-1.5 shadow-sm shrink-0">
             <img src={match.awayTeam.logoUrl || ''} alt="" className="w-full h-full object-contain" />
           </div>
-          <span className="text-sm lg:text-base font-black text-slate-700 text-left truncate group-hover:text-brand-indigo transition-colors">
+          <span className="text-sm lg:text-base font-black text-slate-700 text-left truncate group-hover:text-brand-emerald transition-colors">
             {match.awayTeam.name}
           </span>
         </div>
@@ -101,7 +101,7 @@ function MatchRow({ match, type }: { match: MatchData; type: 'fixtures' | 'resul
       <div className="hidden lg:flex w-32 justify-end px-4">
         <Link 
           href={`/predictions/${match.matchId}`}
-          className="opacity-0 group-hover:opacity-100 bg-brand-indigo/10 text-brand-indigo px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-brand-indigo hover:text-white transition-all shadow-sm"
+          className="opacity-0 group-hover:opacity-100 bg-brand-emerald/10 text-brand-emerald px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-brand-emerald hover:text-white transition-all shadow-sm"
         >
           Details
         </Link>

@@ -21,7 +21,7 @@ export default function FAQAccordion() {
     },
     {
       question: "What are the football matches today on TV?",
-      answer: "Check our 'Today's Streams' section in the sidebar for information on where to watch matches live, including TV channels and streaming platforms."
+      answer: "You can find information about TV broadcasts and streaming options on our individual match detail pages and league schedules."
     },
     {
       question: "Are there international football matches today?",
@@ -32,13 +32,13 @@ export default function FAQAccordion() {
   return (
     <div className="space-y-4">
       {faqs.map((faq, index) => (
-        <div key={index} className="bg-white border border-slate-200/60 rounded-2xl overflow-hidden hover:border-brand-indigo/30 transition-all shadow-sm group">
+        <div key={index} className="bg-white border border-slate-200/60 rounded-2xl overflow-hidden hover:border-brand-emerald/30 transition-all shadow-sm group">
           <button
             onClick={() => setOpenIndex(openIndex === index ? null : index)}
             className="w-full flex items-center justify-between p-7 text-left"
           >
-            <span className="font-bold text-sm text-slate-800 group-hover:text-brand-indigo transition-colors">{faq.question}</span>
-            <div className={`p-2 rounded-xl transition-all ${openIndex === index ? 'bg-brand-indigo text-white rotate-180 shadow-lg shadow-brand-indigo/20' : 'bg-slate-50 text-slate-300'}`}>
+            <span className="font-bold text-sm text-slate-800 group-hover:text-brand-emerald transition-colors">{faq.question}</span>
+            <div className={`p-2 rounded-xl transition-all ${openIndex === index ? 'bg-brand-emerald text-white rotate-180 shadow-lg shadow-brand-emerald/20' : 'bg-slate-50 text-slate-300'}`}>
               <svg
                 className="w-4 h-4"
                 fill="none"

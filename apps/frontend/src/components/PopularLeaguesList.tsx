@@ -45,7 +45,7 @@ export default function PopularLeaguesList() {
       <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-hidden min-h-[400px]">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4">
-             <div className="w-10 h-10 border-4 border-brand-indigo/10 border-t-brand-indigo rounded-full animate-spin"></div>
+             <div className="w-10 h-10 border-4 border-brand-emerald/10 border-t-brand-emerald rounded-full animate-spin"></div>
              <p className="text-xs font-black text-slate-400 uppercase tracking-widest text-center">Loading popular...</p>
           </div>
         ) : (
@@ -61,12 +61,12 @@ export default function PopularLeaguesList() {
                     <img src={league.logoUrl} alt={league.name} className="w-8 h-8 object-contain" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm font-black text-slate-800 group-hover:text-brand-indigo transition-colors">{league.name}</span>
+                    <span className="text-sm font-black text-slate-800 group-hover:text-brand-emerald transition-colors">{league.name}</span>
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{league.country}</span>
                   </div>
                 </div>
                 <svg 
-                  className="w-5 h-5 text-slate-200 group-hover:text-brand-indigo transition-all transform group-hover:translate-x-1" 
+                  className="w-5 h-5 text-slate-200 group-hover:text-brand-emerald transition-all transform group-hover:translate-x-1" 
                   fill="none" 
                   stroke="currentColor" 
                   viewBox="0 0 24 24"

@@ -61,7 +61,7 @@ export default function TeamComparison({ match, homeStats, awayStats, homeStatsS
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-10">
       {/* Home Team Section */}
       <div className="bg-white rounded-[24px] md:rounded-[32px] border border-slate-100 shadow-sm overflow-hidden flex flex-col">
-        <div className="bg-brand-indigo py-3 md:py-4 text-center">
+        <div className="bg-brand-emerald py-3 md:py-4 text-center">
           <span className="text-white text-[11px] md:text-sm font-black uppercase tracking-widest">Home Team Stats</span>
         </div>
         <div className="p-5 md:p-8 pb-0">
@@ -99,7 +99,7 @@ export default function TeamComparison({ match, homeStats, awayStats, homeStatsS
                 {(homeStats.last5 || []).map((r, i) => <FormDot key={i} result={r} />)}
               </div>
               <div className="flex justify-center">
-                <div className="bg-brand-indigo/10 text-brand-indigo px-2 md:px-3 py-0.5 md:py-1 rounded-lg text-xs font-black">{homeStats.overall.ppg || 0}</div>
+                <div className="bg-brand-emerald/10 text-brand-emerald px-2 md:px-3 py-0.5 md:py-1 rounded-lg text-xs font-black">{homeStats.overall.ppg || 0}</div>
               </div>
             </div>
 
@@ -147,7 +147,7 @@ export default function TeamComparison({ match, homeStats, awayStats, homeStatsS
 
       {/* Away Team Section */}
       <div className="bg-white rounded-[24px] md:rounded-[32px] border border-slate-100 shadow-sm overflow-hidden flex flex-col">
-        <div className="bg-brand-indigo py-3 md:py-4 text-center">
+        <div className="bg-brand-emerald py-3 md:py-4 text-center">
           <span className="text-white text-[11px] md:text-sm font-black uppercase tracking-widest">Away Team Stats</span>
         </div>
         <div className="p-5 md:p-8 pb-0">
@@ -185,7 +185,7 @@ export default function TeamComparison({ match, homeStats, awayStats, homeStatsS
                 {(awayStats.last5 || []).map((r, i) => <FormDot key={i} result={r} />)}
               </div>
               <div className="flex justify-center">
-                <div className="bg-brand-indigo/10 text-brand-indigo px-2 md:px-3 py-0.5 md:py-1 rounded-lg text-xs font-black">{awayStats.overall.ppg || 0}</div>
+                <div className="bg-brand-emerald/10 text-brand-emerald px-2 md:px-3 py-0.5 md:py-1 rounded-lg text-xs font-black">{awayStats.overall.ppg || 0}</div>
               </div>
             </div>
 

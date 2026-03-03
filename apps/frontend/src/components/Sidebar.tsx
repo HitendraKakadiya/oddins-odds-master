@@ -3,20 +3,23 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import type { LeaguesResponse } from '@/lib/api';
-import { getLeagues, getStreams, getLiveLeagues, getLiveStreams } from '@/lib/api';
+import { getLiveLeagues } from '@/lib/api';
 
 interface SidebarProps {
   leagueData: LeaguesResponse[];
   initialTotal?: number;
   featuredTips?: any[];
-  streams?: Array<{ id: number; home: string; away: string; time: string; icon: string }>;
-  initialStreamsTotal?: number;
   mode?: 'default' | 'predictions';
-  date?: string; // Added date prop
+  date?: string;
 }
 
-
-export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [], streams = [], initialStreamsTotal = 0, date, mode = 'default' }: SidebarProps) {
+export default function Sidebar({ 
+  leagueData, 
+  initialTotal = 0, 
+  featuredTips = [], 
+  date, 
+  mode = 'default' 
+}: SidebarProps) {
   // Leagues State
   const [competitions, setCompetitions] = useState<LeaguesResponse[]>(leagueData || []);
   const [page, setPage] = useState(1);
@@ -24,6 +27,11 @@ export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState((leagueData || []).length < initialTotal);
   const loaderRef = useRef<HTMLDivElement>(null);
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [openCountries, setOpenCountries] = useState<string[]>(() => {
+    return (leagueData || []).slice(0, 5).map(group => group.country.name);
+  });
 
   // Sync Leagues State with Props
   useEffect(() => {
@@ -33,27 +41,6 @@ export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [
     setHasMore((leagueData || []).length < initialTotal);
   }, [leagueData, initialTotal]);
 
-  // Streams State
-  const [streamItems, setStreamItems] = useState(streams);
-  const [streamsPage, setStreamsPage] = useState(1);
-  const [streamsTotal, setStreamsTotal] = useState(initialStreamsTotal);
-  const [streamsLoading, setStreamsLoading] = useState(false);
-  const [streamsHasMore, setStreamsHasMore] = useState(streams.length < initialStreamsTotal);
-  const streamsLoaderRef = useRef<HTMLDivElement>(null);
-
-  // Sync Streams State with Props
-  useEffect(() => {
-    setStreamItems(streams);
-    setStreamsTotal(initialStreamsTotal);
-    setStreamsPage(1);
-    setStreamsHasMore(streams.length < initialStreamsTotal);
-  }, [streams, initialStreamsTotal]);
-
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [openCountries, setOpenCountries] = useState<string[]>(() => {
-    return (leagueData || []).slice(0, 5).map(group => group.country.name);
-  });
-
   // Load More Leagues
   const loadMoreLeagues = useCallback(async () => {
     if (loading || !hasMore) return;
@@ -61,7 +48,6 @@ export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [
     setLoading(true);
     try {
       const nextPage = page + 1;
-      // const response = await (mode === 'predictions' ? getLiveLeagues(nextPage, 20, date) : getLeagues(nextPage, 20));
       const response = await getLiveLeagues(nextPage, 20, date);
       
       if (response && response.items) {
@@ -78,48 +64,7 @@ export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [
     } finally {
       setLoading(false);
     }
-  }, [page, loading, hasMore, competitions.length, mode, date]);
-
-  // Load More Streams
-  const loadMoreStreams = useCallback(async () => {
-    if (streamsLoading || !streamsHasMore) return;
-
-    setStreamsLoading(true);
-    try {
-      const nextPage = streamsPage + 1;
-      // You might need to pass the date here if it's dynamic. 
-      // For sidebar, it usually shows "Today's", so defaulting to today (backend default) is fine.
-      // But if `page.tsx` passes a selected date, we might need to know it. 
-      // `Sidebar` doesn't currently receive `selectedDate` prop. 
-      // Assuming "Today's Streams" implies today.
-      // const response = await getStreams(undefined, undefined, nextPage, 20);
-      const response = await getLiveStreams(date);
-
-      if (response && response.items) {
-          const newStreams = response.items.map(item => ({
-            id: item.matchId,
-            home: item.homeTeam?.name || 'Home',
-            away: item.awayTeam?.name || 'Away',
-            time: item.kickoffAt && new Date(item.kickoffAt) > new Date() ? 
-            new Date(item.kickoffAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }) : 
-            'LIVE',
-            icon: '⚽' // Default icon? Or map from league/sport?
-          }));
-
-          setStreamItems(prev => [...prev, ...newStreams]);
-          setStreamsPage(nextPage);
-          setStreamsTotal(response.total);
-          setStreamsHasMore(streamItems.length + newStreams.length < response.total);
-      } else {
-          setStreamsHasMore(false);
-      }
-    } catch (error) {
-      console.error('Failed to load more streams:', error);
-      setStreamsHasMore(false);
-    } finally {
-      setStreamsLoading(false);
-    }
-  }, [streamsPage, streamsLoading, streamsHasMore, streamItems.length]);
+  }, [page, loading, hasMore, competitions.length, date]);
 
   // Observer for Leagues
   useEffect(() => {
@@ -139,24 +84,6 @@ export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [
     return () => observer.disconnect();
   }, [loadMoreLeagues, hasMore]);
 
-  // Observer for Streams
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-        (entries) => {
-            if (entries[0].isIntersecting && streamsHasMore) {
-                loadMoreStreams();
-            }
-        },
-        { threshold: 0.1 }
-    );
-
-    if (streamsLoaderRef.current) {
-        observer.observe(streamsLoaderRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, [loadMoreStreams, streamsHasMore]);
-
   const toggleCountry = (countryName: string) => {
     setOpenCountries(prev => 
       prev.includes(countryName) 
@@ -165,287 +92,246 @@ export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [
     );
   };
 
-  // ... (rest of code usually identical until return) ...
   const today = new Date();
   
-  // ... displayPredictions mapping ...
-  const displayPredictions = (featuredTips || []).map(tip => {
+  const FALLBACK_PREDICTIONS = [
+    {
+      id: 'fallback-1',
+      leagueName: 'English Premier League',
+      time: '19:45',
+      date: 'Sat - 7 Mar 2026',
+      homeTeam: { name: 'Manchester City', logoUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=100&h=100&fit=crop' },
+      awayTeam: { name: 'Liverpool', logoUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=100&h=100&fit=crop' },
+      prediction: 'Over 2.5 Goals',
+      countryCode: 'GB'
+    },
+    {
+      id: 'fallback-2',
+      leagueName: 'Spanish La Liga',
+      time: '20:00',
+      date: 'Sun - 8 Mar 2026',
+      homeTeam: { name: 'Real Madrid', logoUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=100&h=100&fit=crop' },
+      awayTeam: { name: 'Barcelona', logoUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=100&h=100&fit=crop' },
+      prediction: 'Both Teams to Score',
+      countryCode: 'ES'
+    }
+  ];
+
+  const sourcePredictions = featuredTips && featuredTips.length > 0 ? featuredTips : FALLBACK_PREDICTIONS;
+  
+  const displayPredictions = sourcePredictions.map((tip, index) => {
     const kickoffDate = tip.kickoffAt ? new Date(tip.kickoffAt) : null;
-    // Handle FeaturedTip, Prediction, and raw Match objects
-    const leagueName = tip.leagueName || tip.league?.name || 'Unknown League';
-    const predictionText = tip.title || tip.selection || tip.featuredTip?.title || 'Analyzing match...';
+    const leagueName = tip.leagueName || tip.league?.name || tip.leagueName || 'Elite Competition';
+    const predictionText = tip.prediction || tip.title || tip.selection || tip.featuredTip?.title || 'Expert Analysis';
     
     return {
-      id: tip.id || tip.matchId,
+      id: tip.id || tip.matchId || `tip-${index}`,
       leagueName: leagueName,
-      time: kickoffDate ? kickoffDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : '00:00',
-      date: kickoffDate ? kickoffDate.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : today.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }),
+      time: kickoffDate ? kickoffDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : (tip.time || '20:00'),
+      date: kickoffDate ? kickoffDate.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) : (tip.date || 'Today'),
       homeTeam: { 
-        name: tip.homeTeam?.name || 'Home', 
-        logo: tip.homeTeam?.logoUrl ? <img src={tip.homeTeam.logoUrl} className="w-8 h-8 object-contain" /> : '⚽' 
+        name: tip.homeTeam?.name || 'Home Team', 
+        logo: tip.homeTeam?.logoUrl || tip.homeTeam?.logo 
       },
       awayTeam: { 
-        name: tip.awayTeam?.name || 'Away', 
-        logo: tip.awayTeam?.logoUrl ? <img src={tip.awayTeam.logoUrl} className="w-8 h-8 object-contain" /> : '⚽' 
+        name: tip.awayTeam?.name || 'Away Team', 
+        logo: tip.awayTeam?.logoUrl || tip.awayTeam?.logo
       },
       prediction: predictionText,
-      countdown: 'LIVE', 
       countryCode: tip.countryCode || tip.league?.countryCode || tip.league?.country?.code
     };
   });
-
-  // ... rest of code ....
   
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % displayPredictions.length);
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + displayPredictions.length) % displayPredictions.length);
 
-  const currentPrediction = displayPredictions[currentSlide];
+  const currentPrediction = displayPredictions[currentSlide] || displayPredictions[0];
 
   return (
-    <aside className="w-full lg:w-[380px] flex flex-col gap-6">
-      {displayPredictions.length > 0 && (
-        <div className="bg-gradient-to-br from-[#6366F1] to-[#4F46E5] rounded-[28px] p-4 text-white overflow-hidden relative shadow-xl shadow-brand-indigo/30 border border-white/20">
-           {/* ... content ... */}
-           <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="bg-white/20 p-1.5 rounded-lg backdrop-blur-sm border border-white/10">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5S19.832 5.477 21 6.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
+    <aside className="w-full lg:w-[380px] flex flex-col gap-6 ">
+      {currentPrediction && (
+        <div className="bg-gradient-to-br from-[#059669] via-[#10B981] to-[#047857] rounded-[36px] p-1 text-white overflow-hidden relative shadow-2xl shadow-emerald-500/20 group border border-white/10">
+           {/* Decorative Elements */}
+           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:bg-white/20 transition-all duration-700"></div>
+           <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#064E3B]/40 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl"></div>
+           
+           <div className="relative z-10 p-4 pt-3">
+             <div className="flex items-center justify-center gap-2 mb-4">
+              <div className="w-6 h-6 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center backdrop-blur-md shadow-inner">
+                 <span className="text-[10px]">🏆</span>
+              </div>
+              <h3 className="font-black text-[10px] uppercase tracking-[0.25em] text-emerald-50">Prediction of the day</h3>
             </div>
-            <h3 className="font-black text-lg sm:text-xl tracking-tight">Prediction of the day</h3>
-          </div>
-  
-          <div className="bg-white rounded-2xl p-4 shadow-lg mb-4 border border-white/30 text-slate-900">
-            <div className="flex items-start gap-2.5 mb-3 border-b border-slate-100 pb-3">
-               <div className="w-8 h-8 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center text-brand-indigo shadow-sm overflow-hidden">
-                  {currentPrediction.countryCode ? (
-                    <img 
-                      src={`https://flagcdn.com/${currentPrediction.countryCode.toLowerCase()}.svg`} 
-                      alt="" 
-                      className="w-5 h-4 object-cover rounded-sm" 
-                    />
-                  ) : (
-                    <span className="text-lg">⚽</span>
-                  )}
-               </div>
-               <div>
-                  <div className="text-sm sm:text-base font-black text-slate-800 leading-tight">{currentPrediction.leagueName}</div>
-                  <div className="flex items-center gap-2 mt-0.5 text-slate-400 font-bold text-[10px]">
-                     <div className="flex items-center gap-1">
-                        <svg className="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        {currentPrediction.time}
-                     </div>
-                     <div className="flex items-center gap-1">
-                        <svg className="w-3 h-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                        {currentPrediction.date}
-                     </div>
+    
+            <div className="bg-white rounded-[28px] p-4 shadow-2xl shadow-emerald-950/20 mb-4 text-slate-900 border border-white/50 relative z-10">
+              {/* League & Date Header */}
+              <div className="flex items-center gap-3 mb-4 pb-4 border-b border-slate-50/80">
+                 <div className="w-8 h-8 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-brand-emerald shadow-sm overflow-hidden shrink-0">
+                    {currentPrediction.countryCode ? (
+                      <img 
+                        src={`https://flagcdn.com/${currentPrediction.countryCode.toLowerCase()}.svg`} 
+                        alt="" 
+                        className="w-6 h-4 object-cover rounded-sm" 
+                      />
+                    ) : (
+                      <span className="text-xl">⚽</span>
+                    )}
+                 </div>
+                 <div className="min-w-0">
+                    <div className="text-[13px] font-black text-slate-800 leading-tight truncate tracking-tight">{currentPrediction.leagueName}</div>
+                    <div className="flex items-center gap-2 mt-1 text-slate-400 font-bold text-[8px] uppercase tracking-widest">
+                       <span className="bg-slate-50 px-1.5 py-0.5 rounded-full border border-slate-100/50">{currentPrediction.time}</span>
+                       <span className="w-1 h-1 rounded-full bg-slate-200"></span>
+                       <span>{currentPrediction.date}</span>
+                    </div>
+                 </div>
+              </div>
+    
+              {/* Teams & VS Section */}
+              <div className="flex items-center justify-between gap-1 mb-6 mt-1 px-1">
+                <div className="flex flex-col items-center w-[100px] group/team">
+                  <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-2xl mb-2 flex items-center justify-center p-2.5 shadow-sm group-hover/team:scale-105 group-hover/team:-rotate-2 transition-all duration-300">
+                    {currentPrediction.homeTeam.logo ? (
+                      <img src={currentPrediction.homeTeam.logo} alt="" className="w-full h-full object-contain" />
+                    ) : (
+                      <span className="text-2xl">⚽</span>
+                    )}
                   </div>
-               </div>
-            </div>
-  
-            <div className="flex items-center justify-between gap-1 mb-4 mt-4">
-              <div className="flex flex-col items-center text-center w-[100px]">
-                <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-full mb-2 flex items-center justify-center text-xl shadow-sm overflow-hidden p-2">
-                  {typeof currentPrediction.homeTeam.logo === 'string' && currentPrediction.homeTeam.logo.startsWith('http') ? (
-                    <img src={currentPrediction.homeTeam.logo} alt={currentPrediction.homeTeam.name} className="w-full h-full object-contain" />
-                  ) : (
-                    currentPrediction.homeTeam.logo
-                  )}
+                  <div className="text-[11px] font-black text-slate-800 line-clamp-2 leading-tight text-center tracking-tight h-[2.2em] flex items-center">{currentPrediction.homeTeam.name}</div>
                 </div>
-                <div className="text-sm sm:text-base font-black text-slate-800 leading-tight line-clamp-2">
-                  {currentPrediction.homeTeam.name}
+    
+                <div className="flex flex-col items-center gap-1 opacity-20">
+                   <div className="w-[1px] h-6 bg-slate-900"></div>
+                   <div className="text-[8px] font-black tracking-widest text-slate-900">VS</div>
+                   <div className="w-[1px] h-6 bg-slate-900"></div>
                 </div>
-              </div>
-  
-              <div className="flex flex-col items-center justify-center flex-shrink-0 px-2">
-                <div className="text-xs sm:text-sm font-black text-slate-300 mb-0.5">V.S</div>
-                <div className="text-xs sm:text-sm font-bold text-slate-800 bg-slate-50 px-2 py-0.5 rounded-full border border-slate-100 shadow-inner">
-                   {currentPrediction.countdown}
+    
+                <div className="flex flex-col items-center w-[100px] group/team">
+                  <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-2xl mb-2 flex items-center justify-center p-2.5 shadow-sm group-hover/team:scale-105 group-hover/team:rotate-2 transition-all duration-300">
+                    {currentPrediction.awayTeam.logo ? (
+                      <img src={currentPrediction.awayTeam.logo} alt="" className="w-full h-full object-contain" />
+                    ) : (
+                      <span className="text-2xl">⚽</span>
+                    )}
+                  </div>
+                  <div className="text-[11px] font-black text-slate-800 line-clamp-2 leading-tight text-center tracking-tight h-[2.2em] flex items-center">{currentPrediction.awayTeam.name}</div>
                 </div>
               </div>
-  
-              <div className="flex flex-col items-center text-center w-[100px]">
-                <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-full mb-2 flex items-center justify-center text-xl shadow-sm overflow-hidden p-2">
-                  {typeof currentPrediction.awayTeam.logo === 'string' && currentPrediction.awayTeam.logo.startsWith('http') ? (
-                    <img src={currentPrediction.awayTeam.logo} alt={currentPrediction.awayTeam.name} className="w-full h-full object-contain" />
-                  ) : (
-                    currentPrediction.awayTeam.logo
-                  )}
-                </div>
-                <div className="text-sm sm:text-base font-black text-slate-800 leading-tight line-clamp-2">
-                  {currentPrediction.awayTeam.name}
-                </div>
+              
+              {/* Prediction Display */}
+              <div className="relative mt-6 mb-4">
+                 <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-brand-emerald text-white text-[7px] font-black uppercase tracking-[0.2em] px-2.5 py-0.5 rounded-full shadow-lg shadow-emerald-500/20 z-10 border border-emerald-400/50">
+                    Expert Pick
+                 </div>
+                 <div className="bg-[#F1F5F9]/80 backdrop-blur-sm rounded-2xl p-4 border border-slate-100/50 text-center group-hover:bg-brand-light-emerald/40 transition-all duration-500">
+                    <div className="font-black text-[16px] text-slate-900 leading-tight tracking-tight">{currentPrediction.prediction}</div>
+                 </div>
               </div>
+    
+              <Link 
+                href="/predictions"
+                className="block w-full bg-brand-midnight text-white py-3.5 rounded-[16px] font-black text-[10px] uppercase tracking-[0.15em] text-center hover:bg-slate-800 transition-all shadow-xl shadow-brand-midnight/10 active:scale-95 group/btn overflow-hidden relative"
+              >
+                <span className="relative z-10">See All Predictions</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/0 via-emerald-500/10 to-emerald-500/0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000"></div>
+              </Link>
             </div>
-            
-            <div className="mt-4 text-center bg-slate-50 rounded-xl p-3 border border-slate-100 mb-4">
-               <div className="text-[10px] sm:text-xs text-slate-400 font-black uppercase tracking-widest mb-1">Prediction</div>
-               <div className="font-black text-lg sm:text-xl text-slate-900 leading-tight">{currentPrediction.prediction}</div>
-            </div>
-  
-            <button className="w-full bg-brand-pink text-white py-3 rounded-xl font-black text-xs sm:text-sm uppercase tracking-[0.15em] shadow-lg shadow-brand-pink/20 hover:scale-[1.01] transition-all active:scale-[0.99]">
-              See Prediction
-            </button>
-          </div>
-  
-          <div className="flex flex-col items-center gap-3">
-             <div className="flex items-center gap-4">
+    
+            {/* Pagination Controls */}
+            {displayPredictions.length > 1 && (
+              <div className="flex items-center justify-between px-2 relative z-10 pb-1">
                 <button 
-                  onClick={prevSlide}
-                  className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-all active:scale-90"
+                  onClick={prevSlide} 
+                  className="w-9 h-9 rounded-xl border border-white/20 bg-white/5 flex items-center justify-center hover:bg-white/20 transition-all active:scale-90 group/nav"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-                  </svg>
+                  <svg className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" /></svg>
                 </button>
                 
-                <div className="flex flex-col items-center gap-2">
-                   <div className="text-sm sm:text-base font-black text-white/80">{currentSlide + 1} / {displayPredictions.length}</div>
-                   <div className="flex items-center gap-1.5">
-                      {displayPredictions.map((_, idx) => (
-                         <button 
-                           key={idx}
-                           onClick={() => setCurrentSlide(idx)}
-                           className={`h-1.5 rounded-full transition-all border border-white/10 ${idx === currentSlide ? 'w-6 bg-white' : 'w-1.5 bg-white/20'}`}
-                         />
-                      ))}
-                   </div>
+                <div className="flex flex-col items-center gap-1.5">
+                  <div className="flex gap-1.5">
+                    {displayPredictions.map((_, i) => (
+                      <div 
+                        key={i} 
+                        className={`h-1 rounded-full transition-all duration-500 ${i === currentSlide ? 'w-5 bg-white' : 'w-1 bg-white/20'}`}
+                      ></div>
+                    ))}
+                  </div>
+                  <span className="text-[9px] font-black tracking-widest text-white/60 uppercase">Tip {currentSlide + 1} of {displayPredictions.length}</span>
                 </div>
-  
+                
                 <button 
-                  onClick={nextSlide}
-                  className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center hover:bg-white/10 transition-all active:scale-90"
+                  onClick={nextSlide} 
+                  className="w-9 h-9 rounded-xl border border-white/20 bg-white/5 flex items-center justify-center hover:bg-white/20 transition-all active:scale-90 group/nav"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                  </svg>
+                  <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" /></svg>
                 </button>
-             </div>
-          </div>
+              </div>
+            )}
+           </div>
         </div>
       )}
 
       {mode === 'default' ? (
-        <>
-          <div className="card !p-0 overflow-hidden shadow-sm !border-slate-200/60 border-t-4 !border-t-brand-indigo">
-            <div className="p-5 border-b border-slate-100 bg-white">
-              <h3 className="font-bold text-lg sm:text-xl text-slate-800">Today&apos;s Streams</h3>
-            </div>
-            <div className="divide-y divide-slate-100 max-h-[500px] overflow-y-auto">
-                {streamItems.length > 0 ? (
-                  streamItems.map((stream) => (
-                    <div key={stream.id} className="p-4 hover:bg-slate-50 transition-colors flex items-center justify-between group">
-                      <div className="flex items-center gap-4">
-                        <div className="w-8 h-8 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center text-sm shadow-sm">
-                          {stream.icon}
-                        </div>
-                        <div>
-                          <div className="text-sm sm:text-base font-bold text-slate-800 line-clamp-1 group-hover:text-brand-indigo transition-colors">
-                            {stream.home} vs {stream.away}
-                          </div>
-                          <div className="flex items-center gap-1.5 mt-0.5">
-                            <span className={`w-1.5 h-1.5 rounded-full ${stream.time === 'LIVE' ? 'bg-red-500 animate-pulse' : 'bg-slate-300'}`}></span>
-                            <span className={`text-xs sm:text-sm font-black uppercase tracking-tighter ${stream.time === 'LIVE' ? 'text-red-500' : 'text-slate-400'}`}>
-                              {stream.time}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <button className="p-1.5 rounded-lg bg-slate-100 text-slate-400 group-hover:bg-brand-indigo/10 group-hover:text-brand-indigo transition-all">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                        </svg>
-                      </button>
-                    </div>
-                  ))
-                ) : (
-                  <div className="p-8 text-center">
-                      <div className="text-sm sm:text-base text-slate-400 font-semibold mb-2">No live events now</div>
-                      <Link href="/streams" className="text-xs sm:text-sm text-brand-indigo font-bold hover:underline">View schedule &rarr;</Link>
-                  </div>
-                )}
-                
-                {/* Infinite Scroll Trigger for Streams */}
-                <div ref={streamsLoaderRef} className="py-4 flex flex-col items-center justify-center gap-2">
-                    {streamsLoading && (
-                        <div className="w-5 h-5 border-2 border-brand-indigo/20 border-t-brand-indigo rounded-full animate-spin"></div>
-                    )}
-                    {!streamsHasMore && streamItems.length > 0 && (
-                        <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">End of list</span>
-                    )}
-                </div>
-            </div>
+        <div className="card !p-0 overflow-hidden shadow-sm !border-slate-200/60 border-t-4 !border-t-brand-emerald">
+          <div className="p-5 border-b border-slate-100 bg-white sticky top-0 z-10">
+            <h3 className="font-bold text-lg text-slate-800">Football Leagues</h3>
           </div>
-
-          <div className="card !p-0 overflow-hidden shadow-sm !border-slate-200/60 border-t-4 !border-t-brand-indigo">
-             {/* ... leagues content ... */}
-            <div className="p-5 border-b border-slate-100 bg-white">
-              <h3 className="font-bold text-lg sm:text-xl text-slate-800">Football Leagues</h3>
-            </div>
-            <div className="flex flex-col h-[500px] overflow-y-auto">
-              {competitions.map((group) => (
-                  <div key={group.country.name}>
-                     {group.leagues.map((league) => (
-                        <Link 
-                          key={league.id} 
-                          href={`/leagues/${group.country.name.toLowerCase()}/${league.slug}`} 
-                          className="flex items-center justify-between p-4 px-5 hover:bg-slate-50 transition-all border-b border-slate-100 last:border-0 group"
-                        >
-                          <div className="flex items-center gap-4">
-                            {league.logoUrl ? (
-                              <img src={league.logoUrl} alt={league.name} className="w-8 h-8 object-contain rounded shadow-sm border border-slate-100" />
-                            ) : (
-                              <div className="w-9 h-9 bg-slate-100 rounded-xl flex items-center justify-center text-[10px] font-black text-slate-400 group-hover:bg-brand-indigo/10 group-hover:text-brand-indigo transition-all border border-slate-200/50">
-                                  {league.name.substring(0,2).toUpperCase()}
-                              </div>
-                            )}
-                            <div>
-                                <div className="text-sm sm:text-base font-bold text-slate-800 group-hover:text-brand-indigo transition-colors line-clamp-1">{league.name}</div>
-                                <div className="text-xs sm:text-sm text-slate-400 font-bold tracking-tight">{group.country.name}</div>
+          <div className="flex flex-col h-[600px] overflow-y-auto custom-scrollbar">
+            {competitions.map((group) => (
+                <div key={group.country.name}>
+                   {group.leagues.map((league) => (
+                      <Link 
+                        key={league.id} 
+                        href={`/leagues/${group.country.name.toLowerCase()}/${league.slug}`} 
+                        className="flex items-center justify-between p-4 px-5 hover:bg-slate-50 transition-all border-b border-slate-50 last:border-0 group"
+                      >
+                        <div className="flex items-center gap-4">
+                          {league.logoUrl ? (
+                            <img src={league.logoUrl} alt="" className="w-8 h-8 object-contain" />
+                          ) : (
+                            <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-[10px] font-black text-slate-400 group-hover:bg-brand-emerald/10 group-hover:text-brand-emerald transition-all">
+                                {league.name.substring(0,2).toUpperCase()}
                             </div>
+                          )}
+                          <div>
+                              <div className="text-sm font-bold text-slate-800 group-hover:text-brand-emerald transition-colors line-clamp-1">{league.name}</div>
+                              <div className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">{group.country.name}</div>
                           </div>
-                          <svg className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-all translate-x-0 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7-7" />
-                          </svg>
-                        </Link>
-                     ))}
-                  </div>
-                ))
-              }
-              
-              {/* Infinite Scroll Trigger */}
-              <div ref={loaderRef} className="py-4 flex flex-col items-center justify-center gap-2">
-                {loading && (
-                  <div className="w-5 h-5 border-2 border-brand-indigo/20 border-t-brand-indigo rounded-full animate-spin"></div>
-                )}
-                {!hasMore && (
-                  <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">End of list</span>
-                )}
-              </div>
+                        </div>
+                        <svg className="w-4 h-4 text-slate-300 group-hover:text-brand-emerald transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7-7" />
+                        </svg>
+                      </Link>
+                   ))}
+                </div>
+              ))
+            }
+            <div ref={loaderRef} className="py-8 flex flex-col items-center justify-center gap-2">
+              {loading && <div className="w-5 h-5 border-2 border-brand-emerald/20 border-t-brand-emerald rounded-full animate-spin"></div>}
+              {!hasMore && <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">End of list</span>}
             </div>
           </div>
-        </>
+        </div>
       ) : (
         <div className="flex flex-col gap-4">
-           <h3 className="font-bold text-xl sm:text-2xl text-slate-800 ml-1">Today&apos;s Competitions</h3>
+           <h3 className="font-bold text-xl text-slate-800 ml-1">Today&apos;s Competitions</h3>
            <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-hidden">
-             {/* ... */}
-              <div className="divide-y divide-slate-100 max-h-[600px] overflow-y-auto">
+              <div className="divide-y divide-slate-100 max-h-[800px] overflow-y-auto custom-scrollbar">
                 {competitions.map((group) => (
                   <div key={group.country.name} className="flex flex-col border-b border-slate-50 last:border-0">
                     <button 
                       onClick={() => toggleCountry(group.country.name)}
-                      className="w-full flex items-center justify-between p-5 hover:bg-slate-50 transition-all group"
+                      className="w-full flex items-center justify-between p-5 hover:bg-slate-50 transition-all group text-left"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="w-7 h-7 bg-slate-50 rounded-lg flex items-center justify-center text-base shadow-sm group-hover:scale-110 transition-transform">
+                        <div className="w-7 h-7 bg-white rounded-lg flex items-center justify-center shadow-sm border border-slate-50">
                           {group.country.flagUrl ? (
                             <img src={group.country.flagUrl} alt="" className="w-5 h-4 object-cover rounded-sm" />
                           ) : (
                             <span>🏳️</span>
                           )}
                         </div>
-                        <span className="text-base sm:text-lg font-bold text-slate-700 group-hover:text-brand-indigo transition-colors">{group.country.name}</span>
+                        <span className="text-base font-bold text-slate-700 group-hover:text-brand-emerald transition-colors">{group.country.name}</span>
                       </div>
                       <svg 
                         className={`w-4 h-4 text-slate-300 transition-transform duration-300 ${openCountries.includes(group.country.name) ? 'rotate-180' : ''}`} 
@@ -458,14 +344,14 @@ export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [
                     </button>
                     
                     {openCountries.includes(group.country.name) && (
-                      <div className="bg-slate-50/50 px-5 pb-4 space-y-2 pt-1">
+                      <div className="bg-slate-50/50 px-5 pb-4 space-y-1 mt-1">
                         {group.leagues.map((league) => (
                           <Link 
                             key={league.id} 
                             href={`/predictions?leagueSlug=${league.slug}`}
-                            className="flex items-center gap-3 p-2 rounded-lg hover:bg-white hover:text-brand-indigo transition-all text-sm sm:text-base font-bold text-slate-500"
+                            className="flex items-center gap-3 p-2 rounded-lg hover:bg-white hover:text-brand-emerald transition-all text-sm font-bold text-slate-500"
                           >
-                            <span className="w-1.5 h-1.5 rounded-full bg-slate-200"></span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
                             {league.name}
                           </Link>
                         ))}
@@ -473,15 +359,9 @@ export default function Sidebar({ leagueData, initialTotal = 0, featuredTips = [
                     )}
                   </div>
                 ))}
-
-                {/* Infinite Scroll Trigger for Predictions Mode */}
-                <div ref={loaderRef} className="py-4 flex flex-col items-center justify-center gap-2 border-t border-slate-100">
-                  {loading && (
-                    <div className="w-5 h-5 border-2 border-brand-indigo/20 border-t-brand-indigo rounded-full animate-spin"></div>
-                  )}
-                  {!hasMore && (
-                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">End of list</span>
-                  )}
+                <div ref={loaderRef} className="py-8 flex flex-col items-center justify-center gap-2">
+                  {loading && <div className="w-5 h-5 border-2 border-brand-emerald/20 border-t-brand-emerald rounded-full animate-spin"></div>}
+                  {!hasMore && <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">End of list</span>}
                 </div>
               </div>
            </div>

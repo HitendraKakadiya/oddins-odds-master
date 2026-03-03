@@ -32,12 +32,12 @@ export default function LeagueHero({ league, season, stats }: LeagueHeroProps) {
           </div>
           
           <div className="flex flex-col items-center gap-3 mb-4">
-            <button className="text-slate-300 hover:text-brand-pink transition-colors">
+            <button className="text-slate-300 hover:text-brand-emerald transition-colors">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.54 1.118l-3.976-2.888a1 1 0 00-1.175 0l-3.976 2.888c-.784.57-1.838-.196-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.382-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
               </svg>
             </button>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-brand-dark-blue leading-tight tracking-tight">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-brand-midnight leading-tight tracking-tight">
               {league.name} standings, stats and fixtures
             </h1>
           </div>
@@ -103,7 +103,7 @@ function OtherCompItem({ name, region, icon }: { name: string; region: string; i
         )}
       </div>
       <div className="flex flex-col min-w-0">
-        <span className="text-xs font-black text-slate-800 truncate leading-tight group-hover:text-brand-indigo transition-colors">{region}</span>
+        <span className="text-xs font-black text-slate-800 truncate leading-tight group-hover:text-brand-emerald transition-colors">{region}</span>
         {name !== region && (
            <span className="text-[10px] font-bold text-slate-400 truncate leading-tight">{name}</span>
         )}

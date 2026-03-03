@@ -41,7 +41,7 @@ export function FeaturedTipsSlider({ featuredTips = [] }: DailyTipProps) {
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + displayPredictions.length) % displayPredictions.length);
 
   return (
-    <div className="bg-gradient-to-br from-[#6366F1] to-[#4F46E5] rounded-[28px] p-4 text-white overflow-hidden relative shadow-xl shadow-brand-indigo/30 border border-white/20 w-full">
+    <div className="bg-gradient-to-br from-[#6366F1] to-[#4F46E5] rounded-[28px] p-4 text-white overflow-hidden relative shadow-xl shadow-brand-emerald/30 border border-white/20 w-full">
       <div className="flex items-center justify-center gap-2 mb-4">
         <div className="bg-white/20 p-1.5 rounded-lg backdrop-blur-sm border border-white/10">
           <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,7 +53,7 @@ export function FeaturedTipsSlider({ featuredTips = [] }: DailyTipProps) {
 
       <div className="bg-white rounded-2xl p-4 shadow-lg mb-4 border border-white/30 text-slate-900">
         <div className="flex items-start gap-2.5 mb-3 border-b border-slate-100 pb-3">
-           <div className="w-8 h-8 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center text-brand-indigo shadow-sm overflow-hidden">
+           <div className="w-8 h-8 bg-slate-50 border border-slate-100 rounded-lg flex items-center justify-center text-brand-emerald shadow-sm overflow-hidden">
               {currentPrediction.countryCode ? (
                 <img 
                   src={`https://flagcdn.com/${currentPrediction.countryCode.toLowerCase()}.svg`} 
@@ -111,7 +111,7 @@ export function FeaturedTipsSlider({ featuredTips = [] }: DailyTipProps) {
            <div className="font-black text-sm text-slate-900 leading-tight">{currentPrediction.prediction}</div>
         </div>
 
-        <button className="w-full bg-brand-pink text-white py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.15em] shadow-lg shadow-brand-pink/20 hover:scale-[1.01] transition-all active:scale-[0.99]">
+        <button className="w-full bg-brand-emerald text-white py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.15em] shadow-lg shadow-brand-emerald/20 hover:scale-[1.01] transition-all active:scale-[0.99]">
           See Prediction
         </button>
       </div>
@@ -140,7 +140,7 @@ export function FeaturedTipsSlider({ featuredTips = [] }: DailyTipProps) {
 
 export function SidebarStreams({ streams = [] }: { streams?: any[] }) {
   return (
-    <div className="card !p-0 overflow-hidden shadow-sm !border-slate-200/60 border-t-4 !border-t-brand-indigo w-full">
+    <div className="card !p-0 overflow-hidden shadow-sm !border-slate-200/60 border-t-4 !border-t-brand-emerald w-full">
       <div className="p-5 border-b border-slate-100 bg-white">
         <h3 className="font-bold text-lg text-slate-800">Today&apos;s Streams</h3>
       </div>
@@ -153,7 +153,7 @@ export function SidebarStreams({ streams = [] }: { streams?: any[] }) {
                     {stream.icon}
                   </div>
                   <div>
-                    <div className="text-[11px] font-bold text-slate-800 line-clamp-1 group-hover:text-brand-indigo transition-colors">
+                    <div className="text-[11px] font-bold text-slate-800 line-clamp-1 group-hover:text-brand-emerald transition-colors">
                       {stream.home} vs {stream.away}
                     </div>
                     <div className="flex items-center gap-1.5 mt-0.5">
@@ -164,7 +164,7 @@ export function SidebarStreams({ streams = [] }: { streams?: any[] }) {
                     </div>
                   </div>
                 </div>
-                <button className="p-1.5 rounded-lg bg-slate-100 text-slate-400 group-hover:bg-brand-indigo/10 group-hover:text-brand-indigo transition-all">
+                <button className="p-1.5 rounded-lg bg-slate-100 text-slate-400 group-hover:bg-brand-emerald/10 group-hover:text-brand-emerald transition-all">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /></svg>
                 </button>
               </div>
@@ -179,7 +179,7 @@ export function SidebarStreams({ streams = [] }: { streams?: any[] }) {
 
 export function SidebarLeagues({ leagueData = [] }: { leagueData: LeaguesResponse[] }) {
   return (
-    <div className="card !p-0 overflow-hidden shadow-sm !border-slate-200/60 border-t-4 !border-t-brand-indigo w-full">
+    <div className="card !p-0 overflow-hidden shadow-sm !border-slate-200/60 border-t-4 !border-t-brand-emerald w-full">
       <div className="p-5 border-b border-slate-100 bg-white">
         <h3 className="font-bold text-lg text-slate-800">Football Leagues</h3>
       </div>
@@ -193,12 +193,12 @@ export function SidebarLeagues({ leagueData = [] }: { leagueData: LeaguesRespons
                       {league.logoUrl ? (
                         <img src={league.logoUrl} alt={league.name} className="w-8 h-8 object-contain rounded shadow-sm border border-slate-100" />
                       ) : (
-                        <div className="w-9 h-9 bg-slate-100 rounded-xl flex items-center justify-center text-[10px] font-black text-slate-400 group-hover:bg-brand-indigo/10 group-hover:text-brand-indigo transition-all border border-slate-200/50">
+                        <div className="w-9 h-9 bg-slate-100 rounded-xl flex items-center justify-center text-[10px] font-black text-slate-400 group-hover:bg-brand-emerald/10 group-hover:text-brand-emerald transition-all border border-slate-200/50">
                             {league.name.substring(0,2).toUpperCase()}
                         </div>
                       )}
                       <div>
-                          <div className="text-xs font-bold text-slate-800 group-hover:text-brand-indigo transition-colors line-clamp-1">{league.name}</div>
+                          <div className="text-xs font-bold text-slate-800 group-hover:text-brand-emerald transition-colors line-clamp-1">{league.name}</div>
                           <div className="text-[10px] text-slate-400 font-bold tracking-tight">{group.country.name}</div>
                       </div>
                     </div>
@@ -228,14 +228,14 @@ export function SidebarCompetitions({ competitionsData, openCountries, toggleCou
                     <div className="w-7 h-7 bg-slate-50 rounded-lg flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
                       {group.country.flagUrl ? <img src={group.country.flagUrl} alt="" className="w-5 h-4 object-cover rounded-sm" /> : <span>🏳️</span>}
                     </div>
-                    <span className="text-sm font-bold text-slate-700 group-hover:text-brand-indigo transition-colors">{group.country.name}</span>
+                    <span className="text-sm font-bold text-slate-700 group-hover:text-brand-emerald transition-colors">{group.country.name}</span>
                   </div>
                   <svg className={`w-4 h-4 text-slate-300 transition-transform duration-300 ${openCountries.includes(group.country.name) ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" /></svg>
                 </button>
                 {openCountries.includes(group.country.name) && (
                   <div className="bg-slate-50/50 px-5 pb-4 space-y-2 pt-1">
                     {group.leagues.map((league: any) => (
-                      <Link key={league.id} href={`/predictions?leagueSlug=${league.slug}`} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white hover:text-brand-indigo transition-all text-xs font-bold text-slate-500">
+                      <Link key={league.id} href={`/predictions?leagueSlug=${league.slug}`} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white hover:text-brand-emerald transition-all text-xs font-bold text-slate-500">
                         <span className="w-1.5 h-1.5 rounded-full bg-slate-200"></span>
                         {league.name}
                       </Link>

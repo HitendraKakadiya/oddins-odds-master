@@ -21,7 +21,7 @@ export default function AcademyFeatureCards() {
           </div>
           <Link 
             href="#strategies" 
-            className="w-full bg-brand-indigo text-white font-black text-xs uppercase tracking-[0.2em] py-4 rounded-2xl shadow-lg shadow-brand-indigo/20 hover:bg-brand-indigo/90 transition-colors"
+            className="w-full bg-brand-emerald text-white font-black text-xs uppercase tracking-[0.2em] py-4 rounded-2xl shadow-lg shadow-brand-emerald/20 hover:bg-brand-emerald/90 transition-colors"
           >
             Strategies
           </Link>
@@ -35,7 +35,7 @@ export default function AcademyFeatureCards() {
           </div>
           <Link 
             href="#bet-types" 
-            className="w-full bg-brand-indigo text-white font-black text-xs uppercase tracking-[0.2em] py-4 rounded-2xl shadow-lg shadow-brand-indigo/20 hover:bg-brand-indigo/90 transition-colors"
+            className="w-full bg-brand-emerald text-white font-black text-xs uppercase tracking-[0.2em] py-4 rounded-2xl shadow-lg shadow-brand-emerald/20 hover:bg-brand-emerald/90 transition-colors"
           >
             Bet Types
           </Link>
@@ -44,7 +44,7 @@ export default function AcademyFeatureCards() {
 
       <p className="text-sm text-slate-600 italic">
         Each section includes in-depth guides that walk you through every detail, making sure you&apos;re fully 
-        equipped before placing bets on <Link href="/betting-sites" className="text-brand-indigo font-bold hover:underline">sports betting sites</Link>.
+        equipped before placing bets on <Link href="/betting-sites" className="text-brand-emerald font-bold hover:underline">sports betting sites</Link>.
       </p>
     </div>
   );

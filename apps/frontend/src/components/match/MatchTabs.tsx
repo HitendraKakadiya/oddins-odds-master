@@ -21,7 +21,7 @@ export default function MatchTabs({ activeTab, onTabChange }: MatchTabsProps) {
           onClick={() => onTabChange(tab.id)}
           className={`px-5 md:px-8 py-3 md:py-4 rounded-[14px] md:rounded-2xl text-[11px] md:text-sm font-black transition-all whitespace-nowrap ${
             activeTab === tab.id
-              ? 'bg-brand-indigo text-white shadow-lg shadow-brand-indigo/20 scale-[1.02]'
+              ? 'bg-brand-emerald text-white shadow-lg shadow-brand-emerald/20 scale-[1.02]'
               : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
           }`}
         >

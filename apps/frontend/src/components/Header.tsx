@@ -21,7 +21,7 @@ export default function Header() {
       <nav className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 sm:h-20">
           <Link href="/" className="flex items-center space-x-2 group">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-brand-indigo rounded-xl flex items-center justify-center text-white font-bold text-lg sm:text-xl shadow-lg shadow-brand-indigo/20 group-hover:scale-105 transition-transform">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-brand-emerald rounded-xl flex items-center justify-center text-white font-bold text-lg sm:text-xl shadow-lg shadow-brand-emerald/20 group-hover:scale-105 transition-transform">
               OO
             </div>
             <span className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">OddinsOdds</span>
@@ -32,7 +32,7 @@ export default function Header() {
               <Link 
                 key={item.name} 
                 href={item.href} 
-                className="text-slate-600 hover:text-brand-indigo font-semibold flex items-center transition-colors text-sm"
+                className="text-slate-600 hover:text-brand-emerald font-semibold flex items-center transition-colors text-sm"
               >
                 {item.name}
                 {item.hasDropdown && (
@@ -45,7 +45,7 @@ export default function Header() {
           </div>
 
           <div className="flex items-center space-x-2 sm:space-x-3">
-            <button className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-slate-50 rounded-xl text-slate-400 hover:text-brand-indigo hover:bg-slate-100 transition-all border border-slate-100">
+            <button className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-slate-50 rounded-xl text-slate-400 hover:text-brand-emerald hover:bg-slate-100 transition-all border border-slate-100">
               <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
@@ -53,7 +53,7 @@ export default function Header() {
 
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-slate-50 rounded-xl text-slate-600 hover:text-brand-indigo hover:bg-slate-100 transition-all border border-slate-100"
+              className="lg:hidden w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-slate-50 rounded-xl text-slate-600 hover:text-brand-emerald hover:bg-slate-100 transition-all border border-slate-100"
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? (
@@ -77,7 +77,7 @@ export default function Header() {
                   key={item.name}
                   href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="px-4 py-3 text-slate-600 hover:text-brand-indigo hover:bg-slate-50 font-semibold flex items-center justify-between transition-colors rounded-lg text-lg sm:text-xl"
+                  className="px-4 py-3 text-slate-600 hover:text-brand-emerald hover:bg-slate-50 font-semibold flex items-center justify-between transition-colors rounded-lg text-lg sm:text-xl"
                 >
                   <span>{item.name}</span>
                   {item.hasDropdown && (

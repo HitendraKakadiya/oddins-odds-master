@@ -54,7 +54,7 @@ export default function AcademySideNav() {
             onClick={(e) => scrollToSection(e, section.id)}
             className={`block text-xs transition-all duration-200 border-l-2 pl-4 py-1 ${
               activeSection === section.id
-                ? 'text-brand-pink font-black border-brand-pink'
+                ? 'text-brand-emerald font-black border-brand-emerald'
                 : 'text-slate-400 border-slate-100 hover:text-slate-900 hover:border-slate-300'
             }`}
           >

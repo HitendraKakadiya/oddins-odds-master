@@ -67,7 +67,7 @@ export default function FeaturedPredictionCard({ prediction }: FeaturedPredictio
                 <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10">
                    <span className="text-[10px] font-black italic text-white/40">VS</span>
                 </div>
-                <div className="bg-brand-pink px-4 py-1.5 rounded-full border border-white/20 shadow-lg shadow-brand-pink/30 hover:scale-105 transition-transform">
+                <div className="bg-brand-emerald px-4 py-1.5 rounded-full border border-white/20 shadow-lg shadow-brand-emerald/30 hover:scale-105 transition-transform">
                    <span className="text-[9px] font-black tracking-widest text-white">PREDICTION</span>
                 </div>
              </div>
@@ -84,7 +84,7 @@ export default function FeaturedPredictionCard({ prediction }: FeaturedPredictio
              </div>
           </div>
 
-          <div className="text-lg font-black text-brand-pink mt-2 uppercase tracking-tight">
+          <div className="text-lg font-black text-brand-emerald mt-2 uppercase tracking-tight">
             {prediction.selection === 'Home' ? `${prediction.homeTeam.name} Win` : 
              prediction.selection === 'Away' ? `${prediction.awayTeam.name} Win` : 
              prediction.selection}
@@ -98,7 +98,7 @@ export default function FeaturedPredictionCard({ prediction }: FeaturedPredictio
             <span className="text-xs">🏳️</span>
             <span className="text-[10px] font-bold text-slate-400 truncate">{prediction.league.name} • {date}</span>
          </div>
-         <div className="text-brand-indigo font-black text-[10px] group-hover:underline whitespace-nowrap ml-4">
+         <div className="text-brand-emerald font-black text-[10px] group-hover:underline whitespace-nowrap ml-4">
             See Details →
          </div>
       </div>

@@ -14,7 +14,7 @@ export default function LeagueStandingsTable({ standings }: LeagueStandingsTable
   return (
     <div className="bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden mb-12">
       {/* Table Header / Filters */}
-      <div className="bg-brand-indigo/10 px-8 py-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-brand-emerald/10 px-8 py-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <h3 className="text-xl font-black text-slate-800 uppercase tracking-widest italic">Standing Table</h3>
         
         <div className="flex flex-wrap items-center gap-3">
@@ -70,7 +70,7 @@ export default function LeagueStandingsTable({ standings }: LeagueStandingsTable
                       <div className="w-10 h-10 rounded-full bg-white border border-slate-100 flex items-center justify-center p-2 shadow-sm shrink-0">
                         <img src={row.team.logoUrl || ''} alt={row.team.name} className="w-full h-full object-contain" />
                       </div>
-                      <span className="text-sm font-black text-slate-700 group-hover:text-brand-indigo transition-colors whitespace-nowrap">
+                      <span className="text-sm font-black text-slate-700 group-hover:text-brand-emerald transition-colors whitespace-nowrap">
                         {row.team.name}
                       </span>
                     </Link>
@@ -83,7 +83,7 @@ export default function LeagueStandingsTable({ standings }: LeagueStandingsTable
                   <td className="px-4 py-5 text-center text-sm font-black text-slate-500">{stats.ga}</td>
                   <td className="px-4 py-5 text-center text-sm font-black text-slate-600">{stats.gf - stats.ga}</td>
                   <td className="px-4 py-5 text-center">
-                    <div className="inline-block bg-brand-indigo/10 text-brand-indigo px-3 py-1 rounded-lg text-sm font-black">
+                    <div className="inline-block bg-brand-emerald/10 text-brand-emerald px-3 py-1 rounded-lg text-sm font-black">
                         {stats.points}
                     </div>
                   </td>
@@ -118,7 +118,7 @@ function FilterButton({ active, onClick, label }: { active: boolean; onClick: ()
       onClick={onClick}
       className={`px-6 py-2 rounded-lg text-xs font-black transition-all duration-300 ${
         active 
-          ? 'bg-brand-pink text-white shadow-lg shadow-brand-pink/30' 
+          ? 'bg-brand-emerald text-white shadow-lg shadow-brand-emerald/30' 
           : 'text-slate-500 hover:text-slate-800 hover:bg-white/60'
       }`}
     >

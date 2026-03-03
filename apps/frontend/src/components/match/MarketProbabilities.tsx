@@ -20,7 +20,7 @@ interface MarketCardProps {
 function MarketCard({ label, homeProb, average, awayProb, homeLogo, awayLogo }: MarketCardProps) {
   return (
     <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-hidden flex flex-col">
-      <div className="bg-brand-indigo py-3 text-center">
+      <div className="bg-brand-emerald py-3 text-center">
         <span className="text-white text-[11px] font-black uppercase tracking-[0.2em]">{label}</span>
       </div>
       <div className="p-4 flex items-center justify-between">

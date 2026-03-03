@@ -25,7 +25,7 @@ export default function AuthorCard({ name, role, imageUrl, link }: AuthorCardPro
       
       <Link 
         href={link} 
-        className="inline-block bg-brand-pink text-white px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider shadow-lg shadow-brand-pink/20 hover:scale-105 transition-transform active:scale-95"
+        className="inline-block bg-brand-emerald text-white px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider shadow-lg shadow-brand-emerald/20 hover:scale-105 transition-transform active:scale-95"
       >
         Learn More
       </Link>

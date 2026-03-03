@@ -14,7 +14,7 @@ export default function H2HComparison({ homeTeam, awayTeam, homeStats, awayStats
   return (
     <div className="flex flex-col gap-12">
        <div className="flex flex-col gap-4">
-          <h2 className="text-2xl md:text-4xl font-black text-brand-dark-blue">Head to head: {homeTeam.name} vs {awayTeam.name}</h2>
+          <h2 className="text-2xl md:text-4xl font-black text-brand-midnight">Head to head: {homeTeam.name} vs {awayTeam.name}</h2>
           <p className="text-slate-600 text-lg leading-relaxed">
              Review the head-to-head record between the teams, featuring key data to support your match prediction.
           </p>
@@ -23,7 +23,7 @@ export default function H2HComparison({ homeTeam, awayTeam, homeStats, awayStats
        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Home Team Card */}
           <div className="bg-white rounded-[32px] border border-slate-100 shadow-xl shadow-slate-200/50 flex flex-col overflow-hidden">
-             <div className="bg-brand-indigo h-2 w-full"></div>
+             <div className="bg-brand-emerald h-2 w-full"></div>
              <div className="p-8 flex flex-col items-center">
                 <div className="w-24 h-24 rounded-3xl bg-slate-50 border border-slate-100 p-4 mb-6 shadow-sm">
                    <img src={homeTeam.logoUrl || ''} alt={homeTeam.name} className="w-full h-full object-contain" />
@@ -42,7 +42,7 @@ export default function H2HComparison({ homeTeam, awayTeam, homeStats, awayStats
                    <MetricRow label="Away" ppg={homeStats?.away?.ppg || 0} results={homeStats?.last5Away || []} />
                 </div>
 
-                <button className="mt-10 bg-brand-pink text-white px-8 py-3 rounded-full font-black text-sm shadow-lg shadow-brand-pink/30 hover:scale-105 transition-transform">
+                <button className="mt-10 bg-brand-emerald text-white px-8 py-3 rounded-full font-black text-sm shadow-lg shadow-brand-emerald/30 hover:scale-105 transition-transform">
                    More Information +
                 </button>
              </div>
@@ -50,7 +50,7 @@ export default function H2HComparison({ homeTeam, awayTeam, homeStats, awayStats
 
           {/* Away Team Card */}
           <div className="bg-white rounded-[32px] border border-slate-100 shadow-xl shadow-slate-200/50 flex flex-col overflow-hidden">
-             <div className="bg-brand-indigo h-2 w-full"></div>
+             <div className="bg-brand-emerald h-2 w-full"></div>
              <div className="p-8 flex flex-col items-center">
                 <div className="w-24 h-24 rounded-3xl bg-slate-50 border border-slate-100 p-4 mb-6 shadow-sm">
                    <img src={awayTeam.logoUrl || ''} alt={awayTeam.name} className="w-full h-full object-contain" />
@@ -69,7 +69,7 @@ export default function H2HComparison({ homeTeam, awayTeam, homeStats, awayStats
                    <MetricRow label="Away" ppg={awayStats?.away?.ppg || 0} results={awayStats?.last5Away || []} />
                 </div>
 
-                <button className="mt-10 bg-brand-pink text-white px-8 py-3 rounded-full font-black text-sm shadow-lg shadow-brand-pink/30 hover:scale-105 transition-transform">
+                <button className="mt-10 bg-brand-emerald text-white px-8 py-3 rounded-full font-black text-sm shadow-lg shadow-brand-emerald/30 hover:scale-105 transition-transform">
                    More Information +
                 </button>
              </div>
@@ -81,7 +81,7 @@ export default function H2HComparison({ homeTeam, awayTeam, homeStats, awayStats
           <div className="bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden">
              <div className="bg-slate-50 px-8 py-6 border-b border-slate-100 flex items-center justify-between">
                 <h3 className="text-xl font-black text-slate-800 uppercase tracking-widest">Head to Head History</h3>
-                <span className="bg-brand-indigo/10 text-brand-indigo px-4 py-1 rounded-full text-xs font-black">Last {h2hMatches.slice(0, 5).length} Matches</span>
+                <span className="bg-brand-emerald/10 text-brand-emerald px-4 py-1 rounded-full text-xs font-black">Last {h2hMatches.slice(0, 5).length} Matches</span>
              </div>
              <div className="divide-y divide-slate-50">
                 {h2hMatches.slice(0, 5).map((m, idx) => (
@@ -98,9 +98,9 @@ export default function H2HComparison({ homeTeam, awayTeam, homeStats, awayStats
                          </div>
                          
                          <div className="flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-xl border border-slate-200 min-w-[80px] justify-center">
-                            <span className="text-lg font-black text-brand-dark-blue">{m.homeScore}</span>
+                            <span className="text-lg font-black text-brand-midnight">{m.homeScore}</span>
                             <span className="text-slate-300 font-black">-</span>
-                            <span className="text-lg font-black text-brand-dark-blue">{m.awayScore}</span>
+                            <span className="text-lg font-black text-brand-midnight">{m.awayScore}</span>
                          </div>
                          
                          <div className="flex items-center gap-3 w-1/3 justify-start">
@@ -113,7 +113,7 @@ export default function H2HComparison({ homeTeam, awayTeam, homeStats, awayStats
                          {m.homeScore > m.awayScore ? (
                             <span className="text-[10px] font-black text-green-500 uppercase tracking-tighter bg-green-50 px-2 py-1 rounded-md">Home Win</span>
                          ) : m.awayScore > m.homeScore ? (
-                            <span className="text-[10px] font-black text-brand-pink uppercase tracking-tighter bg-brand-pink/5 px-2 py-1 rounded-md">Away Win</span>
+                            <span className="text-[10px] font-black text-brand-emerald uppercase tracking-tighter bg-brand-emerald/5 px-2 py-1 rounded-md">Away Win</span>
                          ) : (
                             <span className="text-[10px] font-black text-orange-500 uppercase tracking-tighter bg-orange-50 px-2 py-1 rounded-md">Draw</span>
                          )}
@@ -153,7 +153,7 @@ function MetricRow({ label, ppg, results }: { label: string; ppg: number; result
        <span className="text-sm font-black text-slate-800 uppercase tracking-widest shrink-0">{label}</span>
        <div className="flex items-center gap-3">
           <FormCircles results={results} />
-          <div className="bg-brand-indigo/10 text-brand-indigo px-3 py-1.5 rounded-lg text-xs font-black min-w-[50px] text-center border border-brand-indigo/20">
+          <div className="bg-brand-emerald/10 text-brand-emerald px-3 py-1.5 rounded-lg text-xs font-black min-w-[50px] text-center border border-brand-emerald/20">
              {(ppg || 0).toFixed(2)}
           </div>
        </div>

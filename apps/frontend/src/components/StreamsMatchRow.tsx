@@ -38,7 +38,7 @@ export default function StreamsMatchRow({ match }: StreamsMatchRowProps) {
         </div>
         
         <div className="flex items-center justify-center w-8 h-8 rounded-full bg-pink-50 border border-pink-100">
-           <div className="w-2 h-2 rounded-full bg-brand-pink"></div>
+           <div className="w-2 h-2 rounded-full bg-brand-emerald"></div>
         </div>
 
         {/* Teams */}
@@ -73,7 +73,7 @@ export default function StreamsMatchRow({ match }: StreamsMatchRowProps) {
       <div className="ml-4">
         <Link 
           href={`/match/${match.matchId}`} 
-          className="flex items-center gap-2 border-2 border-brand-pink text-brand-pink px-4 py-2 rounded-xl font-black text-xs uppercase tracking-wider hover:bg-brand-pink hover:text-white transition-all group-hover:shadow-lg group-hover:shadow-brand-pink/20"
+          className="flex items-center gap-2 border-2 border-brand-emerald text-brand-emerald px-4 py-2 rounded-xl font-black text-xs uppercase tracking-wider hover:bg-brand-emerald hover:text-white transition-all group-hover:shadow-lg group-hover:shadow-brand-emerald/20"
         >
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
             <path d="M8 5v14l11-7z" />

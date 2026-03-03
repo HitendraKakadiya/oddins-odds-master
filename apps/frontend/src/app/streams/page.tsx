@@ -75,32 +75,8 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
-        <Sidebar 
-          leagueData={Array.isArray(leagues) ? leagues : (leagues.items || [])} 
-          initialTotal={Array.isArray(leagues) ? 0 : (leagues.total || 0)}
-          mode="predictions" 
-        />
-
         <div className="flex-1">
-          <div className="relative rounded-[24px] sm:rounded-[32px] overflow-hidden mb-8 min-h-[240px] sm:min-h-[300px] flex items-center p-6 sm:p-8 lg:p-12">
-             <div className="absolute inset-0 z-0">
-                <img 
-                  src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=2000" 
-                  alt="Football stadium background" 
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-brand-dark-blue/90 via-brand-dark-blue/70 to-transparent"></div>
-             </div>
-             
-             <div className="relative z-10 max-w-2xl">
-                <h1 className="text-4xl lg:text-5xl font-black text-white mb-6 leading-tight">
-                  Where to watch football live streams
-                </h1>
-                <p className="text-lg text-slate-200 leading-relaxed font-medium">
-                  Find out here how to watch football live and online today and access the main players to follow the most diverse football championships around the world.
-                </p>
-             </div>
-          </div>
+
 
           <StreamsDateFilter initialDate={date} />
 
@@ -137,19 +113,19 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
                 
                 <ul className="space-y-4 list-none !pl-0 mt-4">
                    <li className="flex gap-3">
-                      <span className="text-brand-indigo font-bold">•</span>
+                      <span className="text-brand-emerald font-bold">•</span>
                       <span><strong className="text-slate-800">Website Terms and Conditions:</strong> Some bookmakers may offer live streams of sporting events, but this is generally subject to their terms and conditions. Make sure you carefully read the platform&apos;s T&Cs to understand the restrictions and requirements for free streaming.</span>
                    </li>
                    <li className="flex gap-3">
-                      <span className="text-brand-indigo font-bold">•</span>
+                      <span className="text-brand-emerald font-bold">•</span>
                       <span><strong className="text-slate-800">Account creation:</strong> In many cases, you may need to create an account with a betting site and possibly deposit funds into that account to access live streams.</span>
                    </li>
                    <li className="flex gap-3">
-                      <span className="text-brand-indigo font-bold">•</span>
+                      <span className="text-brand-emerald font-bold">•</span>
                       <span><strong className="text-slate-800">Local restrictions:</strong> Many betting sites have geographic restrictions that limit who can access their live streams. Depending on where you live, you may not have access to certain sporting events.</span>
                    </li>
                    <li className="flex gap-3">
-                      <span className="text-brand-indigo font-bold">•</span>
+                      <span className="text-brand-emerald font-bold">•</span>
                       <span><strong className="text-slate-800">Stream Quality:</strong> Sportsbook streams quality may vary. Therefore, test different platforms to find the best option for watching football matches live for free.</span>
                    </li>
                 </ul>
@@ -160,6 +136,12 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
              </div>
           </div>
         </div>
+
+        <Sidebar 
+          leagueData={Array.isArray(leagues) ? leagues : (leagues.items || [])} 
+          initialTotal={Array.isArray(leagues) ? 0 : (leagues.total || 0)}
+          mode="predictions" 
+        />
       </div>
     </div>
   );

@@ -13,9 +13,9 @@ export default function PredictionStickySidebar({ mainPrediction, todayPredictio
     <aside className="w-full lg:w-[380px] shrink-0">
        <div className="sticky top-8 flex flex-col gap-6">
           {/* Main Prediction Card */}
-          <div className="bg-brand-indigo rounded-[32px] overflow-hidden shadow-2xl shadow-brand-indigo/30 p-1">
+          <div className="bg-brand-emerald rounded-[32px] overflow-hidden shadow-2xl shadow-brand-emerald/30 p-1">
              <div className="bg-white rounded-[31px] p-8 flex flex-col items-center">
-                <h3 className="text-2xl font-black text-brand-indigo mb-2">
+                <h3 className="text-2xl font-black text-brand-emerald mb-2">
                    {mainPrediction?.selection || mainPrediction?.title || 'HT/FT - 2/2'}
                 </h3>
                 <p className="text-slate-400 font-black text-xs uppercase tracking-widest mb-6">
@@ -24,7 +24,7 @@ export default function PredictionStickySidebar({ mainPrediction, todayPredictio
                 
                 <div className="w-full h-px bg-slate-100 mb-6"></div>
                 
-                <Link href="/predictions" className="text-brand-pink font-black text-sm hover:underline mb-4">
+                <Link href="/predictions" className="text-brand-emerald font-black text-sm hover:underline mb-4">
                    See more predictions
                 </Link>
              </div>
@@ -52,12 +52,12 @@ export default function PredictionStickySidebar({ mainPrediction, todayPredictio
                       </div>
                       <div className="flex-1 min-w-0">
                          <div className="flex items-center gap-1 mb-1">
-                            <div className="w-2 h-2 rounded-full bg-brand-pink"></div>
+                            <div className="w-2 h-2 rounded-full bg-brand-emerald"></div>
                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest truncate">
                                {pred.league?.name || 'League'}
                             </span>
                          </div>
-                         <h5 className="text-xs font-black text-slate-800 line-clamp-2 leading-tight group-hover:text-brand-indigo transition-colors uppercase">
+                         <h5 className="text-xs font-black text-slate-800 line-clamp-2 leading-tight group-hover:text-brand-emerald transition-colors uppercase">
                             {pred.homeTeam?.name} vs {pred.awayTeam?.name} | Prediction | {pred.league?.name} | {new Date(pred.kickoffAt || '').toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}
                          </h5>
                       </div>

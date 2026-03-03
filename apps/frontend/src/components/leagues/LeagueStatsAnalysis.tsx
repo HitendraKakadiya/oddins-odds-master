@@ -93,7 +93,7 @@ export default function LeagueStatsAnalysis({ leagueName, season, stats, detaile
   return (
     <div className="bg-white rounded-[40px] border border-slate-100 shadow-sm p-4 md:p-8 mb-12">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-2xl md:text-3xl font-black text-brand-dark-blue mb-2">
+        <h2 className="text-2xl md:text-3xl font-black text-brand-midnight mb-2">
           {leagueName}: Standings and Season Statistics {season}
         </h2>
         
@@ -183,7 +183,7 @@ export default function LeagueStatsAnalysis({ leagueName, season, stats, detaile
 function StatsSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h3 className="text-xl md:text-2xl font-black text-brand-dark-blue mb-8">{title}</h3>
+      <h3 className="text-xl md:text-2xl font-black text-brand-midnight mb-8">{title}</h3>
       {children}
     </div>
   );
@@ -192,10 +192,10 @@ function StatsSection({ title, children }: { title: string; children: React.Reac
 function StatItem({ label, value, team, player }: { label: string; value?: string | number; team?: string; player?: string }) {
   return (
     <li className="flex flex-col md:flex-row md:items-center gap-2 text-sm">
-      <div className="w-1.5 h-1.5 rounded-full bg-brand-indigo shrink-0"></div>
+      <div className="w-1.5 h-1.5 rounded-full bg-brand-emerald shrink-0"></div>
       <span className="text-slate-500 font-bold">{label}:</span>
-      {team && <span className="text-brand-indigo font-black underline decoration-2 underline-offset-4 cursor-pointer">{team}</span>}
-      {player && <span className="text-brand-indigo font-black underline decoration-2 underline-offset-4 cursor-pointer">{player}</span>}
+      {team && <span className="text-brand-emerald font-black underline decoration-2 underline-offset-4 cursor-pointer">{team}</span>}
+      {player && <span className="text-brand-emerald font-black underline decoration-2 underline-offset-4 cursor-pointer">{player}</span>}
       {team || player ? <span className="text-slate-400 font-bold">-</span> : null}
       {value !== undefined && <span className="text-slate-800 font-black">{value}</span>}
     </li>

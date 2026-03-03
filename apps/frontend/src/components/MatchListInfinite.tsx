@@ -127,7 +127,7 @@ export default function MatchListInfinite({
       <div ref={loaderRef} className="py-8 flex justify-center">
         {loading && (
           <div className="flex flex-col items-center gap-3">
-            <div className="w-10 h-10 border-4 border-brand-indigo/20 border-t-brand-indigo rounded-full animate-spin"></div>
+            <div className="w-10 h-10 border-4 border-brand-emerald/20 border-t-brand-emerald rounded-full animate-spin"></div>
             <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Loading more matches...</p>
           </div>
         )}

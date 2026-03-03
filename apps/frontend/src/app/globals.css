@@ -10,11 +10,15 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-brand-indigo hover:bg-[#4338CA] text-white font-bold py-2.5 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg shadow-brand-indigo/20 active:scale-[0.98] flex items-center justify-center;
+    @apply bg-brand-emerald hover:bg-brand-emerald/90 text-white font-bold py-2.5 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg shadow-brand-emerald/20 active:scale-[0.98] flex items-center justify-center;
+  }
+
+  .btn-emerald {
+    @apply bg-brand-emerald hover:bg-brand-emerald/90 text-white font-bold py-2.5 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg shadow-brand-emerald/20 active:scale-[0.98] flex items-center justify-center;
   }
 
   .btn-pink {
-    @apply bg-brand-pink hover:bg-[#D81B60] text-white font-bold py-2.5 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg shadow-brand-pink/20 active:scale-[0.98] flex items-center justify-center;
+    @apply bg-brand-emerald hover:bg-brand-emerald/90 text-white font-bold py-2.5 px-6 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg shadow-brand-emerald/20 active:scale-[0.98] flex items-center justify-center;
   }
 
   .card {
@@ -25,12 +29,16 @@
     @apply bg-white/80 backdrop-blur-md border border-white/40 rounded-3xl p-6 shadow-sm;
   }
 
+  .badge-emerald {
+    @apply bg-brand-light-emerald text-brand-emerald px-3 py-1 rounded-lg text-xs font-bold border border-brand-emerald/10;
+  }
+
   .badge-indigo {
-    @apply bg-brand-light-indigo text-brand-indigo px-3 py-1 rounded-lg text-xs font-bold border border-brand-indigo/10;
+    @apply bg-brand-light-emerald text-brand-emerald px-3 py-1 rounded-lg text-xs font-bold border border-brand-emerald/10;
   }
 
   .badge-pink {
-    @apply bg-brand-pink/5 text-brand-pink px-3 py-1 rounded-lg text-xs font-bold border border-brand-pink/10;
+    @apply bg-brand-emerald/5 text-brand-emerald px-3 py-1 rounded-lg text-xs font-bold border border-brand-emerald/10;
   }
 
   .scrollbar-hide::-webkit-scrollbar {

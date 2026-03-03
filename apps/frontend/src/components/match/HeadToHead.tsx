@@ -27,7 +27,7 @@ export default function HeadToHead({ homeTeam, awayTeam, h2h, h2hSummary }: Head
           onClick={() => setFilter('overall')}
           className={`px-8 py-2.5 rounded-2xl text-xs font-black transition-all ${
             filter === 'overall'
-              ? 'bg-brand-indigo text-white shadow-lg shadow-brand-indigo/20'
+              ? 'bg-brand-emerald text-white shadow-lg shadow-brand-emerald/20'
               : 'bg-white text-slate-400 border border-slate-100 hover:bg-slate-50'
           }`}
         >
@@ -37,7 +37,7 @@ export default function HeadToHead({ homeTeam, awayTeam, h2h, h2hSummary }: Head
           onClick={() => setFilter('home_away')}
           className={`px-8 py-2.5 rounded-2xl text-xs font-black transition-all ${
             filter === 'home_away'
-              ? 'bg-brand-indigo text-white shadow-lg shadow-brand-indigo/20'
+              ? 'bg-brand-emerald text-white shadow-lg shadow-brand-emerald/20'
               : 'bg-white text-slate-400 border border-slate-100 hover:bg-slate-50'
           }`}
         >
@@ -47,7 +47,7 @@ export default function HeadToHead({ homeTeam, awayTeam, h2h, h2hSummary }: Head
 
       {/* H2H Matches List */}
       <div className="bg-white rounded-[24px] md:rounded-[32px] border border-slate-100 shadow-sm overflow-hidden mb-12">
-        <div className="bg-brand-indigo px-6 md:px-8 py-3 md:py-4">
+        <div className="bg-brand-emerald px-6 md:px-8 py-3 md:py-4">
           <h3 className="text-[11px] md:text-sm font-black text-white italic uppercase tracking-wider md:normal-case md:italic">Head to Head - History</h3>
         </div>
         <div className="p-1 md:p-2">
@@ -56,8 +56,8 @@ export default function HeadToHead({ homeTeam, awayTeam, h2h, h2hSummary }: Head
               <div key={idx} className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between px-4 sm:px-8 py-4 hover:bg-slate-50 transition-colors gap-3 sm:gap-6">
                 <div className="flex items-center gap-3 sm:gap-6 flex-1">
                    <div className="flex items-center gap-2 shrink-0">
-                      <div className="w-4 h-4 sm:w-5 sm:h-5 bg-brand-indigo/10 rounded-full flex items-center justify-center">
-                         <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-brand-indigo rounded-full" />
+                      <div className="w-4 h-4 sm:w-5 sm:h-5 bg-brand-emerald/10 rounded-full flex items-center justify-center">
+                         <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-brand-emerald rounded-full" />
                       </div>
                       <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 w-24 sm:w-32">
                         {new Date(match.date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })} - {new Date(match.date).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
@@ -206,7 +206,7 @@ export default function HeadToHead({ homeTeam, awayTeam, h2h, h2hSummary }: Head
 function H2HStatCard({ title, content }: { title: string; content: React.ReactNode }) {
    return (
       <div className="bg-white rounded-[20px] md:rounded-[24px] border border-slate-100 shadow-sm overflow-hidden flex flex-col">
-         <div className="bg-brand-indigo py-2 px-6 text-center">
+         <div className="bg-brand-emerald py-2 px-6 text-center">
             <h4 className="text-[9px] md:text-[10px] font-black text-white uppercase tracking-wider">{title}</h4>
          </div>
          <div className="p-4 md:p-5 flex-1 flex items-center justify-center">

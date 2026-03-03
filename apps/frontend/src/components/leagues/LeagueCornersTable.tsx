@@ -32,7 +32,7 @@ export default function LeagueCornersTable({ data }: LeagueCornersTableProps) {
   return (
     <div className="bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Table Header */}
-      <div className="bg-brand-indigo px-8 py-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-brand-emerald px-8 py-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <h3 className="text-xl font-black text-white uppercase tracking-widest italic">Corners</h3>
         
         <div className="flex bg-white/10 p-1 rounded-xl backdrop-blur-sm">
@@ -83,7 +83,7 @@ export default function LeagueCornersTable({ data }: LeagueCornersTableProps) {
                     <div className="w-8 h-8 rounded-full bg-white border border-slate-100 flex items-center justify-center p-1.5 shadow-sm shrink-0">
                       <img src={row.team.logoUrl || ''} alt={row.team.name} className="w-full h-full object-contain" />
                     </div>
-                    <span className="text-sm font-black text-slate-700 group-hover:text-brand-indigo transition-colors whitespace-nowrap">
+                    <span className="text-sm font-black text-slate-700 group-hover:text-brand-emerald transition-colors whitespace-nowrap">
                       {row.team.name}
                     </span>
                   </Link>
@@ -112,7 +112,7 @@ function FilterButton({ active, onClick, label }: { active: boolean; onClick: ()
       onClick={onClick}
       className={`px-6 py-2 rounded-lg text-xs font-black transition-all duration-300 ${
         active 
-          ? 'bg-brand-pink text-white shadow-lg' 
+          ? 'bg-brand-emerald text-white shadow-lg' 
           : 'text-white/60 hover:text-white hover:bg-white/10'
       }`}
     >

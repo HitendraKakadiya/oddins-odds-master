@@ -46,7 +46,7 @@ export default function PredictionDateSelector({ selectedDate }: { selectedDate?
           onClick={() => handleDateClick(date.dateStr)}
           className={`flex flex-col items-center justify-center min-w-[120px] py-4 rounded-xl border-2 transition-all ${
             date.isActive
-              ? 'bg-brand-indigo border-brand-indigo text-white shadow-lg shadow-brand-indigo/20'
+              ? 'bg-brand-emerald border-brand-emerald text-white shadow-lg shadow-brand-emerald/20'
               : 'bg-white border-slate-100 text-slate-500 hover:border-slate-200'
           }`}
         >

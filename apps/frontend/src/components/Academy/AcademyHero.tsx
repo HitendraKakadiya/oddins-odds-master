@@ -5,11 +5,11 @@ export default function AcademyHero() {
     <div className="mb-10">
       {/* Breadcrumbs */}
       <div className="flex flex-wrap items-center gap-2 text-[11px] sm:text-xs text-gray-400 font-bold mb-6">
-        <Link href="/" className="hover:text-brand-pink transition-colors">Home</Link>
+        <Link href="/" className="hover:text-brand-emerald transition-colors">Home</Link>
         <span className="text-gray-300">/</span>
         <span className="text-gray-300">OddinsOdds Academy</span>
         <span className="text-gray-300">/</span>
-        <span className="text-brand-pink font-black">Find all your...</span>
+        <span className="text-brand-emerald font-black">Find all your...</span>
       </div>
 
       <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 mb-6 leading-tight">

@@ -38,13 +38,13 @@ export default function LeagueStatsSubNav({ activeCategory, onCategoryChange }: 
             onClick={() => onCategoryChange(cat.id)}
             className={`px-6 py-4 text-xs font-black transition-all relative whitespace-nowrap ${
               activeCategory === cat.id
-                ? 'text-brand-indigo'
+                ? 'text-brand-emerald'
                 : 'text-slate-400 hover:text-slate-600'
             }`}
           >
             {cat.label}
             {activeCategory === cat.id && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-indigo animate-in fade-in slide-in-from-bottom-1 duration-300" />
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-emerald animate-in fade-in slide-in-from-bottom-1 duration-300" />
             )}
           </button>
         ))}

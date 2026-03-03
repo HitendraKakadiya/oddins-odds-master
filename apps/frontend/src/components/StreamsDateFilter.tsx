@@ -42,12 +42,12 @@ export default function StreamsDateFilter({ initialDate }: StreamsDateFilterProp
             onClick={() => handleDateClick(date.value)}
             className={`flex flex-col items-center justify-center min-w-[100px] py-2 px-4 rounded-xl transition-all ${
               activeDate === date.value
-                ? 'bg-[#E8E8FF] text-brand-indigo ring-1 ring-brand-indigo/20'
+                ? 'bg-[#E8E8FF] text-brand-emerald ring-1 ring-brand-emerald/20'
                 : 'bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-50'
             }`}
           >
             {date.value === 'live' && (
-              <div className={`w-2 h-2 rounded-full mb-1 ${activeDate === 'live' ? 'bg-brand-indigo' : 'bg-slate-300'}`}></div>
+              <div className={`w-2 h-2 rounded-full mb-1 ${activeDate === 'live' ? 'bg-brand-emerald' : 'bg-slate-300'}`}></div>
             )}
             <span className="text-[10px] font-black tracking-wider leading-none mb-1">{date.label}</span>
             {date.subLabel && <span className="text-[11px] font-bold">{date.subLabel}</span>}
@@ -64,7 +64,7 @@ export default function StreamsDateFilter({ initialDate }: StreamsDateFilterProp
         
         <div className="relative group">
           <select 
-            className="appearance-none bg-slate-50 border border-slate-100 px-4 py-2 pr-10 rounded-xl text-[10px] font-black text-slate-500 uppercase tracking-tight focus:outline-none focus:ring-2 focus:ring-brand-indigo/10 cursor-pointer transition-all hover:bg-slate-100"
+            className="appearance-none bg-slate-50 border border-slate-100 px-4 py-2 pr-10 rounded-xl text-[10px] font-black text-slate-500 uppercase tracking-tight focus:outline-none focus:ring-2 focus:ring-brand-emerald/10 cursor-pointer transition-all hover:bg-slate-100"
           >
             <option value="important">Most Important</option>
             <option value="favourite">Most Favourite</option>

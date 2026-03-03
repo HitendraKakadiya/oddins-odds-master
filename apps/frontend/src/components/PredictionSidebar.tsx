@@ -30,7 +30,7 @@ export default function PredictionSidebar({ leagues }: PredictionSidebarProps) {
   return (
     <aside className="w-full lg:w-[320px] flex flex-col gap-8">
       {/* Prediction of the day card */}
-      <div className="bg-brand-indigo rounded-[32px] p-6 text-white text-center shadow-2xl shadow-brand-indigo/30 relative overflow-hidden group">
+      <div className="bg-brand-emerald rounded-[32px] p-6 text-white text-center shadow-2xl shadow-brand-emerald/30 relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl"></div>
         
         <div className="flex items-center justify-center gap-2 mb-6">
@@ -82,7 +82,7 @@ export default function PredictionSidebar({ leagues }: PredictionSidebarProps) {
              <span className="block text-sm font-black text-slate-900">{currentPrediction.prediction}</span>
           </div>
 
-          <button className="w-full bg-brand-pink text-white py-3 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-brand-pink/20 hover:scale-[1.02] transition-all active:scale-[0.98]">
+          <button className="w-full bg-brand-emerald text-white py-3 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-brand-emerald/20 hover:scale-[1.02] transition-all active:scale-[0.98]">
              See Prediction
           </button>
         </div>
@@ -119,7 +119,7 @@ export default function PredictionSidebar({ leagues }: PredictionSidebarProps) {
                         <span className="text-base grayscale group-hover:grayscale-0 transition-all">
                            {country.country.flagUrl ? <img src={country.country.flagUrl} alt="" className="w-4 h-3 object-cover rounded-sm shadow-sm" /> : '🏳️'}
                         </span>
-                        <span className="text-sm font-bold text-slate-700 group-hover:text-brand-indigo transition-colors">{country.country.name}</span>
+                        <span className="text-sm font-bold text-slate-700 group-hover:text-brand-emerald transition-colors">{country.country.name}</span>
                      </div>
                      <svg className={`w-4 h-4 text-slate-300 transition-transform ${openSection === country.country.name ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
@@ -131,7 +131,7 @@ export default function PredictionSidebar({ leagues }: PredictionSidebarProps) {
                            <Link 
                              key={league.id} 
                              href={`/predictions?leagueSlug=${league.slug}`}
-                             className="block text-xs font-medium text-slate-500 hover:text-brand-indigo transition-colors"
+                             className="block text-xs font-medium text-slate-500 hover:text-brand-emerald transition-colors"
                            >
                               {league.name}
                            </Link>
