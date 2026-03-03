@@ -14,7 +14,7 @@ export default function AuthorCard({ name, role, imageUrl, link }: AuthorCardPro
         {imageUrl ? (
             <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
         ) : (
-            <div className="w-full h-full flex items-center justify-center text-4xl bg-gradient-to-br from-indigo-100 to-purple-50">
+            <div className="w-full h-full flex items-center justify-center text-4xl bg-gradient-to-br from-brand-emerald/10 to-brand-emerald/5">
                👨‍💻
             </div>
         )}

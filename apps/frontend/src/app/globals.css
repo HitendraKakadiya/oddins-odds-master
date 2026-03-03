@@ -38,7 +38,7 @@
   }
 
   .badge-pink {
-    @apply bg-brand-emerald/5 text-brand-emerald px-3 py-1 rounded-lg text-xs font-bold border border-brand-emerald/10;
+    @apply bg-brand-light-emerald text-brand-emerald px-3 py-1 rounded-lg text-xs font-bold border border-brand-emerald/10;
   }
 
   .scrollbar-hide::-webkit-scrollbar {

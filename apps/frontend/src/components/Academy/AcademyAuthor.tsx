@@ -9,7 +9,7 @@ export default function AcademyAuthor() {
       <div className="flex-1 text-center sm:text-left">
         <div className="flex flex-col sm:flex-row items-center sm:items-baseline gap-3 mb-4">
           <h3 className="text-xl font-black text-slate-900">Joe Doe</h3>
-          <span className="bg-indigo-100 text-indigo-700 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">Senior Analyst</span>
+          <span className="bg-brand-emerald/10 text-brand-emerald text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">Senior Analyst</span>
         </div>
         <p className="text-sm text-slate-500 leading-relaxed max-w-2xl">
           Joe is a seasoned sports analyst with over 10 years of experience in data modeling and match predictions. 

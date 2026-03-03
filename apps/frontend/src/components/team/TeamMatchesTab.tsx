@@ -37,25 +37,19 @@ export default function TeamMatchesTab({ team }: TeamMatchesTabProps) {
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      {/* Header with League Selector */}
-      <div className="flex justify-end">
-        <div className="relative group">
-          <button className="flex items-center space-x-3 bg-white border border-gray-100 px-6 py-2.5 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200">
-            <div className="w-5 h-5 flex items-center justify-center">
-              <img src="https://media.api-sports.io/football/leagues/39.png" alt="PL" className="w-full h-full object-contain" />
-            </div>
-            <span className="text-sm font-bold text-gray-700">Premier League</span>
-            <svg className="w-4 h-4 text-gray-400 group-hover:rotate-180 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-        </div>
-      </div>
+      {/* Matches Content - League selector removed as it's now in the header tabs component */}
 
       {/* Upcoming Matches Section */}
-      <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm overflow-hidden">
-        <div className="bg-[#4F46E5] p-5">
-            <h3 className="text-white font-bold tracking-wide">Premier League - Upcoming Matches</h3>
+      <div className="bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden group">
+        <div className="bg-gradient-to-br from-[#059669] via-brand-emerald to-[#047857] p-6 flex items-center justify-between relative overflow-hidden">
+            {/* Decorative background shapes */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-xl"></div>
+            
+            <h3 className="text-white font-black text-sm uppercase tracking-[0.2em] relative z-10">Premier League - Upcoming Matches</h3>
+            <div className="w-8 h-8 rounded-lg bg-white/20 border border-white/30 flex items-center justify-center backdrop-blur-sm relative z-10 shadow-inner">
+                <span className="text-xs">📅</span>
+            </div>
         </div>
         <div className="divide-y divide-gray-50">
             {upcomingMatches.map((match) => (
@@ -85,9 +79,16 @@ export default function TeamMatchesTab({ team }: TeamMatchesTabProps) {
       </div>
 
       {/* Last Matches Section */}
-      <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm overflow-hidden">
-        <div className="bg-[#4F46E5] p-5">
-            <h3 className="text-white font-bold tracking-wide">Premier League - Last Matches</h3>
+      <div className="bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden group">
+        <div className="bg-gradient-to-br from-[#059669] via-brand-emerald to-[#047857] p-6 flex items-center justify-between relative overflow-hidden">
+            {/* Decorative background shapes */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-xl"></div>
+            
+            <h3 className="text-white font-black text-sm uppercase tracking-[0.2em] relative z-10">Premier League - Last Matches</h3>
+            <div className="w-8 h-8 rounded-lg bg-white/20 border border-white/30 flex items-center justify-center backdrop-blur-sm relative z-10 shadow-inner">
+                <span className="text-xs">📊</span>
+            </div>
         </div>
         <div className="divide-y divide-gray-50">
             {lastMatches.map((match) => (
@@ -115,8 +116,8 @@ export default function TeamMatchesTab({ team }: TeamMatchesTabProps) {
                         </div>
                     </div>
                     <div className="flex-1 flex justify-end">
-                        <div className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black text-white shadow-sm ${
-                            match.result === 'W' ? 'bg-[#00D07E]' : match.result === 'L' ? 'bg-[#FF4B4B]' : 'bg-[#FFA500]'
+                        <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-[11px] font-black text-white shadow-lg transition-transform hover:scale-110 ${
+                            match.result === 'W' ? 'bg-brand-emerald shadow-brand-emerald/20' : match.result === 'L' ? 'bg-rose-500 shadow-rose-500/20' : 'bg-amber-500 shadow-amber-500/20'
                         }`}>
                             {match.result}
                         </div>
@@ -127,10 +128,14 @@ export default function TeamMatchesTab({ team }: TeamMatchesTabProps) {
       </div>
 
       {/* Stats Summary Block */}
-      <div className="bg-[#F5F7FF] rounded-[32px] overflow-hidden">
-        <div className="bg-[#4F46E5] p-5 flex justify-between items-center">
-            <h3 className="text-white font-bold tracking-wide">Premier League - Stats</h3>
-            <button className="text-[10px] font-black text-white/70 uppercase tracking-widest hover:text-white transition-colors">
+      <div className="bg-[#F8FAFC] rounded-[48px] border border-slate-100/80 overflow-hidden shadow-sm">
+        <div className="bg-gradient-to-br from-[#059669] via-brand-emerald to-[#047857] p-6 flex justify-between items-center relative overflow-hidden">
+            {/* Decorative background shapes */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl"></div>
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-xl"></div>
+            
+            <h3 className="text-white font-black text-sm uppercase tracking-[0.2em] relative z-10">Premier League - Stats</h3>
+            <button className="text-[10px] font-black text-white bg-white/10 hover:bg-white hover:text-brand-emerald px-5 py-2.5 rounded-2xl uppercase tracking-widest transition-all backdrop-blur-md border border-white/20 relative z-10 shadow-lg">
                 {team.name} Standings →
             </button>
         </div>

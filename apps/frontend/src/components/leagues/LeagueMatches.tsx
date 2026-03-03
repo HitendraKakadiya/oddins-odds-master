@@ -24,8 +24,12 @@ function MatchSection({ title, matches, type }: { title: string; matches: MatchD
   return (
     <div className="bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden min-h-[200px] flex flex-col">
       {/* Header */}
-      <div className="bg-[#6347EA] px-10 py-6">
-        <h3 className="text-xl font-black text-white uppercase tracking-widest">{title}</h3>
+      <div className="bg-gradient-to-br from-[#059669] via-brand-emerald to-[#047857] px-10 py-6 relative overflow-hidden">
+        {/* Decorative background shapes */}
+        <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-black/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl"></div>
+        
+        <h3 className="text-sm font-black text-white uppercase tracking-[0.2em] relative z-10">{title}</h3>
       </div>
 
       {/* Match Rows or Empty State */}

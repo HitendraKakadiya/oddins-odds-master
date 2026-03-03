@@ -41,7 +41,7 @@ export function FeaturedTipsSlider({ featuredTips = [] }: DailyTipProps) {
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + displayPredictions.length) % displayPredictions.length);
 
   return (
-    <div className="bg-gradient-to-br from-[#6366F1] to-[#4F46E5] rounded-[28px] p-4 text-white overflow-hidden relative shadow-xl shadow-brand-emerald/30 border border-white/20 w-full">
+    <div className="bg-gradient-to-br from-brand-midnight to-slate-800 rounded-[28px] p-5 text-white overflow-hidden relative shadow-xl shadow-emerald-500/10 border border-white/5 w-full group">
       <div className="flex items-center justify-center gap-2 mb-4">
         <div className="bg-white/20 p-1.5 rounded-lg backdrop-blur-sm border border-white/10">
           <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

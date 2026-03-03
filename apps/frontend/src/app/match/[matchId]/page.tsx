@@ -46,7 +46,7 @@ export default async function MatchDetailPage({ params }: PageProps) {
         </div>
         <h1 className="text-3xl font-black text-slate-800 mb-4">Match not found</h1>
         <p className="text-slate-400 font-bold mb-8">We couldn't find the details for this match. It might have been postponed or removed.</p>
-        <Link href="/predictions" className="bg-brand-indigo text-white px-8 py-4 rounded-2xl font-black shadow-lg shadow-brand-indigo/20 hover:scale-105 transition-transform inline-block">
+        <Link href="/predictions" className="bg-brand-emerald text-white px-8 py-4 rounded-2xl font-black shadow-lg shadow-brand-emerald/20 hover:scale-105 transition-transform inline-block">
           Return to Predictions
         </Link>
       </div>
