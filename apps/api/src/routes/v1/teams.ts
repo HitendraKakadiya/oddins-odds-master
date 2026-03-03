@@ -29,8 +29,25 @@ interface TeamTabParams {
 export async function teamsRoutes(server: FastifyInstance) {
   // GET /v1/teams/featured
   server.get('/teams/featured', async () => {
-    const popularIds = [529, 40, 541, 33, 157, 496, 85, 212, 42]; // Top clubs
-    return getPopularTeamsDirect(popularIds);
+    // const popularIds = [529, 40, 541, 33, 157, 496, 85, 212, 42]; // Top clubs
+    // return getPopularTeamsDirect(popularIds);
+
+    // Fetch from local database instead of third-party API
+    const popularIds = [529, 40, 541, 33, 157, 496, 85, 212, 42];
+    const result = await query(
+      `SELECT 
+        t.provider_team_id as id,
+        t.name,
+        t.slug,
+        t.logo_url as "logoUrl",
+        c.name as country
+      FROM teams t
+      JOIN countries c ON t.country_id = c.id
+      WHERE t.provider_team_id = ANY($1::int[])`,
+      [popularIds] as any
+    );
+
+    return result.rows;
   });
 
   // GET /v1/teams
@@ -38,7 +55,27 @@ export async function teamsRoutes(server: FastifyInstance) {
     const { query: searchQuery, leagueSlug, leagueId } = request.query;
 
     if (leagueId) {
-      return getTeamsByLeagueDirect(parseInt(leagueId), new Date().getFullYear());
+      // return getTeamsByLeagueDirect(parseInt(leagueId), new Date().getFullYear());
+
+      // Fetch from local database instead of third-party API
+      const result = await query(
+        `SELECT DISTINCT
+          t.provider_team_id as id,
+          t.name,
+          t.slug,
+          t.logo_url as "logoUrl",
+          c.name as country
+        FROM teams t
+        JOIN countries c ON t.country_id = c.id
+        JOIN season_teams st ON t.id = st.team_id
+        JOIN seasons s ON st.season_id = s.id
+        JOIN leagues l ON s.league_id = l.id
+        WHERE l.provider_league_id = $1
+        ORDER BY t.name`,
+        [parseInt(leagueId)]
+      );
+
+      return result.rows;
     }
 
     const conditions: string[] = [];
@@ -59,11 +96,13 @@ export async function teamsRoutes(server: FastifyInstance) {
 
     const result = await query(
       `SELECT DISTINCT
-        t.id,
+        t.provider_team_id as id,
         t.name,
         t.slug,
-        t.logo_url
+        t.logo_url as "logoUrl",
+        c.name as country
       FROM teams t
+      JOIN countries c ON t.country_id = c.id
       ${leagueSlug ? 'JOIN season_teams st ON t.id = st.team_id JOIN seasons s ON st.season_id = s.id JOIN leagues l ON s.league_id = l.id' : ''}
       ${whereClause}
       ORDER BY t.name
@@ -71,12 +110,7 @@ export async function teamsRoutes(server: FastifyInstance) {
       params
     );
 
-    return result.rows.map((row: { id: number; name: string; slug: string; logo_url: string | null }) => ({
-      id: row.id,
-      name: row.name,
-      slug: row.slug,
-      logoUrl: row.logo_url,
-    }));
+    return result.rows;
   });
 
   // GET /v1/team/:teamSlug
@@ -84,17 +118,39 @@ export async function teamsRoutes(server: FastifyInstance) {
     const { teamSlug } = request.params;
 
     try {
-      // 1. Resolve Team ID via Live Search (slug usually matches name or provided slug)
-      const liveTeam = await getTeamBySlugDirect(teamSlug);
+      // 1. Resolve Team ID via Local Database instead of Live Search
+      // const liveTeam = await getTeamBySlugDirect(teamSlug);
+      const teamResult = await query(
+        `SELECT 
+          t.provider_team_id as id,
+          t.name,
+          t.slug,
+          t.logo_url as logo,
+          c.name as country,
+          v.name as venue_name,
+          v.city as venue_city
+        FROM teams t
+        JOIN countries c ON t.country_id = c.id
+        LEFT JOIN venues v ON t.venue_id = v.id
+        WHERE t.slug = $1`,
+        [teamSlug]
+      );
+
+      const liveTeam = teamResult.rows[0];
+
       if (!liveTeam) {
         return reply.status(404).send({ error: 'Team not found' });
       }
 
-      // 2. Fetch Matches in parallel
+      // 2. Fetch Matches in parallel (Commented out third-party API)
+      /*
       const [nextMatches, recentMatches] = await Promise.all([
         getTeamMatchesDirect(liveTeam.id, 'next', 5).catch(() => []),
         getTeamMatchesDirect(liveTeam.id, 'last', 10).catch(() => [])
       ]);
+      */
+      const nextMatches: any[] = [];
+      const recentMatches: any[] = [];
 
       // 3. Try to get stats from most frequent league in recent matches
       let statsSummary = {
@@ -106,6 +162,7 @@ export async function teamsRoutes(server: FastifyInstance) {
         cleanSheets: 0
       };
 
+      /*
       try {
         // Find most common league ID from recent matches
         const leagueCounts = new Map<number, number>();
@@ -133,14 +190,19 @@ export async function teamsRoutes(server: FastifyInstance) {
       } catch (err) {
         console.warn('Failed to fetch live team stats:', (err as any).message);
       }
+      */
 
-      // 4. Fetch Standings and Squad
-      const commonLeagueId = liveTeam.leagueId || (recentMatches[0]?.league?.id) || 39;
+      // 4. Fetch Standings and Squad (Commented out third-party API)
+      // const commonLeagueId = liveTeam.leagueId || (recentMatches[0]?.league?.id) || 39;
 
+      /*
       const [standings, squad] = await Promise.all([
         getLeagueStandingsDirect(commonLeagueId, new Date().getFullYear()),
         getTeamSquadDirect(liveTeam.id)
       ]);
+      */
+      const standings: any[] = [];
+      const squad: any[] = [];
 
       return {
         team: {
@@ -149,10 +211,10 @@ export async function teamsRoutes(server: FastifyInstance) {
           slug: teamSlug,
           logoUrl: liveTeam.logo,
           country: liveTeam.country,
-          venue: liveTeam.venue?.name || 'Unknown Stadium',
-          city: liveTeam.venue?.city || 'Unknown City',
+          venue: liveTeam.venue_name || 'Unknown Stadium',
+          city: liveTeam.venue_city || 'Unknown City',
         },
-        competitions: liveTeam.leagues || [],
+        competitions: [], // liveTeam.leagues || [],
         nextMatch: nextMatches[0] || null,
         recentMatches,
         statsSummary,
@@ -170,13 +232,28 @@ export async function teamsRoutes(server: FastifyInstance) {
     const { teamSlug, tab } = request.params;
 
     try {
-      const liveTeam = await getTeamBySlugDirect(teamSlug);
+      // Resolve team from database
+      const teamResult = await query(
+        `SELECT 
+          t.provider_team_id as id,
+          t.name,
+          t.slug,
+          t.logo_url as logo
+        FROM teams t
+        WHERE t.slug = $1`,
+        [teamSlug]
+      );
+
+      const liveTeam = teamResult.rows[0];
+
+      // const liveTeam = await getTeamBySlugDirect(teamSlug);
       if (!liveTeam) {
         return reply.status(404).send({ error: 'Team not found' });
       }
 
       let items: any[] = [];
 
+      /*
       switch (tab) {
         case 'fixtures':
           items = await getTeamMatchesDirect(liveTeam.id, 'next', 20);
@@ -197,6 +274,7 @@ export async function teamsRoutes(server: FastifyInstance) {
         default:
           items = [];
       }
+      */
 
       return {
         team: {

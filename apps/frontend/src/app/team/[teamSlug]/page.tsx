@@ -2,9 +2,8 @@ import Link from 'next/link';
 import { getTeamDetail, getFeaturedTeams } from '@/lib/api';
 import TeamHeader from '@/components/team/TeamHeader';
 import TeamNavigation from '@/components/team/TeamNavigation';
-import TeamStandingsTable from '@/components/team/TeamStandingsTable';
-import TeamStatsSection from '@/components/team/TeamStatsSection';
-import TeamSquadList from '@/components/team/TeamSquadList';
+
+import TeamTabsContent from '@/components/team/TeamTabsContent';
 
 // ISR: Revalidate every 10 minutes
 export const revalidate = 600;
@@ -15,15 +14,6 @@ interface PageProps {
     tab?: string;
   };
 }
-
-const mainTabs = [
-  { key: 'summary', label: 'Summary' },
-  { key: 'matches', label: 'Matches', href: '/fixtures' },
-  { key: 'corners', label: 'Corners', href: '/corners' },
-  { key: 'stats', label: 'Stats', href: '/stats' },
-  { key: 'top-scorers', label: 'Top Scorers & Assists' },
-  { key: 'squads', label: 'Squads' },
-];
 
 export default async function TeamDetailPage({ params }: PageProps) {
   let teamData: any = null;
@@ -49,7 +39,7 @@ export default async function TeamDetailPage({ params }: PageProps) {
     );
   }
 
-  const { team, nextMatch, statsSummary, standings, squad, competitions } = teamData;
+  const { team, statsSummary, standings, squad, competitions } = teamData;
 
   // Calculate dynamic next/prev teams
   const currentIndex = featuredTeams.findIndex(t => t.slug === params.teamSlug);
@@ -83,35 +73,12 @@ export default async function TeamDetailPage({ params }: PageProps) {
 
         <TeamHeader team={team} competitions={competitions || []} />
 
-        {/* Categories Tabs */}
-        <div className="bg-white rounded-3xl p-2 border border-gray-100 shadow-sm mb-8 inline-flex items-center flex-wrap">
-            {mainTabs.map((tab) => (
-                <Link
-                    key={tab.key}
-                    href={tab.href ? `/team/${params.teamSlug}${tab.href}` : `/team/${params.teamSlug}`}
-                    className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all duration-200 ${
-                        tab.key === 'summary' 
-                        ? 'bg-primary-50 text-primary-600' 
-                        : 'text-gray-500 hover:text-primary-600 hover:bg-primary-50/50'
-                    }`}
-                >
-                    {tab.label}
-                </Link>
-            ))}
-        </div>
-
-        <TeamStandingsTable standings={standings || []} currentTeamId={team.id} />
-        
-        <TeamStatsSection 
-          teamName={team.name} 
-          stats={statsSummary} 
-          venue={team.venue}
-          city={team.city}
+        <TeamTabsContent 
+          team={team}
+          standings={standings}
+          statsSummary={statsSummary}
+          squad={squad}
         />
-
-        {(!params.tab || params.tab === 'squads') && (
-          <TeamSquadList squad={squad || []} />
-        )}
       </div>
     </div>
   );

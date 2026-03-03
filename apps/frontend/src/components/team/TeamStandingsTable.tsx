@@ -35,7 +35,7 @@ export default function TeamStandingsTable({ standings, currentTeamId }: TeamSta
   return (
     <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden mb-8">
       {/* Table Header/Toolbar */}
-      <div className="bg-primary-600 p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div className="bg-brand-indigo p-6 flex flex-col md:flex-row justify-between items-center gap-4">
         <h3 className="text-xl font-bold text-white">Table</h3>
         <div className="flex bg-white/10 p-1 rounded-xl backdrop-blur-sm">
           {(['overall', 'home', 'away'] as const).map((tab) => (
@@ -44,7 +44,7 @@ export default function TeamStandingsTable({ standings, currentTeamId }: TeamSta
               onClick={() => setActiveTab(tab)}
               className={`px-6 py-2 rounded-lg text-sm font-bold transition-all duration-200 ${
                 activeTab === tab 
-                  ? 'bg-white text-primary-600 shadow-lg scale-105' 
+                  ? 'bg-white text-brand-indigo shadow-lg scale-105' 
                   : 'text-white/80 hover:text-white hover:bg-white/5'
               } capitalize`}
             >
@@ -82,18 +82,18 @@ export default function TeamStandingsTable({ standings, currentTeamId }: TeamSta
                 <tr 
                   key={row.team.id} 
                   className={`group transition-colors duration-200 hover:bg-gray-50/50 ${
-                    isCurrent ? 'bg-primary-50/30' : ''
+                    isCurrent ? 'bg-brand-light-indigo/60' : ''
                   }`}
                 >
                   <td className="py-5 pl-8 pr-4">
-                    <span className={`text-sm font-black ${isCurrent ? 'text-primary-600' : 'text-gray-900'}`}>{row.rank}</span>
+                    <span className={`text-sm font-black ${isCurrent ? 'text-brand-indigo' : 'text-gray-900'}`}>{row.rank}</span>
                   </td>
                   <td className="py-5 px-4 min-w-[200px]">
                     <div className="flex items-center space-x-3">
                       <div className="w-8 h-8 flex items-center justify-center bg-white rounded-lg shadow-sm border border-gray-100 p-1">
                         <img src={row.team.logo} alt={row.team.name} className="w-full h-full object-contain" />
                       </div>
-                      <span className={`text-sm font-bold ${isCurrent ? 'text-primary-600' : 'text-gray-900'}`}>
+                      <span className={`text-sm font-bold ${isCurrent ? 'text-brand-indigo' : 'text-gray-900'}`}>
                         {row.team.name}
                       </span>
                     </div>

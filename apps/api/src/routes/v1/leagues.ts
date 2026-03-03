@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { getLeaguesDirect, getLeagueStandingsDirect, getLeagueFixturesDirect, getTopScorersDirect, getTopAssistsDirect } from '../../lib/sports';
+import { query } from '../../db';
 
 interface LeagueDetailParams {
   countrySlug: string;
@@ -68,20 +69,36 @@ export async function leaguesRoutes(server: FastifyInstance) {
 
   // GET /v1/leagues/popular
   server.get('/leagues/popular', async () => {
-    const popularLeagueIds = [39, 140, 135, 78, 61, 2, 3, 253, 71, 94, 88, 113]; // EPL, La Liga, Serie A, etc.
-    const allLeagues = await getLeaguesDirect() || [];
+    // const popularLeagueIds = [39, 140, 135, 78, 61, 2, 3, 253, 71, 94, 88, 113]; // EPL, La Liga, Serie A, etc.
+    // const allLeagues = await getLeaguesDirect() || [];
+    // const filtered = allLeagues.filter((item: any) => popularLeagueIds.includes(item.league.id));
 
-    const filtered = allLeagues.filter((item: any) => popularLeagueIds.includes(item.league.id));
+    // Fetch from local database instead of third-party API
+    const popularLeagueIds = [39, 140, 135, 78, 61, 2, 3, 253, 71, 94, 88, 113];
+    const result = await query(
+      `SELECT 
+        l.provider_league_id as id,
+        l.name,
+        l.slug,
+        l.logo_url as "logoUrl",
+        c.name as country_name,
+        c.code as country_code,
+        c.flag_url as country_flag
+      FROM leagues l
+      JOIN countries c ON l.country_id = c.id
+      WHERE l.provider_league_id = ANY($1::int[])`,
+      [popularLeagueIds] as any
+    );
 
-    return filtered.map((item: any) => ({
-      id: item.league.id,
-      name: item.league.name,
-      slug: slugify(item.league.name),
-      logoUrl: item.league.logo,
+    return result.rows.map(row => ({
+      id: row.id,
+      name: row.name,
+      slug: row.slug,
+      logoUrl: row.logoUrl,
       country: {
-        name: item.country.name,
-        code: item.country.code,
-        flagUrl: item.country.flag
+        name: row.country_name,
+        code: row.country_code,
+        flagUrl: row.country_flag
       }
     }));
   });
