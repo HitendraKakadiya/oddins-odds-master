@@ -28,7 +28,7 @@ export default function FeaturedTeams({ initialTeams = [] }: { initialTeams?: Te
             {teams.map((team) => (
               <Link 
                 key={team.id}
-                href={`/teams/${team.slug}`}
+                href={`/team/${team.slug}`}
                 className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 hover:border-brand-emerald hover:shadow-md transition-all group"
               >
                 <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-xs font-black text-slate-400 shadow-sm border border-slate-100 group-hover:bg-brand-emerald/5 transition-colors overflow-hidden">

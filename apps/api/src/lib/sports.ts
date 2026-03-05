@@ -25,6 +25,13 @@ export async function fetchFromSportsProvider(endpoint: string) {
     return await response.json();
 }
 
+function generateTeamSlug(id: number, name: string) {
+    const cleanName = name.toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^\w-]+/g, '');
+    return `${id}-${cleanName}`;
+}
+
 /**
  * Fetch matches for a specific date and transform them for the UI
  */
@@ -338,6 +345,16 @@ export async function getLeaguesDirect() {
     return leaguesCache || [];
 }
 
+export async function getLeaguesBySearchDirect(search: string) {
+    try {
+        const data: any = await fetchFromSportsProvider(`/leagues?search=${encodeURIComponent(search)}`);
+        return data.response || [];
+    } catch (err) {
+        console.error('Failed to search leagues from provider:', err);
+        return [];
+    }
+}
+
 export async function getLeagueStandingsDirect(leagueId: number, season: number) {
     try {
         const data: any = await fetchFromSportsProvider(`/standings?league=${leagueId}&season=${season}`);
@@ -419,6 +436,29 @@ export async function getTopAssistsDirect(leagueId: number, season: number) {
     }));
 }
 
+export async function getTeamByIdDirect(id: number) {
+    try {
+        const data: any = await fetchFromSportsProvider(`/teams?id=${id}`);
+        if (data.response && data.response.length > 0) {
+            const item = data.response[0];
+
+            return {
+                id: item.team.id,
+                name: item.team.name,
+                logo: item.team.logo,
+                country: item.team.country || item.venue?.country || 'Unknown',
+                venue: item.venue,
+                leagues: [],
+                leagueId: undefined
+            };
+        }
+    } catch (err) {
+        console.warn(`Fetch by ID failed for ${id}:`, (err as any).message);
+    }
+
+    return null;
+}
+
 export async function getTeamBySlugDirect(slug: string) {
     // Try direct Live Search for the team
     const searchTerm = slug.replace(/-/g, ' ');
@@ -435,7 +475,7 @@ export async function getTeamBySlugDirect(slug: string) {
                 logo: item.team.logo,
                 country: item.team.country || item.venue?.country || 'Unknown',
                 venue: item.venue,
-                leagues: [], // This can be populated via standings lookup if needed
+                leagues: [],
                 leagueId: undefined
             };
         }
@@ -492,14 +532,39 @@ export async function getTeamSquadDirect(teamId: number) {
     return [];
 }
 
-export async function getTeamsByLeagueDirect(leagueId: number, season: number) {
+const workingSeasonsCache = new Map<number, number>();
+
+export async function getTeamsByLeagueDirect(leagueId: number, season?: number) {
     try {
-        const data: any = await fetchFromSportsProvider(`/teams?league=${leagueId}&season=${season}`);
+        let activeSeason = season || workingSeasonsCache.get(leagueId);
+
+        if (activeSeason === undefined) {
+            const leagues = await getLeaguesDirect() || [];
+            const league = leagues.find((l: any) => l.league.id === leagueId);
+            activeSeason = (league?.seasons?.find((s: any) => s.current)?.year || new Date().getFullYear()) as number;
+        }
+
+        // Try primary season
+        let data: any = await fetchFromSportsProvider(`/teams?league=${leagueId}&season=${activeSeason}`);
+
+        // Defensive: If 0 teams and we haven't tried the previous season yet, try (activeSeason - 1)
+        if ((!data.response || data.response.length === 0) && !season) {
+            const prevSeason = (activeSeason as number) - 1;
+            console.log(`No teams for ${leagueId} in ${activeSeason}, trying ${prevSeason}...`);
+            const fallbackData: any = await fetchFromSportsProvider(`/teams?league=${leagueId}&season=${prevSeason}`);
+
+            if (fallbackData.response && fallbackData.response.length > 0) {
+                activeSeason = prevSeason;
+                data = fallbackData;
+            }
+        }
+
         if (data.response && data.response.length > 0) {
+            workingSeasonsCache.set(leagueId, activeSeason as number);
             return data.response.map((item: any) => ({
                 id: item.team.id,
                 name: item.team.name,
-                slug: item.team.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''),
+                slug: generateTeamSlug(item.team.id, item.team.name),
                 logoUrl: item.team.logo,
                 country: item.team.country || item.venue?.country || 'Unknown'
             }));
@@ -518,7 +583,7 @@ export async function getPopularTeamsDirect(ids: number[]) {
             return data.response.map((item: any) => ({
                 id: item.team.id,
                 name: item.team.name,
-                slug: item.team.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''),
+                slug: generateTeamSlug(item.team.id, item.team.name),
                 logoUrl: item.team.logo,
                 country: item.team.country || item.venue?.country || 'Unknown'
             }));

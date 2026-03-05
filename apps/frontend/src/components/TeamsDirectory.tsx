@@ -4,12 +4,14 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getPopularLeagues } from '@/lib/api/leagues';
 import { getTeams } from '@/lib/api/teams';
+import { fetchAPI } from '@/lib/api/client';
 
 interface Team {
   id: number;
   name: string;
   logoUrl: string;
   slug: string;
+  country?: string;
 }
 
 interface League {
@@ -28,22 +30,56 @@ export default function TeamsDirectory() {
   const [leagues, setLeagues] = useState<League[]>([]);
   const [teamsByLeague, setTeamsByLeague] = useState<Record<number, Team[]>>({});
   const [loadingLeagues, setLoadingLeagues] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [loadingTeams, setLoadingTeams] = useState<Record<number, boolean>>({});
   const [openLeagues, setOpenLeagues] = useState<number[]>([]);
+  
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<{ teams: Team[]; leagues: League[] } | null>(null);
+  const [searching, setSearching] = useState(false);
+
+  async function fetchLeagues(pageNum: number, isInitial = false) {
+    if (isInitial) setLoadingLeagues(true);
+    else setLoadingMore(true);
+
+    try {
+      const data = await fetchAPI<League[]>(`/v1/leagues/popular?page=${pageNum}&limit=10`);
+      if (data.length < 10) setHasMore(false);
+      
+      setLeagues(prev => isInitial ? data : [...prev, ...data]);
+      setPage(pageNum);
+    } catch (err) {
+      console.error('Failed to fetch popular leagues:', err);
+    } finally {
+      setLoadingLeagues(false);
+      setLoadingMore(false);
+    }
+  }
 
   useEffect(() => {
-    async function fetchLeagues() {
-      try {
-        const data = await getPopularLeagues();
-        setLeagues(data as any);
-      } catch (err) {
-        console.error('Failed to fetch popular leagues:', err);
-      } finally {
-        setLoadingLeagues(false);
-      }
-    }
-    fetchLeagues();
+    fetchLeagues(1, true);
   }, []);
+
+  const handleSearch = async (query: string) => {
+    setSearchQuery(query);
+    if (query.length < 2) {
+      setSearchResults(null);
+      return;
+    }
+
+    setSearching(true);
+    try {
+      const data = await fetchAPI<{ teams: Team[]; leagues: League[] }>(`/v1/search?q=${encodeURIComponent(query)}`);
+      setSearchResults(data);
+    } catch (err) {
+      console.error('Search failed:', err);
+    } finally {
+      setSearching(false);
+    }
+  };
 
   const toggleLeague = async (leagueId: number) => {
     const isOpen = openLeagues.includes(leagueId);
@@ -53,7 +89,6 @@ export default function TeamsDirectory() {
     } else {
       setOpenLeagues(prev => [...prev, leagueId]);
       
-      // Fetch teams if not already loaded
       if (!teamsByLeague[leagueId]) {
         setLoadingTeams(prev => ({ ...prev, [leagueId]: true }));
         try {
@@ -68,103 +103,143 @@ export default function TeamsDirectory() {
     }
   };
 
-  if (loadingLeagues) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        <div className="w-10 h-10 border-4 border-brand-emerald/10 border-t-brand-emerald rounded-full animate-spin"></div>
-        <p className="text-xs font-black text-slate-400 uppercase tracking-widest italic">Loading popular leagues...</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <h2 className="text-2xl font-black text-slate-800">Football Teams Statistics</h2>
-        <p className="text-sm font-bold text-slate-400">Showing top leagues from around the world</p>
+    <div className="flex flex-col gap-10">
+      {/* Search Header - Keep it as a power feature */}
+      <div className="bg-brand-midnight rounded-[32px] p-8 text-white relative overflow-hidden shadow-2xl border border-white/5">
+        <div className="relative z-10 flex flex-col gap-6">
+          <div className="flex flex-col gap-2">
+            <h2 className="text-2xl font-bold tracking-tight">Global Search</h2>
+            <p className="text-slate-400 font-medium text-sm">Find any club or league worldwide</p>
+          </div>
+          
+          <div className="relative group">
+            <div className="relative flex items-center bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-2 transition-all group-focus-within:border-brand-emerald group-focus-within:bg-white/15">
+              <svg className="w-5 h-5 text-slate-400 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input 
+                type="text"
+                placeholder="Search..."
+                className="w-full bg-transparent border-none focus:ring-0 text-white placeholder-slate-500 font-bold ml-3 py-2 text-sm"
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-hidden p-1">
-        <div className="flex flex-col gap-2">
-          {leagues.map((league) => (
-            <div key={league.id} className="flex flex-col">
-              <button 
-                onClick={() => toggleLeague(league.id)}
-                className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all ${
-                  openLeagues.includes(league.id) ? 'bg-brand-emerald/5' : 'bg-slate-50/50 hover:bg-slate-50'
-                }`}
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-8 h-8 rounded-lg shadow-sm overflow-hidden flex items-center justify-center bg-white border border-slate-100">
-                    {league.country.flagUrl ? (
-                      <img src={league.country.flagUrl} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                      <span className="text-xs">📍</span>
-                    )}
-                  </div>
-                  <div className="flex flex-col items-start translate-y-[-1px]">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{league.country.name}</span>
-                    <span className={`text-sm font-black transition-colors ${openLeagues.includes(league.id) ? 'text-brand-emerald' : 'text-slate-700'}`}>
-                      {league.name}
+      {/* Directory Section */}
+      <div className="flex flex-col gap-6">
+        <h2 className="text-2xl font-bold text-slate-900 border-b border-slate-100 pb-4">
+          Football Teams Statistics for All Countries
+        </h2>
+
+        {searchResults ? (
+          <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {searchResults.teams.length > 0 && (
+              <div className="flex flex-col gap-4">
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Teams Found</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {searchResults.teams.map((team) => (
+                    <Link 
+                      key={team.id}
+                      href={`/team/${team.slug}`}
+                      className="flex items-center gap-4 p-4 rounded-xl bg-white border border-slate-100 hover:border-brand-emerald transition-all group"
+                    >
+                      <img src={team.logoUrl} alt={team.name} className="w-10 h-10 object-contain" />
+                      <span className="text-sm font-bold text-slate-800 group-hover:text-brand-emerald transition-colors">{team.name}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {leagues.map((league) => (
+              <div key={league.id} className="flex flex-col border border-slate-100 rounded-[20px] overflow-hidden shadow-sm">
+                <button 
+                  onClick={() => toggleLeague(league.id)}
+                  className={`w-full flex items-center justify-between p-5 transition-all ${
+                    openLeagues.includes(league.id) ? 'bg-[#E8E8FF]' : 'bg-white hover:bg-slate-50'
+                  }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-8 h-8 rounded-full overflow-hidden border border-white flex items-center justify-center bg-white shadow-sm">
+                      {league.country.flagUrl ? (
+                         <img src={league.country.flagUrl} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-xs">🏴</span>
+                      )}
+                    </div>
+                    <span className="text-[15px] font-bold text-slate-900">
+                      {league.country.name} - {league.name}
                     </span>
                   </div>
-                </div>
-                
-                {loadingTeams[league.id] ? (
-                  <div className="w-5 h-5 border-2 border-brand-emerald/10 border-t-brand-emerald rounded-full animate-spin"></div>
-                ) : (
-                  <svg 
-                    className={`w-5 h-5 text-slate-300 transition-transform duration-300 ${openLeagues.includes(league.id) ? 'rotate-180' : ''}`} 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
-                  </svg>
-                )}
-              </button>
+                  
+                  <div className="text-slate-500">
+                    {openLeagues.includes(league.id) ? (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M20 12H4" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+                      </svg>
+                    )}
+                  </div>
+                </button>
 
-              {openLeagues.includes(league.id) && teamsByLeague[league.id] && (
-                <div className="divide-y divide-slate-50 px-2 pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                  {teamsByLeague[league.id].length === 0 ? (
-                    <div className="p-8 text-center bg-slate-50/50 rounded-xl mb-2">
-                      <p className="text-xs font-black text-slate-300 uppercase tracking-widest italic">No teams found for this league</p>
-                    </div>
-                  ) : (
-                    teamsByLeague[league.id].map((team) => (
-                      <div key={team.id} className="group flex items-center justify-between p-4 hover:bg-slate-50 transition-all rounded-xl cursor-pointer">
-                        <div className="flex items-center gap-4">
-                          <button className="text-slate-200 hover:text-brand-emerald transition-colors">
-                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.54 1.118l-3.976-2.888a1 1 0 00-1.175 0l-3.976 2.888c-.784.57-1.838-.196-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.382-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                             </svg>
-                          </button>
-                          <div className="w-9 h-9 rounded-full bg-white border border-slate-100 flex items-center justify-center p-1.5 overflow-hidden shadow-sm">
-                            <img src={team.logoUrl} alt="" className="w-full h-full object-contain" />
+                {openLeagues.includes(league.id) && (
+                  <div className="bg-white divide-y divide-slate-100 animate-in slide-in-from-top-2 duration-300">
+                    {loadingTeams[league.id] ? (
+                       <div className="p-8 flex justify-center">
+                          <div className="w-6 h-6 border-2 border-brand-emerald/10 border-t-brand-emerald rounded-full animate-spin"></div>
+                       </div>
+                    ) : teamsByLeague[league.id]?.length > 0 ? (
+                      teamsByLeague[league.id].map((team) => (
+                        <Link 
+                          key={team.id} 
+                          href={`/team/${team.slug}`}
+                          className="group flex items-center justify-between p-4 px-6 hover:bg-slate-50 transition-all text-left"
+                        >
+                          <div className="flex items-center gap-4">
+                            <button className="text-slate-300 hover:text-brand-emerald transition-colors" onClick={(e) => { e.preventDefault(); }}>
+                               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.54 1.118l-3.976-2.888a1 1 0 00-1.175 0l-3.976 2.888c-.784.57-1.838-.196-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.382-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                               </svg>
+                            </button>
+                            <img src={team.logoUrl} alt="" className="w-8 h-8 object-contain" />
+                            <span className="text-[15px] font-bold text-slate-700 group-hover:text-brand-emerald transition-colors">{team.name}</span>
                           </div>
-                          <Link href={`/team/${team.slug}`} className="text-sm font-bold text-slate-600 group-hover:text-brand-emerald transition-colors">
-                            {team.name}
-                          </Link>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <span className="text-[10px] font-black text-slate-300 uppercase opacity-0 group-hover:opacity-100 transition-opacity">Full Stats</span>
-                          <svg 
-                            className="w-4 h-4 text-slate-200 group-hover:text-brand-emerald transition-all transform group-hover:translate-x-1" 
-                            fill="none" 
-                            stroke="currentColor" 
-                            viewBox="0 0 24 24"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
+                          <svg className="w-4 h-4 text-slate-300 group-hover:text-brand-emerald transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                           </svg>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+                        </Link>
+                      ))
+                    ) : (
+                      <div className="p-8 text-center text-slate-400 text-sm font-medium italic">No teams in this league.</div>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {hasMore && (
+              <div className="py-10 flex justify-center">
+                <button 
+                  onClick={() => fetchLeagues(page + 1)}
+                  disabled={loadingMore}
+                  className="px-8 py-3 bg-brand-midnight text-white font-bold rounded-2xl hover:bg-brand-emerald transition-all shadow-lg shadow-brand-midnight/20 disabled:opacity-50"
+                >
+                  {loadingMore ? 'Loading...' : 'Load More Leagues'}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
