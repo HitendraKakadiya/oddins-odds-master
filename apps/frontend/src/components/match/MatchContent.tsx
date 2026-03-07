@@ -10,13 +10,16 @@ import MatchAnalysis from './MatchAnalysis';
 import TeamForm from './TeamForm';
 import HeadToHead from './HeadToHead';
 import Standings from './Standings';
+import MatchSummary from './MatchSummary';
 
 export default function MatchContent({ matchData }: { matchData: MatchDetailResponse }) {
-  const [activeTab, setActiveTab] = useState('Statistics');
-  const { match, h2h, stats, predictions, h2hSummary, standings } = matchData;
+  const [activeTab, setActiveTab] = useState('Summary');
+  const { match, h2h, stats, predictions, h2hSummary, standings, events } = matchData;
 
   const renderContent = () => {
     switch (activeTab) {
+      case 'Summary':
+        return <MatchSummary events={events} match={match} />;
       case 'Statistics':
         return (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">

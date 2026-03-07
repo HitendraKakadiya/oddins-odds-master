@@ -6,6 +6,7 @@ interface MatchTabsProps {
 }
 
 const tabs = [
+  { id: 'Summary', label: 'Summary' },
   { id: 'Statistics', label: 'Statistics' },
   { id: 'Form', label: 'Form' },
   { id: 'Head to Head', label: 'Head to Head' },
@@ -14,18 +15,21 @@ const tabs = [
 
 export default function MatchTabs({ activeTab, onTabChange }: MatchTabsProps) {
   return (
-    <div className="bg-white rounded-[20px] md:rounded-[24px] border border-slate-100 shadow-sm p-1.5 md:p-2 mb-6 md:mb-8 flex items-center gap-1 md:gap-2 overflow-x-auto no-scrollbar">
+    <div className="flex items-center gap-8 md:gap-12 mb-8 md:mb-10 px-4 overflow-x-auto no-scrollbar border-b border-slate-100">
       {tabs.map((tab) => (
         <button
           key={tab.id}
           onClick={() => onTabChange(tab.id)}
-          className={`px-5 md:px-8 py-3 md:py-4 rounded-[14px] md:rounded-2xl text-[11px] md:text-sm font-black transition-all whitespace-nowrap ${
+          className={`pb-4 text-xs md:text-[13px] font-black transition-all relative whitespace-nowrap uppercase tracking-widest ${
             activeTab === tab.id
-              ? 'bg-brand-emerald text-white shadow-lg shadow-brand-emerald/20 scale-[1.02]'
-              : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
+              ? 'text-brand-emerald'
+              : 'text-slate-400 hover:text-slate-600'
           }`}
         >
           {tab.label}
+          {activeTab === tab.id && (
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-brand-emerald rounded-t-full animate-in fade-in slide-in-from-bottom-1 duration-300"></div>
+          )}
         </button>
       ))}
     </div>

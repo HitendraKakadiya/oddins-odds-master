@@ -119,6 +119,43 @@ export interface StandingsSplit {
     gd: number;
     points: number;
     ppg: number;
+    avgScored: number;
+    avgConceded: number;
+    corners?: {
+        average: number;
+        over75: number;
+        over85: number;
+        over95: number;
+        over105: number;
+        over115: number;
+        over125: number;
+        over135: number;
+    };
+    cards?: {
+        over35: number;
+        over45: number;
+        over55: number;
+    };
+    firstHalf?: {
+        played: number; wins: number; draws: number; losses: number;
+        gf: number; ga: number; gd: number; points: number; ppg: number;
+    };
+    secondHalf?: {
+        played: number; wins: number; draws: number; losses: number;
+        gf: number; ga: number; gd: number; points: number; ppg: number;
+    };
+    cleanSheets?: { count: number; percentage: number };
+    overUnder?: {
+        over05: { count: number; percentage: number }; under05: { count: number; percentage: number };
+        over15: { count: number; percentage: number }; under15: { count: number; percentage: number };
+        over25: { count: number; percentage: number }; under25: { count: number; percentage: number };
+        over35: { count: number; percentage: number }; under35: { count: number; percentage: number };
+        over45: { count: number; percentage: number }; under45: { count: number; percentage: number };
+        over55: { count: number; percentage: number }; under55: { count: number; percentage: number };
+    };
+    btts?: { count: number; percentage: number };
+    scoringFirst?: { count: number; percentage: number };
+    concedingFirst?: { count: number; percentage: number };
 }
 
 export interface StandingsRow {
@@ -319,8 +356,34 @@ export interface LeagueStats {
     over15Rate: number;
 }
 
+export interface MatchEvent {
+    time: {
+        elapsed: number;
+        extra?: number | null;
+    };
+    team: {
+        id: number;
+        name: string;
+        logo?: string | null;
+    };
+    player: {
+        id: number | null;
+        name: string | null;
+    };
+    assist: {
+        id: number | null;
+        name: string | null;
+    };
+    type: 'Goal' | 'Card' | 'subst' | 'Var';
+    detail: string;
+    comments?: string | null;
+}
+
 export interface MatchDetailResponse {
     match: MatchData;
+    prevMatch?: { matchId: number; homeTeam: { logoUrl?: string | null }; awayTeam: { logoUrl?: string | null } } | null;
+    nextMatch?: { matchId: number; homeTeam: { logoUrl?: string | null }; awayTeam: { logoUrl?: string | null } } | null;
+    events?: MatchEvent[] | null;
     oddsLatest?: OddsLatest | null;
     predictions?: Prediction[] | null;
     h2h?: H2HMatch[] | null;

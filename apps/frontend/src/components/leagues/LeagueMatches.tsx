@@ -57,57 +57,73 @@ function MatchRow({ match, type }: { match: MatchData; type: 'fixtures' | 'resul
   const formattedTime = kickoffDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
 
   return (
-    <div className="py-6 flex items-center group hover:bg-slate-50/50 transition-all duration-300">
+    <div className="py-5 flex flex-col sm:flex-row items-center group hover:bg-slate-50/50 transition-all duration-300 gap-4 sm:gap-0">
       {/* Date & Time */}
-      <div className="w-1/4 lg:w-1/5 shrink-0 px-4">
-        <span className="text-sm font-bold text-slate-800 tabular-nums">
-          {formattedDate} - {formattedTime}
+      <div className="w-full sm:w-1/4 lg:w-1/5 shrink-0 px-4 flex flex-col items-center sm:items-start">
+        <span className="text-[11px] font-black text-slate-800 tabular-nums">
+          {formattedDate}
+        </span>
+        <span className="text-[10px] font-bold text-slate-400">
+          {formattedTime}
         </span>
       </div>
 
       {/* Matchup */}
-      <div className="flex-1 flex items-center justify-center gap-2 lg:gap-12 px-2">
+      <div className="flex-1 flex items-center justify-center gap-2 lg:gap-8 px-2 w-full">
         {/* Home Team */}
         <div className="flex-1 flex items-center justify-end gap-3 min-w-0">
-          <span className="text-sm lg:text-base font-black text-slate-700 text-right truncate group-hover:text-brand-emerald transition-colors">
+          <span className="text-sm font-black text-slate-700 text-right truncate group-hover:text-brand-emerald transition-colors">
             {match.homeTeam.name}
           </span>
-          <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-white border border-slate-100 flex items-center justify-center p-1.5 shadow-sm shrink-0">
-            <img src={match.homeTeam.logoUrl || ''} alt="" className="w-full h-full object-contain" />
+          <div className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center p-1.5 shadow-sm shrink-0 overflow-hidden">
+            {match.homeTeam.logoUrl ? (
+              <img src={match.homeTeam.logoUrl} alt="" className="w-full h-full object-contain" />
+            ) : (
+              <span className="text-xs font-black text-slate-300">{match.homeTeam.name.substring(0, 2).toUpperCase()}</span>
+            )}
           </div>
         </div>
 
         {/* Score or VS */}
-        <div className="w-20 lg:w-32 flex items-center justify-center shrink-0">
+        <div className="shrink-0">
           {type === 'results' ? (
-            <div className="flex items-center gap-2 lg:gap-4 px-4 py-2 lg:py-3 rounded-2xl bg-slate-50 border border-slate-100">
-              <span className="text-lg lg:text-xl font-black text-slate-900">{match.score.home ?? 0}</span>
-              <span className="text-slate-300 font-black text-sm">:</span>
-              <span className="text-lg lg:text-xl font-black text-slate-900">{match.score.away ?? 0}</span>
+            <div className="flex items-center gap-1.5 bg-slate-100/50 px-3 py-1.5 rounded-lg border border-slate-200/60 min-w-[64px] justify-center shadow-inner tabular-nums">
+              <span className="text-sm font-black text-brand-midnight">{match.score.home ?? 0}</span>
+              <span className="text-slate-300 font-bold">-</span>
+              <span className="text-sm font-black text-brand-midnight">{match.score.away ?? 0}</span>
             </div>
           ) : (
-            <span className="text-xs font-black text-slate-300 uppercase tracking-widest italic">v.s</span>
+            <div className="bg-brand-emerald/5 px-3 py-1.5 rounded-lg border border-brand-emerald/10 text-brand-emerald text-[10px] font-black italic min-w-[64px] text-center">
+              VS
+            </div>
           )}
         </div>
 
         {/* Away Team */}
         <div className="flex-1 flex items-center justify-start gap-3 min-w-0">
-          <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-white border border-slate-100 flex items-center justify-center p-1.5 shadow-sm shrink-0">
-            <img src={match.awayTeam.logoUrl || ''} alt="" className="w-full h-full object-contain" />
+          <div className="w-9 h-9 lg:w-10 lg:h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center p-1.5 shadow-sm shrink-0 overflow-hidden">
+            {match.awayTeam.logoUrl ? (
+              <img src={match.awayTeam.logoUrl} alt="" className="w-full h-full object-contain" />
+            ) : (
+              <span className="text-xs font-black text-slate-300">{match.awayTeam.name.substring(0, 2).toUpperCase()}</span>
+            )}
           </div>
-          <span className="text-sm lg:text-base font-black text-slate-700 text-left truncate group-hover:text-brand-emerald transition-colors">
+          <span className="text-sm font-black text-slate-700 text-left truncate group-hover:text-brand-emerald transition-colors">
             {match.awayTeam.name}
           </span>
         </div>
       </div>
 
-      {/* Actions (Optional - can add See Prediction like in LeagueMatchList if needed) */}
-      <div className="hidden lg:flex w-32 justify-end px-4">
+      {/* Actions */}
+      <div className="w-full sm:w-24 lg:w-32 flex justify-center sm:justify-end px-4">
         <Link 
-          href={`/predictions/${match.matchId}`}
-          className="opacity-0 group-hover:opacity-100 bg-brand-emerald/10 text-brand-emerald px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-brand-emerald hover:text-white transition-all shadow-sm"
+          href={`/match/${match.matchId}`}
+          className="bg-slate-50 text-slate-400 w-9 h-9 rounded-xl flex items-center justify-center hover:bg-brand-emerald hover:text-white transition-all shadow-sm border border-slate-100"
+          title="Match Detail"
         >
-          Details
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
         </Link>
       </div>
     </div>

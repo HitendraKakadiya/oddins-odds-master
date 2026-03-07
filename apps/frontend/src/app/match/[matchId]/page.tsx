@@ -1,4 +1,4 @@
-import { getMatchDetail, type MatchDetailResponse } from '@/lib/api';
+import { getLiveMatchDetail, type MatchDetailResponse } from '@/lib/api';
 import MatchHeader from '@/components/match/MatchHeader';
 import MatchContent from '@/components/match/MatchContent';
 import Link from 'next/link';
@@ -18,27 +18,19 @@ export default async function MatchDetailPage({ params }: PageProps) {
   let matchData: MatchDetailResponse | null = null;
   
   try {
-    matchData = await getMatchDetail(matchId);
-  } catch (error) {
-    console.error(`Failed to fetch match ${matchId}:`, error);
-    
-    // Provide some minimal mock data if fetch fails completely for non-existent IDs
-    if (!matchData) {
-       matchData = {
-          match: {
-            matchId,
-            kickoffAt: new Date().toISOString(),
-            status: 'UPCOMING',
-            league: { id: 0, name: 'Premier League', slug: 'premier-league', country: { name: 'England' } },
-            homeTeam: { id: 0, name: 'Home Team', slug: 'home-team' },
-            awayTeam: { id: 0, name: 'Away Team', slug: 'away-team' },
-            score: { home: 0, away: 0 }
-          }
-       };
+    if (!isNaN(matchId)) {
+      matchData = await getLiveMatchDetail(matchId);
+    }
+  } catch (error: any) {
+    console.error(`Failed to fetch match ${params.matchId}:`, error);
+    // If it's a real API failure (e.g. Rate Limit 429 or 500 Server Error), we MUST throw it
+    // so Next.js's Data Cache doesn't mistakenly cache a 200 OK "Match not found" layout.
+    if (error?.status !== 404) {
+      throw error;
     }
   }
 
-  if (!matchData || !matchData.match) {
+  if (!matchData || !matchData.match || !matchData.match.homeTeam) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
         <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -59,8 +51,8 @@ export default async function MatchDetailPage({ params }: PageProps) {
         {/* Premium Match Header */}
         <MatchHeader 
           match={matchData.match} 
-          prevMatchId={matchId > 1 ? matchId - 1 : undefined}
-          nextMatchId={matchId + 1}
+          prevMatch={matchData.prevMatch}
+          nextMatch={matchData.nextMatch}
           stats={matchData.stats}
         />
 

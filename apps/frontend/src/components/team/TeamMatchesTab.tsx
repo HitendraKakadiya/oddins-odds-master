@@ -188,16 +188,16 @@ export default function TeamMatchesTab({ team, upcomingMatches = [], lastMatches
                         </thead>
                         <tbody className="divide-y divide-gray-50">
                             {[
-                                { label: 'Overall', mp: 29, w: 19, d: 7, l: 3 },
-                                { label: 'Home', mp: 14, w: 11, d: 2, l: 1 },
-                                { label: 'Away', mp: 15, w: 8, d: 5, l: 2 },
+                                { label: 'Overall', data: stats?.overall },
+                                { label: 'Home', data: stats?.home },
+                                { label: 'Away', data: stats?.away },
                             ].map((row) => (
                                 <tr key={row.label} className="group">
-                                    <td className="py-4 text-sm font-bold text-gray-400 group-hover:text-[#4F46E5] transition-colors uppercase tracking-widest text-[10px]">{row.label}</td>
-                                    <td className="py-4 text-center text-sm font-bold text-gray-900">{row.mp}</td>
-                                    <td className="py-4 text-center text-sm font-bold text-gray-900">{row.w}</td>
-                                    <td className="py-4 text-center text-sm font-bold text-gray-900">{row.d}</td>
-                                    <td className="py-4 text-center text-sm font-bold text-gray-900">{row.l}</td>
+                                    <td className="py-4 text-sm font-bold text-gray-400 group-hover:text-brand-emerald transition-colors uppercase tracking-widest text-[10px]">{row.label}</td>
+                                    <td className="py-4 text-center text-sm font-bold text-gray-900">{row.data?.played || 0}</td>
+                                    <td className="py-4 text-center text-sm font-bold text-gray-900">{row.data?.wins || 0}</td>
+                                    <td className="py-4 text-center text-sm font-bold text-gray-900">{row.data?.draws || 0}</td>
+                                    <td className="py-4 text-center text-sm font-bold text-gray-900">{row.data?.losses || 0}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -238,9 +238,9 @@ export default function TeamMatchesTab({ team, upcomingMatches = [], lastMatches
                         </thead>
                         <tbody className="divide-y divide-gray-50">
                             {[
-                                { label: 'Overall', cs: stats?.cleanSheets || '-', btts: stats?.bttsRate ? `${stats.bttsRate}%` : '-', fts: stats?.failedToScoreRate ? `${stats.failedToScoreRate}%` : '-' },
-                                { label: 'Home', cs: stats?.homeCleanSheets || '-', btts: stats?.homeBttsRate ? `${stats.homeBttsRate}%` : '-', fts: stats?.homeFailedToScoreRate ? `${stats.homeFailedToScoreRate}%` : '-' },
-                                { label: 'Away', cs: stats?.awayCleanSheets || '-', btts: stats?.awayBttsRate ? `${stats.awayBttsRate}%` : '-', fts: stats?.awayFailedToScoreRate ? `${stats.awayFailedToScoreRate}%` : '-' },
+                                { label: 'Overall', cs: stats?.cleanSheets || 0, btts: stats?.bttsRate ? `${stats.bttsRate}%` : '0%', fts: stats?.failedToScoreRate ? `${stats.failedToScoreRate}%` : '0%' },
+                                { label: 'Home', cs: stats?.homeCleanSheets || 0, btts: stats?.homeBttsRate ? `${stats.homeBttsRate}%` : '0%', fts: stats?.homeFailedToScoreRate ? `${stats.homeFailedToScoreRate}%` : '0%' },
+                                { label: 'Away', cs: stats?.awayCleanSheets || 0, btts: stats?.awayBttsRate ? `${stats.awayBttsRate}%` : '0%', fts: stats?.awayFailedToScoreRate ? `${stats.awayFailedToScoreRate}%` : '0%' },
                             ].map((row) => (
                                 <tr key={row.label} className="group">
                                     <td className="py-4 text-sm font-bold text-gray-400 group-hover:text-primary-600 transition-colors uppercase tracking-widest text-[10px]">{row.label}</td>
@@ -267,12 +267,12 @@ export default function TeamMatchesTab({ team, upcomingMatches = [], lastMatches
                   { label: 'Cards For', sub: 'Per Match', val: stats?.cardsForAvg || '-' },
                   { label: 'Cards Against', sub: 'Per Match', val: stats?.cardsAgainstAvg || '-' },
                 ].map((item, idx) => (
-                    <div key={idx} className="bg-white rounded-2xl p-6 border border-gray-50 shadow-sm flex items-center justify-between group hover:border-[#614CE1]/30 transition-all duration-300 cursor-default">
+                    <div key={idx} className="bg-white rounded-2xl p-6 border border-gray-50 shadow-sm flex items-center justify-between group hover:border-brand-emerald/30 transition-all duration-300 cursor-default">
                         <div>
                             <p className="text-[11px] font-black text-gray-800 uppercase tracking-tight">{item.label}</p>
                             <p className="text-[9px] font-bold text-gray-300 uppercase mt-0.5">{item.sub}</p>
                         </div>
-                        <div className="text-lg font-black text-gray-900 group-hover:text-[#614CE1] transition-colors">{item.val}</div>
+                        <div className="text-lg font-black text-gray-900 group-hover:text-brand-emerald transition-colors">{item.val}</div>
                     </div>
                 ))}
             </div>

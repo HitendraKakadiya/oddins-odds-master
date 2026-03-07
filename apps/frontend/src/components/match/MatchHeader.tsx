@@ -1,19 +1,37 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import type { MatchData } from '@/lib/api/types';
 
 interface MatchHeaderProps {
   match: MatchData;
-  prevMatchId?: number;
-  nextMatchId?: number;
+  prevMatch?: { matchId: number; homeTeam: { logoUrl?: string | null }; awayTeam: { logoUrl?: string | null } } | null;
+  nextMatch?: { matchId: number; homeTeam: { logoUrl?: string | null }; awayTeam: { logoUrl?: string | null } } | null;
   stats?: {
     home: { overall: { winRate: number } };
     away: { overall: { winRate: number } };
   } | null;
 }
 
-export default function MatchHeader({ match, prevMatchId, nextMatchId, stats }: MatchHeaderProps) {
+export default function MatchHeader({ match, prevMatch, nextMatch, stats }: MatchHeaderProps) {
+  const router = useRouter();
+  const [isLoadingPrev, setIsLoadingPrev] = useState(false);
+  const [isLoadingNext, setIsLoadingNext] = useState(false);
+
+  const handlePrevClick = (e: React.MouseEvent, id: number) => {
+    e.preventDefault();
+    setIsLoadingPrev(true);
+    router.push(`/match/${id}`);
+  };
+
+  const handleNextClick = (e: React.MouseEvent, id: number) => {
+    e.preventDefault();
+    setIsLoadingNext(true);
+    router.push(`/match/${id}`);
+  };
+
   const kickoffTime = new Date(match.kickoffAt);
   const formattedDate = kickoffTime.toLocaleDateString('en-GB', {
     weekday: 'short',
@@ -31,67 +49,73 @@ export default function MatchHeader({ match, prevMatchId, nextMatchId, stats }: 
     <div className="relative mb-8">
       {/* Floating Navigation */}
       <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-[60%] z-20 hidden xl:block">
-        <Link 
-          href={prevMatchId ? `/match/${prevMatchId}` : '#'}
-          className="group flex flex-col items-center gap-2"
-        >
-          <div className="w-16 h-24 rounded-full bg-white border-2 border-slate-200 shadow-lg flex flex-col items-center justify-center transition-all hover:border-brand-emerald hover:scale-105">
-            <div className="flex -space-x-2 mb-2">
-              <div className="w-7 h-7 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center overflow-hidden shadow-sm">
-                {match.homeTeam.logoUrl ? (
-                  <img src={match.homeTeam.logoUrl} alt={match.homeTeam.name} className="w-full h-full object-contain" />
+        {prevMatch && (
+            <button 
+              onClick={(e) => handlePrevClick(e, prevMatch.matchId)}
+              disabled={isLoadingPrev}
+              className="group flex flex-col items-center w-14 h-32 rounded-[28px] bg-white border border-slate-100 shadow-xl shadow-slate-200/50 justify-between py-2 transition-all duration-300 hover:border-brand-emerald hover:shadow-brand-emerald/20 hover:-translate-x-2 focus:outline-none"
+            >
+              <div className="flex flex-col -space-y-2 mt-2">
+                <div className="w-8 h-8 rounded-full bg-slate-50 border-2 border-white flex items-center justify-center overflow-hidden shadow-sm z-10">
+                  {prevMatch.homeTeam?.logoUrl ? (
+                    <img src={prevMatch.homeTeam.logoUrl} className="w-full h-full object-contain p-1" />
+                  ) : <span className="text-xs">⚽</span>}
+                </div>
+                <div className="w-8 h-8 rounded-full bg-slate-50 border-2 border-white flex items-center justify-center overflow-hidden shadow-sm">
+                  {prevMatch.awayTeam?.logoUrl ? (
+                    <img src={prevMatch.awayTeam.logoUrl} className="w-full h-full object-contain p-1" />
+                  ) : <span className="text-xs">⚽</span>}
+                </div>
+              </div>
+              
+              <div className={`w-8 h-8 rounded-full flex flex-shrink-0 items-center justify-center transition-colors mb-1 ${isLoadingPrev ? 'bg-brand-emerald text-white' : 'bg-slate-50 text-slate-400 group-hover:bg-brand-emerald group-hover:text-white'}`}>
+                {isLoadingPrev ? (
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                 ) : (
-                  <svg className="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#e2e8f0"/><text x="12" y="16" textAnchor="middle" fontSize="10" fill="#94a3b8">⚽</text></svg>
+                  <svg className="w-4 h-4 -ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" /></svg>
                 )}
               </div>
-              <div className="w-7 h-7 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center overflow-hidden shadow-sm">
-                {match.awayTeam.logoUrl ? (
-                  <img src={match.awayTeam.logoUrl} alt={match.awayTeam.name} className="w-full h-full object-contain" />
-                ) : (
-                  <svg className="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#e2e8f0"/><text x="12" y="16" textAnchor="middle" fontSize="10" fill="#94a3b8">⚽</text></svg>
-                )}
+              
+              <div className="absolute left-full ml-3 top-1/2 -translate-y-1/2 whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-300">
+                <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest bg-white px-3 py-1.5 rounded-full shadow-sm border border-slate-100">Previous</span>
               </div>
-            </div>
-            <div className="text-brand-emerald mb-1">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
-              </svg>
-            </div>
-            <span className="text-[10px] font-black uppercase text-slate-400 text-center leading-tight">Previous<br/>Match</span>
-          </div>
-        </Link>
+            </button>
+        )}
       </div>
 
       <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-[60%] z-20 hidden xl:block">
-        <Link 
-          href={nextMatchId ? `/match/${nextMatchId}` : '#'}
-          className="group flex flex-col items-center gap-2"
-        >
-          <div className="w-16 h-24 rounded-full bg-white border-2 border-slate-200 shadow-lg flex flex-col items-center justify-center transition-all hover:border-brand-emerald hover:scale-105">
-            <div className="flex -space-x-2 mb-2">
-              <div className="w-7 h-7 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center overflow-hidden shadow-sm">
-                {match.homeTeam.logoUrl ? (
-                  <img src={match.homeTeam.logoUrl} alt={match.homeTeam.name} className="w-full h-full object-contain" />
+        {nextMatch && (
+            <button 
+              onClick={(e) => handleNextClick(e, nextMatch.matchId)}
+              disabled={isLoadingNext}
+              className="group flex flex-col items-center w-14 h-32 rounded-[28px] bg-white border border-slate-100 shadow-xl shadow-slate-200/50 justify-between py-2 transition-all duration-300 hover:border-brand-emerald hover:shadow-brand-emerald/20 hover:translate-x-2 focus:outline-none"
+            >
+              <div className={`w-8 h-8 rounded-full flex flex-shrink-0 items-center justify-center transition-colors mt-1 ${isLoadingNext ? 'bg-brand-emerald text-white' : 'bg-slate-50 text-slate-400 group-hover:bg-brand-emerald group-hover:text-white'}`}>
+                {isLoadingNext ? (
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                 ) : (
-                  <svg className="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#e2e8f0"/><text x="12" y="16" textAnchor="middle" fontSize="10" fill="#94a3b8">⚽</text></svg>
+                  <svg className="w-4 h-4 -mr-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" /></svg>
                 )}
               </div>
-              <div className="w-7 h-7 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center overflow-hidden shadow-sm">
-                {match.awayTeam.logoUrl ? (
-                  <img src={match.awayTeam.logoUrl} alt={match.awayTeam.name} className="w-full h-full object-contain" />
-                ) : (
-                  <svg className="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#e2e8f0"/><text x="12" y="16" textAnchor="middle" fontSize="10" fill="#94a3b8">⚽</text></svg>
-                )}
+              
+              <div className="flex flex-col -space-y-2 mb-2">
+                <div className="w-8 h-8 rounded-full bg-slate-50 border-2 border-white flex items-center justify-center overflow-hidden shadow-sm z-10">
+                  {nextMatch.homeTeam?.logoUrl ? (
+                    <img src={nextMatch.homeTeam.logoUrl} className="w-full h-full object-contain p-1" />
+                  ) : <span className="text-xs">⚽</span>}
+                </div>
+                <div className="w-8 h-8 rounded-full bg-slate-50 border-2 border-white flex items-center justify-center overflow-hidden shadow-sm">
+                  {nextMatch.awayTeam?.logoUrl ? (
+                    <img src={nextMatch.awayTeam.logoUrl} className="w-full h-full object-contain p-1" />
+                  ) : <span className="text-xs">⚽</span>}
+                </div>
               </div>
-            </div>
-            <div className="text-brand-emerald mb-1">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
-              </svg>
-            </div>
-            <span className="text-[10px] font-black uppercase text-slate-400 text-center leading-tight">Next<br/>Match</span>
-          </div>
-        </Link>
+
+              <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-300">
+                <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest bg-white px-3 py-1.5 rounded-full shadow-sm border border-slate-100">Next</span>
+              </div>
+            </button>
+        )}
       </div>
 
       {/* Main Header Card */}
@@ -161,16 +185,16 @@ export default function MatchHeader({ match, prevMatchId, nextMatchId, stats }: 
               <div className="text-lg font-black text-slate-800 tracking-tight">{formattedTime}</div>
             </div>
 
-            {match.status === 'LIVE' || match.status === 'FT' ? (
+              {['LIVE', '1H', 'HT', '2H', 'ET', 'BT', 'P', 'FT', 'AET', 'PEN'].includes(match.status) ? (
                <div className="flex items-center gap-6 mb-4">
-                  <span className="text-5xl md:text-6xl font-black text-slate-900">{match.score.home}</span>
+                  <span className="text-5xl md:text-6xl font-black text-slate-900">{match.score.home ?? 0}</span>
                   <div className="flex flex-col items-center">
                      <span className="text-xs font-black text-slate-200 italic mb-1 uppercase tracking-widest">VS</span>
-                     <div className={`px-3 py-1 rounded-full ${match.status === 'LIVE' ? 'bg-red-500 text-white animate-pulse' : 'bg-slate-100 text-slate-500'} text-[10px] font-black uppercase tracking-widest`}>
-                        {match.status === 'LIVE' ? `LIVE ${match.elapsed}'` : 'FINISHED'}
+                     <div className={`px-3 py-1 rounded-full ${['LIVE', '1H', 'HT', '2H', 'ET', 'BT', 'P'].includes(match.status) ? 'bg-red-500 text-white animate-pulse' : 'bg-slate-100 text-slate-500'} text-[10px] font-black uppercase tracking-widest`}>
+                        {['LIVE', '1H', 'HT', '2H', 'ET', 'BT', 'P'].includes(match.status) ? `LIVE ${match.elapsed}'` : 'FINISHED'}
                      </div>
                   </div>
-                  <span className="text-5xl md:text-6xl font-black text-slate-900">{match.score.away}</span>
+                  <span className="text-5xl md:text-6xl font-black text-slate-900">{match.score.away ?? 0}</span>
                </div>
             ) : (
                <div className="w-16 h-16 rounded-3xl bg-slate-50 border-2 border-slate-100 flex items-center justify-center shadow-inner mb-4">

@@ -264,10 +264,44 @@ export async function liveRoutes(server: FastifyInstance) {
     // GET /v1/live/match/:matchId
     server.get<{ Params: { matchId: string } }>('/live/match/:matchId', async (request, reply) => {
         const { matchId } = request.params;
-        const fixtureId = parseInt(matchId, 10);
+        let fixtureId = parseInt(matchId, 10);
 
         if (isNaN(fixtureId)) {
-            return reply.status(400).send({ error: 'Invalid matchId' });
+            // Try to resolve slug to ID via DB
+            try {
+                const pool = getPool();
+                if (pool) {
+                    const client = await pool.connect();
+                    try {
+                        // Simple slug resolution: split by '-' and try to match team names or slugs
+                        // matchId might be "home-away"
+                        const parts = matchId.split('-');
+                        if (parts.length >= 2) {
+                            const res = await client.query(
+                                `SELECT m.provider_fixture_id 
+                                 FROM matches m
+                                 JOIN teams ht ON m.home_team_id = ht.id
+                                 JOIN teams at ON m.away_team_id = at.id
+                                 WHERE (ht.slug ILIKE $1 AND at.slug ILIKE $2)
+                                    OR (ht.name ILIKE $3 AND at.name ILIKE $4)
+                                 LIMIT 1`,
+                                [`%${parts[0]}%`, `%${parts[parts.length - 1]}%`, `%${parts[0]}%`, `%${parts[parts.length - 1]}%`]
+                            );
+                            if (res.rows.length > 0) {
+                                fixtureId = res.rows[0].provider_fixture_id;
+                            }
+                        }
+                    } finally {
+                        client.release();
+                    }
+                }
+            } catch (err) {
+                console.warn(`Failed to resolve slug ${matchId}:`, err);
+            }
+        }
+
+        if (isNaN(fixtureId)) {
+            return reply.status(400).send({ error: 'Invalid matchId or slug could not be resolved' });
         }
 
         try {

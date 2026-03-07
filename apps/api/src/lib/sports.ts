@@ -142,6 +142,29 @@ export async function getPredictionsDirect(fixtureId: number) {
 }
 
 /**
+ * Fetch events for a specific fixture
+ */
+export async function getMatchEventsDirect(fixtureId: number) {
+    try {
+        const data: any = await fetchFromSportsProvider(`/fixtures/events?fixture=${fixtureId}`);
+        return data.response || [];
+    } catch (err) {
+        console.warn(`Failed to fetch events for fixture ${fixtureId}:`, (err as any).message);
+        return [];
+    }
+}
+
+export async function getFixtureStatisticsDirect(fixtureId: number) {
+    try {
+        const data: any = await fetchFromSportsProvider(`/fixtures/statistics?fixture=${fixtureId}`);
+        return data.response || [];
+    } catch (err) {
+        console.warn(`Failed to fetch statistics for fixture ${fixtureId}:`, (err as any).message);
+        return [];
+    }
+}
+
+/**
  * Fetch full prediction detail (stats, h2h, predictions) for a fixture
  */
 export async function getFullPredictionDetailDirect(fixtureId: number) {
@@ -229,13 +252,67 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
             });
         };
 
+        // Helper to calculate OVER X.5 given an array of matches
+        const calculateOverRates = (matches: any[]) => {
+            if (!matches || matches.length === 0) {
+                return {
+                    over05Rate: 0,
+                    over15Rate: 0,
+                    over25Rate: 0,
+                    over35Rate: 0,
+                    over45Rate: 0,
+                    over55Rate: 0
+                };
+            }
+
+            const rates = {
+                over05: 0, over15: 0, over25: 0, over35: 0, over45: 0, over55: 0
+            };
+
+            let validMatches = 0;
+
+            matches.forEach(m => {
+                if (m.score && typeof m.score.home === 'number' && typeof m.score.away === 'number') {
+                    const totalGoals = m.score.home + m.score.away;
+                    validMatches++;
+
+                    if (totalGoals > 0.5) rates.over05++;
+                    if (totalGoals > 1.5) rates.over15++;
+                    if (totalGoals > 2.5) rates.over25++;
+                    if (totalGoals > 3.5) rates.over35++;
+                    if (totalGoals > 4.5) rates.over45++;
+                    if (totalGoals > 5.5) rates.over55++;
+                }
+            });
+
+            if (validMatches === 0) {
+                return {
+                    over05Rate: 0,
+                    over15Rate: 0,
+                    over25Rate: 0,
+                    over35Rate: 0,
+                    over45Rate: 0,
+                    over55Rate: 0
+                };
+            }
+
+            return {
+                over05Rate: Math.round((rates.over05 / validMatches) * 100),
+                over15Rate: Math.round((rates.over15 / validMatches) * 100),
+                over25Rate: Math.round((rates.over25 / validMatches) * 100),
+                over35Rate: Math.round((rates.over35 / validMatches) * 100),
+                over45Rate: Math.round((rates.over45 / validMatches) * 100),
+                over55Rate: Math.round((rates.over55 / validMatches) * 100),
+            };
+        };
+
         const homeMatches = allMatches.filter(m => Number(m.homeTeam?.id) === teamId);
         const awayMatches = allMatches.filter(m => Number(m.awayTeam?.id) === teamId);
 
         return {
-            overall: mapDetail(leagueStats, 'total'),
-            home: mapDetail(leagueStats, 'home'),
-            away: mapDetail(leagueStats, 'away'),
+            overall: { ...mapDetail(leagueStats, 'total'), ...calculateOverRates(allMatches) },
+            home: { ...mapDetail(leagueStats, 'home'), ...calculateOverRates(homeMatches) },
+            away: { ...mapDetail(leagueStats, 'away'), ...calculateOverRates(awayMatches) },
             last5: getFormFromMatches(allMatches),
             last5Home: getFormFromMatches(homeMatches),
             last5Away: getFormFromMatches(awayMatches),
@@ -247,9 +324,11 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
     const homeId = teams?.home?.id || fixture?.homeTeam?.id || 0;
     const awayId = teams?.away?.id || fixture?.awayTeam?.id || 0;
 
-    const [homeRecent, awayRecent] = await Promise.all([
+    const [homeRecent, awayRecent, events, homeNext] = await Promise.all([
         homeId ? getTeamMatchesDirect(homeId, 'last', 20) : Promise.resolve([]),
-        awayId ? getTeamMatchesDirect(awayId, 'last', 20) : Promise.resolve([])
+        awayId ? getTeamMatchesDirect(awayId, 'last', 20) : Promise.resolve([]),
+        getMatchEventsDirect(fixtureId),
+        homeId ? getTeamMatchesDirect(homeId, 'next', 10) : Promise.resolve([])
     ]);
 
     // Map matches and stats
@@ -281,11 +360,71 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
         awayScore: h?.goals?.away
     }));
 
+    // Calculate H2H Summary
+    const h2hSummary = {
+        total: mappedH2H.length,
+        homeTeam: {
+            wins: mappedH2H.filter((m: any) => (m.homeTeam.id === homeId && m.homeScore > m.awayScore) || (m.awayTeam.id === homeId && m.awayScore > m.homeScore)).length,
+            cleanSheets: mappedH2H.filter((m: any) => (m.homeTeam.id === homeId && m.awayScore === 0) || (m.awayTeam.id === homeId && m.homeScore === 0)).length
+        },
+        awayTeam: {
+            wins: mappedH2H.filter((m: any) => (m.homeTeam.id === awayId && m.homeScore > m.awayScore) || (m.awayTeam.id === awayId && m.awayScore > m.homeScore)).length,
+            cleanSheets: mappedH2H.filter((m: any) => (m.homeTeam.id === awayId && m.awayScore === 0) || (m.awayTeam.id === awayId && m.homeScore === 0)).length
+        },
+        draws: mappedH2H.filter((m: any) => m.homeScore === m.awayScore).length,
+        btts: mappedH2H.filter((m: any) => m.homeScore > 0 && m.awayScore > 0).length,
+        over05: mappedH2H.filter((m: any) => (m.homeScore + m.awayScore) > 0.5).length,
+        over15: mappedH2H.filter((m: any) => (m.homeScore + m.awayScore) > 1.5).length,
+        over25: mappedH2H.filter((m: any) => (m.homeScore + m.awayScore) > 2.5).length,
+    };
+
+    // Fetch standings
+    const leagueId = league?.id || fixture?.league?.id || 0;
+    const season = league?.season || new Date().getFullYear();
+    const standings = leagueId ? await getLeagueStandingsDirect(leagueId, season) : [];
+
+    // Identify next and prev matches (from Home Team's perspective)
+    let prevMatchDetails = null;
+    let nextMatchDetails = null;
+
+    if (homeRecent.length > 0) {
+        // homeRecent is usually ordered descending (newest past match first). 
+        // We'll just take the most recent 'past' match as prev match,
+        // UNLESS the current match itself is somehow in that array, then we'd pick the one right after it.
+        const currentMatchIndex = homeRecent.findIndex((m: any) => m.matchId === fixtureId);
+        if (currentMatchIndex !== -1 && currentMatchIndex + 1 < homeRecent.length) {
+            const pMatch = homeRecent[currentMatchIndex + 1];
+            prevMatchDetails = { matchId: pMatch.matchId, homeTeam: { logoUrl: pMatch.homeTeam.logoUrl }, awayTeam: { logoUrl: pMatch.awayTeam.logoUrl } };
+        } else if (currentMatchIndex === -1) {
+            // Not in array, take the 0th element (most recent)
+            const pMatch = homeRecent[0];
+            prevMatchDetails = { matchId: pMatch.matchId, homeTeam: { logoUrl: pMatch.homeTeam.logoUrl }, awayTeam: { logoUrl: pMatch.awayTeam.logoUrl } };
+        }
+    }
+
+    if (homeNext && homeNext.length > 0) {
+        // homeNext is usually ordered ascending (soonest next match first).
+        const currentMatchIndex = homeNext.findIndex((m: any) => m.matchId === fixtureId);
+        if (currentMatchIndex !== -1 && currentMatchIndex + 1 < homeNext.length) {
+            const nMatch = homeNext[currentMatchIndex + 1];
+            nextMatchDetails = { matchId: nMatch.matchId, homeTeam: { logoUrl: nMatch.homeTeam.logoUrl }, awayTeam: { logoUrl: nMatch.awayTeam.logoUrl } };
+        } else if (currentMatchIndex === -1) {
+            // Not in array, take the 0th element
+            const nMatch = homeNext[0];
+            nextMatchDetails = { matchId: nMatch.matchId, homeTeam: { logoUrl: nMatch.homeTeam.logoUrl }, awayTeam: { logoUrl: nMatch.awayTeam.logoUrl } };
+        }
+    }
+
     return {
         match: mapMatch(fixture, league, teams, res),
+        prevMatch: prevMatchDetails,
+        nextMatch: nextMatchDetails,
         stats,
+        events,
         predictions: mappedPredictions,
-        h2h: mappedH2H
+        h2h: mappedH2H,
+        h2hSummary,
+        standings: standings.length > 0 ? standings : null
     };
 }
 
@@ -322,8 +461,8 @@ export function mapMatch(fixture: any, league: any, teams: any, res: any) {
             logoUrl: teams?.away?.logo || fixture?.awayTeam?.logoUrl || ''
         },
         score: {
-            home: res?.goals?.home ?? fixture?.score?.home ?? 0,
-            away: res?.goals?.away ?? fixture?.score?.away ?? 0
+            home: res?.goals?.home ?? res?.score?.fulltime?.home ?? (fixture as any)?.score?.home ?? (fixture?.status?.short === 'NS' ? null : 0),
+            away: res?.goals?.away ?? res?.score?.fulltime?.away ?? (fixture as any)?.score?.away ?? (fixture?.status?.short === 'NS' ? null : 0)
         }
     };
 }
@@ -365,28 +504,257 @@ export async function getLeaguesBySearchDirect(search: string) {
 export async function getLeagueStandingsDirect(leagueId: number, season: number) {
     try {
         const data: any = await fetchFromSportsProvider(`/standings?league=${leagueId}&season=${season}`);
-        if (data.response && data.response.length > 0) {
-            const league = data.response[0].league;
-            return league.standings[0].map((item: any) => ({
+
+        if (!data.response || data.response.length === 0) {
+            throw new Error(`No standings found for league ${leagueId} in season ${season}`);
+        }
+
+        const league = data.response[0].league;
+        // Flatten standings groups (e.g., Group A, Group B, or just one league table)
+        const allStandings = league.standings.flat();
+
+        // Map basic standings
+        const mappedRows = allStandings.map((item: any) => {
+            const mapSplit = (split: any) => ({
+                played: split.played,
+                wins: split.win,
+                draws: split.draw,
+                losses: split.lose,
+                gf: split.goals.for,
+                ga: split.goals.against,
+                gd: item.goalsDiff,
+                points: item.points,
+                ppg: split.played > 0 ? parseFloat((item.points / split.played).toFixed(2)) : 0,
+                avgScored: split.played > 0 ? parseFloat((split.goals.for / split.played).toFixed(2)) : 0,
+                avgConceded: split.played > 0 ? parseFloat((split.goals.against / split.played).toFixed(2)) : 0
+            });
+
+            return {
                 rank: item.rank,
+                group: item.group, // Helpful for multi-group leagues
                 team: {
                     id: item.team.id,
                     name: item.team.name,
-                    logo: item.team.logo
+                    slug: generateTeamSlug(item.team.id, item.team.name),
+                    logoUrl: item.team.logo
                 },
-                all: item.all,
-                home: item.home,
-                away: item.away,
-                points: item.points,
-                goalsDiff: item.goalsDiff,
+                overall: mapSplit(item.all),
+                home: mapSplit(item.home),
+                away: mapSplit(item.away),
                 form: item.form ? item.form.split('') : []
+            };
+        });
+
+        // Enrichment: Fetch Corner Stats for each team (Parallel with sampled fixtures for actual data)
+        const fixtureStatsCache = new Map<number, any>();
+        const getCachedFixtureStats = async (fixtureId: number) => {
+            if (fixtureStatsCache.has(fixtureId)) return fixtureStatsCache.get(fixtureId);
+            const stats = await getFixtureStatisticsDirect(fixtureId);
+            fixtureStatsCache.set(fixtureId, stats);
+            return stats;
+        };
+
+        try {
+            const enrichedRows = await Promise.all(mappedRows.map(async (row: any) => {
+                // Fetch completed matches for this team in this league/season for aggregation
+                const fixtures: any = await fetchFromSportsProvider(`/fixtures?team=${row.team.id}&league=${leagueId}&season=${season}&status=FT`);
+
+                if (fixtures.response && fixtures.response.length > 0) {
+                    const createHalf = () => ({ played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0, gd: 0, points: 0, ppg: 0 });
+                    const createCS = () => ({ count: 0, percentage: 0 });
+                    const createOU = () => ({
+                        over05: { count: 0, percentage: 0 }, over15: { count: 0, percentage: 0 },
+                        over25: { count: 0, percentage: 0 }, over35: { count: 0, percentage: 0 },
+                        over45: { count: 0, percentage: 0 }, over55: { count: 0, percentage: 0 }
+                    });
+                    const createBtts = () => ({ count: 0, percentage: 0 });
+                    const createScoringFirst = () => ({ count: 0, percentage: 0 });
+                    const createConcedingFirst = () => ({ count: 0, percentage: 0 });
+
+                    const updateHalf = (split: any, gf: number, ga: number) => {
+                        split.played++; split.gf += gf; split.ga += ga; split.gd += (gf - ga);
+                        if (gf > ga) { split.wins++; split.points += 3; }
+                        else if (gf === ga) { split.draws++; split.points += 1; }
+                        else { split.losses++; }
+                        split.ppg = parseFloat((split.points / split.played).toFixed(2));
+                    };
+
+                    const updateCS = (split: any, played: number, ga: number) => {
+                        if (ga === 0) split.count++;
+                        split.percentage = played > 0 ? Math.round((split.count / played) * 100) : 0;
+                    };
+
+                    const updateOU = (split: any, played: number, goals: number) => {
+                        if (goals > 0.5) split.over05.count++; split.over05.percentage = Math.round((split.over05.count / played) * 100);
+                        if (goals > 1.5) split.over15.count++; split.over15.percentage = Math.round((split.over15.count / played) * 100);
+                        if (goals > 2.5) split.over25.count++; split.over25.percentage = Math.round((split.over25.count / played) * 100);
+                        if (goals > 3.5) split.over35.count++; split.over35.percentage = Math.round((split.over35.count / played) * 100);
+                        if (goals > 4.5) split.over45.count++; split.over45.percentage = Math.round((split.over45.count / played) * 100);
+                        if (goals > 5.5) split.over55.count++; split.over55.percentage = Math.round((split.over55.count / played) * 100);
+                    };
+
+                    const updateBtts = (split: any, played: number, gf: number, ga: number) => {
+                        if (gf > 0 && ga > 0) split.count++;
+                        split.percentage = played > 0 ? Math.round((split.count / played) * 100) : 0;
+                    };
+
+                    const getGoalsArr = async (fixtureId: number, hasGoals: boolean) => {
+                        if (!hasGoals) return [];
+                        try {
+                            const events = await getMatchEventsDirect(fixtureId);
+                            if (events && events.length > 0) {
+                                return events.filter((e: any) => e.type === 'Goal' && !e.detail.includes('Missed'));
+                            }
+                        } catch (e) { }
+                        return [];
+                    };
+
+                    const updateScoringFirst = (splitSF: any, splitCF: any, played: number, goalsArray: any[], teamId: number) => {
+                        if (goalsArray && goalsArray.length > 0) {
+                            // goals[0] might have team.id to specify who scored
+                            const firstGoal = goalsArray[0];
+                            if (firstGoal && firstGoal.team && firstGoal.team.id === teamId) {
+                                splitSF.count++;
+                            } else if (firstGoal && firstGoal.team && firstGoal.team.id !== teamId) {
+                                splitCF.count++;
+                            }
+                        }
+                        splitSF.percentage = played > 0 ? Math.round((splitSF.count / played) * 100) : 0;
+                        splitCF.percentage = played > 0 ? Math.round((splitCF.count / played) * 100) : 0;
+                    };
+
+                    const stats = {
+                        overall: { firstHalf: createHalf(), secondHalf: createHalf(), cleanSheets: createCS(), overUnder: createOU(), btts: createBtts(), scoringFirst: createScoringFirst(), concedingFirst: createConcedingFirst() },
+                        home: { firstHalf: createHalf(), secondHalf: createHalf(), cleanSheets: createCS(), overUnder: createOU(), btts: createBtts(), scoringFirst: createScoringFirst(), concedingFirst: createConcedingFirst() },
+                        away: { firstHalf: createHalf(), secondHalf: createHalf(), cleanSheets: createCS(), overUnder: createOU(), btts: createBtts(), scoringFirst: createScoringFirst(), concedingFirst: createConcedingFirst() }
+                    };
+
+                    let homeMatches = 0; let awayMatches = 0;
+
+                    for (const f of fixtures.response) {
+                        const isHome = f.teams.home.id === row.team.id;
+                        const splitKey = isHome ? 'home' : 'away';
+                        if (isHome) homeMatches++; else awayMatches++;
+                        const matchesPlayed = isHome ? homeMatches : awayMatches;
+                        const totalPlayed = homeMatches + awayMatches;
+
+                        const htHome = f.score?.halftime?.home ?? 0;
+                        const htAway = f.score?.halftime?.away ?? 0;
+                        const ftHome = f.score?.fulltime?.home ?? f.goals?.home ?? 0;
+                        const ftAway = f.score?.fulltime?.away ?? f.goals?.away ?? 0;
+
+                        const shHome = ftHome - htHome;
+                        const shAway = ftAway - htAway;
+
+                        const teamHt = isHome ? htHome : htAway; const oppHt = isHome ? htAway : htHome;
+                        const teamSh = isHome ? shHome : shAway; const oppSh = isHome ? shAway : shHome;
+                        const teamFt = isHome ? ftHome : ftAway; const oppFt = isHome ? ftAway : ftHome;
+                        const totalGoals = ftHome + ftAway;
+
+                        updateHalf(stats.overall.firstHalf, teamHt, oppHt); updateHalf(stats[splitKey].firstHalf, teamHt, oppHt);
+                        updateHalf(stats.overall.secondHalf, teamSh, oppSh); updateHalf(stats[splitKey].secondHalf, teamSh, oppSh);
+
+                        updateCS(stats.overall.cleanSheets, totalPlayed, oppFt); updateCS(stats[splitKey].cleanSheets, matchesPlayed, oppFt);
+                        updateOU(stats.overall.overUnder, totalPlayed, totalGoals); updateOU(stats[splitKey].overUnder, matchesPlayed, totalGoals);
+                        updateBtts(stats.overall.btts, totalPlayed, teamFt, oppFt); updateBtts(stats[splitKey].btts, matchesPlayed, teamFt, oppFt);
+
+                        const goalsArr = f.events ? f.events.filter((e: any) => e.type === 'Goal' && !e.detail.includes('Missed')) : await getGoalsArr(f.fixture.id, totalGoals > 0);
+
+                        updateScoringFirst(stats.overall.scoringFirst, stats.overall.concedingFirst, totalPlayed, goalsArr, row.team.id);
+                        updateScoringFirst(stats[splitKey].scoringFirst, stats[splitKey].concedingFirst, matchesPlayed, goalsArr, row.team.id);
+                    }
+
+                    // For corners/cards use up to 5 most recent matches like before
+                    const recentFixtures = fixtures.response.slice(-5);
+                    let totalMatchCorners = 0;
+                    let cornerOvers = { 75: 0, 85: 0, 95: 0, 105: 0, 115: 0, 125: 0, 135: 0 };
+                    let cardOvers = { overall: { 35: 0, 45: 0, 55: 0 }, for: { 35: 0, 45: 0, 55: 0 }, against: { 35: 0, 45: 0, 55: 0 } };
+                    const sampleSize = recentFixtures.length;
+
+                    for (const f of recentFixtures) {
+                        const fStats = await getCachedFixtureStats(f.fixture.id);
+
+                        const getTeamCardCount = (teamStats: any) => {
+                            const yellow = parseInt(teamStats.statistics.find((s: any) => s.type === 'Yellow Cards')?.value || '0');
+                            const red = parseInt(teamStats.statistics.find((s: any) => s.type === 'Red Cards')?.value || '0');
+                            return yellow + red;
+                        };
+
+                        const getCorners = (teamStats: any) => {
+                            const cornerStat = teamStats.statistics.find((s: any) => s.type === 'Corner Kicks');
+                            return parseInt(cornerStat?.value || '0');
+                        };
+
+                        if (fStats.length >= 2) {
+                            const corners = getCorners(fStats[0]) + getCorners(fStats[1]);
+                            totalMatchCorners += corners;
+                            if (corners > 7.5) cornerOvers[75]++; if (corners > 8.5) cornerOvers[85]++;
+                            if (corners > 9.5) cornerOvers[95]++; if (corners > 10.5) cornerOvers[105]++;
+                            if (corners > 11.5) cornerOvers[115]++; if (corners > 12.5) cornerOvers[125]++;
+                            if (corners > 13.5) cornerOvers[135]++;
+
+                            const homeCards = getTeamCardCount(fStats[0]); const awayCards = getTeamCardCount(fStats[1]);
+                            const isHome = fStats[0].team.id === row.team.id;
+                            const teamCards = isHome ? homeCards : awayCards; const oppCards = isHome ? awayCards : homeCards;
+                            const totalMatchCards = homeCards + awayCards;
+
+                            if (totalMatchCards > 3.5) cardOvers.overall[35]++; if (totalMatchCards > 4.5) cardOvers.overall[45]++; if (totalMatchCards > 5.5) cardOvers.overall[55]++;
+                            if (teamCards > 3.5) cardOvers.for[35]++; if (teamCards > 4.5) cardOvers.for[45]++; if (teamCards > 5.5) cardOvers.for[55]++;
+                            if (oppCards > 3.5) cardOvers.against[35]++; if (oppCards > 4.5) cardOvers.against[45]++; if (oppCards > 5.5) cardOvers.against[55]++;
+                        }
+
+                    }
+
+                    const mapCorners = () => ({
+                        average: sampleSize > 0 ? parseFloat((totalMatchCorners / sampleSize).toFixed(1)) : 0,
+                        over75: sampleSize > 0 ? Math.round((cornerOvers[75] / sampleSize) * 100) : 0,
+                        over85: sampleSize > 0 ? Math.round((cornerOvers[85] / sampleSize) * 100) : 0,
+                        over95: sampleSize > 0 ? Math.round((cornerOvers[95] / sampleSize) * 100) : 0,
+                        over105: sampleSize > 0 ? Math.round((cornerOvers[105] / sampleSize) * 100) : 0,
+                        over115: sampleSize > 0 ? Math.round((cornerOvers[115] / sampleSize) * 100) : 0,
+                        over125: sampleSize > 0 ? Math.round((cornerOvers[125] / sampleSize) * 100) : 0,
+                        over135: sampleSize > 0 ? Math.round((cornerOvers[135] / sampleSize) * 100) : 0
+                    });
+
+                    const mapCards = (type: 'overall' | 'for' | 'against') => ({
+                        over35: sampleSize > 0 ? Math.round((cardOvers[type][35] / sampleSize) * 100) : 0,
+                        over45: sampleSize > 0 ? Math.round((cardOvers[type][45] / sampleSize) * 100) : 0,
+                        over55: sampleSize > 0 ? Math.round((cardOvers[type][55] / sampleSize) * 100) : 0
+                    });
+
+                    return {
+                        ...row,
+                        overall: {
+                            ...row.overall,
+                            ...stats.overall,
+                            corners: mapCorners(),
+                            cards: mapCards('overall')
+                        },
+                        home: {
+                            ...row.home,
+                            ...stats.home,
+                            corners: mapCorners(),
+                            cards: mapCards('for')
+                        },
+                        away: {
+                            ...row.away,
+                            ...stats.away,
+                            corners: mapCorners(),
+                            cards: mapCards('against')
+                        }
+                    };
+                }
+                return row;
             }));
+            return enrichedRows;
+        } catch (err) {
+            console.warn('Corner enrichment failed:', err);
+            return mappedRows;
         }
     } catch (err) {
         console.warn(`Failed to fetch standings for league ${leagueId}:`, (err as any).message);
+        throw err; // Propagate to trigger season fallback in the route
     }
-
-    return [];
 }
 
 function getEmptyTeamStatsDetail() {
@@ -472,7 +840,12 @@ export async function getTeamBySlugDirect(slug: string) {
     try {
         const data: any = await fetchFromSportsProvider(`/teams?search=${encodeURIComponent(searchTerm)}`);
         if (data.response && data.response.length > 0) {
-            const item = data.response.find((r: any) =>
+            // Priority matching: Exact name match first, then closest match
+            const exactMatch = data.response.find((r: any) =>
+                r.team.name.toLowerCase() === searchTerm.toLowerCase()
+            );
+
+            const item = exactMatch || data.response.find((r: any) =>
                 r.team.name.toLowerCase().includes(searchTerm.toLowerCase())
             ) || data.response[0];
 

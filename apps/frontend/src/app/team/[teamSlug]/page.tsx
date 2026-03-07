@@ -13,15 +13,18 @@ interface PageProps {
     teamSlug: string;
     tab?: string;
   };
+  searchParams: {
+    competition?: string;
+  };
 }
 
-export default async function TeamDetailPage({ params }: PageProps) {
+export default async function TeamDetailPage({ params, searchParams }: PageProps) {
   let teamData: any = null;
   let featuredTeams: any[] = [];
   
   try {
     [teamData, featuredTeams] = await Promise.all([
-      getTeamDetail(params.teamSlug),
+      getTeamDetail(params.teamSlug, searchParams.competition),
       getFeaturedTeams().catch(() => [])
     ]);
   } catch (err) {
@@ -46,10 +49,12 @@ export default async function TeamDetailPage({ params }: PageProps) {
     squad, 
     competitions, 
     nextMatch, 
+    nextMatchDetail,
     recentMatches,
     topScorers,
     topAssists,
-    detailedStats
+    detailedStats,
+    activeLeagueId
   } = teamData;
 
   // Calculate dynamic next/prev teams
@@ -90,10 +95,13 @@ export default async function TeamDetailPage({ params }: PageProps) {
           statsSummary={statsSummary}
           squad={squad}
           nextMatch={nextMatch}
+          nextMatchDetail={nextMatchDetail}
           recentMatches={recentMatches}
           topScorers={topScorers}
           topAssists={topAssists}
           detailedStats={detailedStats}
+          competitions={competitions}
+          activeLeagueId={activeLeagueId}
         />
       </div>
     </div>

@@ -61,41 +61,42 @@ export default function LeagueStandingsTable({ standings }: LeagueStandingsTable
             {standings.map((row, idx) => {
               const stats = row[filter];
               return (
-                <tr key={row.team.id} className={`hover:bg-slate-50/50 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-[#FAFBFF]/40'}`}>
-                  <td className="px-6 py-5">
-                    <span className="text-sm font-black text-slate-400 italic">{row.rank < 10 ? `0${row.rank}` : row.rank}</span>
+                <tr key={row.team.id} className={`hover:bg-slate-50/50 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'}`}>
+                  <td className="px-6 py-4">
+                    <span className="text-xs font-black text-slate-400 tabular-nums">{row.rank < 10 ? `0${row.rank}` : row.rank}</span>
                   </td>
-                  <td className="px-6 py-5">
-                    <Link href={`/teams/${row.team.slug}`} className="flex items-center gap-4 group">
-                      <div className="w-10 h-10 rounded-full bg-white border border-slate-100 flex items-center justify-center p-2 shadow-sm shrink-0">
+                  <td className="px-6 py-4">
+                    <Link href={`/teams/${row.team.slug}`} className="flex items-center gap-3 group min-w-0">
+                      <div className="w-8 h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center p-1.5 shadow-sm shrink-0 overflow-hidden group-hover:bg-brand-emerald/5 transition-colors">
                         <img src={row.team.logoUrl || ''} alt={row.team.name} className="w-full h-full object-contain" />
                       </div>
-                      <span className="text-sm font-black text-slate-700 group-hover:text-brand-emerald transition-colors whitespace-nowrap">
+                      <span className="text-sm font-black text-slate-700 group-hover:text-brand-emerald transition-colors truncate">
                         {row.team.name}
                       </span>
                     </Link>
                   </td>
-                  <td className="px-4 py-5 text-center text-sm font-black text-slate-600 italic">{stats.played}</td>
-                  <td className="px-4 py-5 text-center text-sm font-black text-slate-600">{stats.wins}</td>
-                  <td className="px-4 py-5 text-center text-sm font-black text-slate-500">{stats.draws}</td>
-                  <td className="px-4 py-5 text-center text-sm font-black text-slate-500">{stats.losses}</td>
-                  <td className="px-4 py-5 text-center text-sm font-black text-slate-500">{stats.gf}</td>
-                  <td className="px-4 py-5 text-center text-sm font-black text-slate-500">{stats.ga}</td>
-                  <td className="px-4 py-5 text-center text-sm font-black text-slate-600">{stats.gf - stats.ga}</td>
-                  <td className="px-4 py-5 text-center">
-                    <div className="inline-block bg-brand-emerald/10 text-brand-emerald px-3 py-1 rounded-lg text-sm font-black">
+                  <td className="px-4 py-4 text-center text-xs font-black text-slate-600">{stats.played}</td>
+                  <td className="px-4 py-4 text-center text-xs font-black text-slate-600">{stats.wins}</td>
+                  <td className="px-4 py-4 text-center text-xs font-bold text-slate-500">{stats.draws}</td>
+                  <td className="px-4 py-4 text-center text-xs font-bold text-slate-500">{stats.losses}</td>
+                  <td className="px-4 py-4 text-center text-xs font-bold text-slate-400 tabular-nums">{stats.gf}</td>
+                  <td className="px-4 py-4 text-center text-xs font-bold text-slate-400 tabular-nums">{stats.ga}</td>
+                  <td className="px-4 py-4 text-center text-xs font-black text-slate-600 tabular-nums">{stats.gf - stats.ga}</td>
+                  <td className="px-4 py-4 text-center">
+                    <span className="inline-flex items-center justify-center bg-brand-emerald/10 text-brand-emerald px-2.5 py-1 rounded-lg text-sm font-black min-w-[32px]">
                         {stats.points}
-                    </div>
+                    </span>
                   </td>
-                  <td className="px-4 py-5 text-center text-sm font-black text-slate-500 italic">{(stats.ppg || 0).toFixed(2)}</td>
-                  <td className="px-6 py-5">
-                    <div className="flex justify-end gap-1.5">
+                  <td className="px-4 py-4 text-center text-xs font-bold text-slate-400 italic">{(stats.ppg || 0).toFixed(2)}</td>
+                  <td className="px-6 py-4">
+                    <div className="flex justify-end gap-1">
                       {(row.form || []).map((res, i) => (
                         <div 
                           key={i} 
-                          className={`w-6 h-6 rounded-full flex items-center justify-center text-[8px] font-black text-white shadow-sm ${
-                            res === 'W' ? 'bg-green-500' : res === 'L' ? 'bg-red-500' : 'bg-orange-500'
+                          className={`w-5 h-5 rounded-lg flex items-center justify-center text-[9px] font-black text-white shadow-sm transition-transform hover:scale-110 cursor-default ${
+                            res === 'W' ? 'bg-green-500' : res === 'L' ? 'bg-red-500' : 'bg-orange-400'
                           }`}
+                          title={res === 'W' ? 'Win' : res === 'L' ? 'Loss' : 'Draw'}
                         >
                           {res}
                         </div>

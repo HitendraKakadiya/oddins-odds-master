@@ -19,8 +19,9 @@ export async function getTeams(query?: string, leagueSlug?: string, leagueId?: n
     return fetchAPI(`/v1/teams${queryStr ? `?${queryStr}` : ''}`);
 }
 
-export async function getTeamDetail(teamSlug: string): Promise<TeamDetailResponse> {
-    return fetchAPI<TeamDetailResponse>(`/v1/team/${teamSlug}`);
+export async function getTeamDetail(teamSlug: string, leagueId?: string): Promise<TeamDetailResponse> {
+    const url = `/v1/team/${teamSlug}${leagueId ? `?competition=${leagueId}` : ''}`;
+    return fetchAPI<TeamDetailResponse>(url);
 }
 
 export async function getTeamTab(teamSlug: string, tab: string): Promise<TabResponse> {

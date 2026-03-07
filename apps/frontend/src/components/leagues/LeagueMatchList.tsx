@@ -1,20 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-
-interface MatchItem {
-  id: number;
-  kickoffAt: string;
-  homeTeam: { name: string; logoUrl?: string };
-  awayTeam: { name: string; logoUrl?: string };
-  homeScore?: number | null;
-  awayScore?: number | null;
-  status: string;
-}
+import { MatchData } from '@/lib/api/types';
 
 interface LeagueMatchListProps {
   title: string;
-  matches: MatchItem[];
+  matches: MatchData[];
   type: 'results' | 'fixtures';
 }
 
@@ -38,55 +29,73 @@ export default function LeagueMatchList({ title, matches, type }: LeagueMatchLis
           </div>
         ) : (
           matches.map((m) => (
-            <div key={m.id} className="px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-6 hover:bg-slate-50/50 transition-colors group">
+            <div key={m.matchId} className="px-6 md:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4 md:gap-2 hover:bg-slate-50/50 transition-all group">
               {/* Date & Time */}
-              <div className="flex flex-col gap-1 w-full md:w-48 shrink-0 items-center md:items-start">
-                <span className="text-xs font-black text-slate-400 uppercase">
+              <div className="flex flex-col gap-0.5 min-w-[100px] shrink-0 items-center sm:items-start">
+                <span className="text-[11px] font-black text-slate-800 tracking-tight">
                   {new Date(m.kickoffAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
                 </span>
-                <span className="text-[10px] font-bold text-slate-300">
+                <span className="text-[10px] font-bold text-slate-400">
                   {new Date(m.kickoffAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: true })}
                 </span>
               </div>
 
               {/* Matchup */}
-              <div className="flex-1 flex items-center justify-center gap-4 md:gap-12 w-full">
-                <div className="flex items-center gap-4 w-[40%] justify-end">
-                  <span className="text-sm md:text-base font-black text-slate-700 text-right truncate group-hover:text-brand-emerald transition-colors">{m.homeTeam.name}</span>
-                  <div className="w-10 h-10 rounded-full bg-white border border-slate-100 flex items-center justify-center p-2 shadow-sm shrink-0">
-                    <img src={m.homeTeam.logoUrl} alt="" className="w-full h-full object-contain" />
+              <div className="flex-1 flex items-center justify-center gap-2 md:gap-4 w-full">
+                {/* Home Team */}
+                <div className="flex-1 flex items-center gap-3 justify-end min-w-0">
+                  <span className="text-sm font-black text-slate-700 truncate group-hover:text-brand-emerald transition-colors">
+                    {m.homeTeam.name}
+                  </span>
+                  <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-1.5 md:p-2 shadow-sm shrink-0 overflow-hidden">
+                    {m.homeTeam.logoUrl ? (
+                      <img src={m.homeTeam.logoUrl} alt="" className="w-full h-full object-contain" />
+                    ) : (
+                      <span className="text-xs font-black text-slate-300">{m.homeTeam.name.substring(0, 2).toUpperCase()}</span>
+                    )}
                   </div>
                 </div>
 
-                {type === 'results' ? (
-                  <div className="flex items-center gap-3 bg-slate-100 px-6 py-3 rounded-2xl border border-slate-200 min-w-[100px] justify-center shadow-inner">
-                    <span className="text-xl font-black text-brand-midnight">{m.homeScore ?? 0}</span>
-                    <span className="text-slate-300 font-black">-</span>
-                    <span className="text-xl font-black text-brand-midnight">{m.awayScore ?? 0}</span>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center gap-1">
-                     <div className="bg-brand-emerald/5 px-4 py-2 rounded-xl border border-brand-emerald/10 text-brand-emerald text-sm font-black italic">
-                        VS
-                     </div>
-                  </div>
-                )}
+                {/* Score / VS */}
+                <div className="shrink-0">
+                  {type === 'results' ? (
+                    <div className="flex items-center gap-1.5 bg-slate-100/50 px-3 py-1.5 rounded-lg border border-slate-200/60 min-w-[64px] justify-center shadow-inner tabular-nums">
+                      <span className="text-sm font-black text-brand-midnight">{m.score.home ?? 0}</span>
+                      <span className="text-slate-300 font-bold">-</span>
+                      <span className="text-sm font-black text-brand-midnight">{m.score.away ?? 0}</span>
+                    </div>
+                  ) : (
+                    <div className="bg-brand-emerald/5 px-3 py-1.5 rounded-lg border border-brand-emerald/10 text-brand-emerald text-[10px] font-black italic min-w-[64px] text-center">
+                      VS
+                    </div>
+                  )}
+                </div>
 
-                <div className="flex items-center gap-4 w-[40%] justify-start">
-                  <div className="w-10 h-10 rounded-full bg-white border border-slate-100 flex items-center justify-center p-2 shadow-sm shrink-0">
-                    <img src={m.awayTeam.logoUrl} alt="" className="w-full h-full object-contain" />
+                {/* Away Team */}
+                <div className="flex-1 flex items-center gap-3 justify-start min-w-0">
+                  <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center p-1.5 md:p-2 shadow-sm shrink-0 overflow-hidden">
+                    {m.awayTeam.logoUrl ? (
+                      <img src={m.awayTeam.logoUrl} alt="" className="w-full h-full object-contain" />
+                    ) : (
+                      <span className="text-xs font-black text-slate-300">{m.awayTeam.name.substring(0, 2).toUpperCase()}</span>
+                    )}
                   </div>
-                  <span className="text-sm md:text-base font-black text-slate-700 text-left truncate group-hover:text-brand-emerald transition-colors">{m.awayTeam.name}</span>
+                  <span className="text-sm font-black text-slate-700 truncate group-hover:text-brand-emerald transition-colors">
+                    {m.awayTeam.name}
+                  </span>
                 </div>
               </div>
 
-              {/* Action */}
-              <div className="w-full md:w-32 flex md:justify-end justify-center">
+              {/* Action - More subtle/Responsive */}
+              <div className="shrink-0 flex items-center justify-center">
                  <Link 
-                   href={`/predictions/${m.id}`}
-                   className="bg-brand-emerald/10 text-brand-emerald px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-brand-emerald hover:text-white transition-all shadow-sm"
+                   href={`/match/${m.matchId}`}
+                   className="w-8 h-8 md:w-9 md:h-9 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center hover:bg-brand-emerald hover:text-white transition-all shadow-sm border border-slate-100"
+                   title="Match Detail"
                  >
-                   See Prediction
+                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                   </svg>
                  </Link>
               </div>
             </div>
