@@ -37,7 +37,16 @@ export default async function TeamTabPage({ params }: PageProps) {
     );
   }
 
-  const { team } = teamData;
+  const { 
+    team,
+    nextMatch,
+    recentMatches,
+    squad,
+    standings,
+    topScorers,
+    topAssists,
+    detailedStats
+  } = teamData;
   const { items } = tabData;
 
   return (
@@ -92,8 +101,8 @@ export default async function TeamTabPage({ params }: PageProps) {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {items.map((match: MatchData) => (
-                  <MatchCard key={match.matchId} match={match} />
+                {items.map((match: any) => (
+                  <MatchCard key={match.matchId} match={match as MatchData} />
                 ))}
               </div>
             )}
@@ -122,7 +131,7 @@ export default async function TeamTabPage({ params }: PageProps) {
                     {items.map((item: TabItem, index: number) => (
                       <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
                         <td className="py-3 px-4 text-sm">
-                          {new Date(item.kickoffAt).toLocaleDateString()}
+                          {item.kickoffAt ? new Date(item.kickoffAt).toLocaleDateString() : 'TBD'}
                         </td>
                         <td className="py-3 px-4 text-sm">
                           {item.homeTeamName} vs {item.awayTeamName}

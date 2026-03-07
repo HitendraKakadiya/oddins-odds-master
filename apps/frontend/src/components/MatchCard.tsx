@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import type { MatchData } from '@/lib/api';
 
 interface MatchProps {
@@ -27,6 +28,7 @@ interface MatchProps {
 }
 
 export function MatchRow({ match }: MatchProps) {
+  const router = useRouter();
   const kickoffTime = new Date(match.kickoffAt).toLocaleTimeString('en-GB', {
     hour: '2-digit',
     minute: '2-digit',
@@ -85,7 +87,12 @@ export function MatchRow({ match }: MatchProps) {
           &quot;{match.featuredTip?.title || 'Waiting for prediction analysis...'}&quot;
         </div>
         <div className="flex gap-2 justify-center sm:justify-start">
-            <button className="flex-1 sm:flex-none btn-emerald !py-2 md:!py-2.5 !px-4 md:!px-5 !rounded-lg md:!rounded-xl text-[9px] md:text-[10px] uppercase font-black tracking-widest shadow-sm border border-brand-emerald/10">Prediction</button>
+            <button 
+              onClick={() => router.push(`/predictions/${match.matchId}`)}
+              className="flex-1 sm:flex-none btn-emerald !py-2 md:!py-2.5 !px-4 md:!px-5 !rounded-lg md:!rounded-xl text-[9px] md:text-[10px] uppercase font-black tracking-widest shadow-sm border border-brand-emerald/10 hover:scale-105 transition-transform"
+            >
+              Prediction
+            </button>
             <button className="flex-1 sm:flex-none bg-slate-50 text-slate-700 font-black py-2 md:py-2.5 px-4 md:px-5 rounded-lg md:rounded-xl text-[9px] md:text-[10px] uppercase tracking-widest hover:bg-slate-100 border border-slate-200/60 transition-all shadow-sm">Stats</button>
         </div>
       </div>

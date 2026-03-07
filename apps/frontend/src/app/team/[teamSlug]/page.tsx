@@ -39,7 +39,18 @@ export default async function TeamDetailPage({ params }: PageProps) {
     );
   }
 
-  const { team, statsSummary, standings, squad, competitions } = teamData;
+  const { 
+    team, 
+    statsSummary, 
+    standings, 
+    squad, 
+    competitions, 
+    nextMatch, 
+    recentMatches,
+    topScorers,
+    topAssists,
+    detailedStats
+  } = teamData;
 
   // Calculate dynamic next/prev teams
   const currentIndex = featuredTeams.findIndex(t => t.slug === params.teamSlug);
@@ -78,6 +89,11 @@ export default async function TeamDetailPage({ params }: PageProps) {
           standings={standings}
           statsSummary={statsSummary}
           squad={squad}
+          nextMatch={nextMatch}
+          recentMatches={recentMatches}
+          topScorers={topScorers}
+          topAssists={topAssists}
+          detailedStats={detailedStats}
         />
       </div>
     </div>

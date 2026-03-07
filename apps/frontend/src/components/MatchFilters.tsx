@@ -150,9 +150,20 @@ export function MatchFilter({ leagues = [] }: { leagues?: any[] }) {
             className="w-full bg-white border border-slate-200/60 rounded-2xl px-5 py-3.5 text-sm font-bold text-slate-800 appearance-none focus:border-brand-emerald focus:ring-2 focus:ring-brand-emerald/5 outline-none transition-all shadow-sm"
           >
             <option value="">All Odds</option>
-            <option value="1.5">Odds &gt; 1.5</option>
-            <option value="2.0">Odds &gt; 2.0</option>
-            <option value="3.0">Odds &gt; 3.0</option>
+            <option value=">1.10">Above 1.10</option>
+            <option value="<1.10">Below 1.10</option>
+            <option value=">1.20">Above 1.20</option>
+            <option value="<1.20">Below 1.20</option>
+            <option value=">1.30">Above 1.30</option>
+            <option value="<1.30">Below 1.30</option>
+            <option value=">1.50">Above 1.50</option>
+            <option value="<1.50">Below 1.50</option>
+            <option value=">2.00">Above 2.00</option>
+            <option value="<2.00">Below 2.00</option>
+            <option value=">2.50">Above 2.50</option>
+            <option value="<2.50">Below 2.50</option>
+            <option value=">3.00">Above 3.00</option>
+            <option value="<3.00">Below 3.00</option>
           </select>
           <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

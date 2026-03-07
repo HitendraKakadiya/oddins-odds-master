@@ -14,6 +14,11 @@ interface TeamTabsContentProps {
   standings: any[];
   statsSummary: any;
   squad: any[];
+  nextMatch?: any;
+  recentMatches?: any[];
+  topScorers?: any[];
+  topAssists?: any[];
+  detailedStats?: any;
 }
 
 const mainTabs = [
@@ -25,8 +30,22 @@ const mainTabs = [
   { key: 'squads', label: 'Squads' },
 ];
 
-export default function TeamTabsContent({ team, standings, statsSummary, squad }: TeamTabsContentProps) {
+export default function TeamTabsContent({ 
+  team, 
+  standings, 
+  statsSummary, 
+  squad, 
+  nextMatch, 
+  recentMatches,
+  topScorers,
+  topAssists,
+  detailedStats
+}: TeamTabsContentProps) {
   const [activeTab, setActiveTab] = useState('summary');
+
+  // Dynamic League Info from live data
+  const leagueName = nextMatch?.league?.name || recentMatches?.[0]?.league?.name || 'Premier League';
+  const leagueLogo = nextMatch?.league?.logoUrl || recentMatches?.[0]?.league?.logoUrl || 'https://media.api-sports.io/football/leagues/39.png';
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -35,13 +54,13 @@ export default function TeamTabsContent({ team, standings, statsSummary, squad }
       case 'squads':
         return <TeamSquadList squad={squad || []} />;
       case 'matches':
-        return <TeamMatchesTab team={team} />;
+        return <TeamMatchesTab team={team} upcomingMatches={nextMatch ? [nextMatch] : []} lastMatches={recentMatches || []} stats={statsSummary} standings={standings} />;
       case 'corners':
-        return <TeamCornersTab />;
+        return <TeamCornersTab detailedStats={detailedStats} />;
       case 'stats':
-        return <TeamStatsTab />;
+        return <TeamStatsTab detailedStats={detailedStats} />;
       case 'top-scorers':
-        return <TeamTopPerformersTab />;
+        return <TeamTopPerformersTab topScorers={topScorers} topAssists={topAssists} />;
       default:
         return null;
     }
@@ -74,9 +93,9 @@ export default function TeamTabsContent({ team, standings, statsSummary, squad }
             <button className="w-full md:w-auto flex items-center justify-between md:justify-start space-x-3 bg-slate-50 border border-slate-100 px-5 py-3 rounded-2xl transition-all duration-300 hover:border-brand-emerald/30 group-hover:bg-white group-hover:shadow-md">
               <div className="flex items-center space-x-3">
                 <div className="w-6 h-6 flex items-center justify-center p-0.5 bg-white rounded-lg shadow-sm border border-slate-100">
-                  <img src="https://media.api-sports.io/football/leagues/39.png" alt="PL" className="w-full h-full object-contain" />
+                  <img src={leagueLogo} alt="League" className="w-full h-full object-contain" />
                 </div>
-                <span className="text-xs font-black text-slate-700 uppercase tracking-widest">Premier League</span>
+                <span className="text-xs font-black text-slate-700 uppercase tracking-widest">{leagueName}</span>
               </div>
               <svg className="w-4 h-4 text-slate-300 group-hover:text-brand-emerald group-hover:rotate-180 transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
@@ -98,6 +117,7 @@ export default function TeamTabsContent({ team, standings, statsSummary, squad }
           stats={statsSummary} 
           venue={team.venue}
           city={team.city}
+          nextMatch={nextMatch}
         />
       </div>
     </>

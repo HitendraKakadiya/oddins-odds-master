@@ -102,21 +102,39 @@ async function getHybridMatches(targetDate: string): Promise<{ matches: any[], t
 
 export async function liveRoutes(server: FastifyInstance) {
     // GET /v1/live/matches
-    server.get<{ Querystring: { date?: string; page?: string; pageSize?: string } }>('/live/matches', async (request) => {
-        const { date, page = '1', pageSize = '20' } = request.query;
+    server.get<{ Querystring: { date?: string; page?: string; pageSize?: string; leagueId?: string; market?: string; minOdds?: string } }>('/live/matches', async (request) => {
+        const { date, page = '1', pageSize = '20', leagueId, market, minOdds } = request.query;
         const targetDate = date || new Date().toISOString().split('T')[0];
         const pageNum = Math.max(1, parseInt(page, 10));
         const pageSizeNum = Math.min(100, Math.max(1, parseInt(pageSize, 10)));
         const offset = (pageNum - 1) * pageSizeNum;
 
-        const { matches, total } = await getHybridMatches(targetDate);
-        const pagedMatches = matches.slice(offset, offset + pageSizeNum);
+        const { matches, total: originalTotal } = await getHybridMatches(targetDate);
+
+        let filteredMatches = matches;
+
+        // 1. Filter by League
+        if (leagueId) {
+            const leagueIdNum = parseInt(leagueId, 10);
+            filteredMatches = filteredMatches.filter(m => m.league?.id === leagueIdNum);
+        }
+
+        // 2. Filter by Market (Placeholder logic for now as provider data varies)
+        // In a real scenario, we would check if the match has odds for this market.
+
+        // 3. Filter by Odds
+        if (minOdds) {
+            // Placeholder: Odds filtering for live provider data is complex as it requires extra API calls.
+            // For now, we align the params but filtering might only be effective for DB-sourced matches.
+        }
+
+        const pagedMatches = filteredMatches.slice(offset, offset + pageSizeNum);
 
         return {
             date: targetDate,
             page: pageNum,
             pageSize: pageSizeNum,
-            total,
+            total: filteredMatches.length,
             matches: pagedMatches,
         };
     });
@@ -185,27 +203,24 @@ export async function liveRoutes(server: FastifyInstance) {
             // Paginate matches before fetching predictions to save API calls
             const pagedMatches = matches.slice(offset, offset + pageSizeNum);
 
-            const predictionPromises = pagedMatches.map(async (m, index) => {
-                // Fetch real predictions for the first few items to provide rich data while staying safe
-                if (pageNum === 1 && index < 5) {
-                    try {
-                        const realPred = await getPredictionsDirect(m.matchId);
-                        if (realPred) {
-                            return {
-                                ...m,
-                                selection: realPred.selection,
-                                advice: realPred.advice,
-                                probability: realPred.probabilities.home,
-                                confidence: 'High',
-                                shortExplanation: realPred.advice ? realPred.advice.slice(0, 100) + '...' : 'Live analysis available.'
-                            };
-                        }
-                    } catch (err) {
-                        console.warn(`Failed to fetch real prediction for match ${m.matchId}`);
+            const predictionPromises = pagedMatches.map(async (m) => {
+                try {
+                    const realPred = await getPredictionsDirect(m.matchId);
+                    if (realPred) {
+                        return {
+                            ...m,
+                            selection: realPred.selection,
+                            advice: realPred.advice,
+                            probability: realPred.probabilities.home,
+                            confidence: 'High',
+                            shortExplanation: realPred.advice ? realPred.advice.slice(0, 100) + '...' : 'Live analysis available.'
+                        };
                     }
+                } catch (err) {
+                    console.warn(`Failed to fetch real prediction for match ${m.matchId}`);
                 }
 
-                // Fallback for others - clearly marked as live trend
+                // Fallback clearly marked as live trend
                 return {
                     ...m,
                     selection: m.score.home >= m.score.away ? 'Home Win (Trend)' : 'Away Win (Trend)',

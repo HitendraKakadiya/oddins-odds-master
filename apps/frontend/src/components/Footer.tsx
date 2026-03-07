@@ -1,7 +1,11 @@
+'use client';
+
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { getTodayMatches, getFeaturedTips, getArticles } from '@/lib/api';
 
 export default function Footer() {
-  const footerSections = [
+  const [sections, setSections] = useState([
     {
       title: "Today's Main Matches",
       links: [
@@ -55,14 +59,58 @@ export default function Footer() {
         { name: "Rajabets India Review", href: "/betting-sites/rajabets-india" },
       ]
     }
-  ];
+  ]);
+
+  useEffect(() => {
+    async function fetchFooterData() {
+      try {
+        const [matchesRes, tipsRes, reviewsRes] = await Promise.all([
+          getTodayMatches(undefined, 1, 5).catch(() => null),
+          getFeaturedTips().catch(() => null),
+          getArticles('blog', 'Review', 1, 5).catch(() => null)
+        ]);
+
+        const updatedSections = [...sections];
+
+        // Update Today's Main Matches
+        if (matchesRes?.matches?.length) {
+          updatedSections[0].links = matchesRes.matches.slice(0, 5).map(m => ({
+            name: `${m.homeTeam.name} vs ${m.awayTeam.name}`,
+            href: `/match/${m.matchId}`
+          }));
+        }
+
+        // Update Today's Top Predictions
+        if (tipsRes?.tips?.length) {
+          updatedSections[1].links = tipsRes.tips.slice(0, 5).map(tip => ({
+            name: `${tip.homeTeam?.name} vs ${tip.awayTeam?.name}`,
+            href: `/predictions/${tip.id}`
+          }));
+        }
+
+        // Update Betting Sites (Reviews)
+        if (reviewsRes?.items?.length) {
+          updatedSections[4].links = reviewsRes.items.map(article => ({
+            name: article.title,
+            href: `/betting-sites/${article.slug}`
+          }));
+        }
+
+        setSections(updatedSections);
+      } catch (error) {
+        console.error('Failed to fetch footer data:', error);
+      }
+    }
+
+    fetchFooterData();
+  }, []);
 
   return (
     <footer className="bg-brand-midnight border-t border-white/5 mt-8 sm:mt-12 lg:mt-16 py-8 sm:py-12 lg:py-16 text-white">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Footer Links Grid - Responsive */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-8">
-          {footerSections.map((section) => (
+          {sections.map((section) => (
             <div key={section.title}>
               <h4 className="text-xs sm:text-sm font-bold text-white mb-3 sm:mb-4 uppercase tracking-wider">{section.title}</h4>
               <ul className="space-y-1.5 sm:space-y-2">

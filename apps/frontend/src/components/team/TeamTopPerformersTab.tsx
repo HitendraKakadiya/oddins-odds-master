@@ -10,26 +10,27 @@ interface PlayerStat {
   value: number;
 }
 
-export default function TeamTopPerformersTab() {
-  const topScorers: PlayerStat[] = [
-    { id: 1, name: 'Viktor Gyökeres', photo: 'https://media.api-sports.io/football/players/1484.png', description: 'Originally from Sweden - 27 years old', value: 10 },
-    { id: 2, name: 'Eberechi Eze', photo: 'https://media.api-sports.io/football/players/1802.png', description: 'Originally from England - 27 years old', value: 6 },
-    { id: 3, name: 'Leandro Trossard', photo: 'https://media.api-sports.io/football/players/534.png', description: 'Originally from Belgium - 31 years old', value: 5 },
-    { id: 4, name: 'Bukayo Saka', photo: 'https://media.api-sports.io/football/players/1465.png', description: 'Originally from England - 24 years old', value: 5 },
-    { id: 5, name: 'Martín Zubimendi', photo: 'https://media.api-sports.io/football/players/10398.png', description: 'Originally from Spain - 27 years old', value: 5 },
-    { id: 6, name: 'Declan Rice', photo: 'https://media.api-sports.io/football/players/182.png', description: 'Originally from England - 27 years old', value: 4 },
-    { id: 7, name: 'Mikel Merino', photo: 'https://media.api-sports.io/football/players/1908.png', description: 'Originally from Spain - 29 years old', value: 4 },
-  ];
+interface TeamTopPerformersTabProps {
+  topScorers?: any[];
+  topAssists?: any[];
+}
 
-  const topAssists: PlayerStat[] = [
-    { id: 8, name: 'Leandro Trossard', photo: 'https://media.api-sports.io/football/players/534.png', description: 'Originally from Belgium - 31 years old', value: 5 },
-    { id: 9, name: 'Martin Ødegaard', photo: 'https://media.api-sports.io/football/players/135.png', description: 'Originally from Norway - 27 years old', value: 5 },
-    { id: 10, name: 'Declan Rice', photo: 'https://media.api-sports.io/football/players/182.png', description: 'Originally from England - 27 years old', value: 5 },
-    { id: 11, name: 'Bukayo Saka', photo: 'https://media.api-sports.io/football/players/1465.png', description: 'Originally from England - 24 years old', value: 4 },
-    { id: 12, name: 'Jurriën Timber', photo: 'https://media.api-sports.io/football/players/1273.png', description: 'Originally from Netherlands - 24 years old', value: 4 },
-    { id: 13, name: 'Gabriel Magalhães', photo: 'https://media.api-sports.io/football/players/1458.png', description: 'Originally from Brazil - 28 years old', value: 4 },
-    { id: 14, name: 'Mikel Merino', photo: 'https://media.api-sports.io/football/players/1908.png', description: 'Originally from Spain - 29 years old', value: 3 },
-  ];
+export default function TeamTopPerformersTab({ topScorers = [], topAssists = [] }: TeamTopPerformersTabProps) {
+  const mappedScorers: PlayerStat[] = topScorers.map((s, idx) => ({
+    id: s.player?.id || idx,
+    name: s.player?.name || 'Unknown Player',
+    photo: s.player?.photo || 'https://via.placeholder.com/150',
+    description: `Originally from ${s.player?.nationality || 'Unknown'} - ${s.player?.age || '??'} years old`,
+    value: s.statistics?.[0]?.goals?.total || 0
+  }));
+
+  const mappedAssists: PlayerStat[] = topAssists.map((s, idx) => ({
+    id: s.player?.id || idx,
+    name: s.player?.name || 'Unknown Player',
+    photo: s.player?.photo || 'https://via.placeholder.com/150',
+    description: `Originally from ${s.player?.nationality || 'Unknown'} - ${s.player?.age || '??'} years old`,
+    value: s.statistics?.[0]?.goals?.assists || 0
+  }));
 
   const PlayerCard = ({ player }: { player: PlayerStat }) => (
     <div className="flex items-center justify-between p-4 bg-white border border-slate-50 hover:border-brand-emerald/20 hover:bg-slate-50/50 transition-all duration-300 group cursor-default">
@@ -74,9 +75,14 @@ export default function TeamTopPerformersTab() {
             </div>
           </div>
           <div className="divide-y divide-slate-50">
-            {topScorers.map((player) => (
+            {mappedScorers.map((player) => (
               <PlayerCard key={player.id} player={player} />
             ))}
+            {mappedScorers.length === 0 && (
+              <div className="p-8 text-center text-gray-400 font-bold uppercase tracking-widest text-xs">
+                No top scorers data found
+              </div>
+            )}
           </div>
         </div>
 
@@ -92,9 +98,14 @@ export default function TeamTopPerformersTab() {
             </div>
           </div>
           <div className="divide-y divide-slate-50">
-            {topAssists.map((player) => (
+            {mappedAssists.map((player) => (
               <PlayerCard key={player.id} player={player} />
             ))}
+            {mappedAssists.length === 0 && (
+              <div className="p-8 text-center text-gray-400 font-bold uppercase tracking-widest text-xs">
+                No top assists data found
+              </div>
+            )}
           </div>
         </div>
       </div>

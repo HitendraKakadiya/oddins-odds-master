@@ -82,10 +82,21 @@ export async function matchesRoutes(server: FastifyInstance) {
       }
 
       if (minOdds) {
-        const minOddsVal = parseFloat(minOdds);
-        if (!isNaN(minOddsVal)) {
-          oddsSubQuery += ` AND osl.odd_value >= $${paramIdx++}`;
-          params.push(minOddsVal);
+        let operator = '>=';
+        let valStr = minOdds;
+
+        if (minOdds.startsWith('>')) {
+          operator = '>=';
+          valStr = minOdds.substring(1);
+        } else if (minOdds.startsWith('<')) {
+          operator = '<=';
+          valStr = minOdds.substring(1);
+        }
+
+        const oddsVal = parseFloat(valStr);
+        if (!isNaN(oddsVal)) {
+          oddsSubQuery += ` AND osl.odd_value ${operator} $${paramIdx++}`;
+          params.push(oddsVal);
         }
       }
 

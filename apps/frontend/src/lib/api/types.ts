@@ -262,6 +262,7 @@ export interface Prediction {
         logoUrl?: string;
     };
     selection?: string;
+    leagueName?: string;
     [key: string]: unknown;
 }
 
@@ -372,7 +373,11 @@ export interface TeamDetailResponse {
     team: {
         id: number;
         name: string;
+        slug: string;
         logoUrl?: string;
+        country?: string;
+        venue?: string;
+        city?: string;
     };
     nextMatch?: MatchData | null;
     recentMatches?: MatchData[] | null;
@@ -384,6 +389,12 @@ export interface TeamDetailResponse {
         goalsConceded?: number;
         cleanSheets?: number;
     } | null;
+    standings?: any[];
+    squad?: any[];
+    topScorers?: any[];
+    topAssists?: any[];
+    detailedStats?: any;
+    competitions?: any[];
 }
 
 export interface TabItem {

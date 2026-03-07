@@ -8,7 +8,10 @@ import {
   getLeagueStandingsDirect,
   getTeamSquadDirect,
   getTeamsByLeagueDirect,
-  getPopularTeamsDirect
+  getPopularTeamsDirect,
+  getTopScorersDirect,
+  getTopAssistsDirect,
+  getTeamLeaguesDirect
 } from '../../lib/sports';
 import { FEATURED_LEAGUES } from '../../config/leagues';
 
@@ -31,16 +34,22 @@ export async function teamsRoutes(server: FastifyInstance) {
   // GET /v1/teams/featured
   server.get('/teams/featured', async () => {
     // Strategy: Fetch top leagues dynamically and get their first couple of teams
-    const allLeagues = await getLeaguesDirect() || [];
+    let allLeagues = await getLeaguesDirect() || [];
     const topCountries = ['England', 'Spain', 'Germany', 'Italy', 'France'];
+    const fallbackMajorIds = [39, 140, 78, 135, 61]; // PL, La Liga, Bundesliga, Serie A, Ligue 1
 
-    const topLeagues = allLeagues.filter((item: any) => {
+    let topLeagues = allLeagues.filter((item: any) => {
       const isCurrent = item.seasons.some((s: any) => s.current === true);
       const isTop5 = topCountries.includes(item.country.name);
       return isCurrent && isTop5 && item.league.type === 'League';
     }).slice(0, 5);
 
-    const leagueIds = topLeagues.map(l => l.league.id);
+    let leagueIds = topLeagues.map(l => l.league.id);
+
+    // Resilient Fallback: If no top leagues found, use standard major IDs
+    if (leagueIds.length === 0) {
+      leagueIds = fallbackMajorIds;
+    }
 
     const teamsPromises = leagueIds.map(id => getTeamsByLeagueDirect(id));
     const teamsResults = await Promise.all(teamsPromises);
@@ -48,7 +57,7 @@ export async function teamsRoutes(server: FastifyInstance) {
     // Take first 3-4 teams from each major league
     const featuredTeams = teamsResults.flatMap(teams => teams.slice(0, 4));
 
-    return featuredTeams.slice(0, 15);
+    return featuredTeams.slice(0, 9);
   });
 
   // GET /v1/teams
@@ -102,13 +111,22 @@ export async function teamsRoutes(server: FastifyInstance) {
       ]);
 
       // 3. Try to get stats from most frequent league in recent matches or default to 39 (Premier League)
-      let statsSummary = {
+      let statsSummary: any = {
         wins: 0,
         draws: 0,
         losses: 0,
         goalsScored: 0,
         goalsConceded: 0,
-        cleanSheets: 0
+        cleanSheets: 0,
+        ppg: 0,
+        goalsScoredAvg: 0,
+        goalsConcededAvg: 0,
+        cornersAvg: 0,
+        cornersForAvg: 0,
+        cornersAgainstAvg: 0,
+        cardsAvg: 0,
+        bttsRate: 0,
+        failedToScoreRate: 0
       };
 
       try {
@@ -130,7 +148,24 @@ export async function teamsRoutes(server: FastifyInstance) {
               losses: stats.fixtures.loses?.total || 0,
               goalsScored: stats.goals?.for?.total?.total || 0,
               goalsConceded: stats.goals?.against?.total?.total || 0,
-              cleanSheets: stats.clean_sheet?.total || 0
+              cleanSheets: stats.clean_sheet?.total || 0,
+              // Calculated metrics
+              ppg: stats.fixtures.played?.total > 0 ? parseFloat(((stats.fixtures.wins?.total * 3 + stats.fixtures.draws?.total) / stats.fixtures.played?.total).toFixed(2)) : 0,
+              goalsScoredAvg: stats.goals?.for?.average?.total || 0,
+              goalsConcededAvg: stats.goals?.against?.average?.total || 0,
+              cornersAvg: stats.corners?.total?.total || 0,
+              cornersForAvg: stats.corners?.for?.average || 0,
+              cornersAgainstAvg: stats.corners?.against?.average || 0,
+              cardsAvg: (stats.cards?.yellow?.total || 0) + (stats.cards?.red?.total || 0),
+              bttsRate: stats.fixtures.played?.total > 0 ? Math.round((stats.btts?.total / stats.fixtures.played?.total) * 100) : 0,
+              failedToScoreRate: stats.fixtures.played?.total > 0 ? Math.round((stats.failed_to_score?.total / stats.fixtures.played?.total) * 100) : 0,
+              // Home/Away splits for Matches tab
+              homeCleanSheets: stats.clean_sheet?.home || 0,
+              awayCleanSheets: stats.clean_sheet?.away || 0,
+              homeBttsRate: stats.fixtures.played?.home > 0 ? Math.round((stats.btts?.home / stats.fixtures.played?.home) * 100) : 0,
+              awayBttsRate: stats.fixtures.played?.away > 0 ? Math.round((stats.btts?.away / stats.fixtures.played?.away) * 100) : 0,
+              homeFailedToScoreRate: stats.fixtures.played?.home > 0 ? Math.round((stats.failed_to_score?.home / stats.fixtures.played?.home) * 100) : 0,
+              awayFailedToScoreRate: stats.fixtures.played?.away > 0 ? Math.round((stats.failed_to_score?.away / stats.fixtures.played?.away) * 100) : 0
             };
           }
         }
@@ -138,13 +173,27 @@ export async function teamsRoutes(server: FastifyInstance) {
         console.warn('Failed to fetch live team stats:', (err as any).message);
       }
 
-      // 4. Fetch Standings and Squad
+      // 4. Fetch Standings, Squad, Top Scorers/Assists, Competitions
       const commonLeagueId = (recentMatches[0]?.league?.id) || 39;
+      const currentSeason = new Date().getFullYear();
 
-      const [standings, squad] = await Promise.all([
-        getLeagueStandingsDirect(commonLeagueId, new Date().getFullYear() - 1), // Standard fallback for standings
-        getTeamSquadDirect(liveTeam.id)
+      const [standings, squad, topScorers, topAssists, detailedStats, competitions] = await Promise.all([
+        getLeagueStandingsDirect(commonLeagueId, currentSeason).catch(() => getLeagueStandingsDirect(commonLeagueId, currentSeason - 1)),
+        getTeamSquadDirect(liveTeam.id).catch(() => []),
+        getTopScorersDirect(commonLeagueId, currentSeason).catch(() => []),
+        getTopAssistsDirect(commonLeagueId, currentSeason).catch(() => []),
+        getTeamStatsDirect(liveTeam.id, commonLeagueId, currentSeason).catch(() => null),
+        getTeamLeaguesDirect(liveTeam.id).catch(() => [])
       ]);
+
+      // 5. Calculate more stats for summary if detailedStats is available
+      if (detailedStats) {
+        // Find over 2.5 and under 2.5
+        const totalMatches = (detailedStats.fixtures?.played?.total || 1);
+        const over25 = detailedStats.goals?.for?.total?.['over-2_5'] || detailedStats.goals?.against?.total?.['over-2_5'] || 0; // Rough approx or fetch specifically
+        // API-Football stats might not have over/under directly in stats endpoint easily without deeper parsing
+        // We can add some logic here or use fixtures.
+      }
 
       return {
         team: {
@@ -156,12 +205,18 @@ export async function teamsRoutes(server: FastifyInstance) {
           venue: liveTeam.venue?.name || 'Unknown Stadium',
           city: liveTeam.venue?.city || 'Unknown City',
         },
-        competitions: [],
+        competitions: (competitions || []).map((c: any) => ({
+          name: c.name,
+          logo: c.logo
+        })),
         nextMatch: nextMatches[0] || null,
         recentMatches,
         statsSummary,
         standings,
-        squad
+        squad,
+        topScorers,
+        topAssists,
+        detailedStats
       };
     } catch (error) {
       server.log.error(error);

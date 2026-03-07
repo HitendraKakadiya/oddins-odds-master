@@ -9,7 +9,7 @@ interface SquadMember {
 }
 
 interface TeamSquadListProps {
-  squad: SquadMember[];
+  squad: any[];
 }
 
 export default function TeamSquadList({ squad }: TeamSquadListProps) {

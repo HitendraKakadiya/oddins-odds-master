@@ -1,39 +1,61 @@
 "use client";
 
-import React from 'react';
-
-interface Match {
-  id: number;
-  date: string;
-  time: string;
-  homeTeam: { name: string; logo: string };
-  awayTeam: { name: string; logo: string };
-  score?: { home: number; away: number };
-  status?: string;
-  result?: 'W' | 'D' | 'L';
-}
+import { MatchData } from '@/lib/api/types';
 
 interface TeamMatchesTabProps {
   team: { id: number; name: string; logoUrl: string };
+  upcomingMatches: MatchData[];
+  lastMatches: MatchData[];
+  stats?: any;
+  standings?: any[];
 }
 
-export default function TeamMatchesTab({ team }: TeamMatchesTabProps) {
-  // Mock data for UI demonstration based on the screenshots provided
-  const upcomingMatches: Match[] = [
-    { id: 1, date: '05/03/2026', time: '01:00', homeTeam: { name: 'Brighton', logo: 'https://media.api-sports.io/football/teams/33.png' }, awayTeam: { name: 'Arsenal', logo: team.logoUrl } },
-    { id: 2, date: '14/03/2026', time: '23:00', homeTeam: { name: 'Arsenal', logo: team.logoUrl }, awayTeam: { name: 'Everton', logo: 'https://media.api-sports.io/football/teams/45.png' } },
-    { id: 3, date: '11/04/2026', time: '19:30', homeTeam: { name: 'Arsenal', logo: team.logoUrl }, awayTeam: { name: 'Bournemouth', logo: 'https://media.api-sports.io/football/teams/35.png' } },
-    { id: 4, date: '18/04/2026', time: '19:30', homeTeam: { name: 'Manchester City', logo: 'https://media.api-sports.io/football/teams/50.png' }, awayTeam: { name: team.name, logo: team.logoUrl } },
-    { id: 5, date: '25/04/2026', time: '19:30', homeTeam: { name: team.name, logo: team.logoUrl }, awayTeam: { name: 'Newcastle United', logo: 'https://media.api-sports.io/football/teams/34.png' } },
-  ];
+export default function TeamMatchesTab({ team, upcomingMatches = [], lastMatches = [], stats, standings = [] }: TeamMatchesTabProps) {
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
 
-  const lastMatches: Match[] = [
-    { id: 101, date: '01/03/2026', time: '22:00', homeTeam: { name: 'Arsenal', logo: team.logoUrl }, awayTeam: { name: 'Chelsea', logo: 'https://media.api-sports.io/football/teams/49.png' }, score: { home: 2, away: 1 }, result: 'W' },
-    { id: 102, date: '22/02/2026', time: '22:00', homeTeam: { name: 'Tottenham', logo: 'https://media.api-sports.io/football/teams/47.png' }, awayTeam: { name: 'Arsenal', logo: team.logoUrl }, score: { home: 1, away: 4 }, result: 'W' },
-    { id: 103, date: '19/02/2026', time: '01:30', homeTeam: { name: 'Wolverhampton', logo: 'https://media.api-sports.io/football/teams/39.png' }, awayTeam: { name: 'Arsenal', logo: team.logoUrl }, score: { home: 2, away: 2 }, result: 'D' },
-    { id: 104, date: '13/02/2026', time: '01:30', homeTeam: { name: 'Brentford', logo: 'https://media.api-sports.io/football/teams/55.png' }, awayTeam: { name: 'Arsenal', logo: team.logoUrl }, score: { home: 1, away: 1 }, result: 'D' },
-    { id: 105, date: '07/02/2026', time: '20:30', homeTeam: { name: 'Arsenal', logo: team.logoUrl }, awayTeam: { name: 'Sunderland', logo: 'https://media.api-sports.io/football/teams/59.png' }, score: { home: 3, away: 0 }, result: 'W' },
-  ];
+  const formatTime = (dateStr: string) => {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    return date.toLocaleTimeString('en-GB', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const mappedUpcoming = upcomingMatches.map(m => ({
+    ...m,
+    date: m.kickoffAt ? formatDate(m.kickoffAt) : (m as any).date,
+    time: m.kickoffAt ? formatTime(m.kickoffAt) : (m as any).time,
+    homeTeam: { name: m.homeTeam.name, logo: (m.homeTeam as any).logo || (m.homeTeam as any).logoUrl || 'https://media.api-sports.io/football/teams/unknown.png' },
+    awayTeam: { name: m.awayTeam.name, logo: (m.awayTeam as any).logo || (m.awayTeam as any).logoUrl || 'https://media.api-sports.io/football/teams/unknown.png' }
+  }));
+
+  const mappedLast = lastMatches.map(m => {
+    let result = (m as any).result;
+    if (!result && m.score && m.score.home !== null && m.score.away !== null) {
+      const isHome = m.homeTeam.name === team.name;
+      if (m.score.home === m.score.away) result = 'D';
+      else if (isHome) result = m.score.home > m.score.away ? 'W' : 'L';
+      else result = m.score.away > m.score.home ? 'W' : 'L';
+    }
+
+    return {
+      ...m,
+      date: m.kickoffAt ? formatDate(m.kickoffAt) : (m as any).date,
+      time: m.kickoffAt ? formatTime(m.kickoffAt) : (m as any).time,
+      homeTeam: { name: m.homeTeam.name, logo: (m.homeTeam as any).logo || (m.homeTeam as any).logoUrl || 'https://media.api-sports.io/football/teams/unknown.png' },
+      awayTeam: { name: m.awayTeam.name, logo: (m.awayTeam as any).logo || (m.awayTeam as any).logoUrl || 'https://media.api-sports.io/football/teams/unknown.png' },
+      result: result as 'W' | 'D' | 'L'
+    };
+  });
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
@@ -52,8 +74,8 @@ export default function TeamMatchesTab({ team }: TeamMatchesTabProps) {
             </div>
         </div>
         <div className="divide-y divide-gray-50">
-            {upcomingMatches.map((match) => (
-                <div key={match.id} className="group hover:bg-gray-50/50 transition-colors duration-200 px-8 py-5 flex items-center justify-between">
+            {mappedUpcoming.map((match) => (
+                <div key={match.matchId} className="group hover:bg-gray-50/50 transition-colors duration-200 px-8 py-5 flex items-center justify-between">
                     <div className="flex-1 text-[11px] font-black text-gray-400 uppercase tracking-widest">
                         {match.date} - {match.time}
                     </div>
@@ -75,6 +97,11 @@ export default function TeamMatchesTab({ team }: TeamMatchesTabProps) {
                     <div className="flex-1"></div>
                 </div>
             ))}
+            {mappedUpcoming.length === 0 && (
+              <div className="p-8 text-center text-gray-400 font-bold uppercase tracking-widest text-xs">
+                No upcoming matches found
+              </div>
+            )}
         </div>
       </div>
 
@@ -91,8 +118,8 @@ export default function TeamMatchesTab({ team }: TeamMatchesTabProps) {
             </div>
         </div>
         <div className="divide-y divide-gray-50">
-            {lastMatches.map((match) => (
-                <div key={match.id} className="group hover:bg-gray-50/50 transition-colors duration-200 px-8 py-5 flex items-center justify-between">
+            {mappedLast.map((match) => (
+                <div key={match.matchId} className="group hover:bg-gray-50/50 transition-colors duration-200 px-8 py-5 flex items-center justify-between">
                     <div className="flex-1 text-[11px] font-black text-gray-400 uppercase tracking-widest">
                         {match.date} - {match.time}
                     </div>
@@ -124,6 +151,11 @@ export default function TeamMatchesTab({ team }: TeamMatchesTabProps) {
                     </div>
                 </div>
             ))}
+            {mappedLast.length === 0 && (
+              <div className="p-8 text-center text-gray-400 font-bold uppercase tracking-widest text-xs">
+                No recent matches found
+              </div>
+            )}
         </div>
       </div>
 
@@ -206,9 +238,9 @@ export default function TeamMatchesTab({ team }: TeamMatchesTabProps) {
                         </thead>
                         <tbody className="divide-y divide-gray-50">
                             {[
-                                { label: 'Overall', cs: '45%', btts: '52%', fts: '10%' },
-                                { label: 'Home', cs: '50%', btts: '50%', fts: '7%' },
-                                { label: 'Away', cs: '40%', btts: '53%', fts: '13%' },
+                                { label: 'Overall', cs: stats?.cleanSheets || '-', btts: stats?.bttsRate ? `${stats.bttsRate}%` : '-', fts: stats?.failedToScoreRate ? `${stats.failedToScoreRate}%` : '-' },
+                                { label: 'Home', cs: stats?.homeCleanSheets || '-', btts: stats?.homeBttsRate ? `${stats.homeBttsRate}%` : '-', fts: stats?.homeFailedToScoreRate ? `${stats.homeFailedToScoreRate}%` : '-' },
+                                { label: 'Away', cs: stats?.awayCleanSheets || '-', btts: stats?.awayBttsRate ? `${stats.awayBttsRate}%` : '-', fts: stats?.awayFailedToScoreRate ? `${stats.awayFailedToScoreRate}%` : '-' },
                             ].map((row) => (
                                 <tr key={row.label} className="group">
                                     <td className="py-4 text-sm font-bold text-gray-400 group-hover:text-primary-600 transition-colors uppercase tracking-widest text-[10px]">{row.label}</td>
@@ -225,15 +257,15 @@ export default function TeamMatchesTab({ team }: TeamMatchesTabProps) {
             {/* Performance Metric Cards Grid */}
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 {[
-                  { label: 'PPG', sub: 'Per Match', val: '2.21' },
-                  { label: 'Goal Scored', sub: 'Per Match', val: '2.00' },
-                  { label: 'Goals Conceded', sub: 'Per Match', val: '0.76' },
-                  { label: 'Corners', sub: 'Per Match', val: '9.10' },
-                  { label: 'Corners For', sub: 'Per Match', val: '5.86' },
-                  { label: 'Corners Against', sub: 'Per Match', val: '3.24' },
-                  { label: 'Cards / Match', sub: 'Per Match', val: '3.28' },
-                  { label: 'Cards For', sub: 'Per Match', val: '1.34' },
-                  { label: 'Cards Against', sub: 'Per Match', val: '1.93' },
+                  { label: 'PPG', sub: 'Per Match', val: stats?.ppg || '-' },
+                  { label: 'Goal Scored', sub: 'Per Match', val: stats?.goalsScoredAvg || '-' },
+                  { label: 'Goals Conceded', sub: 'Per Match', val: stats?.goalsConcededAvg || '-' },
+                  { label: 'Corners', sub: 'Per Match', val: stats?.cornersAvg || '-' },
+                  { label: 'Corners For', sub: 'Per Match', val: stats?.cornersForAvg || '-' },
+                  { label: 'Corners Against', sub: 'Per Match', val: stats?.cornersAgainstAvg || '-' },
+                  { label: 'Cards / Match', sub: 'Per Match', val: stats?.cardsAvg || '-' },
+                  { label: 'Cards For', sub: 'Per Match', val: stats?.cardsForAvg || '-' },
+                  { label: 'Cards Against', sub: 'Per Match', val: stats?.cardsAgainstAvg || '-' },
                 ].map((item, idx) => (
                     <div key={idx} className="bg-white rounded-2xl p-6 border border-gray-50 shadow-sm flex items-center justify-between group hover:border-[#614CE1]/30 transition-all duration-300 cursor-default">
                         <div>

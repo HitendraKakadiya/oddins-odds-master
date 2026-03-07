@@ -42,9 +42,7 @@ export default function H2HComparison({ homeTeam, awayTeam, homeStats, awayStats
                    <MetricRow label="Away" ppg={homeStats?.away?.ppg || 0} results={homeStats?.last5Away || []} />
                 </div>
 
-                <button className="mt-10 bg-brand-emerald text-white px-8 py-3 rounded-full font-black text-sm shadow-lg shadow-brand-emerald/30 hover:scale-105 transition-transform">
-                   More Information +
-                </button>
+
              </div>
           </div>
 
@@ -69,9 +67,7 @@ export default function H2HComparison({ homeTeam, awayTeam, homeStats, awayStats
                    <MetricRow label="Away" ppg={awayStats?.away?.ppg || 0} results={awayStats?.last5Away || []} />
                 </div>
 
-                <button className="mt-10 bg-brand-emerald text-white px-8 py-3 rounded-full font-black text-sm shadow-lg shadow-brand-emerald/30 hover:scale-105 transition-transform">
-                   More Information +
-                </button>
+
              </div>
           </div>
        </div>

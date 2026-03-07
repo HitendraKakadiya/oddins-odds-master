@@ -23,25 +23,67 @@ const subTabs = [
   { key: 'scoring-first', label: 'Match Scoring / Conceding First' },
 ];
 
-export default function TeamStatsTab() {
+interface TeamStatsTabProps {
+  detailedStats?: any;
+}
+
+export default function TeamStatsTab({ detailedStats }: TeamStatsTabProps) {
   const [activeSubTab, setActiveSubTab] = useState('goals');
   const [filter, setFilter] = useState<'Overall' | 'Home' | 'Away'>('Overall');
   const [metric, setMetric] = useState('Goal Scored');
 
-  const statsData: StatsRow[] = [
-    { rank: 1, team: { name: 'Arsenal', logo: 'https://media.api-sports.io/football/teams/42.png' }, mp: 29, val: 58, avgOverall: '2', avgHome: '2.36', avgAway: '1.67' },
-    { rank: 2, team: { name: 'Manchester City', logo: 'https://media.api-sports.io/football/teams/50.png' }, mp: 28, val: 57, avgOverall: '2.04', avgHome: '2.43', avgAway: '1.64' },
-    { rank: 3, team: { name: 'Manchester United', logo: 'https://media.api-sports.io/football/teams/33.png' }, mp: 28, val: 50, avgOverall: '1.79', avgHome: '1.93', avgAway: '1.64' },
-    { rank: 4, team: { name: 'Chelsea', logo: 'https://media.api-sports.io/football/teams/49.png' }, mp: 28, val: 49, avgOverall: '1.75', avgHome: '1.64', avgAway: '1.86' },
-    { rank: 5, team: { name: 'Liverpool', logo: 'https://media.api-sports.io/football/teams/40.png' }, mp: 28, val: 47, avgOverall: '1.68', avgHome: '1.86', avgAway: '1.5' },
-    { rank: 6, team: { name: 'Bournemouth', logo: 'https://media.api-sports.io/football/teams/35.png' }, mp: 28, val: 44, avgOverall: '1.57', avgHome: '1.5', avgAway: '1.64' },
-    { rank: 7, team: { name: 'Brentford', logo: 'https://media.api-sports.io/football/teams/55.png' }, mp: 28, val: 44, avgOverall: '1.57', avgHome: '1.71', avgAway: '1.43' },
-    { rank: 8, team: { name: 'Newcastle United', logo: 'https://media.api-sports.io/football/teams/34.png' }, mp: 28, val: 40, avgOverall: '1.43', avgHome: '1.86', avg1: '1' } as any,
-    { rank: 9, team: { name: 'Fulham', logo: 'https://media.api-sports.io/football/teams/36.png' }, mp: 28, val: 40, avgOverall: '1.43', avgHome: '1.71', avgAway: '1.14' },
-    { rank: 10, team: { name: 'Tottenham', logo: 'https://media.api-sports.io/football/teams/47.png' }, mp: 28, val: 38, avgOverall: '1.36', avgHome: '1.21', avgAway: '1.5' },
-    { rank: 11, team: { name: 'Aston Villa', logo: 'https://media.api-sports.io/football/teams/66.png' }, mp: 28, val: 38, avgOverall: '1.36', avgHome: '1.43', avgAway: '1.29' },
-    { rank: 12, team: { name: 'Brighton', logo: 'https://media.api-sports.io/football/teams/33.png' }, mp: 28, val: 38, avgOverall: '1.36', avgHome: '1.57', avgAway: '1.14' },
-  ];
+  const getTeamVal = (category: string, subKey: string) => {
+    const section = filter.toLowerCase();
+    return detailedStats?.[category]?.[subKey]?.[section] || 0;
+  };
+
+  const getDetailedStat = () => {
+    if (!detailedStats) return [];
+    
+    const section = filter.toLowerCase();
+    
+    switch(activeSubTab) {
+      case 'goals':
+        return [
+          { label: 'Total Scored', val: detailedStats.goals?.for?.total?.[section] || 0, avg: detailedStats.goals?.for?.average?.[section] || '0' },
+          { label: 'Total Conceded', val: detailedStats.goals?.against?.total?.[section] || 0, avg: detailedStats.goals?.against?.average?.[section] || '0' },
+          { label: 'Clean Sheets', val: detailedStats.clean_sheet?.[section] || 0, avg: '-' },
+          { label: 'Failed to Score', val: detailedStats.failed_to_score?.[section] || 0, avg: '-' },
+        ];
+      case 'cards':
+        return [
+          { label: 'Yellow Cards', val: Object.values(detailedStats.cards?.yellow || {}).reduce((acc: number, curr: any) => acc + (curr.total || 0), 0), avg: '-' },
+          { label: 'Red Cards', val: Object.values(detailedStats.cards?.red || {}).reduce((acc: number, curr: any) => acc + (curr.total || 0), 0), avg: '-' },
+        ];
+      case 'over-under':
+        return [
+          { label: 'Over 1.5', val: detailedStats.goals?.for?.total?.['over-1_5']?.[section] || 'N/A', avg: '-' },
+          { label: 'Over 2.5', val: detailedStats.goals?.for?.total?.['over-2_5']?.[section] || 'N/A', avg: '-' },
+          { label: 'Under 2.5', val: detailedStats.goals?.for?.total?.['under-2_5']?.[section] || 'N/A', avg: '-' },
+          { label: 'Over 3.5', val: detailedStats.goals?.for?.total?.['over-3_5']?.[section] || 'N/A', avg: '-' },
+        ];
+      case 'clean-sheet':
+        return [
+          { label: 'Clean Sheets', val: detailedStats.clean_sheet?.[section] || 0, avg: '-' },
+          { label: 'BTTS Yes', val: detailedStats.btts?.[section] || 'N/A', avg: '-' },
+        ];
+      case 'scoring-first':
+        return [
+          { label: 'Scored First', val: detailedStats.fixtures?.scoring_first?.[section] || 0, avg: '-' },
+          { label: 'Conceded First', val: detailedStats.fixtures?.conceded_first?.[section] || 0, avg: '-' },
+        ];
+      default:
+        // Try generic fallback if sub-key exists in detailedStats
+        if (detailedStats[activeSubTab]) {
+            return [
+                { label: 'Value', val: detailedStats[activeSubTab]?.[section] || 0, avg: '-' }
+            ];
+        }
+        return [];
+    }
+  };
+
+  const currentStats = getDetailedStat();
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
@@ -116,59 +158,24 @@ export default function TeamStatsTab() {
             </div>
           </div>
 
-          {/* Table */}
-          <div className="bg-white rounded-[32px] border border-slate-100 overflow-hidden shadow-sm">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="bg-slate-50/50 text-[10px] sm:text-[11px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
-                    <th className="px-6 py-5">#</th>
-                    <th className="px-6 py-5">Team</th>
-                    <th className="px-4 py-5 text-center">MP</th>
-                    <th className="px-4 py-5 text-center">{metric}</th>
-                    <th className="px-4 py-5 text-center">Avg. Overall</th>
-                    <th className="px-4 py-5 text-center">Avg. Home</th>
-                    <th className="px-6 py-5 text-right">Avg. Away</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {statsData.map((stat) => (
-                    <tr key={stat.rank} className="group hover:bg-slate-50/50 transition-colors duration-200">
-                      <td className="px-6 py-4">
-                        <span className="text-xs font-black text-slate-300 group-hover:text-brand-emerald transition-colors">{stat.rank}</span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-4">
-                          <div className="w-8 h-8 flex items-center justify-center bg-white rounded-lg shadow-sm border border-slate-100 p-1.5 transition-transform group-hover:scale-110">
-                            <img src={stat.team.logo} alt={stat.team.name} className="w-full h-full object-contain" />
-                          </div>
-                          <span className="text-sm font-bold text-slate-700 group-hover:text-slate-900 transition-colors">{stat.team.name}</span>
-                        </div>
-                      </td>
-                      <td className="px-4 py-4 text-center">
-                        <span className="text-sm font-bold text-slate-900">{stat.mp}</span>
-                      </td>
-                      <td className="px-4 py-4 text-center">
-                        <span className="text-sm font-black text-slate-900 px-3 py-1 bg-slate-50 rounded-lg border border-slate-100">
-                          {stat.val}
-                        </span>
-                      </td>
-                      <td className="px-4 py-4 text-center">
-                        <span className="text-sm font-medium text-slate-500">{stat.avgOverall}</span>
-                      </td>
-                      <td className="px-4 py-4 text-center">
-                        <span className="text-sm font-medium text-slate-500">{stat.avgHome}</span>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <span className="inline-flex items-center px-4 py-1.5 bg-brand-light-emerald rounded-xl text-xs font-black text-brand-emerald border border-brand-emerald/10">
-                          {stat.avgAway || '1.00'}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          {/* Stats Cards Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {currentStats.map((item: any) => (
+              <div key={item.label} className="bg-white rounded-[32px] p-8 border border-slate-100 shadow-sm flex flex-col items-center justify-center group hover:border-brand-emerald/30 transition-all duration-300">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">{item.label}</span>
+                <span className="text-3xl font-black text-slate-900 group-hover:text-brand-emerald transition-colors">{item.val}</span>
+                {item.avg !== '-' && (
+                  <div className="mt-4 px-4 py-1.5 bg-brand-light-emerald/50 rounded-xl border border-brand-emerald/10">
+                    <span className="text-[10px] font-black text-brand-emerald uppercase tracking-widest">Avg: {item.avg}</span>
+                  </div>
+                )}
+              </div>
+            ))}
+            {currentStats.length === 0 && (
+              <div className="col-span-full py-20 text-center">
+                <p className="text-slate-400 font-black uppercase tracking-widest text-xs">No detailed stats found for this category</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

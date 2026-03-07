@@ -4,12 +4,14 @@ interface Team {
   id: number;
   name: string;
   country: string;
-  logo: string;
+  logoUrl?: string;
+  logo?: string;
   slug: string;
 }
 
 export default function FeaturedTeams({ initialTeams = [] }: { initialTeams?: Team[] }) {
-  const teams = initialTeams;
+  // Ensure we show between 6 and 9 teams
+  const teams = initialTeams.slice(0, 9);
 
   return (
     <section className="mt-0">
@@ -25,32 +27,35 @@ export default function FeaturedTeams({ initialTeams = [] }: { initialTeams?: Te
         
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {teams.map((team) => (
-              <Link 
-                key={team.id}
-                href={`/team/${team.slug}`}
-                className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 hover:border-brand-emerald hover:shadow-md transition-all group"
-              >
-                <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-xs font-black text-slate-400 shadow-sm border border-slate-100 group-hover:bg-brand-emerald/5 transition-colors overflow-hidden">
-                  {team.logo && team.logo.startsWith('http') ? (
-                    <img src={team.logo} alt={team.name} className="w-8 h-8 object-contain" />
-                  ) : (
-                    <span className="text-xl">{team.logo || team.name.substring(0, 2).toUpperCase()}</span>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[13px] font-black text-slate-800 line-clamp-1 group-hover:text-brand-emerald transition-colors">
-                    {team.name}
+            {teams.map((team) => {
+              const displayLogo = team.logoUrl || team.logo;
+              return (
+                <Link 
+                  key={team.id}
+                  href={`/team/${team.slug}`}
+                  className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 hover:border-brand-emerald hover:shadow-md transition-all group"
+                >
+                  <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-xs font-black text-slate-400 shadow-sm border border-slate-100 group-hover:bg-brand-emerald/5 transition-colors overflow-hidden">
+                    {displayLogo && displayLogo.startsWith('http') ? (
+                      <img src={displayLogo} alt={team.name} className="w-10 h-10 object-contain p-1" />
+                    ) : (
+                      <span className="text-xl">{displayLogo || team.name.substring(0, 2).toUpperCase()}</span>
+                    )}
                   </div>
-                  <div className="text-[10px] font-bold text-slate-400 mt-0.5">
-                    {team.country}
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[14px] font-black text-slate-800 line-clamp-1 group-hover:text-brand-emerald transition-colors">
+                      {team.name}
+                    </div>
+                    <div className="text-[10px] font-bold text-slate-400 mt-0.5">
+                      {team.country}
+                    </div>
                   </div>
-                </div>
-                <svg className="w-4 h-4 text-slate-300 group-hover:text-brand-emerald group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7-7" />
-                </svg>
-              </Link>
-            ))}
+                  <svg className="w-4 h-4 text-slate-300 group-hover:text-brand-emerald group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7-7" />
+                  </svg>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>

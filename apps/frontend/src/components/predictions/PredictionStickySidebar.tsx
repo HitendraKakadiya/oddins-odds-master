@@ -42,7 +42,7 @@ export default function PredictionStickySidebar({ mainPrediction, todayPredictio
 
              <div className="space-y-6">
                 {todayPredictions.map((pred, i) => (
-                   <Link key={i} href={`/predictions/${pred.id}`} className="flex gap-4 group">
+                   <Link key={i} href={`/predictions/${pred.id || pred.matchId}`} className="flex gap-4 group">
                       <div className="w-24 h-14 rounded-xl bg-slate-900 overflow-hidden shrink-0 border border-slate-200">
                          <div className="relative h-full flex items-center justify-center gap-1.5 opacity-80 group-hover:opacity-100 transition-opacity">
                             <img src={pred.homeTeam?.logoUrl || ''} className="w-6 h-6 object-contain" alt="" />
@@ -58,7 +58,7 @@ export default function PredictionStickySidebar({ mainPrediction, todayPredictio
                             </span>
                          </div>
                          <h5 className="text-xs font-black text-slate-800 line-clamp-2 leading-tight group-hover:text-brand-emerald transition-colors uppercase">
-                            {pred.homeTeam?.name} vs {pred.awayTeam?.name} | Prediction | {pred.league?.name} | {new Date(pred.kickoffAt || '').toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}
+                            {pred.homeTeam?.name} vs {pred.awayTeam?.name} | {pred.selection || 'Expert Tip'} | {pred.league?.name || pred.leagueName} | {new Date(pred.kickoffAt || '').toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' })}
                          </h5>
                       </div>
                    </Link>

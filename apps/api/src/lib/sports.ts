@@ -146,49 +146,34 @@ export async function getPredictionsDirect(fixtureId: number) {
  */
 export async function getFullPredictionDetailDirect(fixtureId: number) {
     let predictionData: any = null;
-    let fixture: any = null;
     try {
         predictionData = await fetchFromSportsProvider(`/predictions?fixture=${fixtureId}`);
     } catch (err) {
         console.warn(`Failed to fetch predictions for fixture ${fixtureId}:`, (err as any).message);
     }
-    if (!predictionData || !predictionData.response || predictionData.response.length === 0) {
-        fixture = await getFixtureDetailDirect(fixtureId);
-        if (!fixture) {
-            fixture = {
-                id: fixtureId,
-                date: new Date().toISOString(),
-                status: { short: 'NS', elapsed: 0 }
-            };
-        }
 
-        return {
-            match: mapMatch(fixture, null, null, null),
-            stats: {
-                home: getEmptyTeamStats(),
-                away: getEmptyTeamStats(),
-                comparison: {}
-            },
-            predictions: [],
-            h2h: []
-        };
-    }
-
-    const res = predictionData.response[0];
-    fixture = res.fixture;
-    const league = res.league;
-    const teams = res.teams;
-    const predictions = res.predictions;
-    const comparison = res.comparison;
-    const h2h = res.h2h || [];
+    const res = predictionData?.response?.[0];
+    let fixture = res?.fixture;
+    let league = res?.league;
+    let teams = res?.teams;
+    const predictions = res?.predictions;
+    const comparison = res?.comparison;
+    const h2h = res?.h2h || [];
 
     // If fixture info is missing from predictions (some plans/endpoints), fetch it explicitly
-    if (!fixture) {
-        fixture = await getFixtureDetailDirect(fixtureId);
+    if (!fixture || !teams) {
+        const fixtureDetail = await getFixtureDetailDirect(fixtureId);
+        if (fixtureDetail) {
+            fixture = fixtureDetail;
+            league = league || fixtureDetail.league;
+            teams = teams || {
+                home: fixtureDetail.homeTeam,
+                away: fixtureDetail.awayTeam
+            };
+        }
     }
 
     if (!fixture) {
-        // Fallback construct if even getter fails
         fixture = {
             id: fixtureId,
             date: new Date().toISOString(),
@@ -200,32 +185,29 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
     const match = mapMatch(fixture, league, teams, res);
 
     // Helper to map team stats
-    const mapTeamStats = (side: 'home' | 'away') => {
+    const mapTeamStats = (side: 'home' | 'away', allMatches: any[] = []) => {
         const team = teams?.[side];
         const leagueStats = team?.league;
-        const formStr = leagueStats?.form || '';
+        const teamId = Number(team?.id || (side === 'home' ? fixture?.homeTeam?.id : fixture?.awayTeam?.id) || 0);
 
-        // Parse form string "WLDWW" into ["W", "L", "D", "W", "W"]
-        const parseForm = (str: string) => str ? str.split('').reverse().slice(0, 5) : [];
-
-        const mapDetail = (node: any) => ({
-            played: node?.fixtures?.played?.total || 0,
-            wins: node?.fixtures?.wins?.total || 0,
-            draws: node?.fixtures?.draws?.total || 0,
-            losses: node?.fixtures?.loses?.total || 0,
-            scored: node?.goals?.for?.total?.total || 0,
-            conceded: node?.goals?.against?.total?.total || 0,
-            ppg: node?.fixtures?.played?.total > 0 ?
-                parseFloat(((node?.fixtures?.wins?.total * 3 + node?.fixtures?.draws?.total) / node?.fixtures?.played?.total).toFixed(2)) : 0,
-            winRate: node?.fixtures?.played?.total > 0 ? Math.round((node?.fixtures?.wins?.total / node?.fixtures?.played?.total) * 100) : 0,
-            scoredAvg: parseFloat(node?.goals?.for?.average?.total || '0'),
-            concededAvg: parseFloat(node?.goals?.against?.average?.total || '0'),
-            cleanSheets: node?.clean_sheet?.total || 0,
-            failedToScore: node?.failed_to_score?.total || 0,
+        const mapDetail = (node: any, split: 'total' | 'home' | 'away' = 'total') => ({
+            played: node?.fixtures?.played?.[split] || 0,
+            wins: node?.fixtures?.wins?.[split] || 0,
+            draws: node?.fixtures?.draws?.[split] || 0,
+            losses: node?.fixtures?.loses?.[split] || 0,
+            scored: node?.goals?.for?.total?.[split] || 0,
+            conceded: node?.goals?.against?.total?.[split] || 0,
+            ppg: node?.fixtures?.played?.[split] > 0 ?
+                parseFloat(((node?.fixtures?.wins?.[split] * 3 + node?.fixtures?.draws?.[split]) / node?.fixtures?.played?.[split]).toFixed(2)) : 0,
+            winRate: node?.fixtures?.played?.[split] > 0 ? Math.round((node?.fixtures?.wins?.[split] / node?.fixtures?.played?.[split]) * 100) : 0,
+            scoredAvg: parseFloat(node?.goals?.for?.average?.[split] || '0'),
+            concededAvg: parseFloat(node?.goals?.against?.average?.[split] || '0'),
+            cleanSheets: node?.clean_sheet?.[split] || 0,
+            failedToScore: node?.failed_to_score?.[split] || 0,
             btts: 0,
             bttsRate: 0,
-            cleanSheetRate: node?.fixtures?.played?.total > 0 ? Math.round((node?.clean_sheet?.total / node?.fixtures?.played?.total) * 100) : 0,
-            failedToScoreRate: node?.fixtures?.played?.total > 0 ? Math.round((node?.failed_to_score?.total / node?.fixtures?.played?.total) * 100) : 0,
+            cleanSheetRate: node?.fixtures?.played?.[split] > 0 ? Math.round((node?.clean_sheet?.[split] / node?.fixtures?.played?.[split]) * 100) : 0,
+            failedToScoreRate: node?.fixtures?.played?.[split] > 0 ? Math.round((node?.failed_to_score?.[split] / node?.fixtures?.played?.[split]) * 100) : 0,
             over05Rate: 0,
             over15Rate: 0,
             over25Rate: 0,
@@ -234,21 +216,46 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
             over55Rate: 0,
         });
 
+        // Helper to get form from matches
+        const getFormFromMatches = (matches: any[], limit: number = 5) => {
+            return matches.slice(0, limit).map(m => {
+                const isHome = Number(m.homeTeam?.id) === teamId;
+                const scoreHome = m.score.home;
+                const scoreAway = m.score.away;
+                if (scoreHome === null || scoreAway === null) return '-';
+                if (scoreHome === scoreAway) return 'D';
+                if (isHome) return scoreHome > scoreAway ? 'W' : 'L';
+                return scoreAway > scoreHome ? 'W' : 'L';
+            });
+        };
+
+        const homeMatches = allMatches.filter(m => Number(m.homeTeam?.id) === teamId);
+        const awayMatches = allMatches.filter(m => Number(m.awayTeam?.id) === teamId);
+
         return {
-            overall: mapDetail(leagueStats),
-            home: mapDetail(leagueStats?.fixtures?.home),
-            away: mapDetail(leagueStats?.fixtures?.away),
-            last5: parseForm(formStr),
-            last5Home: parseForm(leagueStats?.fixtures?.home?.form || ''),
-            last5Away: parseForm(leagueStats?.fixtures?.away?.form || ''),
-            recentMatchesDetailed: []
+            overall: mapDetail(leagueStats, 'total'),
+            home: mapDetail(leagueStats, 'home'),
+            away: mapDetail(leagueStats, 'away'),
+            last5: getFormFromMatches(allMatches),
+            last5Home: getFormFromMatches(homeMatches),
+            last5Away: getFormFromMatches(awayMatches),
+            recentMatchesDetailed: allMatches.slice(0, 5)
         };
     };
 
+    // Fetch recent matches for both teams (fetch more to allow splits)
+    const homeId = teams?.home?.id || fixture?.homeTeam?.id || 0;
+    const awayId = teams?.away?.id || fixture?.awayTeam?.id || 0;
+
+    const [homeRecent, awayRecent] = await Promise.all([
+        homeId ? getTeamMatchesDirect(homeId, 'last', 20) : Promise.resolve([]),
+        awayId ? getTeamMatchesDirect(awayId, 'last', 20) : Promise.resolve([])
+    ]);
+
     // Map matches and stats
     const stats = {
-        home: mapTeamStats('home'),
-        away: mapTeamStats('away'),
+        home: mapTeamStats('home', homeRecent),
+        away: mapTeamStats('away', awayRecent),
         comparison: comparison || {}
     };
 
@@ -259,7 +266,7 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
             selection: predictions?.winner?.name || 'N/A',
             probability: predictions?.percent?.home ? parseInt(predictions.percent.home) : 0,
             confidence: 0.85,
-            shortExplanation: predictions?.advice || 'Analysis coming soon...'
+            shortReason: predictions?.advice || 'Analysis coming soon...'
         }
     ] : [];
 
@@ -590,6 +597,25 @@ export async function getPopularTeamsDirect(ids: number[]) {
         }
     } catch (err) {
         console.warn(`Failed to fetch popular teams:`, (err as any).message);
+    }
+    return [];
+}
+
+export async function getTeamLeaguesDirect(teamId: number) {
+    try {
+        const data: any = await fetchFromSportsProvider(`/leagues?team=${teamId}`);
+        if (data.response) {
+            return data.response.map((item: any) => ({
+                id: item.league.id,
+                name: item.league.name,
+                logo: item.league.logo,
+                type: item.league.type,
+                country: item.country.name,
+                season: item.seasons.find((s: any) => s.current)?.year
+            }));
+        }
+    } catch (err) {
+        console.warn(`Failed to fetch leagues for team ${teamId}:`, (err as any).message);
     }
     return [];
 }

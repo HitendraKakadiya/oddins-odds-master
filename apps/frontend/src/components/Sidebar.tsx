@@ -114,10 +114,20 @@ export default function Sidebar({
       awayTeam: { name: 'Barcelona', logoUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=100&h=100&fit=crop' },
       prediction: 'Both Teams to Score',
       countryCode: 'ES'
+    },
+    {
+      id: 'fallback-3',
+      leagueName: 'German Bundesliga',
+      time: '14:30',
+      date: 'Sat - 7 Mar 2026',
+      homeTeam: { name: 'Bayern Munich', logoUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=100&h=100&fit=crop' },
+      awayTeam: { name: 'Dortmund', logoUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=100&h=100&fit=crop' },
+      prediction: 'Home Win',
+      countryCode: 'DE'
     }
   ];
 
-  const sourcePredictions = featuredTips && featuredTips.length > 0 ? featuredTips : FALLBACK_PREDICTIONS;
+  const sourcePredictions = (featuredTips && featuredTips.length > 0 ? featuredTips : FALLBACK_PREDICTIONS).slice(0, 3);
   
   const displayPredictions = sourcePredictions.map((tip, index) => {
     const kickoffDate = tip.kickoffAt ? new Date(tip.kickoffAt) : null;
@@ -219,17 +229,20 @@ export default function Sidebar({
               </div>
               
               {/* Prediction Display */}
-              <div className="relative mt-6 mb-4">
+              <Link 
+                 href={`/predictions?matchId=${currentPrediction.id}`}
+                 className="relative mt-6 mb-4 block hover:opacity-90 transition-opacity"
+              >
                  <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-brand-emerald text-white text-[7px] font-black uppercase tracking-[0.2em] px-2.5 py-0.5 rounded-full shadow-lg shadow-emerald-500/20 z-10 border border-emerald-400/50">
                     Expert Pick
                  </div>
                  <div className="bg-[#F1F5F9]/80 backdrop-blur-sm rounded-2xl p-4 border border-slate-100/50 text-center group-hover:bg-brand-light-emerald/40 transition-all duration-500">
                     <div className="font-black text-[16px] text-slate-900 leading-tight tracking-tight">{currentPrediction.prediction}</div>
                  </div>
-              </div>
+              </Link>
     
               <Link 
-                href="/predictions"
+                href={`/predictions?date=${date || today.toISOString().split('T')[0]}`}
                 className="block w-full bg-brand-midnight text-white py-3.5 rounded-[16px] font-black text-[10px] uppercase tracking-[0.15em] text-center hover:bg-slate-800 transition-all shadow-xl shadow-brand-midnight/10 active:scale-95 group/btn overflow-hidden relative"
               >
                 <span className="relative z-10">See All Predictions</span>
