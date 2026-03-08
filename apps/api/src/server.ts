@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
+import rateLimit from '@fastify/rate-limit';
 import { pool } from './db';
 
 // Import routes
@@ -19,6 +20,12 @@ export async function buildServer() {
   // Register CORS
   await server.register(cors, {
     origin: true, // Allow all origins in development
+  });
+
+  // Register Rate Limit
+  await server.register(rateLimit, {
+    max: 200,
+    timeWindow: '1 minute',
   });
 
   // Health check
