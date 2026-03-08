@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { getLeaguesDirect, getLeagueStandingsDirect, getLeagueFixturesDirect, getTopScorersDirect, getTopAssistsDirect } from '../../lib/sports';
+import { getLeaguesDirect, getLeagueStandingsDirect, getLeagueFixturesDirect, getTopScorersDirect, getTopAssistsDirect, calculateVirtualStandings } from '../../lib/sports';
 import { getFeaturedLeagueIds } from '../../config/leagues';
 
 interface LeagueDetailParams {
@@ -139,59 +139,87 @@ export async function leaguesRoutes(server: FastifyInstance) {
       let topScorers: any[] = [];
       let topAssists: any[] = [];
 
+      const availableSeasons = (found.seasons || [])
+        .map((s: any) => s.year)
+        .sort((a: number, b: number) => b - a);
+
+
       try {
-        [standingsRaw, fixtures, results, topScorers, topAssists] = await Promise.all([
-          getLeagueStandingsDirect(leagueId, currentSeason).catch(() => getLeagueStandingsDirect(leagueId, currentSeason - 1)),
+        // Find best season for standings (latest available with data)
+        let standingsSeason = currentSeason;
+        for (const season of availableSeasons) {
+          if (season > currentSeason) continue;
+          const res = await getLeagueStandingsDirect(leagueId, season).catch(() => []);
+          if (res && res.length > 0) {
+            standingsRaw = res;
+            standingsSeason = season;
+            break;
+          }
+          // Only try up to 3 seasons back to keep it fast
+          if (availableSeasons.indexOf(season) > availableSeasons.indexOf(currentSeason) + 2) break;
+        }
+
+        // Fetch other data for the current season
+        [fixtures, results, topScorers, topAssists] = await Promise.all([
           getLeagueFixturesDirect(leagueId, currentSeason, 'next', 10).catch(() => []),
-          getLeagueFixturesDirect(leagueId, currentSeason, 'last', 10).catch(() => []),
-          getTopScorersDirect(leagueId, currentSeason).catch(() => []),
-          getTopAssistsDirect(leagueId, currentSeason).catch(() => [])
+          getLeagueFixturesDirect(leagueId, currentSeason, 'last', 50).catch(() => []), // Increase limit for virtual calculation
+          getTopScorersDirect(leagueId, currentSeason).catch(() =>
+            standingsSeason !== currentSeason ? getTopScorersDirect(leagueId, standingsSeason).catch(() => []) : []
+          ),
+          getTopAssistsDirect(leagueId, currentSeason).catch(() =>
+            standingsSeason !== currentSeason ? getTopAssistsDirect(leagueId, standingsSeason).catch(() => []) : []
+          )
         ]);
+
+        // If no official standings, try calculating virtual ones from the results we fetched
+        if (standingsRaw.length === 0 && results.length > 0) {
+          standingsRaw = calculateVirtualStandings(results);
+        }
       } catch (err) {
-        console.error(`Error fetching league data for ${leagueId}:`, err);
+        server.log.warn(`Error fetching league data for ${leagueId}: ${(err as any).message}`);
       }
 
       const standings = (standingsRaw || []).map((row: any) => ({
         rank: row.rank,
         group: row.group,
         team: {
-          id: row.team.id,
-          name: row.team.name,
-          slug: slugify(row.team.name),
-          logoUrl: row.team.logoUrl,
+          id: row.team?.id,
+          name: row.team?.name,
+          slug: row.team?.name ? slugify(row.team.name) : '',
+          logoUrl: row.team?.logo || row.team?.logoUrl, // Handle both properties if inconsistent
         },
         overall: {
-          played: row.overall.played,
-          wins: row.overall.wins,
-          draws: row.overall.draws,
-          losses: row.overall.losses,
-          gf: row.overall.gf,
-          ga: row.overall.ga,
-          gd: row.overall.gd,
-          points: row.overall.points,
-          ppg: row.overall.ppg
+          played: row.all?.played || row.overall?.played || 0,
+          wins: row.all?.win || row.overall?.wins || 0,
+          draws: row.all?.draw || row.overall?.draws || 0,
+          losses: row.all?.lose || row.overall?.losses || 0,
+          gf: row.all?.goals?.for || row.overall?.gf || 0,
+          ga: row.all?.goals?.against || row.overall?.ga || 0,
+          gd: row.goalsDiff || row.overall?.gd || 0,
+          points: row.points || row.overall?.points || 0,
+          ppg: row.overall?.ppg || 0
         },
         home: {
-          played: row.home.played,
-          wins: row.home.wins,
-          draws: row.home.draws,
-          losses: row.home.losses,
-          gf: row.home.gf,
-          ga: row.home.ga,
-          gd: row.home.gd,
-          points: row.home.points,
-          ppg: row.home.ppg
+          played: row.home?.played || 0,
+          wins: row.home?.win || 0,
+          draws: row.home?.draw || 0,
+          losses: row.home?.lose || 0,
+          gf: row.home?.goals?.for || 0,
+          ga: row.home?.goals?.against || 0,
+          gd: row.home?.gd || 0,
+          points: row.home?.points || 0,
+          ppg: row.home?.ppg || 0
         },
         away: {
-          played: row.away.played,
-          wins: row.away.wins,
-          draws: row.away.draws,
-          losses: row.away.losses,
-          gf: row.away.gf,
-          ga: row.away.ga,
-          gd: row.away.gd,
-          points: row.away.points,
-          ppg: row.away.ppg
+          played: row.away?.played || 0,
+          wins: row.away?.win || 0,
+          draws: row.away?.draw || 0,
+          losses: row.away?.lose || 0,
+          gf: row.away?.goals?.for || 0,
+          ga: row.away?.goals?.against || 0,
+          gd: row.away?.gd || 0,
+          points: row.away?.points || 0,
+          ppg: row.away?.ppg || 0
         },
         form: row.form || []
       }));
@@ -270,10 +298,10 @@ export async function leaguesRoutes(server: FastifyInstance) {
           fewestLosses: fewestLosses.team
         },
         playerStats: {
-          topScorer: topScorers[0]?.player.name || 'N/A',
-          topScorerGoals: topScorers[0]?.statistics.goals.total || 0,
-          topAssist: topAssists[0]?.player.name || 'N/A',
-          topAssistCount: topAssists[0]?.statistics.goals.assists || 0
+          topScorer: topScorers[0]?.player?.name || 'N/A',
+          topScorerGoals: topScorers[0]?.statistics?.goals?.total || 0,
+          topAssist: topAssists[0]?.player?.name || 'N/A',
+          topAssistCount: topAssists[0]?.statistics?.goals?.assists || 0
         }
       };
 

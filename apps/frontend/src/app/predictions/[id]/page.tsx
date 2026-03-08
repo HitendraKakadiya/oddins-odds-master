@@ -47,7 +47,7 @@ export default async function PredictionDetailPage({ params }: PageProps) {
        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20">
           <div className="flex flex-col lg:flex-row gap-8">
              {/* Main Content */}
-             <main className="flex-1 min-w-0 bg-white rounded-[40px] shadow-sm border border-slate-100 p-6 md:p-12">
+             <main className="flex-1 min-w-0 bg-white rounded-[40px] shadow-sm border border-slate-100 p-6 md:p-12 order-2 lg:order-1">
                 <div className="flex flex-col gap-16">
                    {/* Breadcrumb, Title, Intro & Predictions */}
                    <PredictionAnalysis 
@@ -94,10 +94,12 @@ export default async function PredictionDetailPage({ params }: PageProps) {
              </main>
 
              {/* Sidebar */}
-             <PredictionStickySidebar 
-                mainPrediction={predictions?.[0]} 
-                todayPredictions={todayPredictions} 
-             />
+             <aside className="w-full lg:w-[380px] shrink-0 order-1 lg:order-2">
+                <PredictionStickySidebar 
+                   mainPrediction={predictions?.[0]} 
+                   todayPredictions={todayPredictions} 
+                />
+             </aside>
           </div>
        </div>
 

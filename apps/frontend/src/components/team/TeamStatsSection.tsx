@@ -108,13 +108,13 @@ export default function TeamStatsSection({ teamName, venue, city, stats, nextMat
 
             {/* Stats Comparison List */}
             <div className="bg-white rounded-[32px] p-6 border border-gray-100 shadow-inner space-y-1">
-              <StatRow label="Standings" home={homeRank} away={awayRank} />
-              <StatRow label="Goal Scored" home={homeStats?.scoredAvg || '-'} away={awayStats?.scoredAvg || '-'} />
-              <StatRow label="Goals Conceded" home={homeStats?.concededAvg || '-'} away={awayStats?.concededAvg || '-'} />
-              <StatRow label="% Over 2.5" home={homeStats?.over25Rate || '-'} away={awayStats?.over25Rate || '-'} isPercent />
-              <StatRow label="% BTTS" home={homeStats?.bttsRate || '-'} away={awayStats?.bttsRate || '-'} isPercent />
-              <StatRow label="xG" home={comparison?.total?.home || '1.41'} away={comparison?.total?.away || '1.77'} />
-              <StatRow label="xGA" home={comparison?.goals?.home || '1.74'} away={comparison?.goals?.away || '0.91'} />
+              <StatRow label="Standings" home={homeRank || '-'} away={awayRank || '-'} />
+              <StatRow label="Goal Scored" home={homeStats?.scoredAvg ?? '-'} away={awayStats?.scoredAvg ?? '-'} />
+              <StatRow label="Goals Conceded" home={homeStats?.concededAvg ?? '-'} away={awayStats?.concededAvg ?? '-'} />
+              <StatRow label="% Over 2.5" home={homeStats?.over25Rate ?? '-'} away={awayStats?.over25Rate ?? '-'} isPercent />
+              <StatRow label="% BTTS" home={homeStats?.bttsRate ?? '-'} away={awayStats?.bttsRate ?? '-'} isPercent />
+              <StatRow label="xG" home={comparison?.total?.home || '-'} away={comparison?.total?.away || '-'} />
+              <StatRow label="xGA" home={comparison?.goals?.home || '-'} away={comparison?.goals?.away || '-'} />
             </div>
 
             <button className="w-full py-4 bg-brand-emerald text-white rounded-[24px] font-black uppercase text-xs tracking-widest shadow-lg shadow-brand-emerald/20 hover:scale-[1.02] hover:shadow-brand-emerald/30 transition-all">

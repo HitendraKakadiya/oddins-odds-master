@@ -75,7 +75,7 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Main Content */}
-          <main className="flex-1 min-w-0 order-1 lg:order-1">
+          <main className="flex-1 min-w-0 order-2 lg:order-1">
             <div className="mb-10">
               <FeaturedTeams initialTeams={featuredTeams} />
             </div>
@@ -136,7 +136,7 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
           </main>
 
           {/* Sidebar */}
-          <aside className="lg:w-[380px] flex-shrink-0 order-2 lg:order-2">
+          <aside className="lg:w-[380px] flex-shrink-0 order-1 lg:order-2">
             <div className="sticky top-24">
               <Sidebar 
                 leagueData={leaguesData.items || []} 

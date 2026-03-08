@@ -11,6 +11,8 @@ interface TeamMatchesTabProps {
 }
 
 export default function TeamMatchesTab({ team, upcomingMatches = [], lastMatches = [], stats, standings = [] }: TeamMatchesTabProps) {
+  const firstLeagueName = upcomingMatches?.[0]?.league?.name || lastMatches?.[0]?.league?.name || 'Competition';
+
   const formatDate = (dateStr: string) => {
     if (!dateStr) return "";
     const date = new Date(dateStr);
@@ -68,7 +70,7 @@ export default function TeamMatchesTab({ team, upcomingMatches = [], lastMatches
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-xl"></div>
             
-            <h3 className="text-white font-black text-sm uppercase tracking-[0.2em] relative z-10">Premier League - Upcoming Matches</h3>
+            <h3 className="text-white font-black text-sm uppercase tracking-[0.2em] relative z-10">{firstLeagueName} - Upcoming Matches</h3>
             <div className="w-8 h-8 rounded-lg bg-white/20 border border-white/30 flex items-center justify-center backdrop-blur-sm relative z-10 shadow-inner">
                 <span className="text-xs">📅</span>
             </div>
@@ -112,7 +114,7 @@ export default function TeamMatchesTab({ team, upcomingMatches = [], lastMatches
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-xl"></div>
             
-            <h3 className="text-white font-black text-sm uppercase tracking-[0.2em] relative z-10">Premier League - Last Matches</h3>
+            <h3 className="text-white font-black text-sm uppercase tracking-[0.2em] relative z-10">{firstLeagueName} - Last Matches</h3>
             <div className="w-8 h-8 rounded-lg bg-white/20 border border-white/30 flex items-center justify-center backdrop-blur-sm relative z-10 shadow-inner">
                 <span className="text-xs">📊</span>
             </div>
@@ -166,7 +168,7 @@ export default function TeamMatchesTab({ team, upcomingMatches = [], lastMatches
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-xl"></div>
             
-            <h3 className="text-white font-black text-sm uppercase tracking-[0.2em] relative z-10">Premier League - Stats</h3>
+            <h3 className="text-white font-black text-sm uppercase tracking-[0.2em] relative z-10">{firstLeagueName} - Stats</h3>
             <button className="text-[10px] font-black text-white bg-white/10 hover:bg-white hover:text-brand-emerald px-5 py-2.5 rounded-2xl uppercase tracking-widest transition-all backdrop-blur-md border border-white/20 relative z-10 shadow-lg">
                 {team.name} Standings →
             </button>
@@ -272,7 +274,7 @@ export default function TeamMatchesTab({ team, upcomingMatches = [], lastMatches
                             <p className="text-[11px] font-black text-gray-800 uppercase tracking-tight">{item.label}</p>
                             <p className="text-[9px] font-bold text-gray-300 uppercase mt-0.5">{item.sub}</p>
                         </div>
-                        <div className="text-lg font-black text-gray-900 group-hover:text-brand-emerald transition-colors">{item.val}</div>
+                        <div className="text-lg font-black text-gray-900 group-hover:text-brand-emerald transition-colors">{item.val ?? '-'}</div>
                     </div>
                 ))}
             </div>

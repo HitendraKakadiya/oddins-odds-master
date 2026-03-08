@@ -49,7 +49,7 @@ export default function LeagueHero({ league, season, stats }: LeagueHeroProps) {
             <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] mb-6">League Info</h3>
             <div className="space-y-4">
               <InfoRow label="Country" value={league.country?.name || 'Unknown'} />
-              <InfoRow label="Teams" value={stats?.teamCount || 0} />
+              <InfoRow label="Teams" value={stats?.teamCount || 'N/A'} />
               <InfoRow label="Season" value={season?.year ? `${season.year}/${season.year + 1}` : 'N/A'} />
               <InfoRow label="Matches" value={`${stats?.matchesPlayed || 0}/${stats?.totalMatches || 0}`} />
             </div>

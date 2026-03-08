@@ -75,7 +75,7 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
-        <div className="flex-1">
+        <div className="flex-1 order-2 lg:order-1">
 
 
           <StreamsDateFilter initialDate={date} />
@@ -137,11 +137,13 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
           </div>
         </div>
 
-        <Sidebar 
-          leagueData={Array.isArray(leagues) ? leagues : (leagues.items || [])} 
-          initialTotal={Array.isArray(leagues) ? 0 : (leagues.total || 0)}
-          mode="predictions" 
-        />
+        <aside className="w-full lg:w-[380px] shrink-0 order-1 lg:order-2">
+          <Sidebar 
+            leagueData={Array.isArray(leagues) ? leagues : (leagues.items || [])} 
+            initialTotal={Array.isArray(leagues) ? 0 : (leagues.total || 0)}
+            mode="predictions" 
+          />
+        </aside>
       </div>
     </div>
   );

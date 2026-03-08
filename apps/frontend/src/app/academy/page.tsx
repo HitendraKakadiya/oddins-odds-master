@@ -10,7 +10,7 @@ export default function AcademyPage() {
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
         {/* Main Content Area */}
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 order-2 lg:order-1">
           <AcademyHero />
           <div id="top" className="scroll-mt-24">
             <AcademyFeatureCards />
@@ -20,7 +20,7 @@ export default function AcademyPage() {
         </main>
 
         {/* Sidebar */}
-        <aside className="w-full lg:w-[380px] shrink-0">
+        <aside className="w-full lg:w-[380px] shrink-0 order-1 lg:order-2">
           <div className="sticky top-24 space-y-8">
             <AcademySideNav />
             <div className="hidden lg:block">

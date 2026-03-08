@@ -56,7 +56,7 @@ export default async function PredictionsPage({
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Main Content Area */}
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 order-2 lg:order-1">
           {/* Page Heading & Breadcrumb */}
           <div className="flex flex-col mb-8">
             <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 bg-slate-50 self-start px-4 py-2 rounded-full border border-slate-100/60 shadow-inner">
@@ -142,13 +142,15 @@ export default async function PredictionsPage({
         </main>
 
         {/* Sidebar */}
-        <Sidebar 
-          leagueData={Array.isArray(leaguesData) ? leaguesData : (leaguesData.items || [])} 
-          initialTotal={Array.isArray(leaguesData) ? 0 : (leaguesData.total || 0)}
-          featuredTips={featuredPredictions.slice(0, 3)} 
-          mode="predictions"
-          date={selectedDate}
-        />
+        <aside className="w-full lg:w-[380px] shrink-0 order-1 lg:order-2">
+          <Sidebar 
+            leagueData={Array.isArray(leaguesData) ? leaguesData : (leaguesData.items || [])} 
+            initialTotal={Array.isArray(leaguesData) ? 0 : (leaguesData.total || 0)}
+            featuredTips={featuredPredictions.slice(0, 3)} 
+            mode="predictions"
+            date={selectedDate}
+          />
+        </aside>
       </div>
     </div>
   );

@@ -24,12 +24,12 @@ export default function LeaguesPage() {
 
       <div className="flex flex-col lg:flex-row gap-8 mb-8">
         {/* Main Content: Worldwide Directory */}
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 min-w-0 order-2 lg:order-1">
           <WorldwideLeagueDirectory />
         </main>
 
         {/* Sidebar: Popular Leagues */}
-        <aside className="w-full lg:w-[380px] shrink-0">
+        <aside className="w-full lg:w-[380px] shrink-0 order-1 lg:order-2">
           <PopularLeaguesList />
         </aside>
       </div>
