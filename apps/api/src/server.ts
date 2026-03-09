@@ -24,7 +24,7 @@ export async function buildServer() {
 
   // Register Rate Limit
   await server.register(rateLimit, {
-    max: 200,
+    max: 250,
     timeWindow: '1 minute',
   });
 

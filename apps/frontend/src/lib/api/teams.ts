@@ -20,7 +20,7 @@ export async function getTeams(query?: string, leagueSlug?: string, leagueId?: n
 }
 
 export async function getTeamDetail(teamSlug: string, leagueId?: string): Promise<TeamDetailResponse> {
-    const url = `/v1/team/${teamSlug}${leagueId ? `?competition=${leagueId}` : ''}`;
+    const url = `/v1/team/${teamSlug}${leagueId ? `?league=${leagueId}` : ''}`;
     return fetchAPI<TeamDetailResponse>(url);
 }
 

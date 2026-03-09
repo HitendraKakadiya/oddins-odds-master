@@ -5,12 +5,23 @@
 const API_FOOTBALL_KEY = process.env.SPORTS_PROVIDER_API_KEY;
 const API_FOOTBALL_BASE_URL = 'https://v3.football.api-sports.io';
 
+const providerCache = new Map<string, { data: any, timestamp: number }>();
+export { providerCache };
+const PROVIDER_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
 export async function fetchFromSportsProvider(endpoint: string) {
     if (!API_FOOTBALL_KEY) {
         throw new Error('SPORTS_PROVIDER_API_KEY is not configured');
     }
 
-    const response = await fetch(`${API_FOOTBALL_BASE_URL}${endpoint}`, {
+    const cacheKey = endpoint;
+    const cached = providerCache.get(cacheKey);
+    if (cached && (Date.now() - cached.timestamp < PROVIDER_CACHE_TTL)) {
+        return cached.data;
+    }
+
+    const url = `${API_FOOTBALL_BASE_URL}${endpoint}`;
+    const response = await fetch(url, {
         method: 'GET',
         headers: {
             'x-apisports-key': API_FOOTBALL_KEY,
@@ -22,7 +33,9 @@ export async function fetchFromSportsProvider(endpoint: string) {
         throw new Error(`Sports Provider API error: ${response.status} ${response.statusText}`);
     }
 
-    return await response.json();
+    const data = await response.json();
+    providerCache.set(cacheKey, { data, timestamp: Date.now() });
+    return data;
 }
 
 function generateTeamSlug(id: number, name: string) {
@@ -438,6 +451,7 @@ export function mapMatch(fixture: any, league: any, teams: any, res: any) {
             name: league?.name || fixture?.league?.name || 'Unknown League',
             slug: (league?.name || fixture?.league?.name || 'unknown-league').toLowerCase().replace(/\s+/g, '-'),
             logoUrl: league?.logo || fixture?.league?.logoUrl || '',
+            season: league?.season || fixture?.league?.season,
             country: {
                 name: league?.country || fixture?.league?.country?.name || '',
                 flagUrl: league?.flag || fixture?.league?.country?.flagUrl || ''
@@ -538,210 +552,241 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
             };
         });
 
-        // Enrichment: Fetch Corner Stats for each team (Parallel with sampled fixtures for actual data)
-        const fixtureStatsCache = new Map<number, any>();
-        const getCachedFixtureStats = async (fixtureId: number) => {
-            if (fixtureStatsCache.has(fixtureId)) return fixtureStatsCache.get(fixtureId);
-            const stats = await getFixtureStatisticsDirect(fixtureId);
-            fixtureStatsCache.set(fixtureId, stats);
-            return stats;
-        };
-
+        // Enrichment: Fetch all finished fixtures for this league once to aggregate stats
         try {
-            const enrichedRows = await Promise.all(mappedRows.map(async (row: any) => {
-                // Fetch completed matches for this team in this league/season for aggregation
-                const fixtures: any = await fetchFromSportsProvider(`/fixtures?team=${row.team.id}&league=${leagueId}&season=${season}&status=FT`);
+            let allFixturesData: any = await fetchFromSportsProvider(`/fixtures?league=${leagueId}&season=${season}&status=FT`);
+            let allFixtures = allFixturesData.response || [];
 
-                if (fixtures.response && fixtures.response.length > 0) {
-                    const createHalf = () => ({ played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0, gd: 0, points: 0, ppg: 0 });
-                    const createCS = () => ({ count: 0, percentage: 0 });
-                    const createOU = () => ({
-                        over05: { count: 0, percentage: 0 }, over15: { count: 0, percentage: 0 },
-                        over25: { count: 0, percentage: 0 }, over35: { count: 0, percentage: 0 },
-                        over45: { count: 0, percentage: 0 }, over55: { count: 0, percentage: 0 }
-                    });
-                    const createBtts = () => ({ count: 0, percentage: 0 });
-                    const createScoringFirst = () => ({ count: 0, percentage: 0 });
-                    const createConcedingFirst = () => ({ count: 0, percentage: 0 });
+            // Fallback: some leagues use different statuses, try without status filter if empty
+            if (allFixtures.length === 0) {
+                console.log(`[Standings] No FT fixtures for league ${leagueId} season ${season}, trying without status filter`);
+                allFixturesData = await fetchFromSportsProvider(`/fixtures?league=${leagueId}&season=${season}&last=50`);
+                allFixtures = allFixturesData.response || [];
+                // Filter only completed fixtures
+                allFixtures = allFixtures.filter((f: any) => {
+                    const status = f.fixture?.status?.short;
+                    return ['FT', 'AET', 'PEN', 'AWD'].includes(status);
+                });
+            }
 
-                    const updateHalf = (split: any, gf: number, ga: number) => {
-                        split.played++; split.gf += gf; split.ga += ga; split.gd += (gf - ga);
-                        if (gf > ga) { split.wins++; split.points += 3; }
-                        else if (gf === ga) { split.draws++; split.points += 1; }
-                        else { split.losses++; }
-                        split.ppg = parseFloat((split.points / split.played).toFixed(2));
-                    };
+            console.log(`[Standings] League ${leagueId} season ${season}: ${allFixtures.length} fixtures loaded`);
 
-                    const updateCS = (split: any, played: number, ga: number) => {
-                        if (ga === 0) split.count++;
-                        split.percentage = played > 0 ? Math.round((split.count / played) * 100) : 0;
-                    };
+            // Group fixtures by team
+            const teamFixturesMap = new Map<number, any[]>();
+            allFixtures.forEach((f: any) => {
+                const hId = f.teams.home.id;
+                const aId = f.teams.away.id;
+                if (!teamFixturesMap.has(hId)) teamFixturesMap.set(hId, []);
+                if (!teamFixturesMap.has(aId)) teamFixturesMap.set(aId, []);
+                teamFixturesMap.get(hId)!.push(f);
+                teamFixturesMap.get(aId)!.push(f);
+            });
 
-                    const updateOU = (split: any, played: number, goals: number) => {
-                        if (goals > 0.5) split.over05.count++; split.over05.percentage = Math.round((split.over05.count / played) * 100);
-                        if (goals > 1.5) split.over15.count++; split.over15.percentage = Math.round((split.over15.count / played) * 100);
-                        if (goals > 2.5) split.over25.count++; split.over25.percentage = Math.round((split.over25.count / played) * 100);
-                        if (goals > 3.5) split.over35.count++; split.over35.percentage = Math.round((split.over35.count / played) * 100);
-                        if (goals > 4.5) split.over45.count++; split.over45.percentage = Math.round((split.over45.count / played) * 100);
-                        if (goals > 5.5) split.over55.count++; split.over55.percentage = Math.round((split.over55.count / played) * 100);
-                    };
+            // Reusable calculation helpers
+            const createHalf = () => ({ played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0, gd: 0, points: 0, ppg: 0 });
+            const createCS = () => ({ count: 0, percentage: 0 });
+            const createOU = () => ({
+                over05: { count: 0, percentage: 0 }, under05: { count: 0, percentage: 0 },
+                over15: { count: 0, percentage: 0 }, under15: { count: 0, percentage: 0 },
+                over25: { count: 0, percentage: 0 }, under25: { count: 0, percentage: 0 },
+                over35: { count: 0, percentage: 0 }, under35: { count: 0, percentage: 0 },
+                over45: { count: 0, percentage: 0 }, under45: { count: 0, percentage: 0 },
+                over55: { count: 0, percentage: 0 }, under55: { count: 0, percentage: 0 }
+            });
+            const createBtts = () => ({ count: 0, percentage: 0 });
+            const createScoringFirst = () => ({ count: 0, percentage: 0 });
+            const createConcedingFirst = () => ({ count: 0, percentage: 0 });
 
-                    const updateBtts = (split: any, played: number, gf: number, ga: number) => {
-                        if (gf > 0 && ga > 0) split.count++;
-                        split.percentage = played > 0 ? Math.round((split.count / played) * 100) : 0;
-                    };
+            const updateHalf = (split: any, gf: number, ga: number) => {
+                split.played++; split.gf += gf; split.ga += ga; split.gd += (gf - ga);
+                if (gf > ga) { split.wins++; split.points += 3; }
+                else if (gf === ga) { split.draws++; split.points += 1; }
+                else { split.losses++; }
+                split.ppg = parseFloat((split.points / split.played).toFixed(2));
+            };
 
-                    const getGoalsArr = async (fixtureId: number, hasGoals: boolean) => {
-                        if (!hasGoals) return [];
+            const updateOUThreshold = (split: any, played: number, goals: number) => {
+                if (goals > 0.5) split.over05.count++; split.over05.percentage = Math.round((split.over05.count / played) * 100);
+                if (goals > 1.5) split.over15.count++; split.over15.percentage = Math.round((split.over15.count / played) * 100);
+                if (goals > 2.5) split.over25.count++; split.over25.percentage = Math.round((split.over25.count / played) * 100);
+                if (goals > 3.5) split.over35.count++; split.over35.percentage = Math.round((split.over35.count / played) * 100);
+                if (goals > 4.5) split.over45.count++; split.over45.percentage = Math.round((split.over45.count / played) * 100);
+                if (goals > 5.5) split.over55.count++; split.over55.percentage = Math.round((split.over55.count / played) * 100);
+
+                split.under05.count = played - split.over05.count; split.under05.percentage = 100 - split.over05.percentage;
+                split.under15.count = played - split.over15.count; split.under15.percentage = 100 - split.over15.percentage;
+                split.under25.count = played - split.over25.count; split.under25.percentage = 100 - split.over25.percentage;
+                split.under35.count = played - split.over35.count; split.under35.percentage = 100 - split.over35.percentage;
+                split.under45.count = played - split.over45.count; split.under45.percentage = 100 - split.over45.percentage;
+                split.under55.count = played - split.over55.count; split.under55.percentage = 100 - split.over55.percentage;
+            };
+
+            const enrichedRows = mappedRows.map((row: any) => {
+                const teamFixtures = teamFixturesMap.get(row.team.id) || [];
+                if (teamFixtures.length === 0) return row;
+
+                const stats = {
+                    overall: { firstHalf: createHalf(), secondHalf: createHalf(), cleanSheets: createCS(), overUnder: createOU(), btts: createBtts(), scoringFirst: createScoringFirst(), concedingFirst: createConcedingFirst() },
+                    home: { firstHalf: createHalf(), secondHalf: createHalf(), cleanSheets: createCS(), overUnder: createOU(), btts: createBtts(), scoringFirst: createScoringFirst(), concedingFirst: createConcedingFirst() },
+                    away: { firstHalf: createHalf(), secondHalf: createHalf(), cleanSheets: createCS(), overUnder: createOU(), btts: createBtts(), scoringFirst: createScoringFirst(), concedingFirst: createConcedingFirst() }
+                };
+
+                let homeMatches = 0; let awayMatches = 0;
+
+                teamFixtures.forEach((f: any) => {
+                    const isHome = f.teams.home.id === row.team.id;
+                    const splitKey = isHome ? 'home' : 'away';
+                    if (isHome) homeMatches++; else awayMatches++;
+                    const matchesPlayed = isHome ? homeMatches : awayMatches;
+                    const totalPlayed = homeMatches + awayMatches;
+
+                    const htHome = f.score?.halftime?.home ?? 0;
+                    const htAway = f.score?.halftime?.away ?? 0;
+                    const ftHome = f.score?.fulltime?.home ?? f.goals?.home ?? 0;
+                    const ftAway = f.score?.fulltime?.away ?? f.goals?.away ?? 0;
+
+                    const shHome = ftHome - htHome;
+                    const shAway = ftAway - htAway;
+
+                    const teamHt = isHome ? htHome : htAway; const oppHt = isHome ? htAway : htHome;
+                    const teamSh = isHome ? shHome : shAway; const oppSh = isHome ? shAway : shHome;
+                    const teamFt = isHome ? ftHome : ftAway; const oppFt = isHome ? ftAway : ftHome;
+                    const totalGoals = ftHome + ftAway;
+
+                    updateHalf(stats.overall.firstHalf, teamHt, oppHt); updateHalf(stats[splitKey].firstHalf, teamHt, oppHt);
+                    updateHalf(stats.overall.secondHalf, teamSh, oppSh); updateHalf(stats[splitKey].secondHalf, teamSh, oppSh);
+
+                    if (oppFt === 0) { stats.overall.cleanSheets.count++; stats[splitKey].cleanSheets.count++; }
+                    stats.overall.cleanSheets.percentage = Math.round((stats.overall.cleanSheets.count / totalPlayed) * 100);
+                    stats[splitKey].cleanSheets.percentage = Math.round((stats[splitKey].cleanSheets.count / matchesPlayed) * 100);
+
+                    updateOUThreshold(stats.overall.overUnder, totalPlayed, totalGoals);
+                    updateOUThreshold(stats[splitKey].overUnder, matchesPlayed, totalGoals);
+
+                    if (teamFt > 0 && oppFt > 0) { stats.overall.btts.count++; stats[splitKey].btts.count++; }
+                    stats.overall.btts.percentage = Math.round((stats.overall.btts.count / totalPlayed) * 100);
+                    stats[splitKey].btts.percentage = Math.round((stats[splitKey].btts.count / matchesPlayed) * 100);
+
+                    // Scoring First (using events if already present)
+                    const goalsFirst = f.events
+                        ? f.events.find((e: any) => e.type === 'Goal' && !e.detail.includes('Missed'))
+                        : null;
+
+                    if (goalsFirst && goalsFirst.team) {
+                        if (goalsFirst.team.id === row.team.id) {
+                            stats.overall.scoringFirst.count++; stats[splitKey].scoringFirst.count++;
+                        } else {
+                            stats.overall.concedingFirst.count++; stats[splitKey].concedingFirst.count++;
+                        }
+                        stats.overall.scoringFirst.percentage = Math.round((stats.overall.scoringFirst.count / totalPlayed) * 100);
+                        stats[splitKey].scoringFirst.percentage = Math.round((stats[splitKey].scoringFirst.count / matchesPlayed) * 100);
+                        stats.overall.concedingFirst.percentage = Math.round((stats.overall.concedingFirst.count / totalPlayed) * 100);
+                        stats[splitKey].concedingFirst.percentage = Math.round((stats[splitKey].concedingFirst.count / matchesPlayed) * 100);
+                    }
+                });
+
+                return {
+                    ...row,
+                    overall: { ...row.overall, ...stats.overall },
+                    home: { ...row.home, ...stats.home },
+                    away: { ...row.away, ...stats.away }
+                };
+            });
+
+            // --- Corner stats via /fixtures/statistics ---
+            // This endpoint has Corner Kicks data for top-tier leagues only (Premier League, La Liga, etc.)
+            // For leagues without coverage, no corners field is set; frontend shows N/A.
+
+            const MAX_FIXTURES = 30;
+            const recentFixtures = [...allFixtures]
+                .sort((a: any, b: any) => b.fixture.timestamp - a.fixture.timestamp)
+                .slice(0, MAX_FIXTURES);
+
+            const teamCornerMap = new Map<number, { overall: number[]; home: number[]; away: number[] }>();
+            const initEntry = () => ({ overall: [] as number[], home: [] as number[], away: [] as number[] });
+            const processStats = (sd: any, fixture: any) => {
+                (sd?.response || []).forEach((te: any) => {
+                    const teamId = te?.team?.id;
+                    if (!teamId) return;
+                    const cs = (te?.statistics || []).find((s: any) => s.type === 'Corner Kicks');
+                    const v = cs?.value ?? null;
+                    if (v === null) return;
+                    const n = typeof v === 'string' ? parseInt(v, 10) : v;
+                    if (isNaN(n)) return;
+                    if (!teamCornerMap.has(teamId)) teamCornerMap.set(teamId, initEntry());
+                    const e = teamCornerMap.get(teamId)!;
+                    e.overall.push(n);
+                    if (fixture.teams?.home?.id === teamId) e.home.push(n); else e.away.push(n);
+                });
+            };
+
+            // Probe first 5 fixtures to detect coverage, then fetch the rest if covered
+            let hasCoverage = false;
+            if (recentFixtures.length > 0) {
+                await Promise.all(recentFixtures.slice(0, 5).map(async (fixture: any) => {
+                    const fId = fixture.fixture?.id;
+                    if (!fId) return;
+                    try {
+                        const sd: any = await fetchFromSportsProvider(`/fixtures/statistics?fixture=${fId}`);
+                        const sizeBefore = teamCornerMap.size;
+                        processStats(sd, fixture);
+                        if (teamCornerMap.size > sizeBefore) hasCoverage = true;
+                    } catch (_) { }
+                }));
+            }
+
+            if (hasCoverage && recentFixtures.length > 5) {
+                const FIX_BATCH = 5;
+                for (let bi = 5; bi < recentFixtures.length; bi += FIX_BATCH) {
+                    await Promise.all(recentFixtures.slice(bi, bi + FIX_BATCH).map(async (fixture: any) => {
+                        const fId = fixture.fixture?.id;
+                        if (!fId) return;
                         try {
-                            const events = await getMatchEventsDirect(fixtureId);
-                            if (events && events.length > 0) {
-                                return events.filter((e: any) => e.type === 'Goal' && !e.detail.includes('Missed'));
-                            }
-                        } catch (e) { }
-                        return [];
-                    };
+                            const sd: any = await fetchFromSportsProvider(`/fixtures/statistics?fixture=${fId}`);
+                            processStats(sd, fixture);
+                        } catch (_) { }
+                    }));
+                }
+            }
 
-                    const updateScoringFirst = (splitSF: any, splitCF: any, played: number, goalsArray: any[], teamId: number) => {
-                        if (goalsArray && goalsArray.length > 0) {
-                            // goals[0] might have team.id to specify who scored
-                            const firstGoal = goalsArray[0];
-                            if (firstGoal && firstGoal.team && firstGoal.team.id === teamId) {
-                                splitSF.count++;
-                            } else if (firstGoal && firstGoal.team && firstGoal.team.id !== teamId) {
-                                splitCF.count++;
-                            }
-                        }
-                        splitSF.percentage = played > 0 ? Math.round((splitSF.count / played) * 100) : 0;
-                        splitCF.percentage = played > 0 ? Math.round((splitCF.count / played) * 100) : 0;
-                    };
+            // Build corner stats from match counts (Tier 1)
+            const computeFromCounts = (counts: number[]) => {
+                if (counts.length === 0) return null;
+                const avg = parseFloat((counts.reduce((s, v) => s + v, 0) / counts.length).toFixed(2));
+                const overPct = (t: number) => Math.round((counts.filter(v => v > t).length / counts.length) * 100);
+                return {
+                    average: avg, over75: overPct(7.5), over85: overPct(8.5), over95: overPct(9.5),
+                    over105: overPct(10.5), over115: overPct(11.5), over125: overPct(12.5), over135: overPct(13.5)
+                };
+            };
 
-                    const stats = {
-                        overall: { firstHalf: createHalf(), secondHalf: createHalf(), cleanSheets: createCS(), overUnder: createOU(), btts: createBtts(), scoringFirst: createScoringFirst(), concedingFirst: createConcedingFirst() },
-                        home: { firstHalf: createHalf(), secondHalf: createHalf(), cleanSheets: createCS(), overUnder: createOU(), btts: createBtts(), scoringFirst: createScoringFirst(), concedingFirst: createConcedingFirst() },
-                        away: { firstHalf: createHalf(), secondHalf: createHalf(), cleanSheets: createCS(), overUnder: createOU(), btts: createBtts(), scoringFirst: createScoringFirst(), concedingFirst: createConcedingFirst() }
-                    };
-
-                    let homeMatches = 0; let awayMatches = 0;
-
-                    for (const f of fixtures.response) {
-                        const isHome = f.teams.home.id === row.team.id;
-                        const splitKey = isHome ? 'home' : 'away';
-                        if (isHome) homeMatches++; else awayMatches++;
-                        const matchesPlayed = isHome ? homeMatches : awayMatches;
-                        const totalPlayed = homeMatches + awayMatches;
-
-                        const htHome = f.score?.halftime?.home ?? 0;
-                        const htAway = f.score?.halftime?.away ?? 0;
-                        const ftHome = f.score?.fulltime?.home ?? f.goals?.home ?? 0;
-                        const ftAway = f.score?.fulltime?.away ?? f.goals?.away ?? 0;
-
-                        const shHome = ftHome - htHome;
-                        const shAway = ftAway - htAway;
-
-                        const teamHt = isHome ? htHome : htAway; const oppHt = isHome ? htAway : htHome;
-                        const teamSh = isHome ? shHome : shAway; const oppSh = isHome ? shAway : shHome;
-                        const teamFt = isHome ? ftHome : ftAway; const oppFt = isHome ? ftAway : ftHome;
-                        const totalGoals = ftHome + ftAway;
-
-                        updateHalf(stats.overall.firstHalf, teamHt, oppHt); updateHalf(stats[splitKey].firstHalf, teamHt, oppHt);
-                        updateHalf(stats.overall.secondHalf, teamSh, oppSh); updateHalf(stats[splitKey].secondHalf, teamSh, oppSh);
-
-                        updateCS(stats.overall.cleanSheets, totalPlayed, oppFt); updateCS(stats[splitKey].cleanSheets, matchesPlayed, oppFt);
-                        updateOU(stats.overall.overUnder, totalPlayed, totalGoals); updateOU(stats[splitKey].overUnder, matchesPlayed, totalGoals);
-                        updateBtts(stats.overall.btts, totalPlayed, teamFt, oppFt); updateBtts(stats[splitKey].btts, matchesPlayed, teamFt, oppFt);
-
-                        const goalsArr = f.events ? f.events.filter((e: any) => e.type === 'Goal' && !e.detail.includes('Missed')) : await getGoalsArr(f.fixture.id, totalGoals > 0);
-
-                        updateScoringFirst(stats.overall.scoringFirst, stats.overall.concedingFirst, totalPlayed, goalsArr, row.team.id);
-                        updateScoringFirst(stats[splitKey].scoringFirst, stats[splitKey].concedingFirst, matchesPlayed, goalsArr, row.team.id);
-                    }
-
-                    // For corners/cards use up to 5 most recent matches like before
-                    const recentFixtures = fixtures.response.slice(-5);
-                    let totalMatchCorners = 0;
-                    let cornerOvers = { 75: 0, 85: 0, 95: 0, 105: 0, 115: 0, 125: 0, 135: 0 };
-                    let cardOvers = { overall: { 35: 0, 45: 0, 55: 0 }, for: { 35: 0, 45: 0, 55: 0 }, against: { 35: 0, 45: 0, 55: 0 } };
-                    const sampleSize = recentFixtures.length;
-
-                    for (const f of recentFixtures) {
-                        const fStats = await getCachedFixtureStats(f.fixture.id);
-
-                        const getTeamCardCount = (teamStats: any) => {
-                            const yellow = parseInt(teamStats.statistics.find((s: any) => s.type === 'Yellow Cards')?.value || '0');
-                            const red = parseInt(teamStats.statistics.find((s: any) => s.type === 'Red Cards')?.value || '0');
-                            return yellow + red;
-                        };
-
-                        const getCorners = (teamStats: any) => {
-                            const cornerStat = teamStats.statistics.find((s: any) => s.type === 'Corner Kicks');
-                            return parseInt(cornerStat?.value || '0');
-                        };
-
-                        if (fStats.length >= 2) {
-                            const corners = getCorners(fStats[0]) + getCorners(fStats[1]);
-                            totalMatchCorners += corners;
-                            if (corners > 7.5) cornerOvers[75]++; if (corners > 8.5) cornerOvers[85]++;
-                            if (corners > 9.5) cornerOvers[95]++; if (corners > 10.5) cornerOvers[105]++;
-                            if (corners > 11.5) cornerOvers[115]++; if (corners > 12.5) cornerOvers[125]++;
-                            if (corners > 13.5) cornerOvers[135]++;
-
-                            const homeCards = getTeamCardCount(fStats[0]); const awayCards = getTeamCardCount(fStats[1]);
-                            const isHome = fStats[0].team.id === row.team.id;
-                            const teamCards = isHome ? homeCards : awayCards; const oppCards = isHome ? awayCards : homeCards;
-                            const totalMatchCards = homeCards + awayCards;
-
-                            if (totalMatchCards > 3.5) cardOvers.overall[35]++; if (totalMatchCards > 4.5) cardOvers.overall[45]++; if (totalMatchCards > 5.5) cardOvers.overall[55]++;
-                            if (teamCards > 3.5) cardOvers.for[35]++; if (teamCards > 4.5) cardOvers.for[45]++; if (teamCards > 5.5) cardOvers.for[55]++;
-                            if (oppCards > 3.5) cardOvers.against[35]++; if (oppCards > 4.5) cardOvers.against[45]++; if (oppCards > 5.5) cardOvers.against[55]++;
-                        }
-
-                    }
-
-                    const mapCorners = () => ({
-                        average: sampleSize > 0 ? parseFloat((totalMatchCorners / sampleSize).toFixed(1)) : 0,
-                        over75: sampleSize > 0 ? Math.round((cornerOvers[75] / sampleSize) * 100) : 0,
-                        over85: sampleSize > 0 ? Math.round((cornerOvers[85] / sampleSize) * 100) : 0,
-                        over95: sampleSize > 0 ? Math.round((cornerOvers[95] / sampleSize) * 100) : 0,
-                        over105: sampleSize > 0 ? Math.round((cornerOvers[105] / sampleSize) * 100) : 0,
-                        over115: sampleSize > 0 ? Math.round((cornerOvers[115] / sampleSize) * 100) : 0,
-                        over125: sampleSize > 0 ? Math.round((cornerOvers[125] / sampleSize) * 100) : 0,
-                        over135: sampleSize > 0 ? Math.round((cornerOvers[135] / sampleSize) * 100) : 0
-                    });
-
-                    const mapCards = (type: 'overall' | 'for' | 'against') => ({
-                        over35: sampleSize > 0 ? Math.round((cardOvers[type][35] / sampleSize) * 100) : 0,
-                        over45: sampleSize > 0 ? Math.round((cardOvers[type][45] / sampleSize) * 100) : 0,
-                        over55: sampleSize > 0 ? Math.round((cardOvers[type][55] / sampleSize) * 100) : 0
-                    });
-
+            // Merge corner stats into final rows
+            const finalRows = enrichedRows.map((row: any) => {
+                const entry = teamCornerMap.get(row.team.id);
+                if (entry && entry.overall.length > 0) {
                     return {
                         ...row,
-                        overall: {
-                            ...row.overall,
-                            ...stats.overall,
-                            corners: mapCorners(),
-                            cards: mapCards('overall')
-                        },
-                        home: {
-                            ...row.home,
-                            ...stats.home,
-                            corners: mapCorners(),
-                            cards: mapCards('for')
-                        },
-                        away: {
-                            ...row.away,
-                            ...stats.away,
-                            corners: mapCorners(),
-                            cards: mapCards('against')
-                        }
+                        overall: { ...row.overall, corners: computeFromCounts(entry.overall) },
+                        home: { ...row.home, corners: computeFromCounts(entry.home) },
+                        away: { ...row.away, corners: computeFromCounts(entry.away) }
+                    };
+                }
+                const cs = (row as any).__cornerStats;
+                if (cs) {
+                    const { __cornerStats: _, ...cleanRow } = row;
+                    return {
+                        ...cleanRow,
+                        overall: { ...cleanRow.overall, corners: cs.overall },
+                        home: { ...cleanRow.home, corners: cs.home },
+                        away: { ...cleanRow.away, corners: cs.away }
                     };
                 }
                 return row;
-            }));
-            return enrichedRows;
+            });
+
+            return finalRows;
         } catch (err) {
-            console.warn('Corner enrichment failed:', err);
+            console.warn('Enrichment failed:', err);
             return mappedRows;
         }
     } catch (err) {
@@ -776,15 +821,19 @@ export function calculateVirtualStandings(fixtures: any[]) {
     };
 
     fixtures.forEach(f => {
-        // Only count finished matches
-        const status = f.fixture?.status?.short;
+        // Support both raw API format and mapped match format
+        const status = f.status || f.fixture?.status?.short;
         if (!['FT', 'AET', 'PEN'].includes(status)) return;
 
-        const home = getOrCreateTeam(f.teams.home);
-        const away = getOrCreateTeam(f.teams.away);
+        const homeData = f.homeTeam || f.teams?.home;
+        const awayData = f.awayTeam || f.teams?.away;
+        if (!homeData || !awayData) return;
 
-        const hGoals = f.goals.home ?? 0;
-        const aGoals = f.goals.away ?? 0;
+        const home = getOrCreateTeam(homeData);
+        const away = getOrCreateTeam(awayData);
+
+        const hGoals = f.score?.home ?? f.goals?.home ?? 0;
+        const aGoals = f.score?.away ?? f.goals?.away ?? 0;
 
         // Update Overall
         home.overall.played++;
@@ -908,9 +957,11 @@ export async function getTopScorersDirect(leagueId: number, season: number) {
         player: {
             id: item.player?.id,
             name: item.player?.name,
-            photo: item.player?.photo
+            photo: item.player?.photo,
+            nationality: item.player?.nationality,
+            age: item.player?.age
         },
-        statistics: item.statistics?.[0] || {}
+        statistics: item.statistics || []
     }));
 }
 
@@ -921,9 +972,11 @@ export async function getTopAssistsDirect(leagueId: number, season: number) {
         player: {
             id: item.player?.id,
             name: item.player?.name,
-            photo: item.player?.photo
+            photo: item.player?.photo,
+            nationality: item.player?.nationality,
+            age: item.player?.age
         },
-        statistics: item.statistics?.[0] || {}
+        statistics: item.statistics || []
     }));
 }
 
@@ -994,11 +1047,14 @@ export async function getTeamStatsDirect(teamId: number, leagueId: number, seaso
     return null;
 }
 
-export async function getTeamMatchesDirect(teamId: number, type: 'next' | 'last' = 'next', count: number = 5, leagueId?: number | null) {
+export async function getTeamMatchesDirect(teamId: number, type: 'next' | 'last' = 'next', count: number = 5, leagueId?: number | null, season?: number | null) {
     try {
         let endpoint = `/fixtures?team=${teamId}&${type}=${count}`;
         if (leagueId) {
             endpoint += `&league=${leagueId}`;
+        }
+        if (season) {
+            endpoint += `&season=${season}`;
         }
         const data: any = await fetchFromSportsProvider(endpoint);
         if (data.response && data.response.length > 0) {

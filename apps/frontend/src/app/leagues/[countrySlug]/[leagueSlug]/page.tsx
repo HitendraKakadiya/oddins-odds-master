@@ -10,6 +10,7 @@ import LeagueStatsAnalysis from '@/components/leagues/LeagueStatsAnalysis';
 import LeagueMatchList from '@/components/leagues/LeagueMatchList';
 import LeagueFAQ from '@/components/leagues/LeagueFAQ';
 import LeagueMatches from '@/components/leagues/LeagueMatches';
+import LeagueCornersTable from '@/components/leagues/LeagueCornersTable';
 
 interface PageProps {
   params: {
@@ -112,7 +113,7 @@ export default function LeagueDetailPage({ params }: PageProps) {
            <LeagueMatches fixtures={data.fixtures} results={data.results} />
         )}
 
-        {(activeTab === 'stats' || activeTab === 'corners') && (
+        {(activeTab === 'stats') && (
            <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
              <LeagueStatsAnalysis 
                leagueName={data.league.name} 
@@ -121,6 +122,12 @@ export default function LeagueDetailPage({ params }: PageProps) {
                detailedMode={activeTab}
                standings={data.standings}
              />
+           </div>
+        )}
+
+        {activeTab === 'corners' && (
+           <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+             <LeagueCornersTable standings={data.standings} />
            </div>
         )}
       </div>

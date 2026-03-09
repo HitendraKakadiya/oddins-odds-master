@@ -61,12 +61,8 @@ export default function TeamMatchesTab({ team, upcomingMatches = [], lastMatches
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      {/* Matches Content - League selector removed as it's now in the header tabs component */}
-
-      {/* Upcoming Matches Section */}
       <div className="bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden group">
         <div className="bg-gradient-to-br from-[#059669] via-brand-emerald to-[#047857] p-6 flex items-center justify-between relative overflow-hidden">
-            {/* Decorative background shapes */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl"></div>
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-xl"></div>
             

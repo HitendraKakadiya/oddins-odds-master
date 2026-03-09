@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify';
-import { getLeaguesDirect, getLeagueStandingsDirect, getLeagueFixturesDirect, getTopScorersDirect, getTopAssistsDirect, calculateVirtualStandings } from '../../lib/sports';
+import { getLeaguesDirect, getLeagueStandingsDirect, getLeagueFixturesDirect, getTopScorersDirect, getTopAssistsDirect, calculateVirtualStandings, fetchFromSportsProvider, providerCache } from '../../lib/sports';
 import { getFeaturedLeagueIds } from '../../config/leagues';
 
 interface LeagueDetailParams {
@@ -159,14 +159,15 @@ export async function leaguesRoutes(server: FastifyInstance) {
           if (availableSeasons.indexOf(season) > availableSeasons.indexOf(currentSeason) + 2) break;
         }
 
-        // Fetch other data for the current season
+        // Fetch other data - use the latest season that had data (standingsSeason) if current is empty
+        const dataSeason = standingsSeason || currentSeason;
         [fixtures, results, topScorers, topAssists] = await Promise.all([
-          getLeagueFixturesDirect(leagueId, currentSeason, 'next', 10).catch(() => []),
-          getLeagueFixturesDirect(leagueId, currentSeason, 'last', 50).catch(() => []), // Increase limit for virtual calculation
-          getTopScorersDirect(leagueId, currentSeason).catch(() =>
+          getLeagueFixturesDirect(leagueId, dataSeason, 'next', 10).catch(() => []),
+          getLeagueFixturesDirect(leagueId, dataSeason, 'last', 50).catch(() => []),
+          getTopScorersDirect(leagueId, dataSeason).catch(() =>
             standingsSeason !== currentSeason ? getTopScorersDirect(leagueId, standingsSeason).catch(() => []) : []
           ),
-          getTopAssistsDirect(leagueId, currentSeason).catch(() =>
+          getTopAssistsDirect(leagueId, dataSeason).catch(() =>
             standingsSeason !== currentSeason ? getTopAssistsDirect(leagueId, standingsSeason).catch(() => []) : []
           )
         ]);
@@ -186,40 +187,43 @@ export async function leaguesRoutes(server: FastifyInstance) {
           id: row.team?.id,
           name: row.team?.name,
           slug: row.team?.name ? slugify(row.team.name) : '',
-          logoUrl: row.team?.logo || row.team?.logoUrl, // Handle both properties if inconsistent
+          logoUrl: row.team?.logo || row.team?.logoUrl,
         },
         overall: {
-          played: row.all?.played || row.overall?.played || 0,
-          wins: row.all?.win || row.overall?.wins || 0,
-          draws: row.all?.draw || row.overall?.draws || 0,
-          losses: row.all?.lose || row.overall?.losses || 0,
-          gf: row.all?.goals?.for || row.overall?.gf || 0,
-          ga: row.all?.goals?.against || row.overall?.ga || 0,
-          gd: row.goalsDiff || row.overall?.gd || 0,
-          points: row.points || row.overall?.points || 0,
-          ppg: row.overall?.ppg || 0
+          played: row.overall?.played || 0,
+          wins: row.overall?.wins || 0,
+          draws: row.overall?.draws || 0,
+          losses: row.overall?.losses || 0,
+          gf: row.overall?.gf || 0,
+          ga: row.overall?.ga || 0,
+          gd: row.overall?.gd || 0,
+          points: row.overall?.points || 0,
+          ppg: row.overall?.ppg || 0,
+          ...row.overall
         },
         home: {
           played: row.home?.played || 0,
-          wins: row.home?.win || 0,
-          draws: row.home?.draw || 0,
-          losses: row.home?.lose || 0,
-          gf: row.home?.goals?.for || 0,
-          ga: row.home?.goals?.against || 0,
+          wins: row.home?.wins || 0,
+          draws: row.home?.draws || 0,
+          losses: row.home?.losses || 0,
+          gf: row.home?.gf || 0,
+          ga: row.home?.ga || 0,
           gd: row.home?.gd || 0,
           points: row.home?.points || 0,
-          ppg: row.home?.ppg || 0
+          ppg: row.home?.ppg || 0,
+          ...row.home
         },
         away: {
           played: row.away?.played || 0,
-          wins: row.away?.win || 0,
-          draws: row.away?.draw || 0,
-          losses: row.away?.lose || 0,
-          gf: row.away?.goals?.for || 0,
-          ga: row.away?.goals?.against || 0,
+          wins: row.away?.wins || 0,
+          draws: row.away?.draws || 0,
+          losses: row.away?.losses || 0,
+          gf: row.away?.gf || 0,
+          ga: row.away?.ga || 0,
           gd: row.away?.gd || 0,
           points: row.away?.points || 0,
-          ppg: row.away?.ppg || 0
+          ppg: row.away?.ppg || 0,
+          ...row.away
         },
         form: row.form || []
       }));
@@ -340,6 +344,61 @@ export async function leaguesRoutes(server: FastifyInstance) {
     } catch (error) {
       server.log.error(error);
       return reply.status(500).send({ error: 'Internal Server Error' });
+    }
+  });
+  // GET /v1/debug/corners-test?leagueId=X&season=Y  (DEV ONLY - test corner stats coverage)
+  server.get<{ Querystring: { leagueId?: string; season?: string; fixtureId?: string; teamId?: string } }>('/debug/corners-test', async (request) => {
+    const { leagueId = '397', season = '2024', fixtureId, teamId } = request.query;
+
+    // Clear relevant cache entries for fresh data
+    let cleared = 0;
+    for (const key of providerCache.keys()) {
+      if (key.includes(`league=${leagueId}`) || key.includes(`fixture=${fixtureId}`) || (teamId && key.includes(`team=${teamId}`))) {
+        providerCache.delete(key);
+        cleared++;
+      }
+    }
+
+    try {
+      if (teamId) {
+        // Test teams/statistics response structure for corner data
+        const tsData = await fetchFromSportsProvider(`/teams/statistics?league=${leagueId}&season=${season}&team=${teamId}`);
+        const ts = tsData?.response;
+        if (!ts) return { cleared, error: 'No response for team stats' };
+        // Return the full structure keys and corner-related data
+        const topKeys = Object.keys(ts);
+        const cornersObj = ts.corners;
+        const statsArr = ts.statistics || [];
+        const goalsKeys = Object.keys(ts.goals || {});
+        return {
+          cleared, teamId, topKeys, cornersObj, statsArr: statsArr.slice(0, 5), goalsKeys,
+          fixturesPlayed: ts.fixtures?.played
+        };
+      } else if (fixtureId) {
+        // Test a specific fixture's statistics
+        const statsData = await fetchFromSportsProvider(`/fixtures/statistics?fixture=${fixtureId}`);
+        const response = statsData?.response || [];
+        const cornerTypes = response.map((t: any) => ({
+          team: t.team?.name,
+          cornerKicks: t.statistics?.find((s: any) => s.type === 'Corner Kicks')?.value,
+          allTypes: t.statistics?.map((s: any) => s.type)
+        }));
+        return { cleared, fixtureId, cornerData: cornerTypes };
+      } else {
+        // Test fixtures availability for the league
+        const d = await fetchFromSportsProvider(`/fixtures?league=${leagueId}&season=${season}&status=FT`);
+        const fixtures = d?.response || [];
+        const sample = fixtures.slice(0, 3).map((f: any) => ({
+          id: f.fixture?.id,
+          date: f.fixture?.date,
+          status: f.fixture?.status?.short,
+          home: f.teams?.home?.name,
+          away: f.teams?.away?.name
+        }));
+        return { cleared, leagueId, season, fixturesCount: fixtures.length, sample };
+      }
+    } catch (err: any) {
+      return { error: err.message, cleared };
     }
   });
 }

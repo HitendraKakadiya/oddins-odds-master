@@ -17,7 +17,7 @@ export default function Standings({ standings }: StandingsProps) {
   const [scoringFirstMode, setScoringFirstMode] = useState<'scoring' | 'conceding'>('scoring');
 
   const subTabs = [
-    'Table', 'Goals', 'Corners', 'Cards', '1st Half', '2nd Half', 'Over Under Goals', 'Clean Sheet', 'BTTS', 'Match Scoring / Conceding First'
+    'Table', 'Goals', '1st Half', '2nd Half', 'Over Under Goals', 'Clean Sheet', 'BTTS', 'Match Scoring / Conceding First'
   ];
 
   const getFormColor = (result: string) => {
@@ -340,14 +340,14 @@ export default function Standings({ standings }: StandingsProps) {
                     </div>
                   </td>
                   <td className="py-6 text-[13px] font-black text-slate-800 px-4 text-center tabular-nums">{data.played}</td>
-                  <td className="py-6 text-[12px] font-black text-slate-600 px-2 text-center tabular-nums">{corners?.over75 || 0}%</td>
-                  <td className="py-6 text-[12px] font-black text-slate-600 px-2 text-center tabular-nums">{corners?.over85 || 0}%</td>
-                  <td className="py-6 text-[12px] font-black text-slate-600 px-2 text-center tabular-nums">{corners?.over95 || 0}%</td>
-                  <td className="py-6 text-[12px] font-black text-slate-600 px-2 text-center tabular-nums">{corners?.over105 || 0}%</td>
-                  <td className="py-6 text-[12px] font-black text-slate-600 px-2 text-center tabular-nums">{corners?.over115 || 0}%</td>
-                  <td className="py-6 text-[12px] font-black text-slate-600 px-2 text-center tabular-nums">{corners?.over125 || 0}%</td>
-                  <td className="py-6 text-[12px] font-black text-slate-600 px-2 text-center tabular-nums">{corners?.over135 || 0}%</td>
-                  <td className="py-6 text-[13px] font-black text-slate-800 px-4 text-center tabular-nums">{corners?.average?.toFixed(1) || 0}</td>
+                  <td className="py-6 text-[12px] font-black text-slate-600 px-2 text-center tabular-nums">{corners ? `${corners.over75}%` : 'N/A'}</td>
+                  <td className="py-6 text-[12px] font-black text-slate-600 px-2 text-center tabular-nums">{corners ? `${corners.over85}%` : 'N/A'}</td>
+                  <td className="py-6 text-[12px] font-black text-slate-600 px-2 text-center tabular-nums">{corners ? `${corners.over95}%` : 'N/A'}</td>
+                  <td className="py-6 text-[12px] font-black text-slate-600 px-2 text-center tabular-nums">{corners ? `${corners.over105}%` : 'N/A'}</td>
+                  <td className="py-6 text-[12px] font-black text-slate-600 px-2 text-center tabular-nums">{corners ? `${corners.over115}%` : 'N/A'}</td>
+                  <td className="py-6 text-[12px] font-black text-slate-600 px-2 text-center tabular-nums">{corners ? `${corners.over125}%` : 'N/A'}</td>
+                  <td className="py-6 text-[12px] font-black text-slate-600 px-2 text-center tabular-nums">{corners ? `${corners.over135}%` : 'N/A'}</td>
+                  <td className="py-6 text-[13px] font-black text-slate-800 px-4 text-center tabular-nums">{corners ? corners.average?.toFixed(1) : 'N/A'}</td>
                 </tr>
               );
             })}

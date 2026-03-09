@@ -67,7 +67,7 @@ export default function TeamTabsContent({
     }
     const currentParams = searchParams?.toString() || '';
     const params = new URLSearchParams(currentParams);
-    params.set('competition', leagueId.toString());
+    params.set('league', leagueId.toString());
     router.push(`?${params.toString()}`, { scroll: false });
     setIsLeagueMenuOpen(false);
   };
@@ -85,7 +85,7 @@ export default function TeamTabsContent({
       case 'stats':
         return <TeamStatsTab detailedStats={detailedStats} />;
       case 'top-scorers':
-        return <TeamTopPerformersTab topScorers={topScorers} topAssists={topAssists} />;
+        return <TeamTopPerformersTab topScorers={topScorers} topAssists={topAssists} nextMatch={nextMatch} nextMatchDetail={nextMatchDetail} />;
       default:
         return null;
     }

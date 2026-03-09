@@ -68,7 +68,7 @@ export default function LeagueDetailedStatsTable({ title, data, valueLabel }: Le
           </thead>
           <tbody className="divide-y divide-slate-50">
             {data.map((row, idx) => (
-              <tr key={row.team.id} className={`hover:bg-slate-50/50 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-[#FAFBFF]/40'}`}>
+              <tr key={`${row.team.id}-${idx}`} className={`hover:bg-slate-50/50 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-[#FAFBFF]/40'}`}>
                 <td className="px-6 py-5">
                   <span className="text-sm font-black text-slate-400 italic">{row.rank}</span>
                 </td>

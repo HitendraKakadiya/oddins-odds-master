@@ -62,7 +62,7 @@ export default function LeagueStandingsTable({ standings }: LeagueStandingsTable
               {standings.map((row, idx) => {
                 const stats = row[filter];
                 return (
-                  <tr key={row.team.id} className={`hover:bg-slate-50/50 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'}`}>
+                  <tr key={`${row.team.id}-${idx}`} className={`hover:bg-slate-50/50 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'}`}>
                     <td className="px-6 py-4">
                       <span className="text-xs font-black text-slate-400 tabular-nums">{row.rank < 10 ? `0${row.rank}` : row.rank}</span>
                     </td>

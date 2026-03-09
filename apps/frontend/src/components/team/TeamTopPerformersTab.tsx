@@ -13,9 +13,16 @@ interface PlayerStat {
 interface TeamTopPerformersTabProps {
   topScorers?: any[];
   topAssists?: any[];
+  nextMatch?: any;
+  nextMatchDetail?: any;
 }
 
-export default function TeamTopPerformersTab({ topScorers = [], topAssists = [] }: TeamTopPerformersTabProps) {
+export default function TeamTopPerformersTab({ 
+  topScorers = [], 
+  topAssists = [],
+  nextMatch,
+  nextMatchDetail
+}: TeamTopPerformersTabProps) {
   const mappedScorers: PlayerStat[] = topScorers.map((s, idx) => ({
     id: s.player?.id || idx,
     name: s.player?.name || 'Unknown Player',
@@ -31,6 +38,22 @@ export default function TeamTopPerformersTab({ topScorers = [], topAssists = [] 
     description: `Originally from ${s.player?.nationality || 'Unknown'} - ${s.player?.age || '??'} years old`,
     value: s.statistics?.[0]?.goals?.assists || 0
   }));
+
+  const nextMatchInfo = nextMatchDetail?.match || nextMatch;
+  const predictions = nextMatchDetail?.predictions;
+  const winPercent = predictions?.percent;
+
+  const getKickoffStatus = () => {
+    if (!nextMatchInfo?.kickoffAt) return 'Schedule Ready';
+    const date = new Date(nextMatchInfo.kickoffAt);
+    const now = new Date();
+    const diff = date.getTime() - now.getTime();
+    
+    if (diff < 0 && diff > -7200000) return 'Live Now';
+    if (diff < 3600000) return 'Starts Soon';
+    
+    return date.toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  };
 
   const PlayerCard = ({ player }: { player: PlayerStat }) => (
     <div className="flex items-center justify-between p-4 bg-white border border-slate-50 hover:border-brand-emerald/20 hover:bg-slate-50/50 transition-all duration-300 group cursor-default">
@@ -110,26 +133,40 @@ export default function TeamTopPerformersTab({ topScorers = [], topAssists = [] 
         </div>
       </div>
 
-      {/* Additional Stats Placeholders (Matches aesthetic of the screenshot) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-10">
-        <div className="bg-gradient-to-br from-brand-midnight to-slate-800 rounded-[32px] p-8 relative overflow-hidden border border-slate-700 shadow-xl group">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-brand-emerald/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:bg-brand-emerald/20 transition-all duration-700"></div>
-          <h4 className="text-white font-black text-sm uppercase tracking-widest mb-2 relative z-10">Next Match Statistics</h4>
-          <p className="text-slate-400 text-xs font-bold relative z-10">Probabilistic analysis based on recent form and historical data.</p>
-          <div className="mt-8 flex items-center justify-center relative z-10 h-20">
-             <div className="text-brand-emerald/20 font-black text-4xl uppercase tracking-[0.2em]">Live Soon</div>
+      {nextMatchInfo && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-10">
+          <div className="bg-gradient-to-br from-brand-midnight to-slate-800 rounded-[32px] p-8 relative overflow-hidden border border-slate-700 shadow-xl group">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-brand-emerald/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:bg-brand-emerald/20 transition-all duration-700"></div>
+            <h4 className="text-white font-black text-sm uppercase tracking-widest mb-2 relative z-10">Next Match Statistics</h4>
+            <p className="text-slate-400 text-xs font-bold relative z-10">Probabilistic analysis based on recent form and historical data.</p>
+            <div className="mt-8 flex items-center justify-between relative z-10">
+              <div className="flex flex-col">
+                <span className="text-emerald-400 font-black text-2xl tracking-tighter">{winPercent?.home || '33%'}</span>
+                <span className="text-[10px] text-slate-500 font-bold uppercase">Home Win</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <span className="text-slate-300 font-black text-2xl tracking-tighter">{winPercent?.draw || '34%'}</span>
+                <span className="text-[10px] text-slate-500 font-bold uppercase">Draw</span>
+              </div>
+              <div className="flex flex-col items-end">
+                <span className="text-red-400 font-black text-2xl tracking-tighter">{winPercent?.away || '33%'}</span>
+                <span className="text-[10px] text-slate-500 font-bold uppercase">Away Win</span>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div className="bg-gradient-to-br from-brand-emerald/90 to-emerald-800 rounded-[32px] p-8 relative overflow-hidden shadow-xl border border-emerald-400/20 group">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:bg-white/20 transition-all duration-700"></div>
-          <h4 className="text-white font-black text-sm uppercase tracking-widest mb-2 relative z-10">Next Live Streaming</h4>
-          <p className="text-emerald-100/60 text-xs font-bold relative z-10">Coming up next across major sports networks.</p>
-          <div className="mt-8 flex items-center justify-center relative z-10 h-20">
-             <div className="text-white/20 font-black text-4xl uppercase tracking-[0.2em]">Schedule Ready</div>
+          <div className="bg-gradient-to-br from-brand-emerald/90 to-emerald-800 rounded-[32px] p-8 relative overflow-hidden shadow-xl border border-emerald-400/20 group">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:bg-white/20 transition-all duration-700"></div>
+            <h4 className="text-white font-black text-sm uppercase tracking-widest mb-2 relative z-10">Next Live Streaming</h4>
+            <p className="text-emerald-100/60 text-xs font-bold relative z-10">Coming up next across major sports networks.</p>
+            <div className="mt-8 flex items-center justify-center relative z-10 h-20">
+              <div className="text-white font-black text-3xl uppercase tracking-[0.1em] drop-shadow-lg">
+                  {getKickoffStatus()}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

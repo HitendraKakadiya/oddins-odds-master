@@ -5,8 +5,8 @@ import TeamNavigation from '@/components/team/TeamNavigation';
 
 import TeamTabsContent from '@/components/team/TeamTabsContent';
 
-// ISR: Revalidate every 10 minutes
-export const revalidate = 600;
+// ISR: Revalidate - disabled for dev troubleshooting
+export const revalidate = 0;
 
 interface PageProps {
   params: {
@@ -14,7 +14,7 @@ interface PageProps {
     tab?: string;
   };
   searchParams: {
-    competition?: string;
+    league?: string;
   };
 }
 
@@ -24,7 +24,7 @@ export default async function TeamDetailPage({ params, searchParams }: PageProps
   
   try {
     [teamData, featuredTeams] = await Promise.all([
-      getTeamDetail(params.teamSlug, searchParams.competition),
+      getTeamDetail(params.teamSlug, searchParams.league),
       getFeaturedTeams().catch(() => [])
     ]);
   } catch (err) {

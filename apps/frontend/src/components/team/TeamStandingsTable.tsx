@@ -35,6 +35,8 @@ interface TeamStandingsTableProps {
 export default function TeamStandingsTable({ standings, currentTeamId }: TeamStandingsTableProps) {
   const [activeTab, setActiveTab] = useState<'overall' | 'home' | 'away'>('overall');
 
+  console.log(standings, "standings");
+
   return (
     <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden mb-8">
       {/* Table Header/Toolbar */}

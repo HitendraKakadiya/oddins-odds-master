@@ -4,7 +4,11 @@ import React, { useState } from 'react';
 import { StandingsRow } from '@/lib/api/types';
 import LeagueStatsSubNav, { StatsCategory } from './LeagueStatsSubNav';
 import LeagueDetailedStatsTable from './LeagueDetailedStatsTable';
-import LeagueCornersTable from './LeagueCornersTable';
+import LeagueHalfStatsTable from './LeagueHalfStatsTable';
+import LeagueOverUnderTable from './LeagueOverUnderTable';
+import LeagueCleanSheetTable from './LeagueCleanSheetTable';
+import LeagueBTTSTable from './LeagueBTTSTable';
+import LeagueScoringFirstTable from './LeagueScoringFirstTable';
 
 interface LeagueStatsAnalysisProps {
   leagueName: string;
@@ -25,7 +29,7 @@ interface LeagueStatsAnalysisProps {
     consistency: { mostWins: string; fewestWins: string; mostDraws: string; fewestDraws: string; mostLosses: string; fewestLosses: string };
     playerStats: { topScorer: string; topScorerGoals: number; topAssist: string; topAssistCount: number };
   };
-  detailedMode?: 'summary' | 'stats' | 'corners' | 'matches';
+  detailedMode?: 'summary' | 'stats' | 'matches';
   standings?: StandingsRow[];
 }
 
@@ -42,15 +46,19 @@ export default function LeagueStatsAnalysis({ leagueName, season, stats, detaile
 
       if (activeCategory === 'goals') {
         total = row.overall.gf;
-        avgOverall = row.overall.played > 0 ? (row.overall.gf / row.overall.played).toFixed(2) : '0.00';
-        avgHome = row.home.played > 0 ? (row.home.gf / row.home.played).toFixed(2) : '0.00';
-        avgAway = row.away.played > 0 ? (row.away.gf / row.away.played).toFixed(2) : '0.00';
+        avgOverall = row.overall.avgScored || (row.overall.played > 0 ? (row.overall.gf / row.overall.played).toFixed(2) : '0.00');
+        avgHome = row.home.avgScored || (row.home.played > 0 ? (row.home.gf / row.home.played).toFixed(2) : '0.00');
+        avgAway = row.away.avgScored || (row.away.played > 0 ? (row.away.gf / row.away.played).toFixed(2) : '0.00');
+      } else if (activeCategory === 'cards') {
+        total = row.overall.cards?.over35 || 0;
+        avgOverall = `${row.overall.cards?.over35 || 0}%`;
+        avgHome = `${row.home.cards?.over35 || 0}%`;
+        avgAway = `${row.away.cards?.over35 || 0}%`;
       } else {
-        // Fallback for other categories with some random-ish but deterministic data for demo
-        total = Math.floor(row.overall.wins * 1.5);
+        total = row.overall.gf + row.overall.ga;
         avgOverall = (total / (row.overall.played || 1)).toFixed(2);
-        avgHome = (total / (row.home.played * 2 || 1)).toFixed(2);
-        avgAway = (total / (row.away.played * 2 || 1)).toFixed(2);
+        avgHome = ( (row.home.gf + row.home.ga) / (row.home.played || 1)).toFixed(2);
+        avgAway = ( (row.away.gf + row.away.ga) / (row.away.played || 1)).toFixed(2);
       }
 
       return {
@@ -65,30 +73,8 @@ export default function LeagueStatsAnalysis({ leagueName, season, stats, detaile
     }).sort((a, b) => (typeof b.total === 'number' && typeof a.total === 'number' ? b.total - a.total : 0));
   };
 
-  // Specialized mapping for Corners
-  const getCornersData = () => {
-    return (standings || []).map(row => {
-      // Deterministic "random" percentages based on rank and ID for semi-realistic demo data
-      const baseSeed = (row.rank * row.team.id) % 100;
-      
-      return {
-        rank: row.rank,
-        team: row.team,
-        mp: row.overall.played,
-        over75: `${Math.min(100, 80 + (baseSeed % 21))}%`,
-        over85: `${Math.min(100, 70 + (baseSeed % 26))}%`,
-        over95: `${Math.min(100, 60 + (baseSeed % 31))}%`,
-        over105: `${Math.min(100, 50 + (baseSeed % 36))}%`,
-        over115: `${Math.min(100, 40 + (baseSeed % 41))}%`,
-        over125: `${Math.min(100, 30 + (baseSeed % 46))}%`,
-        over135: `${Math.min(100, 20 + (baseSeed % 51))}%`,
-        average: (8 + (baseSeed % 50) / 10).toFixed(2)
-      };
-    }).sort((a, b) => parseFloat(b.average) - parseFloat(a.average));
-  };
-
   const tableTitle = activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1).replace('-', ' ');
-  const valueLabel = activeCategory === 'goals' ? 'Goal Scored' : 'Count';
+  const valueLabel = activeCategory === 'goals' ? 'Goal Scored' : activeCategory === 'cards' ? 'Cards Index' : 'Value';
 
   return (
     <div className="bg-white rounded-[40px] border border-slate-100 shadow-sm p-4 md:p-8 mb-12">
@@ -136,7 +122,7 @@ export default function LeagueStatsAnalysis({ leagueName, season, stats, detaile
               </StatsSection>
             </div>
           </div>
-        ) : detailedMode === 'corners' ? (
+        ) : (
           <div className="animate-in fade-in duration-700">
              <LeagueStatsSubNav 
               activeCategory={activeCategory} 
@@ -144,33 +130,30 @@ export default function LeagueStatsAnalysis({ leagueName, season, stats, detaile
             />
             
             <div className="mt-8">
-              <LeagueCornersTable data={getCornersData()} />
+              {activeCategory === '1st-half' ? (
+                <LeagueHalfStatsTable standings={standings} type="firstHalf" />
+              ) : activeCategory === '2nd-half' ? (
+                <LeagueHalfStatsTable standings={standings} type="secondHalf" />
+              ) : activeCategory === 'over-under' ? (
+                <LeagueOverUnderTable standings={standings} />
+              ) : activeCategory === 'clean-sheet' ? (
+                <LeagueCleanSheetTable standings={standings} />
+              ) : activeCategory === 'btts' ? (
+                <LeagueBTTSTable standings={standings} />
+              ) : activeCategory === 'scoring-first' ? (
+                <LeagueScoringFirstTable standings={standings} />
+              ) : (
+                <LeagueDetailedStatsTable 
+                  title={tableTitle}
+                  data={getTableData()}
+                  valueLabel={valueLabel}
+                />
+              )}
             </div>
 
             <div className="mt-12 bg-[#F8FAFF] rounded-3xl p-8 border border-slate-100 italic">
                <p className="text-slate-500 text-sm font-bold leading-relaxed">
-                 Corner statistics are derived from all completed match data for the current season. Our model analyzes corner frequency to provide better prediction accuracy for corner betting markets.
-               </p>
-            </div>
-          </div>
-        ) : (
-          <div className="animate-in fade-in duration-700">
-            <LeagueStatsSubNav 
-              activeCategory={activeCategory} 
-              onCategoryChange={setActiveCategory} 
-            />
-            
-            <div className="mt-8">
-              <LeagueDetailedStatsTable 
-                title={tableTitle}
-                data={getTableData()}
-                valueLabel={valueLabel}
-              />
-            </div>
-            
-            <div className="mt-12 bg-[#F8FAFF] rounded-3xl p-8 border border-slate-100 italic">
-               <p className="text-slate-500 text-sm font-bold leading-relaxed">
-                 Detailed analysis of {activeCategory} for {leagueName}. Data is recalculated after every match day to provide the most accurate {activeCategory} trends.
+                 {`Detailed analysis of ${activeCategory.replace('-', ' ')} for ${leagueName}. Data is recalculated after every match day to provide the most accurate ${activeCategory.replace('-', ' ')} trends.`}
                </p>
             </div>
           </div>
