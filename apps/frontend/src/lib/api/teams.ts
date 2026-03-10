@@ -7,8 +7,8 @@ import { TeamDetailResponse, TabResponse } from './types';
 import { MOCK_TEAMS, MOCK_TEAM_DETAIL, MOCK_TAB } from './mockTeams';
 
 export async function getFeaturedTeams(): Promise<any[]> {
-    // return fetchAPI<any[]>('/v1/teams/featured');
-    return MOCK_TEAMS;
+    return fetchAPI<any[]>('/v1/teams/featured');
+    // return MOCK_TEAMS;
 }
 
 export async function getTeams(query?: string, leagueSlug?: string, leagueId?: number) {

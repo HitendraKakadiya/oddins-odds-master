@@ -36,10 +36,10 @@ export default function FeaturedTeams({ initialTeams = [] }: { initialTeams?: Te
                   className="flex items-center gap-4 p-4 rounded-2xl bg-white border border-slate-100 hover:border-brand-emerald hover:shadow-md transition-all group cursor-pointer select-none"
                 >
                   <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center text-xs font-black text-slate-400 shadow-sm border border-slate-100 group-hover:bg-brand-emerald/5 transition-colors overflow-hidden">
-                    {displayLogo && displayLogo.startsWith('http') ? (
+                    {displayLogo && displayLogo?.startsWith('http') ? (
                       <img src={displayLogo} alt={team.name} className="w-10 h-10 object-contain p-1" />
                     ) : (
-                      <span className="text-xl">{displayLogo || team.name.substring(0, 2).toUpperCase()}</span>
+                      <span className="text-xl">{displayLogo || team?.name?.substring(0, 2).toUpperCase()}</span>
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
