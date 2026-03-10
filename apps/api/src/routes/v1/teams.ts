@@ -215,7 +215,7 @@ export async function teamsRoutes(server: FastifyInstance) {
         nextMatchDetail
       ] = await Promise.all([
         // A. Team Stats for the league/season
-        requestedLeagueId ? getTeamStatsDirect(liveTeam.id, statsLeagueId, seasonToTry) : Promise.resolve(null),
+        getTeamStatsDirect(liveTeam.id, statsLeagueId, seasonToTry),
 
         // B. Deep Aggregation from recent matches (corners, cards, first goal)
         (async () => {
