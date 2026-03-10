@@ -1,6 +1,5 @@
 import { FastifyInstance } from 'fastify';
 import { getTeamBySlugDirect, getLeaguesBySearchDirect } from '../../lib/sports';
-import { ProviderLeagueResponse } from '../../lib/types';
 
 interface SearchQuery {
   q: string;
@@ -18,7 +17,7 @@ export async function searchRoutes(server: FastifyInstance) {
 
     // 1. Search Live Leagues
     const liveLeagues = await getLeaguesBySearchDirect(searchTerm);
-    const leagues = liveLeagues.map((item: ProviderLeagueResponse) => ({
+    const leagues = liveLeagues.map((item: any) => ({
       id: item.league.id,
       name: item.league.name,
       slug: item.league.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''),
@@ -45,8 +44,8 @@ export async function searchRoutes(server: FastifyInstance) {
 
     // 3. Matches and Articles remain empty or simplified as they require local persistence/caching usually
     // or we'd need another live call which might be slow. The user specifically asked for "team page" data.
-    const matches: unknown[] = [];
-    const articles: unknown[] = [];
+    const matches: any[] = [];
+    const articles: any[] = [];
 
     return {
       q: searchTerm,

@@ -42,11 +42,11 @@ export async function matchesRoutes(server: FastifyInstance) {
       let filteredMatches = allMatches;
 
       if (leagueId) {
-        filteredMatches = filteredMatches.filter((m) => m.league?.id === parseInt(leagueId, 10));
+        filteredMatches = filteredMatches.filter((m: any) => m.league?.id === parseInt(leagueId, 10));
       }
 
       if (market || minOdds) {
-        filteredMatches = filteredMatches.filter((m) => {
+        filteredMatches = filteredMatches.filter((m: any) => {
           const matchOdds = allOdds.find((o: any) => o.matchId === m.matchId);
           if (!matchOdds) return false;
 
@@ -109,7 +109,7 @@ export async function matchesRoutes(server: FastifyInstance) {
       const topMatches = allMatches.slice(0, 5);
 
       // 3. Fetch predictions for each in parallel
-      const tips = await Promise.all(topMatches.map(async (m) => {
+      const tips = await Promise.all(topMatches.map(async (m: any) => {
         try {
           const prediction = await getPredictionsDirect(m.matchId);
           if (!prediction) return null;
@@ -125,10 +125,8 @@ export async function matchesRoutes(server: FastifyInstance) {
             league: {
               name: m.league.name,
               slug: m.league.slug,
-              country: {
-                name: m.league.country?.name,
-                flagUrl: m.league.country?.flagUrl || null
-              }
+              countryName: m.league.country?.name,
+              countryCode: m.league.country?.code,
             },
             homeTeam: {
               name: m.homeTeam.name,

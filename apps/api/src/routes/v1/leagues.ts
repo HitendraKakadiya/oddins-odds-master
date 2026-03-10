@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { getLeaguesDirect, getLeagueStandingsDirect, getLeagueFixturesDirect, getTopScorersDirect, getTopAssistsDirect, calculateVirtualStandings, fetchFromSportsProvider, providerCache } from '../../lib/sports';
-import { League, InternalMatch, ProviderLeagueResponse, StandingsRow } from '../../lib/types';
+import { getFeaturedLeagueIds } from '../../config/leagues';
 
 interface LeagueDetailParams {
   countrySlug: string;
@@ -30,7 +30,7 @@ export async function leaguesRoutes(server: FastifyInstance) {
     const allLeagues = leaguesFromDb || [];
 
     // Group by country
-    const groupedMap: Map<string, { country: { name: string; code: string | null; flagUrl: string | null }; leagues: { id: number; name: string; slug: string; logoUrl: string | null; type: string }[] }> = new Map();
+    const groupedMap: Map<string, { country: { name: string; code: string; flagUrl: string | null }; leagues: { id: number; name: string; slug: string; logoUrl: string | null; type: string }[] }> = new Map();
 
     for (const item of allLeagues) {
       const countryKey = item.country.name;
@@ -79,20 +79,19 @@ export async function leaguesRoutes(server: FastifyInstance) {
     const topCountries = ['England', 'Spain', 'Germany', 'Italy', 'France', 'Brazil', 'Argentina', 'Portugal', 'Netherlands', 'World'];
 
     const currentYear = new Date().getFullYear();
-    const filtered = allLeagues.filter((item: ProviderLeagueResponse) => {
+    const filtered = allLeagues.filter((item: any) => {
       // Must have at least one season from last 2 years (roughly) to be considered 'active with data'
-      const hasRecentData = (item.seasons || []).some((s) => s.year >= currentYear - 1);
+      const hasRecentData = item.seasons.some((s: any) => s.year >= currentYear - 1);
       const isMajorCountry = topCountries.includes(item.country.name);
       const isLigAndNotCup = item.league.type === 'League' || (item.country.name === 'World' && item.league.name.includes('Champions League'));
 
       return hasRecentData && isMajorCountry && isLigAndNotCup;
     });
 
-    const sorted = filtered.sort((a, b) => {
-      const aCountry = a.country.name;
-      const bCountry = b.country.name;
-      const aIdx = topCountries.indexOf(aCountry);
-      const bIdx = topCountries.indexOf(bCountry);
+    // Sort by country importance and then league name
+    const sorted = filtered.sort((a: any, b: any) => {
+      const aIdx = topCountries.indexOf(a.country.name);
+      const bIdx = topCountries.indexOf(b.country.name);
       if (aIdx !== bIdx) return aIdx - bIdx;
       return a.league.name.localeCompare(b.league.name);
     });
@@ -101,22 +100,17 @@ export async function leaguesRoutes(server: FastifyInstance) {
     const start = (pageNum - 1) * limitNum;
     const paginated = sorted.slice(start, start + limitNum);
 
-    return paginated.map((item: ProviderLeagueResponse) => {
-      const cName = item.country.name;
-      const cCode = item.country.code;
-      const cFlag = item.country.flag;
-      return {
-        id: item.league.id,
-        name: item.league.name,
-        slug: slugify(item.league.name),
-        logoUrl: item.league.logo,
-        country: {
-          name: cName,
-          code: cCode,
-          flagUrl: cFlag
-        }
-      };
-    });
+    return paginated.map((item: any) => ({
+      id: item.league.id,
+      name: item.league.name,
+      slug: slugify(item.league.name),
+      logoUrl: item.league.logo,
+      country: {
+        name: item.country.name,
+        code: item.country.code,
+        flagUrl: item.country.flag
+      }
+    }));
   });
 
   // GET /v1/league/:countrySlug/:leagueSlug
@@ -126,7 +120,7 @@ export async function leaguesRoutes(server: FastifyInstance) {
     try {
       // Resolve leagueId from slug
       const allLeagues = await getLeaguesDirect() || [];
-      const found = allLeagues.find((item: ProviderLeagueResponse) =>
+      const found = allLeagues.find((item: any) =>
         slugify(item.league.name) === leagueSlug &&
         slugify(item.country.name) === countrySlug
       );
@@ -140,13 +134,13 @@ export async function leaguesRoutes(server: FastifyInstance) {
 
       // Fetch data in parallel with season fallback for standings
       let standingsRaw: any[] = [];
-      let fixtures: InternalMatch[] = [];
-      let results: InternalMatch[] = [];
+      let fixtures: any[] = [];
+      let results: any[] = [];
       let topScorers: any[] = [];
       let topAssists: any[] = [];
 
       const availableSeasons = (found.seasons || [])
-        .map((s: { year: number }) => s.year)
+        .map((s: any) => s.year)
         .sort((a: number, b: number) => b - a);
 
 
@@ -183,46 +177,55 @@ export async function leaguesRoutes(server: FastifyInstance) {
           standingsRaw = calculateVirtualStandings(results);
         }
       } catch (err) {
-        server.log.warn(`Error fetching league data for ${leagueId}: ${(err as Error).message} `);
+        server.log.warn(`Error fetching league data for ${leagueId}: ${(err as any).message}`);
       }
 
-      const standings = (standingsRaw || []).map((row: StandingsRow) => ({
+      const standings = (standingsRaw || []).map((row: any) => ({
         rank: row.rank,
         group: row.group,
         team: {
           id: row.team?.id,
           name: row.team?.name,
           slug: row.team?.name ? slugify(row.team.name) : '',
-          logoUrl: row.team?.logo,
+          logoUrl: row.team?.logo || row.team?.logoUrl,
         },
         overall: {
-          played: row.all?.played || 0,
-          wins: row.all?.win || 0,
-          draws: row.all?.draw || 0,
-          losses: row.all?.lose || 0,
-          gf: row.all?.goals?.for || 0,
-          ga: row.all?.goals?.against || 0,
-          gd: row.goalsDiff || 0,
-          points: row.points || 0,
-          ppg: (row.all?.played || 0) > 0 ? parseFloat((row.points / row.all.played).toFixed(2)) : 0
+          played: row.overall?.played || 0,
+          wins: row.overall?.wins || 0,
+          draws: row.overall?.draws || 0,
+          losses: row.overall?.losses || 0,
+          gf: row.overall?.gf || 0,
+          ga: row.overall?.ga || 0,
+          gd: row.overall?.gd || 0,
+          points: row.overall?.points || 0,
+          ppg: row.overall?.ppg || 0,
+          ...row.overall
         },
         home: {
           played: row.home?.played || 0,
-          wins: row.home?.win || 0,
-          draws: row.home?.draw || 0,
-          losses: row.home?.lose || 0,
-          gf: row.home?.goals?.for || 0,
-          ga: row.home?.goals?.against || 0,
+          wins: row.home?.wins || 0,
+          draws: row.home?.draws || 0,
+          losses: row.home?.losses || 0,
+          gf: row.home?.gf || 0,
+          ga: row.home?.ga || 0,
+          gd: row.home?.gd || 0,
+          points: row.home?.points || 0,
+          ppg: row.home?.ppg || 0,
+          ...row.home
         },
         away: {
           played: row.away?.played || 0,
-          wins: row.away?.win || 0,
-          draws: row.away?.draw || 0,
-          losses: row.away?.lose || 0,
-          gf: row.away?.goals?.for || 0,
-          ga: row.away?.goals?.against || 0,
+          wins: row.away?.wins || 0,
+          draws: row.away?.draws || 0,
+          losses: row.away?.losses || 0,
+          gf: row.away?.gf || 0,
+          ga: row.away?.ga || 0,
+          gd: row.away?.gd || 0,
+          points: row.away?.points || 0,
+          ppg: row.away?.ppg || 0,
+          ...row.away
         },
-        form: row.form ? row.form.split('') : []
+        form: row.form || []
       }));
 
       // Compute stats from standings
@@ -329,7 +332,7 @@ export async function leaguesRoutes(server: FastifyInstance) {
         statsSummary,
         faq: [
           {
-            q: `When does the ${found.league.name} season start ? `,
+            q: `When does the ${found.league.name} season start?`,
             a: `The ${found.league.name} season typically runs during the ${currentSeason} calendar period.`,
           },
           {
@@ -350,7 +353,7 @@ export async function leaguesRoutes(server: FastifyInstance) {
     // Clear relevant cache entries for fresh data
     let cleared = 0;
     for (const key of providerCache.keys()) {
-      if (key.includes(`league = ${leagueId} `) || key.includes(`fixture = ${fixtureId} `) || (teamId && key.includes(`team = ${teamId} `))) {
+      if (key.includes(`league=${leagueId}`) || key.includes(`fixture=${fixtureId}`) || (teamId && key.includes(`team=${teamId}`))) {
         providerCache.delete(key);
         cleared++;
       }
@@ -359,7 +362,7 @@ export async function leaguesRoutes(server: FastifyInstance) {
     try {
       if (teamId) {
         // Test teams/statistics response structure for corner data
-        const tsData = await fetchFromSportsProvider<any>(`/ teams / statistics ? league = ${leagueId}& season=${season}& team=${teamId} `);
+        const tsData = await fetchFromSportsProvider(`/teams/statistics?league=${leagueId}&season=${season}&team=${teamId}`);
         const ts = tsData?.response;
         if (!ts) return { cleared, error: 'No response for team stats' };
         // Return the full structure keys and corner-related data
@@ -373,7 +376,7 @@ export async function leaguesRoutes(server: FastifyInstance) {
         };
       } else if (fixtureId) {
         // Test a specific fixture's statistics
-        const statsData = await fetchFromSportsProvider<any>(`/ fixtures / statistics ? fixture = ${fixtureId} `);
+        const statsData = await fetchFromSportsProvider(`/fixtures/statistics?fixture=${fixtureId}`);
         const response = statsData?.response || [];
         const cornerTypes = response.map((t: any) => ({
           team: t.team?.name,
@@ -383,7 +386,7 @@ export async function leaguesRoutes(server: FastifyInstance) {
         return { cleared, fixtureId, cornerData: cornerTypes };
       } else {
         // Test fixtures availability for the league
-        const d = await fetchFromSportsProvider<any>(`/ fixtures ? league = ${leagueId}& season=${season}& status=FT`);
+        const d = await fetchFromSportsProvider(`/fixtures?league=${leagueId}&season=${season}&status=FT`);
         const fixtures = d?.response || [];
         const sample = fixtures.slice(0, 3).map((f: any) => ({
           id: f.fixture?.id,
@@ -394,8 +397,8 @@ export async function leaguesRoutes(server: FastifyInstance) {
         }));
         return { cleared, leagueId, season, fixturesCount: fixtures.length, sample };
       }
-    } catch (err) {
-      return { error: (err as Error).message, cleared };
+    } catch (err: any) {
+      return { error: err.message, cleared };
     }
   });
 }
