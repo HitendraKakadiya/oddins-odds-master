@@ -76,12 +76,33 @@ export async function matchesRoutes(server: FastifyInstance) {
       const total = filteredMatches.length;
       const paginatedMatches = filteredMatches.slice(offset, offset + pageSizeNum);
 
+      // Fetch predictions for the paginated matches
+      const paginatedMatchesWithPredictions = await Promise.all(paginatedMatches.map(async (m: any) => {
+        try {
+          const realPred = await getPredictionsDirect(m.matchId);
+          if (realPred) {
+            return {
+              ...m,
+              featuredTip: {
+                id: m.matchId,
+                title: realPred.selection || 'Expert Pick',
+                isPremium: false,
+                confidence: realPred.probabilities?.home ? parseInt(realPred.probabilities.home) : null
+              }
+            };
+          }
+        } catch (err) {
+          console.warn(`Failed to fetch prediction for match ${m.matchId}`);
+        }
+        return m;
+      }));
+
       return {
         date: targetDate,
         page: pageNum,
         pageSize: pageSizeNum,
         total,
-        matches: paginatedMatches,
+        matches: paginatedMatchesWithPredictions,
       };
     } catch (err) {
       console.error('Failed to fetch live today matches:', err);

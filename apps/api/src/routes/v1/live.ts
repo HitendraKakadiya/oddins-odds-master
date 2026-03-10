@@ -130,12 +130,33 @@ export async function liveRoutes(server: FastifyInstance) {
 
         const pagedMatches = filteredMatches.slice(offset, offset + pageSizeNum);
 
+        // Fetch predictions for the paginated matches
+        const pagedMatchesWithPredictions = await Promise.all(pagedMatches.map(async (m) => {
+            try {
+                const realPred = await getPredictionsDirect(m.matchId);
+                if (realPred) {
+                    return {
+                        ...m,
+                        featuredTip: {
+                            id: m.matchId,
+                            title: realPred.selection || 'Expert Pick',
+                            isPremium: false,
+                            confidence: realPred.probabilities?.home ? parseInt(realPred.probabilities.home) : null
+                        }
+                    };
+                }
+            } catch (err) {
+                console.warn(`Failed to fetch prediction for match ${m.matchId}`);
+            }
+            return m;
+        }));
+
         return {
             date: targetDate,
             page: pageNum,
             pageSize: pageSizeNum,
             total: filteredMatches.length,
-            matches: pagedMatches,
+            matches: pagedMatchesWithPredictions,
         };
     });
 
