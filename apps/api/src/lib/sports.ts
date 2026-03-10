@@ -247,14 +247,23 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
 
         const getFormFromMatches = (matches: any[], limit: number = 5) => {
             return (matches || []).slice(0, limit).map(m => {
-                const teamIdNum = Number(m.homeTeam?.id);
-                const isHome = teamIdNum === teamId;
+                const homeTeamId = Number(m.homeTeam?.id);
+                const awayTeamId = Number(m.awayTeam?.id);
+                const isHome = homeTeamId === teamId;
+                const isAway = awayTeamId === teamId;
                 const scoreHome = m.score?.home ?? (m as any).goals?.home;
                 const scoreAway = m.score?.away ?? (m as any).goals?.away;
+
                 if (scoreHome === undefined || scoreAway === undefined || scoreHome === null || scoreAway === null) return '-';
                 if (scoreHome === scoreAway) return 'D';
-                if (isHome) return scoreHome > scoreAway ? 'W' : 'L';
-                return scoreAway > scoreHome ? 'W' : 'L';
+
+                if (isHome) {
+                    return scoreHome > scoreAway ? 'W' : 'L';
+                } else if (isAway) {
+                    return scoreAway > scoreHome ? 'W' : 'L';
+                }
+
+                return '-';
             });
         };
 
