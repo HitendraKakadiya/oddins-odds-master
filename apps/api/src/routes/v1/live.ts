@@ -1,6 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import { getPool } from '../../db/pool';
 import { getLiveMatchesDirect, getPredictionsDirect, getFullPredictionDetailDirect } from '../../lib/sports';
+import { InternalMatch } from '../../lib/types';
 
 function slugify(text: string): string {
     return text
@@ -14,8 +15,8 @@ function slugify(text: string): string {
 }
 
 // Safe hybrid fetcher: tries provider first, then DB
-async function getHybridMatches(targetDate: string): Promise<{ matches: any[], total: number }> {
-    let matches: any[] = [];
+async function getHybridMatches(targetDate: string): Promise<{ matches: InternalMatch[], total: number }> {
+    let matches: InternalMatch[] = [];
     let total = 0;
 
     // 1. Try Live Provider
@@ -25,7 +26,7 @@ async function getHybridMatches(targetDate: string): Promise<{ matches: any[], t
             return { matches: liveMatches, total: liveMatches.length };
         }
     } catch (err) {
-        console.warn(`Live provider failed for ${targetDate}:`, (err as any).message);
+        console.warn(`Live provider failed for ${targetDate}:`, (err as Error).message);
     }
 
     // 2. Fallback to DB
@@ -74,14 +75,17 @@ async function getHybridMatches(targetDate: string): Promise<{ matches: any[], t
                             slug: slugify(row.leagueName),
                             logoUrl: row.leagueLogo,
                             type: row.leagueType,
+                            season: new Date(row.kickoffAt).getFullYear(),
                             country: { name: row.countryName, code: row.countryCode, flagUrl: row.countryFlag }
                         },
                         homeTeam: {
+                            id: 0, // Placeholder for DB fallback
                             name: row.homeTeamName,
                             slug: slugify(row.homeTeamName),
                             logoUrl: row.homeTeamLogo
                         },
                         awayTeam: {
+                            id: 0, // Placeholder for DB fallback
                             name: row.awayTeamName,
                             slug: slugify(row.awayTeamName),
                             logoUrl: row.awayTeamLogo
@@ -94,7 +98,7 @@ async function getHybridMatches(targetDate: string): Promise<{ matches: any[], t
             }
         }
     } catch (dbErr) {
-        console.warn(`DB fallback failed for ${targetDate}:`, (dbErr as any).message);
+        console.warn(`DB fallback failed for ${targetDate}:`, (dbErr as Error).message);
     }
 
     return { matches, total };
@@ -128,7 +132,39 @@ export async function liveRoutes(server: FastifyInstance) {
             // For now, we align the params but filtering might only be effective for DB-sourced matches.
         }
 
-        const pagedMatches = filteredMatches.slice(offset, offset + pageSizeNum);
+        const pagedMatchesRaw = filteredMatches.slice(offset, offset + pageSizeNum);
+
+        // 4. Populate Predictions / Expert Picks
+        const pagedMatches = await Promise.all(pagedMatchesRaw.map(async (m) => {
+            try {
+                const realPred = await getPredictionsDirect(m.matchId);
+                if (realPred) {
+                    return {
+                        ...m,
+                        featuredTip: {
+                            id: m.matchId,
+                            title: realPred.selection,
+                            isPremium: false,
+                            confidence: 0.85
+                        }
+                    };
+                }
+            } catch (err) {
+                // Silently fail and use trend fallback
+            }
+
+            // Fallback: Expert Pick Trend
+            const prediction = (m.score?.home ?? 0) >= (m.score?.away ?? 0) ? 'Home Win (Trend)' : 'Away Win (Trend)';
+            return {
+                ...m,
+                featuredTip: {
+                    id: m.matchId,
+                    title: prediction,
+                    isPremium: false,
+                    confidence: 0.5
+                }
+            };
+        }));
 
         return {
             date: targetDate,
@@ -150,16 +186,19 @@ export async function liveRoutes(server: FastifyInstance) {
         const { matches } = await getHybridMatches(targetDate);
 
         // Group by country
-        const countryGroups: Record<string, any> = {};
+        const countryGroups: Record<string, {
+            country: { name: string; code: string; flagUrl: string | null };
+            leagues: Map<number, { id: number; name: string; slug: string; logoUrl: string; type: string }>;
+        }> = {};
 
-        matches.forEach((m: any) => {
+        matches.forEach((m: InternalMatch) => {
             const cName = m.league.country.name || 'International';
             if (!countryGroups[cName]) {
                 countryGroups[cName] = {
                     country: {
                         name: cName,
                         code: m.league.country.code || 'UN',
-                        flagUrl: m.league.country.flagUrl
+                        flagUrl: m.league.country.flagUrl || null
                     },
                     leagues: new Map()
                 };
@@ -223,7 +262,7 @@ export async function liveRoutes(server: FastifyInstance) {
                 // Fallback clearly marked as live trend
                 return {
                     ...m,
-                    selection: m.score.home >= m.score.away ? 'Home Win (Trend)' : 'Away Win (Trend)',
+                    selection: (m.score?.home ?? 0) >= (m.score?.away ?? 0) ? 'Home Win (Trend)' : 'Away Win (Trend)',
                     probability: '50%+',
                     confidence: 'Low',
                     shortExplanation: 'Live trend analysis based on current match status.'
@@ -249,7 +288,7 @@ export async function liveRoutes(server: FastifyInstance) {
         const targetDate = date || new Date().toISOString().split('T')[0];
 
         const { matches } = await getHybridMatches(targetDate);
-        const liveStreams = matches.filter((m: any) => m.status === '1H' || m.status === '2H' || m.status === 'HT').map((m: any) => ({
+        const liveStreams = matches.filter((m: InternalMatch) => m.status === '1H' || m.status === '2H' || m.status === 'HT').map((m: InternalMatch) => ({
             matchId: m.matchId,
             kickoffAt: m.kickoffAt,
             homeTeam: m.homeTeam,

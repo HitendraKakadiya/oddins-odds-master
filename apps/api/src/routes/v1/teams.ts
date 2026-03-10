@@ -8,7 +8,6 @@ import {
   getLeagueStandingsDirect,
   getTeamSquadDirect,
   getTeamsByLeagueDirect,
-  getPopularTeamsDirect,
   getTopScorersDirect,
   getTopAssistsDirect,
   getTeamLeaguesDirect,
@@ -18,7 +17,7 @@ import {
   getLeagueFixturesDirect,
   calculateVirtualStandings
 } from '../../lib/sports';
-import { FEATURED_LEAGUES } from '../../config/leagues';
+import { InternalMatch, ProviderLeagueResponse } from '../../lib/types';
 
 interface TeamsQuery {
   query?: string;
@@ -43,12 +42,12 @@ export async function teamsRoutes(server: FastifyInstance) {
   // GET /v1/teams/featured
   server.get('/teams/featured', async () => {
     // Strategy: Fetch top leagues dynamically and get their first couple of teams
-    let allLeagues = await getLeaguesDirect() || [];
+    const allLeagues = await getLeaguesDirect() || [];
     const topCountries = ['England', 'Spain', 'Germany', 'Italy', 'France'];
     const fallbackMajorIds = [39, 140, 78, 135, 61]; // PL, La Liga, Bundesliga, Serie A, Ligue 1
 
-    let topLeagues = allLeagues.filter((item: any) => {
-      const isCurrent = item.seasons.some((s: any) => s.current === true);
+    const topLeagues = allLeagues.filter((item: ProviderLeagueResponse) => {
+      const isCurrent = (item.seasons || []).some((s) => s.current === true);
       const isTop5 = topCountries.includes(item.country.name);
       return isCurrent && isTop5 && item.league.type === 'League';
     }).slice(0, 5);
@@ -116,16 +115,16 @@ export async function teamsRoutes(server: FastifyInstance) {
       }
 
       // 2. Fetch Initial Data (Leagues & Initial Matches)
-      let competitions: any[] = await getTeamLeaguesDirect(liveTeam.id).catch(() => []);
+      const competitions: ProviderLeagueResponse[] = await getTeamLeaguesDirect(liveTeam.id).catch(() => []);
       let statsLeagueId = requestedLeagueId;
-      let nextMatches: any[] = [];
-      let recentMatches: any[] = [];
+      let nextMatches: InternalMatch[] = [];
+      let recentMatches: InternalMatch[] = [];
       let detectedSeason = null;
 
       if (statsLeagueId) {
         // If league is requested, find its current season from the leagues list
-        const comp = competitions.find((c: any) => c.id === statsLeagueId);
-        detectedSeason = comp?.season;
+        const comp = competitions.find((c: ProviderLeagueResponse) => c.league.id === statsLeagueId);
+        detectedSeason = comp?.seasons.find(s => s.current)?.year;
 
         // Fetch matches for this specific league (cross-season for better data in cups)
         [nextMatches, recentMatches] = await Promise.all([
@@ -140,7 +139,7 @@ export async function teamsRoutes(server: FastifyInstance) {
         ]);
 
         const leagueCounts = new Map<number, number>();
-        recentMatches.forEach((m: any) => {
+        recentMatches.forEach((m: InternalMatch) => {
           if (m.league?.id) {
             leagueCounts.set(m.league.id, (leagueCounts.get(m.league.id) || 0) + 1);
           }
@@ -148,12 +147,12 @@ export async function teamsRoutes(server: FastifyInstance) {
         statsLeagueId = [...leagueCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || 39;
 
         // Detect season from these matches for the detected league
-        const targetMatches = [...recentMatches, ...nextMatches].filter((m: any) => m.league?.id === statsLeagueId);
+        const targetMatches = [...recentMatches, ...nextMatches].filter((m: InternalMatch) => m.league?.id === statsLeagueId);
         if (targetMatches.length > 0) {
           detectedSeason = targetMatches[0].league?.season;
         } else {
           // Fallback to competitions list for detected league
-          detectedSeason = competitions.find((c: any) => c.id === statsLeagueId)?.season;
+          detectedSeason = competitions.find((c: ProviderLeagueResponse) => c.league.id === statsLeagueId)?.seasons.find(s => s.current)?.year;
         }
       }
 
@@ -174,6 +173,7 @@ export async function teamsRoutes(server: FastifyInstance) {
         failedToScoreRate: 0,
         homeFailedToScoreRate: 0,
         awayFailedToScoreRate: 0,
+        winRate: "0%",
         ppg: 0,
         goalsScoredAvg: 0,
         goalsConcededAvg: 0,
@@ -185,10 +185,10 @@ export async function teamsRoutes(server: FastifyInstance) {
         cardsAgainstAvg: 0
       });
 
-      let statsSummary: any = createDefaultStats();
+      let statsSummary = createDefaultStats();
       let liveStats: any = null;
 
-      let aggregatedCorners: any = {
+      let aggregatedCorners: Record<string, any> = {
         average: { overall: 0, home: 0, away: 0 },
         over_7_5: { overall: "0%", home: "0%", away: "0%" },
         over_8_5: { overall: "0%", home: "0%", away: "0%" },
@@ -199,7 +199,7 @@ export async function teamsRoutes(server: FastifyInstance) {
         over_13_5: { overall: "0%", home: "0%", away: "0%" }
       };
 
-      let firstGoalStats: any = {
+      const firstGoalStats = {
         scoring_first: { overall: 0, home: 0, away: 0 },
         conceded_first: { overall: 0, home: 0, away: 0 }
       };
@@ -299,7 +299,8 @@ export async function teamsRoutes(server: FastifyInstance) {
           failedToScoreRate: liveStats.fixtures.played?.total > 0 && liveStats.failed_to_score ? Math.round((liveStats.failed_to_score.total / liveStats.fixtures.played.total) * 100) : 0,
           homeFailedToScoreRate: liveStats.fixtures.played?.home > 0 && liveStats.failed_to_score ? Math.round((liveStats.failed_to_score.home / liveStats.fixtures.played.home) * 100) : 0,
           awayFailedToScoreRate: liveStats.fixtures.played?.away > 0 && liveStats.failed_to_score ? Math.round((liveStats.failed_to_score.away / liveStats.fixtures.played.away) * 100) : 0,
-          ppg: liveStats.fixtures.played?.total > 0 ? parseFloat((((liveStats.fixtures.wins?.total || 0) * 3 + (liveStats.fixtures.draws?.total || 0)) / liveStats.fixtures.played.total).toFixed(2)) : 0,
+          winRate: (liveStats.fixtures.played?.total || 0) > 0 ? `${Math.round(((liveStats.fixtures.wins?.total || 0) / (liveStats.fixtures.played?.total || 1)) * 100)}%` : "0%",
+          ppg: 0, // Not available directly in live stats
           goalsScoredAvg: getAvg(liveStats.goals?.for?.average?.total),
           goalsConcededAvg: getAvg(liveStats.goals?.against?.average?.total),
           cornersAvg: 0,
@@ -314,9 +315,14 @@ export async function teamsRoutes(server: FastifyInstance) {
       // Process Aggregation
       if (aggregationData) {
         const { finishedMatches, matchesStats, matchesEvents } = aggregationData;
+        const mTotals = { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 };
+        const hTotals = { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 };
+        const aTotals = { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 };
+
         let totals = { overall: 0, home: 0, away: 0 };
         let counts = { overall: 0, home: 0, away: 0 };
-        let overs = {
+
+        const overs: Record<number, Record<string, number>> = {
           7.5: { overall: 0, home: 0, away: 0 },
           8.5: { overall: 0, home: 0, away: 0 },
           9.5: { overall: 0, home: 0, away: 0 },
@@ -332,8 +338,8 @@ export async function teamsRoutes(server: FastifyInstance) {
           const splitKey = isTargetHome ? 'home' : 'away';
 
           if (matchStat && matchStat.length >= 2) {
-            const homeCorners = parseInt(matchStat.find((s: any) => s.team.id === match.homeTeam.id)?.statistics?.find((st: any) => st.type === 'Corner Kicks')?.value || '0', 10);
-            const awayCorners = parseInt(matchStat.find((s: any) => s.team.id === match.awayTeam.id)?.statistics?.find((st: any) => st.type === 'Corner Kicks')?.value || '0', 10);
+            const homeCorners = parseInt((matchStat as any[]).find((s: any) => s.team.id === match.homeTeam.id)?.statistics?.find((st: any) => st.type === 'Corner Kicks')?.value || '0', 10);
+            const awayCorners = parseInt((matchStat as any[]).find((s: any) => s.team.id === match.awayTeam.id)?.statistics?.find((st: any) => st.type === 'Corner Kicks')?.value || '0', 10);
             const totalMatchCorners = homeCorners + awayCorners;
             totals.overall += totalMatchCorners;
             counts.overall++;
@@ -349,7 +355,7 @@ export async function teamsRoutes(server: FastifyInstance) {
 
           const events = matchesEvents[index];
           if (events && Array.isArray(events)) {
-            const firstGoal = events.find((e: any) => e.type === 'Goal');
+            const firstGoal = (events as any[]).find((e: any) => e.type === 'Goal');
             if (firstGoal) {
               const scorerTeamId = firstGoal.team?.id;
               if (scorerTeamId === liveTeam.id) {
@@ -412,9 +418,9 @@ export async function teamsRoutes(server: FastifyInstance) {
         statsSummary.cornersAvg = aggregatedCorners.average.overall;
 
         if (statsSummary.overall.played === 0 && finishedMatches.length > 0) {
-          let mTotals = { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 };
-          let hTotals = { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 };
-          let aTotals = { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 };
+          const mTotals = { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 };
+          const hTotals = { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 };
+          const aTotals = { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 };
 
           finishedMatches.forEach((match: any) => {
             const isHome = match.homeTeam.id === liveTeam.id;
@@ -433,7 +439,7 @@ export async function teamsRoutes(server: FastifyInstance) {
           statsSummary.overall = mTotals;
           statsSummary.home = hTotals;
           statsSummary.away = aTotals;
-          statsSummary.winRate = Math.round((mTotals.wins / mTotals.played) * 100);
+          statsSummary.winRate = `${Math.round((mTotals.wins / Math.max(1, mTotals.played)) * 100)}%`;
           statsSummary.goalsScoredAvg = parseFloat((mTotals.gf / mTotals.played).toFixed(2));
           statsSummary.goalsConcededAvg = parseFloat((mTotals.ga / mTotals.played).toFixed(2));
         }
@@ -469,14 +475,6 @@ export async function teamsRoutes(server: FastifyInstance) {
           return result;
         };
 
-        const estimateOver = (avg: any, threshold: number) => {
-          const a = parseFloat(avg) || 0;
-          if (a === 0) return "0%";
-          const diff = a - threshold;
-          let prob = 0.5 + (diff * 0.12);
-          prob = Math.max(0.05, Math.min(0.95, prob));
-          return `${Math.round(prob * 100)}%`;
-        };
 
         const getMinuteSum = (minuteObj: any, startInd: number, endInd: number) => {
           if (!minuteObj) return 0;
@@ -571,18 +569,16 @@ export async function teamsRoutes(server: FastifyInstance) {
         standings: standings || [],
         squad: squad || [],
         topScorers: (topScorers || [])
-          .filter((s: any) => s.statistics?.[0]?.team?.id === liveTeam.id)
+          .filter((s: any) => (s as Record<string, any>).statistics?.[0]?.team?.id === liveTeam.id)
           .map((s: any) => ({
-            ...s,
-            // Ensure statistics is an array as expected by the frontend mapping
-            statistics: Array.isArray(s.statistics) ? s.statistics : [s.statistics]
+            ...(s as Record<string, any>),
+            statistics: Array.isArray((s as Record<string, any>).statistics) ? (s as Record<string, any>).statistics : [(s as Record<string, any>).statistics]
           })),
         topAssists: (topAssists || [])
-          .filter((s: any) => s.statistics?.[0]?.team?.id === liveTeam.id)
+          .filter((s: any) => (s as Record<string, any>).statistics?.[0]?.team?.id === liveTeam.id)
           .map((s: any) => ({
-            ...s,
-            // Ensure statistics is an array as expected by the frontend mapping
-            statistics: Array.isArray(s.statistics) ? s.statistics : [s.statistics]
+            ...(s as Record<string, any>),
+            statistics: Array.isArray((s as Record<string, any>).statistics) ? (s as Record<string, any>).statistics : [(s as Record<string, any>).statistics]
           })),
         detailedStats: transformDetailedStats(liveStats),
         activeLeagueId: statsLeagueId
@@ -603,7 +599,7 @@ export async function teamsRoutes(server: FastifyInstance) {
         return reply.status(404).send({ error: 'Team not found' });
       }
 
-      let items: any[] = [];
+      let items: InternalMatch[] = [];
 
       switch (tab) {
         case 'fixtures':
