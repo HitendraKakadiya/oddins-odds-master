@@ -10,11 +10,14 @@ import {
     ApiLeague,
     ApiFixture,
     ApiLeagueRecord,
-    ApiTeams
+    ApiTeams,
+    ApiStanding,
+    ApiStandingStats
 } from './provider-types';
 
 const API_FOOTBALL_KEY = process.env.SPORTS_PROVIDER_API_KEY;
-const API_FOOTBALL_BASE_URL = 'https://v3.football.api-sports.io';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const API_FOOTBALL_BASE_URL: any = 'https://v3.football.api-sports.io';
 
 const providerCache = new Map<string, { data: unknown, timestamp: number }>();
 export { providerCache };
@@ -61,10 +64,9 @@ function generateTeamSlug(id: number, name: string) {
  */
 export async function getLiveMatchesDirect(date: string) {
     const data: ApiProviderResponse<ApiFixtureResponse> = await fetchFromSportsProvider(`/fixtures?date=${date}`);
-
     if (!data.response) return [];
-
-    return data.response.map((item) => mapMatch(item.fixture, item.league, item.teams, item));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return data.response.map((item) => mapMatch(item.fixture as any, item.league as any, item.teams as any, item));
 }
 
 /**
@@ -174,7 +176,7 @@ export async function getPredictionsDirect(fixtureId: number) {
  */
 export async function getMatchEventsDirect(fixtureId: number) {
     try {
-        const data: ApiProviderResponse<any> = await fetchFromSportsProvider(`/fixtures/events?fixture=${fixtureId}`);
+        const data = await fetchFromSportsProvider<ApiProviderResponse<unknown>>(`/fixtures/events?fixture=${fixtureId}`);
         return data.response || [];
     } catch (err) {
         console.warn(`Failed to fetch events for fixture ${fixtureId}:`, (err as Error).message);
@@ -184,7 +186,7 @@ export async function getMatchEventsDirect(fixtureId: number) {
 
 export async function getFixtureStatisticsDirect(fixtureId: number) {
     try {
-        const data: any = await fetchFromSportsProvider(`/fixtures/statistics?fixture=${fixtureId}`);
+        const data = await fetchFromSportsProvider<ApiProviderResponse<unknown>>(`/fixtures/statistics?fixture=${fixtureId}`);
         return data.response || [];
     } catch (err) {
         console.warn(`Failed to fetch statistics for fixture ${fixtureId}:`, (err as Error).message);
@@ -196,15 +198,16 @@ export async function getFixtureStatisticsDirect(fixtureId: number) {
  * Fetch full prediction detail (stats, h2h, predictions) for a fixture
  */
 export async function getFullPredictionDetailDirect(fixtureId: number) {
-    let predictionData: any = null;
+    let predictionData: ApiProviderResponse<ApiPredictionResponse | unknown> | null = null;
     try {
         predictionData = await fetchFromSportsProvider(`/predictions?fixture=${fixtureId}`);
     } catch (err) {
         console.warn(`Failed to fetch predictions for fixture ${fixtureId}:`, (err as Error).message);
     }
 
-    const res = predictionData?.response?.[0];
-    let fixture = res?.fixture;
+    const res = predictionData?.response?.[0] as ApiPredictionResponse;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let fixture = (res as any)?.fixture;
     let league = res?.league;
     let teams = res?.teams;
     const predictions = res?.predictions;
@@ -233,14 +236,20 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
     }
 
     // Map match data
-    mapMatch(fixture, league, teams, res);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mappedMatchData = mapMatch(fixture as any, league as any, teams as any, res as any);
 
     // Helper to map team stats
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mapTeamStats = (side: 'home' | 'away', allMatches: any[] = []) => {
-        const team = teams?.[side];
-        const leagueStats = team?.league;
-        const teamId = Number(team?.id || (side === 'home' ? fixture?.homeTeam?.id : fixture?.awayTeam?.id) || 0);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const team = (teams as any)?.[side];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const leagueStats = (team as any)?.league;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const teamId = Number(team?.id || (side === 'home' ? (fixture as any)?.homeTeam?.id : (fixture as any)?.awayTeam?.id) || 0);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const mapDetail = (node: any, split: 'total' | 'home' | 'away' = 'total') => ({
             played: node?.fixtures?.played?.[split] || 0,
             wins: node?.fixtures?.wins?.[split] || 0,
@@ -267,14 +276,17 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
             over55Rate: 0,
         });
 
-        const getFormFromMatches = (matches: any[], limit: number = 5) => {
-            return (matches || []).slice(0, limit).map(m => {
-                const homeTeamId = Number(m.homeTeam?.id);
-                const awayTeamId = Number(m.awayTeam?.id);
+        const getFormFromMatches = (matches: unknown[], limit: number = 5) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            return (matches || []).slice(0, limit).map((m: any) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const homeTeamId = Number((m as any).homeTeam?.id);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const awayTeamId = Number((m as any).awayTeam?.id);
                 const isHome = homeTeamId === teamId;
                 const isAway = awayTeamId === teamId;
-                const scoreHome = m.score?.home ?? (m as any).goals?.home;
-                const scoreAway = m.score?.away ?? (m as any).goals?.away;
+                const scoreHome = m.score?.home ?? m.goals?.home;
+                const scoreAway = m.score?.away ?? m.goals?.away;
 
                 if (scoreHome === undefined || scoreAway === undefined || scoreHome === null || scoreAway === null) return '-';
                 if (scoreHome === scoreAway) return 'D';
@@ -290,7 +302,7 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
         };
 
         // Helper to calculate OVER X.5 given an array of matches
-        const calculateOverRates = (matches: any[]) => {
+        const calculateOverRates = (matches: unknown[]) => {
             if (!matches || matches.length === 0) {
                 return {
                     over05Rate: 0,
@@ -308,7 +320,8 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
 
             let validMatches = 0;
 
-            matches.forEach(m => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            matches.forEach((m: any) => {
                 if (m.score && typeof m.score.home === 'number' && typeof m.score.away === 'number') {
                     const totalGoals = m.score.home + m.score.away;
                     validMatches++;
@@ -343,8 +356,10 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
             };
         };
 
-        const homeMatches = allMatches.filter(m => Number(m.homeTeam?.id) === teamId);
-        const awayMatches = allMatches.filter(m => Number(m.awayTeam?.id) === teamId);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const homeMatches = allMatches.filter(m => Number((m as any).homeTeam?.id) === teamId);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const awayMatches = allMatches.filter(m => Number((m as any).awayTeam?.id) === teamId);
 
         return {
             overall: { ...mapDetail(leagueStats, 'total'), ...calculateOverRates(allMatches) },
@@ -358,8 +373,11 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
     };
 
     // Fetch recent matches for both teams (fetch more to allow splits)
-    const homeId = teams?.home?.id || fixture?.homeTeam?.id || 0;
-    const awayId = teams?.away?.id || fixture?.awayTeam?.id || 0;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const homeId = (teams as any)?.home?.id || (fixture as any)?.homeTeam?.id || 0;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const awayId = (teams as any)?.away?.id || (fixture as any)?.awayTeam?.id || 0;
+    const fixtureIdNum = Number(fixture?.id || fixtureId);
 
     const [homeRecent, awayRecent, events, homeNext] = await Promise.all([
         homeId ? getTeamMatchesDirect(homeId, 'last', 20) : Promise.resolve([]),
@@ -387,7 +405,8 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
     ] : [];
 
     // Map H2H matches
-    const mappedH2H = (h2h || []).map((h: any) => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mappedH2H = ((h2h || []) as any[]).map((h: any) => ({
         id: h?.fixture?.id,
         date: h?.fixture?.date,
         competition: h?.league?.name,
@@ -401,18 +420,27 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
     const h2hSummary = {
         total: mappedH2H.length,
         homeTeam: {
-            wins: mappedH2H.filter((m: any) => (m.homeTeam.id === homeId && m.homeScore > m.awayScore) || (m.awayTeam.id === homeId && m.awayScore > m.homeScore)).length,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            wins: mappedH2H.filter((m: any) => (m.homeTeam.id === homeId && m.homeScore! > m.awayScore!) || (m.awayTeam.id === homeId && m.awayScore! > m.homeScore!)).length,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             cleanSheets: mappedH2H.filter((m: any) => (m.homeTeam.id === homeId && m.awayScore === 0) || (m.awayTeam.id === homeId && m.homeScore === 0)).length
         },
         awayTeam: {
-            wins: mappedH2H.filter((m: any) => (m.homeTeam.id === awayId && m.homeScore > m.awayScore) || (m.awayTeam.id === awayId && m.awayScore > m.homeScore)).length,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            wins: mappedH2H.filter((m: any) => (m.homeTeam.id === awayId && m.homeScore! > m.awayScore!) || (m.awayTeam.id === awayId && m.awayScore! > m.homeScore!)).length,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             cleanSheets: mappedH2H.filter((m: any) => (m.homeTeam.id === awayId && m.awayScore === 0) || (m.awayTeam.id === awayId && m.homeScore === 0)).length
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         draws: mappedH2H.filter((m: any) => m.homeScore === m.awayScore).length,
-        btts: mappedH2H.filter((m: any) => m.homeScore > 0 && m.awayScore > 0).length,
-        over05: mappedH2H.filter((m: any) => (m.homeScore + m.awayScore) > 0.5).length,
-        over15: mappedH2H.filter((m: any) => (m.homeScore + m.awayScore) > 1.5).length,
-        over25: mappedH2H.filter((m: any) => (m.homeScore + m.awayScore) > 2.5).length,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        btts: mappedH2H.filter((m: any) => m.homeScore! > 0 && m.awayScore! > 0).length,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        over05: mappedH2H.filter((m: any) => (m.homeScore! + m.awayScore!) > 0.5).length,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        over15: mappedH2H.filter((m: any) => (m.homeScore! + m.awayScore!) > 1.5).length,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        over25: mappedH2H.filter((m: any) => (m.homeScore! + m.awayScore!) > 2.5).length,
     };
 
     // Fetch standings
@@ -428,6 +456,7 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
         // homeRecent is usually ordered descending (newest past match first). 
         // We'll just take the most recent 'past' match as prev match,
         // UNLESS the current match itself is somehow in that array, then we'd pick the one right after it.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const currentMatchIndex = homeRecent.findIndex((m: any) => m.matchId === fixtureId);
         if (currentMatchIndex !== -1 && currentMatchIndex + 1 < homeRecent.length) {
             const pMatch = homeRecent[currentMatchIndex + 1];
@@ -441,6 +470,7 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
 
     if (homeNext && homeNext.length > 0) {
         // homeNext is usually ordered ascending (soonest next match first).
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const currentMatchIndex = homeNext.findIndex((m: any) => m.matchId === fixtureId);
         if (currentMatchIndex !== -1 && currentMatchIndex + 1 < homeNext.length) {
             const nMatch = homeNext[currentMatchIndex + 1];
@@ -465,11 +495,17 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
     };
 }
 
-export function mapMatch(fixture: ApiFixture | any, league: ApiLeague | any, teams: ApiTeams | any, res: unknown) {
-    const fId = fixture?.id || fixture?.matchId;
-    const statusStr = fixture?.status?.short || (typeof fixture?.status === 'string' ? fixture.status : 'NS');
-    const elapsedVal = fixture?.status?.elapsed || fixture?.elapsed || 0;
-    const kickoff = fixture?.date || fixture?.kickoffAt || new Date().toISOString();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function mapMatch(fixture: any, league: any, teams: any, res: any) {
+    const fId = (fixture?.id || fixture?.matchId) as number;
+    const fixtureStatus = (fixture?.status as Record<string, unknown>) || {};
+    const statusStr = (fixtureStatus?.short as string) || (typeof fixture?.status === 'string' ? fixture.status : 'NS');
+    const elapsedVal = (fixtureStatus?.elapsed as number) || (fixture?.elapsed as number) || 0;
+    const kickoff = (fixture?.date || fixture?.kickoffAt || new Date().toISOString()) as string;
+
+    const fixtureLeague = (fixture?.league as Record<string, unknown>) || {};
+    const fixtureHome = (fixture?.homeTeam as Record<string, unknown>) || {};
+    const fixtureAway = (fixture?.awayTeam as Record<string, unknown>) || {};
 
     return {
         matchId: fId,
@@ -478,30 +514,33 @@ export function mapMatch(fixture: ApiFixture | any, league: ApiLeague | any, tea
         status: statusStr,
         elapsed: elapsedVal,
         league: {
-            id: league?.id || fixture?.league?.id || 0,
-            name: league?.name || fixture?.league?.name || 'Unknown League',
-            slug: (league?.name || fixture?.league?.name || 'unknown-league').toLowerCase().replace(/\s+/g, '-'),
-            logoUrl: league?.logo || (league as any)?.logo || fixture?.league?.logo || '',
-            season: league?.season || (league as any)?.season || fixture?.league?.season,
+            id: (league?.id || fixtureLeague?.id || 0) as number,
+            name: (league?.name || fixtureLeague?.name || 'Unknown League') as string,
+            slug: ((league?.name || fixtureLeague?.name || 'unknown-league') as string).toLowerCase().replace(/\s+/g, '-'),
+            logoUrl: (league?.logo || (league as Record<string, unknown>)?.logo || fixtureLeague?.logo || '') as string,
+            season: (league?.season || (league as Record<string, unknown>)?.season || fixtureLeague?.season) as number,
             country: {
-                name: (league as any)?.country?.name || league?.country || fixture?.league?.country || '',
-                code: (league as any)?.country?.code || null,
-                flagUrl: (league as any)?.country?.flag || league?.flag || fixture?.league?.flag || ''
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                name: ((league as Record<string, unknown>)?.country as any)?.name || league?.country || fixtureLeague?.country || '',
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                code: ((league as Record<string, unknown>)?.country as any)?.code || null,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                flagUrl: ((league as Record<string, unknown>)?.country as any)?.flag || league?.flag || fixtureLeague?.flag || ''
             }
         },
         homeTeam: {
-            id: teams?.home?.id || fixture?.homeTeam?.id || 0,
-            name: teams?.home?.name || fixture?.homeTeam?.name || 'Home Team',
-            logoUrl: teams?.home?.logo || fixture?.homeTeam?.logoUrl || ''
+            id: ((teams?.home as Record<string, unknown>)?.id || fixtureHome?.id || 0) as number,
+            name: ((teams?.home as Record<string, unknown>)?.name || fixtureHome?.name || 'Home Team') as string,
+            logoUrl: ((teams?.home as Record<string, unknown>)?.logo || fixtureHome?.logoUrl || '') as string
         },
         awayTeam: {
-            id: teams?.away?.id || fixture?.awayTeam?.id || 0,
-            name: teams?.away?.name || fixture?.awayTeam?.name || 'Away Team',
-            logoUrl: teams?.away?.logo || fixture?.awayTeam?.logoUrl || ''
+            id: ((teams?.away as Record<string, unknown>)?.id || fixtureAway?.id || 0) as number,
+            name: ((teams?.away as Record<string, unknown>)?.name || fixtureAway?.name || 'Away Team') as string,
+            logoUrl: ((teams?.away as Record<string, unknown>)?.logo || fixtureAway?.logoUrl || '') as string
         },
         score: {
-            home: (res as any)?.goals?.home ?? (res as any)?.score?.fulltime?.home ?? (fixture as any)?.score?.home ?? (fixture?.status?.short === 'NS' ? null : 0),
-            away: (res as any)?.goals?.away ?? (res as any)?.score?.fulltime?.away ?? (fixture as any)?.score?.away ?? (fixture?.status?.short === 'NS' ? null : 0)
+            home: (res?.goals as Record<string, unknown>)?.home ?? ((res?.score as Record<string, unknown>)?.fulltime as Record<string, unknown>)?.home ?? ((fixture?.score as Record<string, unknown>)?.home) ?? (statusStr === 'NS' ? null : 0),
+            away: (res?.goals as Record<string, unknown>)?.away ?? ((res?.score as Record<string, unknown>)?.fulltime as Record<string, unknown>)?.away ?? ((fixture?.score as Record<string, unknown>)?.away) ?? (statusStr === 'NS' ? null : 0)
         }
     };
 }
@@ -553,19 +592,19 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
         const allStandings = league.standings.flat();
 
         // Map basic standings
-        const mappedRows = allStandings.map((item) => {
-            const mapSplit = (split: any) => ({
+        const mappedRows = allStandings.map((item: ApiStanding) => {
+            const mapSplit = (split: ApiStandingStats | undefined) => ({
                 played: split?.played || 0,
                 wins: split?.win || 0,
                 draws: split?.draw || 0,
                 losses: split?.lose || 0,
                 gf: split?.goals?.for || 0,
                 ga: split?.goals?.against || 0,
-                gd: (item as any)?.goalsDiff || 0,
-                points: (item as any)?.points || 0,
-                ppg: (split?.played || 0) > 0 ? parseFloat(((item as any)?.points / split.played).toFixed(2)) : 0,
-                avgScored: (split?.played || 0) > 0 ? parseFloat(((split?.goals?.for || 0) / split.played).toFixed(2)) : 0,
-                avgConceded: (split?.played || 0) > 0 ? parseFloat(((split?.goals?.against || 0) / split.played).toFixed(2)) : 0
+                gd: item?.goalsDiff || 0,
+                points: item?.points || 0,
+                ppg: (split?.played || 0) > 0 ? parseFloat((item.points / split!.played).toFixed(2)) : 0,
+                avgScored: (split?.played || 0) > 0 ? parseFloat(((split?.goals?.for || 0) / split!.played).toFixed(2)) : 0,
+                avgConceded: (split?.played || 0) > 0 ? parseFloat(((split?.goals?.against || 0) / split!.played).toFixed(2)) : 0
             });
 
             return {
@@ -592,20 +631,20 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
             // Fallback: some leagues use different statuses, try without status filter if empty
             if (allFixtures.length === 0) {
                 console.log(`[Standings] No FT fixtures for league ${leagueId} season ${season}, trying without status filter`);
-                allFixturesData = await fetchFromSportsProvider(`/fixtures?league=${leagueId}&season=${season}&last=50`);
+                allFixturesData = await fetchFromSportsProvider<ApiProviderResponse<ApiFixtureResponse>>(`/fixtures?league=${leagueId}&season=${season}&last=50`);
                 allFixtures = allFixturesData.response || [];
                 // Filter only completed fixtures
-                allFixtures = allFixtures.filter((f: any) => {
+                allFixtures = allFixtures.filter((f) => {
                     const status = f.fixture?.status?.short;
-                    return ['FT', 'AET', 'PEN', 'AWD'].includes(status);
+                    return ['FT', 'AET', 'PEN', 'AWD'].includes(status || '');
                 });
             }
 
             console.log(`[Standings] League ${leagueId} season ${season}: ${allFixtures.length} fixtures loaded`);
 
             // Group fixtures by team
-            const teamFixturesMap = new Map<number, any[]>();
-            allFixtures.forEach((f: any) => {
+            const teamFixturesMap = new Map<number, ApiFixtureResponse[]>();
+            allFixtures.forEach((f) => {
                 const hId = f.teams.home.id;
                 const aId = f.teams.away.id;
                 if (!teamFixturesMap.has(hId)) teamFixturesMap.set(hId, []);
@@ -629,7 +668,8 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
             const createScoringFirst = () => ({ count: 0, percentage: 0 });
             const createConcedingFirst = () => ({ count: 0, percentage: 0 });
 
-            const updateHalf = (split: any, gf: number, ga: number) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const updateHalf = (split: Record<string, any>, gf: number, ga: number) => {
                 split.played++; split.gf += gf; split.ga += ga; split.gd += (gf - ga);
                 if (gf > ga) { split.wins++; split.points += 3; }
                 else if (gf === ga) { split.draws++; split.points += 1; }
@@ -637,7 +677,8 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
                 split.ppg = parseFloat((split.points / split.played).toFixed(2));
             };
 
-            const updateOUThreshold = (split: any, played: number, goals: number) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const updateOUThreshold = (split: Record<string, any>, played: number, goals: number) => {
                 if (goals > 0.5) split.over05.count++; split.over05.percentage = Math.round((split.over05.count / played) * 100);
                 if (goals > 1.5) split.over15.count++; split.over15.percentage = Math.round((split.over15.count / played) * 100);
                 if (goals > 2.5) split.over25.count++; split.over25.percentage = Math.round((split.over25.count / played) * 100);
@@ -653,7 +694,7 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
                 split.under55.count = played - split.over55.count; split.under55.percentage = 100 - split.over55.percentage;
             };
 
-            const enrichedRows = mappedRows.map((row: any) => {
+            const enrichedRows = mappedRows.map((row) => {
                 const teamFixtures = teamFixturesMap.get(row.team.id) || [];
                 if (teamFixtures.length === 0) return row;
 
@@ -665,7 +706,7 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
 
                 let homeMatches = 0; let awayMatches = 0;
 
-                teamFixtures.forEach((f: any) => {
+                teamFixtures.forEach((f) => {
                     const isHome = f.teams.home.id === row.team.id;
                     const splitKey = isHome ? 'home' : 'away';
                     if (isHome) homeMatches++; else awayMatches++;
@@ -700,8 +741,10 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
                     stats[splitKey].btts.percentage = Math.round((stats[splitKey].btts.count / matchesPlayed) * 100);
 
                     // Scoring First (using events if already present)
-                    const goalsFirst = f.events
-                        ? f.events.find((e: any) => e.type === 'Goal' && !e.detail.includes('Missed'))
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const goalsFirst = (f as any).events
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        ? (f as any).events.find((e: any) => e.type === 'Goal' && !e.detail.includes('Missed'))
                         : null;
 
                     if (goalsFirst && goalsFirst.team) {
@@ -731,7 +774,7 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
 
             const MAX_FIXTURES = 30;
             const recentFixtures = [...allFixtures]
-                .sort((a: any, b: any) => b.fixture.timestamp - a.fixture.timestamp)
+                .sort((a, b) => b.fixture.timestamp - a.fixture.timestamp)
                 .slice(0, MAX_FIXTURES);
 
             const teamStatsMap = new Map<number, { corners: { overall: number[]; home: number[]; away: number[] }; cards: { overall: number[]; home: number[]; away: number[] } }>();
@@ -739,23 +782,24 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
                 corners: { overall: [] as number[], home: [] as number[], away: [] as number[] },
                 cards: { overall: [] as number[], home: [] as number[], away: [] as number[] }
             });
-            const processFixtureStats = (sd: any, fixture: any) => {
+            const processFixtureStats = (sd: ApiProviderResponse<{ team: { id: number }; statistics: { type: string, value: string | number | null }[] }>, fixture: { teams?: { home?: { id: number }, away?: { id: number } } }) => {
                 const teamsData = sd?.response || [];
                 // For cards/match, we need data from both teams for the same match to get TOTAL cards in that match
                 let matchTotalCards = 0;
                 let cardsFoundForMatch = false;
 
-                teamsData.forEach((te: any) => {
+                teamsData.forEach((te) => {
                     const teamId = te?.team?.id;
                     if (!teamId) return;
                     if (!teamStatsMap.has(teamId)) teamStatsMap.set(teamId, initStatsEntry());
                     const entry = teamStatsMap.get(teamId)!;
 
                     // Corner Kicks
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const cornerStat = (te?.statistics || []).find((s: any) => s.type === 'Corner Kicks');
                     const cornerVal = cornerStat?.value ?? null;
                     if (cornerVal !== null) {
-                        const n = typeof cornerVal === 'string' ? parseInt(cornerVal, 10) : cornerVal;
+                        const n = typeof cornerVal === 'string' ? parseInt(cornerVal, 10) : (cornerVal as number);
                         if (!isNaN(n)) {
                             entry.corners.overall.push(n);
                             if (fixture.teams?.home?.id === teamId) entry.corners.home.push(n); else entry.corners.away.push(n);
@@ -763,14 +807,16 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
                     }
 
                     // Card Stats (Yellow and Red)
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const yellowStat = (te?.statistics || []).find((s: any) => s.type === 'Yellow Cards');
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const redStat = (te?.statistics || []).find((s: any) => s.type === 'Red Cards');
                     
                     const y = yellowStat?.value ?? 0;
                     const r = redStat?.value ?? 0;
                     
-                    const yn = typeof y === 'string' ? parseInt(y, 10) : (y || 0);
-                    const rn = typeof r === 'string' ? parseInt(r, 10) : (r || 0);
+                    const yn = typeof y === 'string' ? parseInt(y as string, 10) : (y as number || 0);
+                    const rn = typeof r === 'string' ? parseInt(r as string, 10) : (r as number || 0);
                     
                     if (yellowStat || redStat) {
                         cardsFoundForMatch = true;
@@ -780,7 +826,7 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
 
                 // If cards were found, we attribute the total match cards to both teams to calculate "Over X.5 cards in matches involving Team Y"
                 if (cardsFoundForMatch) {
-                    teamsData.forEach((te: any) => {
+                    teamsData.forEach((te) => {
                         const teamId = te?.team?.id;
                         if (!teamId) return;
                         const entry = teamStatsMap.get(teamId)!;
@@ -793,11 +839,11 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
             // Probe first 5 fixtures to detect coverage, then fetch the rest if covered
             let hasCoverage = false;
             if (recentFixtures.length > 0) {
-                await Promise.all(recentFixtures.slice(0, 5).map(async (fixture: any) => {
+                await Promise.all(recentFixtures.slice(0, 5).map(async (fixture) => {
                     const fId = fixture.fixture?.id;
                     if (!fId) return;
                     try {
-                        const sd: any = await fetchFromSportsProvider(`/fixtures/statistics?fixture=${fId}`);
+                        const sd = await fetchFromSportsProvider<ApiProviderResponse<{ team: { id: number }; statistics: { type: string, value: string | number | null }[] }>>(`/fixtures/statistics?fixture=${fId}`);
                         const sizeBefore = teamStatsMap.size;
                         processFixtureStats(sd, fixture);
                         if (teamStatsMap.size > sizeBefore) hasCoverage = true;
@@ -810,11 +856,11 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
             if (hasCoverage && recentFixtures.length > 5) {
                 const FIX_BATCH = 5;
                 for (let bi = 5; bi < recentFixtures.length; bi += FIX_BATCH) {
-                    await Promise.all(recentFixtures.slice(bi, bi + FIX_BATCH).map(async (fixture: any) => {
+                    await Promise.all(recentFixtures.slice(bi, bi + FIX_BATCH).map(async (fixture) => {
                         const fId = fixture.fixture?.id;
                         if (!fId) return;
                         try {
-                            const sd: any = await fetchFromSportsProvider(`/fixtures/statistics?fixture=${fId}`);
+                            const sd = await fetchFromSportsProvider<ApiProviderResponse<{ team: { id: number }; statistics: { type: string, value: string | number | null }[] }>>(`/fixtures/statistics?fixture=${fId}`);
                             processFixtureStats(sd, fixture);
                         } catch (_) {
                             // Ignore error
@@ -847,10 +893,11 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
             };
 
             // Merge corner and card stats into final rows
-            const finalRows = enrichedRows.map((row: any) => {
+            const finalRows = enrichedRows.map((row) => {
                 const entry = teamStatsMap.get(row.team.id);
                 if (entry) {
-                    const enriched: any = { ...row };
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const enriched: Record<string, any> = { ...row };
                     if (entry.corners.overall.length > 0) {
                         enriched.overall = { ...enriched.overall, corners: computeCornerStats(entry.corners.overall) };
                         enriched.home = { ...enriched.home, corners: computeCornerStats(entry.corners.home) };
@@ -865,9 +912,12 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
                 }
                 
                 // Fallback to cached corner stats if available
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const cs = (row as any).__cornerStats;
                 if (cs) {
-                    const { __cornerStats: _, ...cleanRow } = row;
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const cleanRow = { ...row } as Record<string, any>;
+                    delete cleanRow.__cornerStats;
                     return {
                         ...cleanRow,
                         overall: { ...cleanRow.overall, corners: cs.overall },
@@ -893,10 +943,10 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
  * Calculate "Virtual Standings" from a list of fixture results.
  * Useful when the official API standings are missing for a cup or tournament.
  */
-export function calculateVirtualStandings(fixtures: any[]) {
+export function calculateVirtualStandings(fixtures: ApiFixtureResponse[]) {
     const teams: Record<number, any> = {};
 
-    const getOrCreateTeam = (teamData: any) => {
+    const getOrCreateTeam = (teamData: { id: number; name: string; logo?: string; logoUrl?: string }) => {
         if (!teams[teamData.id]) {
             teams[teamData.id] = {
                 team: {
@@ -914,7 +964,7 @@ export function calculateVirtualStandings(fixtures: any[]) {
         return teams[teamData.id];
     };
 
-    fixtures.forEach(f => {
+    fixtures.forEach((f: any) => {
         // Support both raw API format and mapped match format
         const status = f.status || f.fixture?.status?.short;
         if (!['FT', 'AET', 'PEN'].includes(status)) return;
@@ -987,8 +1037,9 @@ export function calculateVirtualStandings(fixtures: any[]) {
     });
 
     // Final calculations (PPG and Avg) and Ranking
-    const result = Object.values(teams).map((t: any) => {
+    const result = Object.values(teams).map((t) => {
         t.form = t.form.slice(-5); // Keep last 5 results for form
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const finalize = (stats: any) => {
             if (stats.played > 0) {
                 stats.ppg = parseFloat((stats.points / stats.played).toFixed(2));
@@ -1041,13 +1092,14 @@ function getEmptyTeamStatsDetail() {
 export async function getLeagueFixturesDirect(leagueId: number, season: number, type: 'next' | 'last' = 'next', count: number = 10) {
     const data: ApiProviderResponse<ApiFixtureResponse> = await fetchFromSportsProvider(`/fixtures?league=${leagueId}&season=${season}&${type}=${count}`);
     if (!data.response) return [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return data.response.map((item: any) => mapMatch(item.fixture, item.league, item.teams, item));
 }
 
 export async function getTopScorersDirect(leagueId: number, season: number) {
     const data: ApiProviderResponse<{
         player: { id: number; name: string; photo: string; nationality: string; age: number };
-        statistics: any[];
+        statistics: unknown[];
     }> = await fetchFromSportsProvider(`/players/topscorers?league=${leagueId}&season=${season}`);
     if (!data.response || data.response.length === 0) return [];
     return data.response.map((item) => ({
@@ -1065,7 +1117,7 @@ export async function getTopScorersDirect(leagueId: number, season: number) {
 export async function getTopAssistsDirect(leagueId: number, season: number) {
     const data: ApiProviderResponse<{
         player: { id: number; name: string; photo: string; nationality: string; age: number };
-        statistics: any[];
+        statistics: unknown[];
     }> = await fetchFromSportsProvider(`/players/topassists?league=${leagueId}&season=${season}`);
     if (!data.response || data.response.length === 0) return [];
     return data.response.map((item) => ({
@@ -1082,7 +1134,7 @@ export async function getTopAssistsDirect(leagueId: number, season: number) {
 
 export async function getTeamByIdDirect(id: number) {
     try {
-        const data: ApiProviderResponse<any> = await fetchFromSportsProvider(`/teams?id=${id}`);
+        const data = await fetchFromSportsProvider<ApiProviderResponse<{ team: { id: number, name: string, logo: string, country?: string }, venue?: { country?: string } }>>(`/teams?id=${id}`);
         if (data.response && data.response.length > 0) {
             const item = data.response[0];
 
@@ -1107,13 +1159,15 @@ export async function getTeamBySlugDirect(slug: string) {
     // Try direct Live Search for the team
     const searchTerm = slug.replace(/-/g, ' ');
     try {
-        const data: ApiProviderResponse<any> = await fetchFromSportsProvider(`/teams?search=${encodeURIComponent(searchTerm)}`);
+        const data = await fetchFromSportsProvider<ApiProviderResponse<{ team: { id: number, name: string, logo: string, country?: string }, venue?: { country?: string } }>>(`/teams?search=${encodeURIComponent(searchTerm)}`);
         if (data.response && data.response.length > 0) {
             // Priority matching: Exact name match first, then closest match
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const exactMatch = data.response.find((r: any) =>
                 r.team.name.toLowerCase() === searchTerm.toLowerCase()
             );
 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const item = exactMatch || data.response.find((r: any) =>
                 r.team.name.toLowerCase().includes(searchTerm.toLowerCase())
             ) || data.response[0];
@@ -1137,7 +1191,7 @@ export async function getTeamBySlugDirect(slug: string) {
 
 export async function getTeamStatsDirect(teamId: number, leagueId: number, season: number) {
     try {
-        const data: ApiProviderResponse<any> = await fetchFromSportsProvider(`/teams/statistics?team=${teamId}&league=${leagueId}&season=${season}`);
+        const data = await fetchFromSportsProvider<ApiProviderResponse<unknown>>(`/teams/statistics?team=${teamId}&league=${leagueId}&season=${season}`);
         if (data.response && !Array.isArray(data.response) && Object.keys(data.response).length > 0) return data.response;
         if (Array.isArray(data.response) && data.response.length > 0) return data.response[0];
     } catch (err) {
@@ -1156,9 +1210,9 @@ export async function getTeamMatchesDirect(teamId: number, type: 'next' | 'last'
         if (season) {
             endpoint += `&season=${season}`;
         }
-        const data: ApiProviderResponse<ApiFixtureResponse> = await fetchFromSportsProvider(endpoint);
+        const data = await fetchFromSportsProvider<ApiProviderResponse<ApiFixtureResponse>>(endpoint);
         if (data.response && data.response.length > 0) {
-            return data.response.map((item: any) => mapMatch(item.fixture, item.league, item.teams, item));
+            return data.response.map((item) => mapMatch(item.fixture, item.league, item.teams, item));
         }
     } catch (err) {
         console.warn(`Failed to fetch ${type} matches for team ${teamId}:`, (err as Error).message);
@@ -1170,9 +1224,9 @@ export async function getTeamMatchesDirect(teamId: number, type: 'next' | 'last'
 
 export async function getTeamSquadDirect(teamId: number) {
     try {
-        const data: ApiProviderResponse<any> = await fetchFromSportsProvider(`/players/squads?team=${teamId}`);
+        const data: ApiProviderResponse<{ players: { id: number, name: string, age: number, number: number, position: string, photo: string }[] }> = await fetchFromSportsProvider(`/players/squads?team=${teamId}`);
         if (data.response && data.response.length > 0) {
-            return data.response[0].players.map((p: any) => ({
+            return data.response[0].players.map((p) => ({
                 id: p.id,
                 name: p.name,
                 age: p.age,
@@ -1201,13 +1255,13 @@ export async function getTeamsByLeagueDirect(leagueId: number, season?: number) 
         }
 
         // Try primary season
-        let data: ApiProviderResponse<any> = await fetchFromSportsProvider(`/teams?league=${leagueId}&season=${activeSeason}`);
+        let data: ApiProviderResponse<unknown> = await fetchFromSportsProvider(`/teams?league=${leagueId}&season=${activeSeason}`);
 
         // Defensive: If 0 teams and we haven't tried the previous season yet, try (activeSeason - 1)
         if ((!data.response || data.response.length === 0) && !season) {
             const prevSeason = (activeSeason as number) - 1;
             console.log(`No teams for ${leagueId} in ${activeSeason}, trying ${prevSeason}...`);
-            const fallbackData: ApiProviderResponse<any> = await fetchFromSportsProvider(`/teams?league=${leagueId}&season=${prevSeason}`);
+            const fallbackData = await fetchFromSportsProvider<ApiProviderResponse<unknown>>(`/teams?league=${leagueId}&season=${prevSeason}`);
 
             if (fallbackData.response && fallbackData.response.length > 0) {
                 activeSeason = prevSeason;
@@ -1217,7 +1271,7 @@ export async function getTeamsByLeagueDirect(leagueId: number, season?: number) 
 
         if (data.response && data.response.length > 0) {
             workingSeasonsCache.set(leagueId, activeSeason as number);
-            return data.response.map((item: any) => ({
+            return (data.response as { team: { id: number, name: string, logo: string, country?: string }, venue?: { country?: string } }[]).map((item) => ({
                 id: item.team.id,
                 name: item.team.name,
                 slug: generateTeamSlug(item.team.id, item.team.name),
@@ -1234,9 +1288,9 @@ export async function getTeamsByLeagueDirect(leagueId: number, season?: number) 
 export async function getPopularTeamsDirect(ids: number[]) {
     try {
         const idBatch = ids.join('-');
-        const data: ApiProviderResponse<any> = await fetchFromSportsProvider(`/teams?id=${idBatch}`);
+        const data: ApiProviderResponse<{ team: { id: number, name: string, logo: string, country?: string }, venue?: { country?: string } }> = await fetchFromSportsProvider(`/teams?id=${idBatch}`);
         if (data.response && data.response.length > 0) {
-            return data.response.map((item: any) => ({
+            return data.response.map((item) => ({
                 id: item.team.id,
                 name: item.team.name,
                 slug: generateTeamSlug(item.team.id, item.team.name),
@@ -1255,14 +1309,14 @@ export async function getTeamLeaguesDirect(teamId: number) {
         const data: ApiProviderResponse<ApiLeagueRecord> = await fetchFromSportsProvider(`/leagues?team=${teamId}`);
         if (data.response) {
             return data.response
-                .filter((item: any) => item.seasons.some((s: any) => s.current)) // Only active leagues
-                .map((item: any) => ({
+                .filter((item) => item.seasons.some((s) => s.current)) // Only active leagues
+                .map((item) => ({
                     id: item.league.id,
                     name: item.league.name,
                     logo: item.league.logo,
                     type: item.league.type,
                     country: item.country.name,
-                    season: item.seasons.find((s: { current: any; }) => s.current)?.year
+                    season: item.seasons.find((s) => s.current)?.year
                 }));
         }
     } catch (err) {

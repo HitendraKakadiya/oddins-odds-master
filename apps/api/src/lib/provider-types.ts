@@ -41,7 +41,7 @@ export interface ApiSeason {
     start: string;
     end: string;
     current: boolean;
-    coverage: any;
+    coverage: Record<string, unknown>;
 }
 
 export interface ApiLeagueRecord {
@@ -89,8 +89,8 @@ export interface ApiFixtureResponse {
     teams: ApiTeams;
     goals: ApiGoals;
     score: ApiScore;
-    events?: any[];
-    statistics?: any[];
+    events?: unknown[];
+    statistics?: unknown[];
 }
 
 export interface ApiPrediction {
@@ -117,8 +117,8 @@ export interface ApiPredictionResponse {
     predictions: ApiPrediction;
     league: ApiLeague;
     teams: ApiTeams;
-    comparison: any;
-    h2h: any[];
+    comparison: Record<string, unknown>;
+    h2h: unknown[];
 }
 
 export interface ApiStanding {
@@ -154,8 +154,8 @@ export interface ApiStandingStats {
 
 export interface ApiProviderResponse<T> {
     get: string;
-    parameters: any;
-    errors: any[];
+    parameters: Record<string, string | number | boolean | undefined>;
+    errors: unknown[];
     results: number;
     paging: {
         current: number;
