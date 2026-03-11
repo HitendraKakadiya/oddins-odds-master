@@ -70,7 +70,7 @@ export default function MatchContent({ matchData }: { matchData: MatchDetailResp
                 <span className="text-3xl grayscale opacity-50">📊</span>
              </div>
              <h3 className="text-xl font-black text-slate-800 mb-2">{activeTab} details coming soon</h3>
-             <p className="text-slate-400 font-bold max-w-xs mx-auto">We're currently processing more statistical data for this league.</p>
+             <p className="text-slate-400 font-bold max-w-xs mx-auto">We&apos;re currently processing more statistical data for this league.</p>
           </div>
         );
     }

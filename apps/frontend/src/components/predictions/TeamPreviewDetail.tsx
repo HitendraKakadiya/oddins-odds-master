@@ -10,7 +10,7 @@ interface TeamPreviewDetailProps {
   isHome: boolean;
 }
 
-export default function TeamPreviewDetail({ teamName, leagueName, stats, recentMatches, isHome }: TeamPreviewDetailProps) {
+export default function TeamPreviewDetail({ teamName, leagueName, stats, recentMatches, isHome: _isHome }: TeamPreviewDetailProps) {
   return (
     <div className="flex flex-col gap-6">
        <h2 className="text-2xl md:text-3xl font-black text-brand-midnight">{teamName} Preview</h2>

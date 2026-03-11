@@ -46,7 +46,7 @@ export default function TeamTopPerformersTab({
   }));
 
   const nextMatchInfo = nextMatchDetail?.match || nextMatch;
-  const reactions = (nextMatchDetail as any)?.predictions;
+  const reactions = ((nextMatchDetail as unknown) as { predictions?: { percent?: { home?: string; draw?: string; away?: string } } })?.predictions;
   const winPercent = reactions?.percent;
 
   const getKickoffStatus = () => {

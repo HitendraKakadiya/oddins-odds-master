@@ -52,10 +52,10 @@ export const MOCK_TEAM_DETAIL = {
     topAssists: [],
     detailedStats: null,
     activeLeagueId: 39
-} as any as TeamDetailResponse;
+} as unknown as TeamDetailResponse;
 
 export const MOCK_TAB = {
     team: { id: 33, name: "Mock Team", slug: "33-mock-team", logoUrl: "https://media.api-sports.io/football/teams/33.png" },
     tab: "fixtures",
     items: []
-} as any as TabResponse;
+} as unknown as TabResponse;

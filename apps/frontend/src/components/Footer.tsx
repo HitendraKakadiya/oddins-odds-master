@@ -70,33 +70,32 @@ export default function Footer() {
           getArticles('blog', 'Review', 1, 5).catch(() => null)
         ]);
 
-        const updatedSections = [...sections];
+        setSections(prevSections => {
+          const updatedSections = [...prevSections];
+          
+          if (matchesRes?.matches?.length) {
+            updatedSections[0].links = matchesRes.matches.slice(0, 5).map(m => ({
+              name: `${m.homeTeam.name} vs ${m.awayTeam.name}`,
+              href: `/match/${m.matchId}`
+            }));
+          }
 
-        // Update Today's Main Matches
-        if (matchesRes?.matches?.length) {
-          updatedSections[0].links = matchesRes.matches.slice(0, 5).map(m => ({
-            name: `${m.homeTeam.name} vs ${m.awayTeam.name}`,
-            href: `/match/${m.matchId}`
-          }));
-        }
+          if (tipsRes?.tips?.length) {
+            updatedSections[1].links = tipsRes.tips.slice(0, 5).map(tip => ({
+              name: `${tip.homeTeam?.name} vs ${tip.awayTeam?.name}`,
+              href: `/predictions/${tip.id}`
+            }));
+          }
 
-        // Update Today's Top Predictions
-        if (tipsRes?.tips?.length) {
-          updatedSections[1].links = tipsRes.tips.slice(0, 5).map(tip => ({
-            name: `${tip.homeTeam?.name} vs ${tip.awayTeam?.name}`,
-            href: `/predictions/${tip.id}`
-          }));
-        }
+          if (reviewsRes?.items?.length) {
+            updatedSections[4].links = reviewsRes.items.map(article => ({
+              name: article.title,
+              href: `/betting-sites/${article.slug}`
+            }));
+          }
 
-        // Update Betting Sites (Reviews)
-        if (reviewsRes?.items?.length) {
-          updatedSections[4].links = reviewsRes.items.map(article => ({
-            name: article.title,
-            href: `/betting-sites/${article.slug}`
-          }));
-        }
-
-        setSections(updatedSections);
+          return updatedSections;
+        });
       } catch (error) {
         console.error('Failed to fetch footer data:', error);
       }

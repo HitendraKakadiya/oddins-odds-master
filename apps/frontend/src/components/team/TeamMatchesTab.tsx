@@ -10,7 +10,7 @@ interface TeamMatchesTabProps {
   standings?: StandingsRow[] | null;
 }
 
-export default function TeamMatchesTab({ team, upcomingMatches = [], lastMatches = [], stats, standings = [] }: TeamMatchesTabProps) {
+export default function TeamMatchesTab({ team, upcomingMatches = [], lastMatches = [], stats, standings: _standings = [] }: TeamMatchesTabProps) {
   const firstLeagueName = upcomingMatches?.[0]?.league?.name || lastMatches?.[0]?.league?.name || 'Competition';
 
   const formatDate = (dateStr: string) => {

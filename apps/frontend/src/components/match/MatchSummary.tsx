@@ -34,7 +34,7 @@ export default function MatchSummary({ events, match }: MatchSummaryProps) {
       }
       return event;
     });
-  }, [sortedEvents, match.homeTeam.id, match.awayTeam.id]);
+  }, [sortedEvents, match.homeTeam.id]);
 
   if (!events || events.length === 0) {
     return (

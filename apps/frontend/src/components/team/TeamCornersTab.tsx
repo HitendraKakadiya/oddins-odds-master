@@ -1,23 +1,12 @@
 "use client";
 
 import React, { useState } from 'react';
+import type { TeamStats } from '@/lib/api/types';
 
-interface CornerStat {
-  rank: number;
-  team: { name: string; logo: string };
-  mp: number;
-  over7_5: string;
-  over8_5: string;
-  over9_5: string;
-  over10_5: string;
-  over11_5: string;
-  over12_5: string;
-  over13_5: string;
-  average: string;
-}
+
 
 interface TeamCornersTabProps {
-  detailedStats?: any;
+  detailedStats?: (TeamStats & { corners?: Record<string, Record<string, string | number> | undefined> }) | null;
 }
 
 export default function TeamCornersTab({ detailedStats }: TeamCornersTabProps) {
@@ -77,7 +66,7 @@ export default function TeamCornersTab({ detailedStats }: TeamCornersTabProps) {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
-            {currentStats.map((stat: any) => (
+            {currentStats.map((stat: { label: string; val: string | number }) => (
               <div key={stat.label} className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col items-center justify-center group hover:border-brand-emerald/30 transition-all duration-300">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">{stat.label}</span>
                 <span className="text-xl font-black text-slate-900 group-hover:text-brand-emerald transition-colors">{stat.val}</span>

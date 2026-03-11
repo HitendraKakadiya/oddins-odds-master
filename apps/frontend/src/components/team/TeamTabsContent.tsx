@@ -63,13 +63,13 @@ export default function TeamTabsContent({
   const searchParams = useSearchParams();
 
   // Highlight active league from competitions or defaults
-  const currentLeague = competitions?.find(c => (c.id || (c as any).leagueId) === activeLeagueId) || {
+  const currentLeague = competitions?.find(c => (c.id || ((c as unknown) as { leagueId?: number }).leagueId) === activeLeagueId) || {
     name: nextMatch?.league?.name || recentMatches?.[0]?.league?.name || 'Premier League',
     logoUrl: nextMatch?.league?.logoUrl || recentMatches?.[0]?.league?.logoUrl || 'https://media.api-sports.io/football/leagues/39.png',
     id: activeLeagueId
   };
 
-  const handleLeagueChange = (leagueId: any) => {
+  const handleLeagueChange = (leagueId: number | string) => {
     if (!leagueId) {
       console.warn('League selector: received null or undefined leagueId');
       return;
@@ -98,7 +98,7 @@ export default function TeamTabsContent({
       case 'stats':
         return <TeamStatsTab detailedStats={detailedStats} />;
       case 'top-scorers':
-        return <TeamTopPerformersTab topScorers={topScorers} topAssists={topAssists} nextMatch={nextMatch} nextMatchDetail={nextMatchDetail as any} />;
+        return <TeamTopPerformersTab topScorers={topScorers} topAssists={topAssists} nextMatch={nextMatch} nextMatchDetail={nextMatchDetail} />;
       default:
         return null;
     }
@@ -159,7 +159,7 @@ export default function TeamTabsContent({
                     }`}
                   >
                     <div className="w-8 h-8 flex items-center justify-center p-1 bg-white rounded-lg border border-slate-100 shadow-sm">
-                      <img src={comp.logoUrl || (comp as any).logo} alt={comp.name} className="w-full h-full object-contain" />
+                      <img src={comp.logoUrl || ((comp as unknown) as { logo?: string }).logo} alt={comp.name} className="w-full h-full object-contain" />
                     </div>
                     <div className="flex flex-col items-start overflow-hidden">
                       <span className={`text-xs font-black uppercase tracking-wider truncate w-full text-left ${
@@ -189,7 +189,7 @@ export default function TeamTabsContent({
           venue={team?.venue}
           city={team?.city}
           nextMatch={nextMatch}
-          nextMatchDetail={nextMatchDetail as any}
+          nextMatchDetail={nextMatchDetail}
         />
       </div>
     </>

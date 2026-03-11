@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { getPopularLeagues } from '@/lib/api/leagues';
+ // import { getPopularLeagues } from '@/lib/api/leagues';
 import { getTeams } from '@/lib/api/teams';
 import { fetchAPI } from '@/lib/api/client';
 
@@ -29,7 +29,7 @@ interface League {
 export default function TeamsDirectory() {
   const [leagues, setLeagues] = useState<League[]>([]);
   const [teamsByLeague, setTeamsByLeague] = useState<Record<number, Team[]>>({});
-  const [loadingLeagues, setLoadingLeagues] = useState(true);
+
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -37,8 +37,7 @@ export default function TeamsDirectory() {
   const [openLeagues, setOpenLeagues] = useState<number[]>([]);
   
   async function fetchLeagues(pageNum: number, isInitial = false) {
-    if (isInitial) setLoadingLeagues(true);
-    else setLoadingMore(true);
+    if (!isInitial) setLoadingMore(true);
 
     try {
       const data = await fetchAPI<League[]>(`/v1/leagues/popular?page=${pageNum}&limit=10`);
@@ -49,7 +48,6 @@ export default function TeamsDirectory() {
     } catch (err) {
       console.error('Failed to fetch popular leagues:', err);
     } finally {
-      setLoadingLeagues(false);
       setLoadingMore(false);
     }
   }
@@ -69,7 +67,8 @@ export default function TeamsDirectory() {
       if (!teamsByLeague[leagueId]) {
         setLoadingTeams(prev => ({ ...prev, [leagueId]: true }));
         try {
-          const teams = await getTeams(undefined, undefined, leagueId) as Team[];
+          const teamsRes = await getTeams(undefined, undefined, leagueId) as unknown as Array<Team | { team: Team }>;
+          const teams = teamsRes.map(t => ('team' in t ? (t as { team: Team }).team : t) as Team);
           setTeamsByLeague(prev => ({ ...prev, [leagueId]: teams }));
         } catch (err) {
           console.error(`Failed to fetch teams for league ${leagueId}:`, err);

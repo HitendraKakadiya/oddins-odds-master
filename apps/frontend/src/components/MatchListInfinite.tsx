@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { LeagueGroup } from './MatchCard';
-import { getTodayMatches, getLiveTodayMatches } from '@/lib/api';
+import { getLiveTodayMatches } from '@/lib/api';
 import type { MatchData } from '@/lib/api';
 
 interface MatchListInfiniteProps {

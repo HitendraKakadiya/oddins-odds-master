@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { getLeagues, getPopularLeagues } from '@/lib/api';
+import { getPopularLeagues } from '@/lib/api';
 
 interface PopularLeague {
   id: number;

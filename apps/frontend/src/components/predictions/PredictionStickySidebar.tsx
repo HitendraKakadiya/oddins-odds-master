@@ -19,7 +19,7 @@ export default function PredictionStickySidebar({ mainPrediction, todayPredictio
                    {mainPrediction?.selection || mainPrediction?.title || 'HT/FT - 2/2'}
                 </h3>
                 <p className="text-slate-400 font-black text-xs uppercase tracking-widest mb-6">
-                   Odds of Prediction: { (mainPrediction as any)?.odds || '5.50' }
+                   Odds of Prediction: { ((mainPrediction as unknown) as { odds?: string })?.odds || '5.50' }
                 </p>
                 
                 <div className="w-full h-px bg-slate-100 mb-6"></div>

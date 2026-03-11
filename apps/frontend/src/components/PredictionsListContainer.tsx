@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { Prediction, PredictionsResponse } from '@/lib/api/types';
+import type { Prediction } from '@/lib/api/types';
 import CompactPredictionCard from './CompactPredictionCard';
 import { api } from '@/lib/api';
 
@@ -22,9 +22,9 @@ export default function PredictionsListContainer({
   initialTotal,
   pageSize,
   date,
-  region,
-  leagueSlug,
-  marketKey,
+  region: _region,
+  leagueSlug: _leagueSlug,
+  marketKey: _marketKey,
 }: PredictionsListContainerProps) {
   const [predictions, setPredictions] = useState<Prediction[]>(initialPredictions);
   const [page, setPage] = useState(initialPage);

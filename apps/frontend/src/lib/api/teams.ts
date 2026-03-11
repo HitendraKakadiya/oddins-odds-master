@@ -11,7 +11,7 @@ export async function getFeaturedTeams(): Promise<Team[]> {
     // return MOCK_TEAMS;
 }
 
-export async function getTeams(query?: string, leagueSlug?: string, leagueId?: number) {
+export async function getTeams(_query?: string, _leagueSlug?: string, _leagueId?: number) {
     // const searchParams = new URLSearchParams();
     // if (query) searchParams.set('query', query);
     // if (leagueSlug) searchParams.set('leagueSlug', leagueSlug);
@@ -22,13 +22,13 @@ export async function getTeams(query?: string, leagueSlug?: string, leagueId?: n
     return MOCK_TEAMS;
 }
 
-export async function getTeamDetail(teamSlug: string, leagueId?: string): Promise<TeamDetailResponse> {
+export async function getTeamDetail(_teamSlug: string, _leagueId?: string): Promise<TeamDetailResponse> {
     // const url = `/v1/team/${teamSlug}${leagueId ? `?league=${leagueId}` : ''}`;
     // return fetchAPI<TeamDetailResponse>(url);
     return MOCK_TEAM_DETAIL;
 }
 
-export async function getTeamTab(teamSlug: string, tab: string): Promise<TabResponse> {
+export async function getTeamTab(_teamSlug: string, _tab: string): Promise<TabResponse> {
     // return fetchAPI<TabResponse>(`/v1/team/${teamSlug}/${tab}`);
     return MOCK_TAB;
 }

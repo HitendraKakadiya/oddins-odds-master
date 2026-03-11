@@ -1,20 +1,14 @@
 import React from 'react';
 
-interface SquadMember {
-  id: number;
-  name: string;
-  position: string;
-  number?: number;
-  photo?: string;
-}
+import type { SquadPlayer } from '@/lib/api/types';
 
 interface TeamSquadListProps {
-  squad: any[];
+  squad: SquadPlayer[];
 }
 
 export default function TeamSquadList({ squad }: TeamSquadListProps) {
   // Mock players for high-fidelity demonstration matching the screenshots
-  const mockSquad: SquadMember[] = [
+  const mockSquad: SquadPlayer[] = [
     // Forwards
     { id: 1, name: 'Leandro Trossard', position: 'Forward', number: 19, photo: 'https://media.api-sports.io/football/players/534.png' },
     { id: 2, name: 'Bukayo Saka', position: 'Forward', number: 7, photo: 'https://media.api-sports.io/football/players/1465.png' },
@@ -56,7 +50,7 @@ export default function TeamSquadList({ squad }: TeamSquadListProps) {
   // Use mock data if squad is empty, otherwise use provided squad
   const displaySquad = squad && squad.length > 0 ? squad : mockSquad;
 
-  const getPlayerDetails = (player: SquadMember) => {
+  const getPlayerDetails = (player: SquadPlayer) => {
     // Generate realistic details based on names/ids for better high-fidelity effect
     const detailsMap: Record<string, string> = {
       'Leandro Trossard': 'Originally from Belgium - 31 years old',

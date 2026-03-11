@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { MatchData } from '@/lib/api/types';
@@ -58,12 +58,12 @@ export default function MatchHeader({ match, prevMatch, nextMatch, stats }: Matc
               <div className="flex flex-col -space-y-2 mt-2">
                 <div className="w-8 h-8 rounded-full bg-slate-50 border-2 border-white flex items-center justify-center overflow-hidden shadow-sm z-10">
                   {prevMatch.homeTeam?.logoUrl ? (
-                    <img src={prevMatch.homeTeam.logoUrl} className="w-full h-full object-contain p-1" />
+                    <img src={prevMatch.homeTeam.logoUrl} alt="" className="w-full h-full object-contain p-1" />
                   ) : <span className="text-xs">⚽</span>}
                 </div>
                 <div className="w-8 h-8 rounded-full bg-slate-50 border-2 border-white flex items-center justify-center overflow-hidden shadow-sm">
                   {prevMatch.awayTeam?.logoUrl ? (
-                    <img src={prevMatch.awayTeam.logoUrl} className="w-full h-full object-contain p-1" />
+                    <img src={prevMatch.awayTeam.logoUrl} alt="" className="w-full h-full object-contain p-1" />
                   ) : <span className="text-xs">⚽</span>}
                 </div>
               </div>
@@ -101,12 +101,12 @@ export default function MatchHeader({ match, prevMatch, nextMatch, stats }: Matc
               <div className="flex flex-col -space-y-2 mb-2">
                 <div className="w-8 h-8 rounded-full bg-slate-50 border-2 border-white flex items-center justify-center overflow-hidden shadow-sm z-10">
                   {nextMatch.homeTeam?.logoUrl ? (
-                    <img src={nextMatch.homeTeam.logoUrl} className="w-full h-full object-contain p-1" />
+                    <img src={nextMatch.homeTeam.logoUrl} alt="" className="w-full h-full object-contain p-1" />
                   ) : <span className="text-xs">⚽</span>}
                 </div>
                 <div className="w-8 h-8 rounded-full bg-slate-50 border-2 border-white flex items-center justify-center overflow-hidden shadow-sm">
                   {nextMatch.awayTeam?.logoUrl ? (
-                    <img src={nextMatch.awayTeam.logoUrl} className="w-full h-full object-contain p-1" />
+                    <img src={nextMatch.awayTeam.logoUrl} alt="" className="w-full h-full object-contain p-1" />
                   ) : <span className="text-xs">⚽</span>}
                 </div>
               </div>

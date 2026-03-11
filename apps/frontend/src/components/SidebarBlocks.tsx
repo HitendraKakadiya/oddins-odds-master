@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import type { LeaguesResponse, Prediction, Team } from '@/lib/api/types';
+import type { LeaguesResponse, Prediction } from '@/lib/api/types';
 
 interface DailyTipProps {
   featuredTips?: Prediction[];

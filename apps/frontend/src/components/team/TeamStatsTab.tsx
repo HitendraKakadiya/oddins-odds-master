@@ -2,15 +2,7 @@
 
 import React, { useState } from 'react';
 
-interface StatsRow {
-  rank: number;
-  team: { name: string; logo: string };
-  mp: number;
-  val: number;
-  avgOverall: string;
-  avgHome: string;
-  avgAway: string;
-}
+
 
 const subTabs = [
   { key: 'goals', label: 'Goals' },
@@ -25,6 +17,21 @@ const subTabs = [
 
 import { TeamStats } from '@/lib/api/types';
 
+interface APIStats {
+  goals?: {
+    for?: { total?: Record<string, Record<string, number | string>>; average?: Record<string, string>; [key: string]: unknown };
+    against?: { total?: Record<string, Record<string, number | string>>; average?: Record<string, string>; [key: string]: unknown };
+  };
+  clean_sheet?: Record<string, number>;
+  failed_to_score?: Record<string, number>;
+  btts?: Record<string, number | string>;
+  fixtures?: {
+    scoring_first?: Record<string, number>;
+    conceded_first?: Record<string, number>;
+  };
+  [key: string]: unknown;
+}
+
 interface TeamStatsTabProps {
   detailedStats?: TeamStats | null;
 }
@@ -34,10 +41,7 @@ export default function TeamStatsTab({ detailedStats }: TeamStatsTabProps) {
   const [filter, setFilter] = useState<'Overall' | 'Home' | 'Away'>('Overall');
   const [metric, setMetric] = useState('Goal Scored');
 
-  const getTeamVal = (category: string, subKey: string) => {
-    const section = filter.toLowerCase();
-    return (detailedStats as Record<string, any>)?.[category]?.[subKey]?.[section] || 0;
-  };
+
 
   const getDetailedStat = () => {
     if (!detailedStats) return [];
@@ -46,10 +50,10 @@ export default function TeamStatsTab({ detailedStats }: TeamStatsTabProps) {
     
     switch(activeSubTab) {
       case 'goals': {
-        const stats = detailedStats as Record<string, any>;
+        const stats = detailedStats as unknown as APIStats;
         return [
-          { label: 'Total Scored', val: stats.goals?.for?.total?.[section] || 0, avg: stats.goals?.for?.average?.[section] || '0' },
-          { label: 'Total Conceded', val: stats.goals?.against?.total?.[section] || 0, avg: stats.goals?.against?.average?.[section] || '0' },
+          { label: 'Total Scored', val: (stats.goals?.for?.total as unknown as Record<string, number | string>)?.[section] || 0, avg: (stats.goals?.for?.average as unknown as Record<string, string>)?.[section] || '0' },
+          { label: 'Total Conceded', val: (stats.goals?.against?.total as unknown as Record<string, number | string>)?.[section] || 0, avg: (stats.goals?.against?.average as unknown as Record<string, string>)?.[section] || '0' },
           { label: 'Clean Sheets', val: stats.clean_sheet?.[section] || 0, avg: '-' },
           { label: 'Failed to Score', val: stats.failed_to_score?.[section] || 0, avg: '-' },
         ];
@@ -60,23 +64,23 @@ export default function TeamStatsTab({ detailedStats }: TeamStatsTabProps) {
           { label: 'Red Cards', val: 0, avg: '-' },
         ];
       case 'over-under': {
-        const stats = detailedStats as Record<string, any>;
+        const stats = detailedStats as unknown as APIStats;
         return [
-          { label: 'Over 1.5', val: stats.goals?.for?.total?.['over-1_5']?.[section] || 'N/A', avg: '-' },
-          { label: 'Over 2.5', val: stats.goals?.for?.total?.['over-2_5']?.[section] || 'N/A', avg: '-' },
-          { label: 'Under 2.5', val: stats.goals?.for?.total?.['under-2_5']?.[section] || 'N/A', avg: '-' },
-          { label: 'Over 3.5', val: stats.goals?.for?.total?.['over-3_5']?.[section] || 'N/A', avg: '-' },
+          { label: 'Over 1.5', val: (stats.goals?.for?.total?.['over-1_5'] as Record<string, number | string>)?.[section] || 'N/A', avg: '-' },
+          { label: 'Over 2.5', val: (stats.goals?.for?.total?.['over-2_5'] as Record<string, number | string>)?.[section] || 'N/A', avg: '-' },
+          { label: 'Under 2.5', val: (stats.goals?.for?.total?.['under-2_5'] as Record<string, number | string>)?.[section] || 'N/A', avg: '-' },
+          { label: 'Over 3.5', val: (stats.goals?.for?.total?.['over-3_5'] as Record<string, number | string>)?.[section] || 'N/A', avg: '-' },
         ];
       }
       case 'clean-sheet': {
-        const stats = detailedStats as Record<string, any>;
+        const stats = detailedStats as unknown as APIStats;
         return [
           { label: 'Clean Sheets', val: stats.clean_sheet?.[section] || 0, avg: '-' },
           { label: 'BTTS Yes', val: stats.btts?.[section] || 'N/A', avg: '-' },
         ];
       }
       case 'scoring-first': {
-        const stats = detailedStats as Record<string, any>;
+        const stats = detailedStats as unknown as APIStats;
         return [
           { label: 'Scored First', val: stats.fixtures?.scoring_first?.[section] || 0, avg: '-' },
           { label: 'Conceded First', val: stats.fixtures?.conceded_first?.[section] || 0, avg: '-' },
@@ -84,9 +88,9 @@ export default function TeamStatsTab({ detailedStats }: TeamStatsTabProps) {
       }
       default:
         // Try generic fallback if sub-key exists in detailedStats
-        if ((detailedStats as Record<string, any>)[activeSubTab]) {
+        if ((detailedStats as unknown as APIStats)[activeSubTab]) {
             return [
-                { label: 'Value', val: (detailedStats as Record<string, any>)[activeSubTab]?.[section] || 0, avg: '-' }
+                { label: 'Value', val: ((detailedStats as unknown as APIStats)[activeSubTab] as Record<string, number>)?.[section] || 0, avg: '-' }
             ];
         }
         return [];
