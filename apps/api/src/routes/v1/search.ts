@@ -17,7 +17,7 @@ export async function searchRoutes(server: FastifyInstance) {
 
     // 1. Search Live Leagues
     const liveLeagues = await getLeaguesBySearchDirect(searchTerm);
-    const leagues = liveLeagues.map((item: any) => ({
+    const leagues = liveLeagues.map((item) => ({
       id: item.league.id,
       name: item.league.name,
       slug: item.league.name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]+/g, ''),
@@ -44,8 +44,8 @@ export async function searchRoutes(server: FastifyInstance) {
 
     // 3. Matches and Articles remain empty or simplified as they require local persistence/caching usually
     // or we'd need another live call which might be slow. The user specifically asked for "team page" data.
-    const matches: any[] = [];
-    const articles: any[] = [];
+    const matches: unknown[] = [];
+    const articles: unknown[] = [];
 
     return {
       q: searchTerm,

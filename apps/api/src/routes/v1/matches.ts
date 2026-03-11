@@ -1,5 +1,4 @@
 import { FastifyInstance } from 'fastify';
-import { query } from '../../db';
 import { getLiveMatchesDirect, getTodayOddsDirect, getPredictionsDirect } from '../../lib/sports';
 
 interface TodayQuery {
@@ -30,10 +29,10 @@ export async function matchesRoutes(server: FastifyInstance) {
 
     try {
       // 1. Fetch matches for the date from live API
-      let allMatches = await getLiveMatchesDirect(targetDate);
+      const allMatches = await getLiveMatchesDirect(targetDate);
 
       // 2. Fetch odds if filtering by market or minOdds
-      let allOdds: any[] = [];
+      let allOdds: unknown[] = [];
       if (market || minOdds) {
         allOdds = await getTodayOddsDirect(targetDate);
       }
@@ -42,12 +41,12 @@ export async function matchesRoutes(server: FastifyInstance) {
       let filteredMatches = allMatches;
 
       if (leagueId) {
-        filteredMatches = filteredMatches.filter((m: any) => m.league?.id === parseInt(leagueId, 10));
+        filteredMatches = filteredMatches.filter((m) => m.league?.id === parseInt(leagueId, 10));
       }
 
       if (market || minOdds) {
-        filteredMatches = filteredMatches.filter((m: any) => {
-          const matchOdds = allOdds.find((o: any) => o.matchId === m.matchId);
+        filteredMatches = filteredMatches.filter((m) => {
+          const matchOdds = (allOdds as any[]).find((o) => o.matchId === m.matchId);
           if (!matchOdds) return false;
 
           // Simple market mapping for live data
@@ -60,13 +59,13 @@ export async function matchesRoutes(server: FastifyInstance) {
           };
 
           const providerMarketName = marketMap[market || ''] || 'Match Winner';
-          const oddsForMarket = matchOdds.bookmakers?.[0]?.markets?.find((mk: any) => mk.name === providerMarketName);
+          const oddsForMarket = (matchOdds as any).bookmakers?.[0]?.markets?.find((mk: any) => mk.name === providerMarketName);
 
           if (!oddsForMarket) return false;
 
           if (minOdds) {
             const minOddsVal = parseFloat(minOdds.replace('>', '').replace('<', ''));
-            return oddsForMarket.values?.some((v: any) => v.odd >= minOddsVal);
+            return (oddsForMarket as any).values?.some((v: any) => v.odd >= minOddsVal);
           }
 
           return true;
@@ -77,7 +76,7 @@ export async function matchesRoutes(server: FastifyInstance) {
       const paginatedMatches = filteredMatches.slice(offset, offset + pageSizeNum);
 
       // Fetch predictions for the paginated matches
-      const paginatedMatchesWithPredictions = await Promise.all(paginatedMatches.map(async (m: any) => {
+      const paginatedMatchesWithPredictions = await Promise.all(paginatedMatches.map(async (m) => {
         try {
           const realPred = await getPredictionsDirect(m.matchId);
           if (realPred) {
@@ -105,7 +104,7 @@ export async function matchesRoutes(server: FastifyInstance) {
         matches: paginatedMatchesWithPredictions,
       };
     } catch (err) {
-      console.error('Failed to fetch live today matches:', err);
+      console.error('Failed to fetch live today matches:', (err as Error).message);
       // Fallback to empty if everything fails
       return {
         date: targetDate,
@@ -130,7 +129,7 @@ export async function matchesRoutes(server: FastifyInstance) {
       const topMatches = allMatches.slice(0, 5);
 
       // 3. Fetch predictions for each in parallel
-      const tips = await Promise.all(topMatches.map(async (m: any) => {
+      const tips = await Promise.all(topMatches.map(async (m) => {
         try {
           const prediction = await getPredictionsDirect(m.matchId);
           if (!prediction) return null;
@@ -147,7 +146,7 @@ export async function matchesRoutes(server: FastifyInstance) {
               name: m.league.name,
               slug: m.league.slug,
               countryName: m.league.country?.name,
-              countryCode: m.league.country?.code,
+              countryCode: (m.league.country as any)?.code,
             },
             homeTeam: {
               name: m.homeTeam.name,
@@ -169,7 +168,7 @@ export async function matchesRoutes(server: FastifyInstance) {
         tips: tips.filter(t => t !== null).slice(0, 3), // Return top 3 valid tips
       };
     } catch (err) {
-      console.error('Failed to fetch live featured tips:', err);
+      console.error('Failed to fetch live featured tips:', (err as Error).message);
       return {
         date: targetDate,
         tips: [],

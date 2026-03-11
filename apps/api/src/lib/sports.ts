@@ -2,14 +2,25 @@
  * Direct API-Football Client for Backend Proxy
  */
 
+import {
+    ApiProviderResponse,
+    ApiFixtureResponse,
+    ApiPredictionResponse,
+    ApiLeagueStandings,
+    ApiLeague,
+    ApiFixture,
+    ApiLeagueRecord,
+    ApiTeams
+} from './provider-types';
+
 const API_FOOTBALL_KEY = process.env.SPORTS_PROVIDER_API_KEY;
 const API_FOOTBALL_BASE_URL = 'https://v3.football.api-sports.io';
 
-const providerCache = new Map<string, { data: any, timestamp: number }>();
+const providerCache = new Map<string, { data: unknown, timestamp: number }>();
 export { providerCache };
 const PROVIDER_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
-export async function fetchFromSportsProvider(endpoint: string) {
+export async function fetchFromSportsProvider<T = unknown>(endpoint: string): Promise<T> {
     if (!API_FOOTBALL_KEY) {
         throw new Error('SPORTS_PROVIDER_API_KEY is not configured');
     }
@@ -17,7 +28,7 @@ export async function fetchFromSportsProvider(endpoint: string) {
     const cacheKey = endpoint;
     const cached = providerCache.get(cacheKey);
     if (cached && (Date.now() - cached.timestamp < PROVIDER_CACHE_TTL)) {
-        return cached.data;
+        return cached.data as T;
     }
 
     const url = `${API_FOOTBALL_BASE_URL}${endpoint}`;
@@ -33,7 +44,7 @@ export async function fetchFromSportsProvider(endpoint: string) {
         throw new Error(`Sports Provider API error: ${response.status} ${response.statusText}`);
     }
 
-    const data = await response.json();
+    const data = await response.json() as T;
     providerCache.set(cacheKey, { data, timestamp: Date.now() });
     return data;
 }
@@ -49,30 +60,41 @@ function generateTeamSlug(id: number, name: string) {
  * Fetch matches for a specific date and transform them for the UI
  */
 export async function getLiveMatchesDirect(date: string) {
-    const data: any = await fetchFromSportsProvider(`/fixtures?date=${date}`);
+    const data: ApiProviderResponse<ApiFixtureResponse> = await fetchFromSportsProvider(`/fixtures?date=${date}`);
 
     if (!data.response) return [];
 
-    return data.response.map((item: any) => mapMatch(item.fixture, item.league, item.teams, item));
+    return data.response.map((item) => mapMatch(item.fixture, item.league, item.teams, item));
 }
 
 /**
  * Fetch odds for all matches on a specific date
  */
 export async function getTodayOddsDirect(date: string) {
-    const data: any = await fetchFromSportsProvider(`/odds?date=${date}`);
+    const data: ApiProviderResponse<{
+        fixture: { id: number };
+        bookmakers: {
+            id: number;
+            name: string;
+            markets: {
+                id: number;
+                name: string;
+                values: { value: string; odd: string }[];
+            }[];
+        }[];
+    }> = await fetchFromSportsProvider(`/odds?date=${date}`);
 
     if (!data.response) return [];
 
-    return data.response.map((item: any) => ({
+    return data.response.map((item) => ({
         matchId: item.fixture.id,
-        bookmakers: item.bookmakers.map((bm: any) => ({
+        bookmakers: item.bookmakers.map((bm) => ({
             id: bm.id,
             name: bm.name,
-            markets: bm.markets.map((m: any) => ({
+            markets: bm.markets.map((m) => ({
                 id: m.id,
                 name: m.name,
-                values: m.values.map((v: any) => ({
+                values: m.values.map((v) => ({
                     value: v.value,
                     odd: v.odd
                 }))
@@ -82,7 +104,7 @@ export async function getTodayOddsDirect(date: string) {
 }
 
 export async function getFixtureDetailDirect(fixtureId: number) {
-    const data: any = await fetchFromSportsProvider(`/fixtures?id=${fixtureId}`);
+    const data: ApiProviderResponse<ApiFixtureResponse> = await fetchFromSportsProvider(`/fixtures?id=${fixtureId}`);
 
     if (!data.response || data.response.length === 0) return null;
 
@@ -99,8 +121,8 @@ export async function getFixtureDetailDirect(fixtureId: number) {
             slug: item.league.name.toLowerCase().replace(/\s+/g, '-'),
             logoUrl: item.league.logo,
             country: {
-                name: item.league.country,
-                flagUrl: item.league.flag
+                name: item.league.country || '',
+                flagUrl: item.league.flag || ''
             }
         },
         homeTeam: {
@@ -124,7 +146,7 @@ export async function getFixtureDetailDirect(fixtureId: number) {
  * Fetch predictions for a specific fixture
  */
 export async function getPredictionsDirect(fixtureId: number) {
-    const data: any = await fetchFromSportsProvider(`/predictions?fixture=${fixtureId}`);
+    const data: ApiProviderResponse<ApiPredictionResponse> = await fetchFromSportsProvider(`/predictions?fixture=${fixtureId}`);
 
     if (!data.response || data.response.length === 0) return null;
 
@@ -152,10 +174,10 @@ export async function getPredictionsDirect(fixtureId: number) {
  */
 export async function getMatchEventsDirect(fixtureId: number) {
     try {
-        const data: any = await fetchFromSportsProvider(`/fixtures/events?fixture=${fixtureId}`);
+        const data: ApiProviderResponse<any> = await fetchFromSportsProvider(`/fixtures/events?fixture=${fixtureId}`);
         return data.response || [];
     } catch (err) {
-        console.warn(`Failed to fetch events for fixture ${fixtureId}:`, (err as any).message);
+        console.warn(`Failed to fetch events for fixture ${fixtureId}:`, (err as Error).message);
         return [];
     }
 }
@@ -165,7 +187,7 @@ export async function getFixtureStatisticsDirect(fixtureId: number) {
         const data: any = await fetchFromSportsProvider(`/fixtures/statistics?fixture=${fixtureId}`);
         return data.response || [];
     } catch (err) {
-        console.warn(`Failed to fetch statistics for fixture ${fixtureId}:`, (err as any).message);
+        console.warn(`Failed to fetch statistics for fixture ${fixtureId}:`, (err as Error).message);
         return [];
     }
 }
@@ -178,7 +200,7 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
     try {
         predictionData = await fetchFromSportsProvider(`/predictions?fixture=${fixtureId}`);
     } catch (err) {
-        console.warn(`Failed to fetch predictions for fixture ${fixtureId}:`, (err as any).message);
+        console.warn(`Failed to fetch predictions for fixture ${fixtureId}:`, (err as Error).message);
     }
 
     const res = predictionData?.response?.[0];
@@ -211,7 +233,7 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
     }
 
     // Map match data
-    const match = mapMatch(fixture, league, teams, res);
+    mapMatch(fixture, league, teams, res);
 
     // Helper to map team stats
     const mapTeamStats = (side: 'home' | 'away', allMatches: any[] = []) => {
@@ -443,7 +465,7 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
     };
 }
 
-export function mapMatch(fixture: any, league: any, teams: any, res: any) {
+export function mapMatch(fixture: ApiFixture | any, league: ApiLeague | any, teams: ApiTeams | any, res: unknown) {
     const fId = fixture?.id || fixture?.matchId;
     const statusStr = fixture?.status?.short || (typeof fixture?.status === 'string' ? fixture.status : 'NS');
     const elapsedVal = fixture?.status?.elapsed || fixture?.elapsed || 0;
@@ -459,11 +481,12 @@ export function mapMatch(fixture: any, league: any, teams: any, res: any) {
             id: league?.id || fixture?.league?.id || 0,
             name: league?.name || fixture?.league?.name || 'Unknown League',
             slug: (league?.name || fixture?.league?.name || 'unknown-league').toLowerCase().replace(/\s+/g, '-'),
-            logoUrl: league?.logo || fixture?.league?.logoUrl || '',
-            season: league?.season || fixture?.league?.season,
+            logoUrl: league?.logo || (league as any)?.logo || fixture?.league?.logo || '',
+            season: league?.season || (league as any)?.season || fixture?.league?.season,
             country: {
-                name: league?.country || fixture?.league?.country?.name || '',
-                flagUrl: league?.flag || fixture?.league?.country?.flagUrl || ''
+                name: (league as any)?.country?.name || league?.country || fixture?.league?.country || '',
+                code: (league as any)?.country?.code || null,
+                flagUrl: (league as any)?.country?.flag || league?.flag || fixture?.league?.flag || ''
             }
         },
         homeTeam: {
@@ -477,13 +500,13 @@ export function mapMatch(fixture: any, league: any, teams: any, res: any) {
             logoUrl: teams?.away?.logo || fixture?.awayTeam?.logoUrl || ''
         },
         score: {
-            home: res?.goals?.home ?? res?.score?.fulltime?.home ?? (fixture as any)?.score?.home ?? (fixture?.status?.short === 'NS' ? null : 0),
-            away: res?.goals?.away ?? res?.score?.fulltime?.away ?? (fixture as any)?.score?.away ?? (fixture?.status?.short === 'NS' ? null : 0)
+            home: (res as any)?.goals?.home ?? (res as any)?.score?.fulltime?.home ?? (fixture as any)?.score?.home ?? (fixture?.status?.short === 'NS' ? null : 0),
+            away: (res as any)?.goals?.away ?? (res as any)?.score?.fulltime?.away ?? (fixture as any)?.score?.away ?? (fixture?.status?.short === 'NS' ? null : 0)
         }
     };
 }
 
-let leaguesCache: any[] | null = null;
+let leaguesCache: ApiLeagueRecord[] | null = null;
 let lastLeaguesFetch = 0;
 const CACHE_TTL = 1000 * 60 * 60; // 1 hour
 
@@ -494,14 +517,14 @@ export async function getLeaguesDirect() {
     }
 
     try {
-        const data: any = await fetchFromSportsProvider('/leagues');
+        const data: ApiProviderResponse<ApiLeagueRecord> = await fetchFromSportsProvider('/leagues');
         if (data.response) {
             leaguesCache = data.response;
             lastLeaguesFetch = now;
             return leaguesCache;
         }
     } catch (err) {
-        console.error('Failed to fetch leagues from provider:', err);
+        console.error('Failed to fetch leagues from provider:', (err as Error).message);
     }
 
     return leaguesCache || [];
@@ -509,17 +532,17 @@ export async function getLeaguesDirect() {
 
 export async function getLeaguesBySearchDirect(search: string) {
     try {
-        const data: any = await fetchFromSportsProvider(`/leagues?search=${encodeURIComponent(search)}`);
+        const data: ApiProviderResponse<ApiLeagueRecord> = await fetchFromSportsProvider(`/leagues?search=${encodeURIComponent(search)}`);
         return data.response || [];
     } catch (err) {
-        console.error('Failed to search leagues from provider:', err);
+        console.error('Failed to search leagues from provider:', (err as Error).message);
         return [];
     }
 }
 
 export async function getLeagueStandingsDirect(leagueId: number, season: number) {
     try {
-        const data: any = await fetchFromSportsProvider(`/standings?league=${leagueId}&season=${season}`);
+        const data: ApiProviderResponse<ApiLeagueStandings> = await fetchFromSportsProvider(`/standings?league=${leagueId}&season=${season}`);
 
         if (!data.response || data.response.length === 0) {
             throw new Error(`No standings found for league ${leagueId} in season ${season}`);
@@ -530,7 +553,7 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
         const allStandings = league.standings.flat();
 
         // Map basic standings
-        const mappedRows = allStandings.map((item: any) => {
+        const mappedRows = allStandings.map((item) => {
             const mapSplit = (split: any) => ({
                 played: split?.played || 0,
                 wins: split?.win || 0,
@@ -538,9 +561,9 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
                 losses: split?.lose || 0,
                 gf: split?.goals?.for || 0,
                 ga: split?.goals?.against || 0,
-                gd: item?.goalsDiff || 0,
-                points: item?.points || 0,
-                ppg: (split?.played || 0) > 0 ? parseFloat(((item?.points || 0) / split.played).toFixed(2)) : 0,
+                gd: (item as any)?.goalsDiff || 0,
+                points: (item as any)?.points || 0,
+                ppg: (split?.played || 0) > 0 ? parseFloat(((item as any)?.points / split.played).toFixed(2)) : 0,
                 avgScored: (split?.played || 0) > 0 ? parseFloat(((split?.goals?.for || 0) / split.played).toFixed(2)) : 0,
                 avgConceded: (split?.played || 0) > 0 ? parseFloat(((split?.goals?.against || 0) / split.played).toFixed(2)) : 0
             });
@@ -563,7 +586,7 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
 
         // Enrichment: Fetch all finished fixtures for this league once to aggregate stats
         try {
-            let allFixturesData: any = await fetchFromSportsProvider(`/fixtures?league=${leagueId}&season=${season}&status=FT`);
+            let allFixturesData: ApiProviderResponse<ApiFixtureResponse> = await fetchFromSportsProvider(`/fixtures?league=${leagueId}&season=${season}&status=FT`);
             let allFixtures = allFixturesData.response || [];
 
             // Fallback: some leagues use different statuses, try without status filter if empty
@@ -711,22 +734,60 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
                 .sort((a: any, b: any) => b.fixture.timestamp - a.fixture.timestamp)
                 .slice(0, MAX_FIXTURES);
 
-            const teamCornerMap = new Map<number, { overall: number[]; home: number[]; away: number[] }>();
-            const initEntry = () => ({ overall: [] as number[], home: [] as number[], away: [] as number[] });
-            const processStats = (sd: any, fixture: any) => {
-                (sd?.response || []).forEach((te: any) => {
+            const teamStatsMap = new Map<number, { corners: { overall: number[]; home: number[]; away: number[] }; cards: { overall: number[]; home: number[]; away: number[] } }>();
+            const initStatsEntry = () => ({ 
+                corners: { overall: [] as number[], home: [] as number[], away: [] as number[] },
+                cards: { overall: [] as number[], home: [] as number[], away: [] as number[] }
+            });
+            const processFixtureStats = (sd: any, fixture: any) => {
+                const teamsData = sd?.response || [];
+                // For cards/match, we need data from both teams for the same match to get TOTAL cards in that match
+                let matchTotalCards = 0;
+                let cardsFoundForMatch = false;
+
+                teamsData.forEach((te: any) => {
                     const teamId = te?.team?.id;
                     if (!teamId) return;
-                    const cs = (te?.statistics || []).find((s: any) => s.type === 'Corner Kicks');
-                    const v = cs?.value ?? null;
-                    if (v === null) return;
-                    const n = typeof v === 'string' ? parseInt(v, 10) : v;
-                    if (isNaN(n)) return;
-                    if (!teamCornerMap.has(teamId)) teamCornerMap.set(teamId, initEntry());
-                    const e = teamCornerMap.get(teamId)!;
-                    e.overall.push(n);
-                    if (fixture.teams?.home?.id === teamId) e.home.push(n); else e.away.push(n);
+                    if (!teamStatsMap.has(teamId)) teamStatsMap.set(teamId, initStatsEntry());
+                    const entry = teamStatsMap.get(teamId)!;
+
+                    // Corner Kicks
+                    const cornerStat = (te?.statistics || []).find((s: any) => s.type === 'Corner Kicks');
+                    const cornerVal = cornerStat?.value ?? null;
+                    if (cornerVal !== null) {
+                        const n = typeof cornerVal === 'string' ? parseInt(cornerVal, 10) : cornerVal;
+                        if (!isNaN(n)) {
+                            entry.corners.overall.push(n);
+                            if (fixture.teams?.home?.id === teamId) entry.corners.home.push(n); else entry.corners.away.push(n);
+                        }
+                    }
+
+                    // Card Stats (Yellow and Red)
+                    const yellowStat = (te?.statistics || []).find((s: any) => s.type === 'Yellow Cards');
+                    const redStat = (te?.statistics || []).find((s: any) => s.type === 'Red Cards');
+                    
+                    const y = yellowStat?.value ?? 0;
+                    const r = redStat?.value ?? 0;
+                    
+                    const yn = typeof y === 'string' ? parseInt(y, 10) : (y || 0);
+                    const rn = typeof r === 'string' ? parseInt(r, 10) : (r || 0);
+                    
+                    if (yellowStat || redStat) {
+                        cardsFoundForMatch = true;
+                        matchTotalCards += (yn + rn);
+                    }
                 });
+
+                // If cards were found, we attribute the total match cards to both teams to calculate "Over X.5 cards in matches involving Team Y"
+                if (cardsFoundForMatch) {
+                    teamsData.forEach((te: any) => {
+                        const teamId = te?.team?.id;
+                        if (!teamId) return;
+                        const entry = teamStatsMap.get(teamId)!;
+                        entry.cards.overall.push(matchTotalCards);
+                        if (fixture.teams?.home?.id === teamId) entry.cards.home.push(matchTotalCards); else entry.cards.away.push(matchTotalCards);
+                    });
+                }
             };
 
             // Probe first 5 fixtures to detect coverage, then fetch the rest if covered
@@ -737,10 +798,12 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
                     if (!fId) return;
                     try {
                         const sd: any = await fetchFromSportsProvider(`/fixtures/statistics?fixture=${fId}`);
-                        const sizeBefore = teamCornerMap.size;
-                        processStats(sd, fixture);
-                        if (teamCornerMap.size > sizeBefore) hasCoverage = true;
-                    } catch (_) { }
+                        const sizeBefore = teamStatsMap.size;
+                        processFixtureStats(sd, fixture);
+                        if (teamStatsMap.size > sizeBefore) hasCoverage = true;
+                    } catch (_) {
+                        // Ignore error
+                    }
                 }));
             }
 
@@ -752,14 +815,16 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
                         if (!fId) return;
                         try {
                             const sd: any = await fetchFromSportsProvider(`/fixtures/statistics?fixture=${fId}`);
-                            processStats(sd, fixture);
-                        } catch (_) { }
+                            processFixtureStats(sd, fixture);
+                        } catch (_) {
+                            // Ignore error
+                        }
                     }));
                 }
             }
 
             // Build corner stats from match counts (Tier 1)
-            const computeFromCounts = (counts: number[]) => {
+            const computeCornerStats = (counts: number[]) => {
                 if (counts.length === 0) return null;
                 const avg = parseFloat((counts.reduce((s, v) => s + v, 0) / counts.length).toFixed(2));
                 const overPct = (t: number) => Math.round((counts.filter(v => v > t).length / counts.length) * 100);
@@ -769,17 +834,37 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
                 };
             };
 
-            // Merge corner stats into final rows
+            const computeCardStats = (counts: number[]) => {
+                if (counts.length === 0) return null;
+                const avg = parseFloat((counts.reduce((s, v) => s + v, 0) / counts.length).toFixed(2));
+                const overPct = (t: number) => Math.round((counts.filter(v => v > t).length / counts.length) * 100);
+                return {
+                    average: avg,
+                    over35: overPct(3.5),
+                    over45: overPct(4.5),
+                    over55: overPct(5.5)
+                };
+            };
+
+            // Merge corner and card stats into final rows
             const finalRows = enrichedRows.map((row: any) => {
-                const entry = teamCornerMap.get(row.team.id);
-                if (entry && entry.overall.length > 0) {
-                    return {
-                        ...row,
-                        overall: { ...row.overall, corners: computeFromCounts(entry.overall) },
-                        home: { ...row.home, corners: computeFromCounts(entry.home) },
-                        away: { ...row.away, corners: computeFromCounts(entry.away) }
-                    };
+                const entry = teamStatsMap.get(row.team.id);
+                if (entry) {
+                    const enriched: any = { ...row };
+                    if (entry.corners.overall.length > 0) {
+                        enriched.overall = { ...enriched.overall, corners: computeCornerStats(entry.corners.overall) };
+                        enriched.home = { ...enriched.home, corners: computeCornerStats(entry.corners.home) };
+                        enriched.away = { ...enriched.away, corners: computeCornerStats(entry.corners.away) };
+                    }
+                    if (entry.cards.overall.length > 0) {
+                        enriched.overall = { ...enriched.overall, cards: computeCardStats(entry.cards.overall) };
+                        enriched.home = { ...enriched.home, cards: computeCardStats(entry.cards.home) };
+                        enriched.away = { ...enriched.away, cards: computeCardStats(entry.cards.away) };
+                    }
+                    return enriched;
                 }
+                
+                // Fallback to cached corner stats if available
                 const cs = (row as any).__cornerStats;
                 if (cs) {
                     const { __cornerStats: _, ...cleanRow } = row;
@@ -799,7 +884,7 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
             return mappedRows;
         }
     } catch (err) {
-        console.warn(`Failed to fetch standings for league ${leagueId}:`, (err as any).message);
+        console.warn(`Failed to fetch standings for league ${leagueId}:`, (err as Error).message);
         return []; // Return empty array instead of throwing to prevent page crash
     }
 }
@@ -941,28 +1026,31 @@ function getEmptyTeamStatsDetail() {
     };
 }
 
-function getEmptyTeamStats() {
-    return {
-        overall: getEmptyTeamStatsDetail(),
-        home: getEmptyTeamStatsDetail(),
-        away: getEmptyTeamStatsDetail(),
-        last5: [],
-        last5Home: [],
-        last5Away: [],
-        recentMatchesDetailed: []
-    };
-}
+// function getEmptyTeamStats() {
+//     return {
+//         overall: getEmptyTeamStatsDetail(),
+//         home: getEmptyTeamStatsDetail(),
+//         away: getEmptyTeamStatsDetail(),
+//         last5: [],
+//         last5Home: [],
+//         last5Away: [],
+//         recentMatchesDetailed: []
+//     };
+// }
 
 export async function getLeagueFixturesDirect(leagueId: number, season: number, type: 'next' | 'last' = 'next', count: number = 10) {
-    const data: any = await fetchFromSportsProvider(`/fixtures?league=${leagueId}&season=${season}&${type}=${count}`);
+    const data: ApiProviderResponse<ApiFixtureResponse> = await fetchFromSportsProvider(`/fixtures?league=${leagueId}&season=${season}&${type}=${count}`);
     if (!data.response) return [];
     return data.response.map((item: any) => mapMatch(item.fixture, item.league, item.teams, item));
 }
 
 export async function getTopScorersDirect(leagueId: number, season: number) {
-    const data: any = await fetchFromSportsProvider(`/players/topscorers?league=${leagueId}&season=${season}`);
+    const data: ApiProviderResponse<{
+        player: { id: number; name: string; photo: string; nationality: string; age: number };
+        statistics: any[];
+    }> = await fetchFromSportsProvider(`/players/topscorers?league=${leagueId}&season=${season}`);
     if (!data.response || data.response.length === 0) return [];
-    return data.response.map((item: any) => ({
+    return data.response.map((item) => ({
         player: {
             id: item.player?.id,
             name: item.player?.name,
@@ -975,9 +1063,12 @@ export async function getTopScorersDirect(leagueId: number, season: number) {
 }
 
 export async function getTopAssistsDirect(leagueId: number, season: number) {
-    const data: any = await fetchFromSportsProvider(`/players/topassists?league=${leagueId}&season=${season}`);
+    const data: ApiProviderResponse<{
+        player: { id: number; name: string; photo: string; nationality: string; age: number };
+        statistics: any[];
+    }> = await fetchFromSportsProvider(`/players/topassists?league=${leagueId}&season=${season}`);
     if (!data.response || data.response.length === 0) return [];
-    return data.response.map((item: any) => ({
+    return data.response.map((item) => ({
         player: {
             id: item.player?.id,
             name: item.player?.name,
@@ -991,7 +1082,7 @@ export async function getTopAssistsDirect(leagueId: number, season: number) {
 
 export async function getTeamByIdDirect(id: number) {
     try {
-        const data: any = await fetchFromSportsProvider(`/teams?id=${id}`);
+        const data: ApiProviderResponse<any> = await fetchFromSportsProvider(`/teams?id=${id}`);
         if (data.response && data.response.length > 0) {
             const item = data.response[0];
 
@@ -1006,7 +1097,7 @@ export async function getTeamByIdDirect(id: number) {
             };
         }
     } catch (err) {
-        console.warn(`Fetch by ID failed for ${id}:`, (err as any).message);
+        console.warn(`Fetch by ID failed for ${id}:`, (err as Error).message);
     }
 
     return null;
@@ -1016,7 +1107,7 @@ export async function getTeamBySlugDirect(slug: string) {
     // Try direct Live Search for the team
     const searchTerm = slug.replace(/-/g, ' ');
     try {
-        const data: any = await fetchFromSportsProvider(`/teams?search=${encodeURIComponent(searchTerm)}`);
+        const data: ApiProviderResponse<any> = await fetchFromSportsProvider(`/teams?search=${encodeURIComponent(searchTerm)}`);
         if (data.response && data.response.length > 0) {
             // Priority matching: Exact name match first, then closest match
             const exactMatch = data.response.find((r: any) =>
@@ -1038,7 +1129,7 @@ export async function getTeamBySlugDirect(slug: string) {
             };
         }
     } catch (err) {
-        console.warn(`Live search failed for ${slug}:`, (err as any).message);
+        console.warn(`Live search failed for ${slug}:`, (err as Error).message);
     }
 
     return null;
@@ -1046,11 +1137,11 @@ export async function getTeamBySlugDirect(slug: string) {
 
 export async function getTeamStatsDirect(teamId: number, leagueId: number, season: number) {
     try {
-        const data: any = await fetchFromSportsProvider(`/teams/statistics?team=${teamId}&league=${leagueId}&season=${season}`);
+        const data: ApiProviderResponse<any> = await fetchFromSportsProvider(`/teams/statistics?team=${teamId}&league=${leagueId}&season=${season}`);
         if (data.response && !Array.isArray(data.response) && Object.keys(data.response).length > 0) return data.response;
         if (Array.isArray(data.response) && data.response.length > 0) return data.response[0];
     } catch (err) {
-        console.warn(`Failed to fetch stats for team ${teamId}:`, (err as any).message);
+        console.warn(`Failed to fetch stats for team ${teamId}:`, (err as Error).message);
     }
 
     return null;
@@ -1065,12 +1156,12 @@ export async function getTeamMatchesDirect(teamId: number, type: 'next' | 'last'
         if (season) {
             endpoint += `&season=${season}`;
         }
-        const data: any = await fetchFromSportsProvider(endpoint);
+        const data: ApiProviderResponse<ApiFixtureResponse> = await fetchFromSportsProvider(endpoint);
         if (data.response && data.response.length > 0) {
             return data.response.map((item: any) => mapMatch(item.fixture, item.league, item.teams, item));
         }
     } catch (err) {
-        console.warn(`Failed to fetch ${type} matches for team ${teamId}:`, (err as any).message);
+        console.warn(`Failed to fetch ${type} matches for team ${teamId}:`, (err as Error).message);
     }
 
     return [];
@@ -1079,7 +1170,7 @@ export async function getTeamMatchesDirect(teamId: number, type: 'next' | 'last'
 
 export async function getTeamSquadDirect(teamId: number) {
     try {
-        const data: any = await fetchFromSportsProvider(`/players/squads?team=${teamId}`);
+        const data: ApiProviderResponse<any> = await fetchFromSportsProvider(`/players/squads?team=${teamId}`);
         if (data.response && data.response.length > 0) {
             return data.response[0].players.map((p: any) => ({
                 id: p.id,
@@ -1091,7 +1182,7 @@ export async function getTeamSquadDirect(teamId: number) {
             }));
         }
     } catch (err) {
-        console.warn(`Failed to fetch squad for team ${teamId}:`, (err as any).message);
+        console.warn(`Failed to fetch squad for team ${teamId}:`, (err as Error).message);
     }
 
     return [];
@@ -1105,18 +1196,18 @@ export async function getTeamsByLeagueDirect(leagueId: number, season?: number) 
 
         if (activeSeason === undefined) {
             const leagues = await getLeaguesDirect() || [];
-            const league = leagues.find((l: any) => l.league.id === leagueId);
-            activeSeason = (league?.seasons?.find((s: any) => s.current)?.year || new Date().getFullYear()) as number;
+            const league = leagues.find((l) => l.league.id === leagueId);
+            activeSeason = (league?.seasons?.find((s) => s.current)?.year || new Date().getFullYear()) as number;
         }
 
         // Try primary season
-        let data: any = await fetchFromSportsProvider(`/teams?league=${leagueId}&season=${activeSeason}`);
+        let data: ApiProviderResponse<any> = await fetchFromSportsProvider(`/teams?league=${leagueId}&season=${activeSeason}`);
 
         // Defensive: If 0 teams and we haven't tried the previous season yet, try (activeSeason - 1)
         if ((!data.response || data.response.length === 0) && !season) {
             const prevSeason = (activeSeason as number) - 1;
             console.log(`No teams for ${leagueId} in ${activeSeason}, trying ${prevSeason}...`);
-            const fallbackData: any = await fetchFromSportsProvider(`/teams?league=${leagueId}&season=${prevSeason}`);
+            const fallbackData: ApiProviderResponse<any> = await fetchFromSportsProvider(`/teams?league=${leagueId}&season=${prevSeason}`);
 
             if (fallbackData.response && fallbackData.response.length > 0) {
                 activeSeason = prevSeason;
@@ -1135,7 +1226,7 @@ export async function getTeamsByLeagueDirect(leagueId: number, season?: number) 
             }));
         }
     } catch (err) {
-        console.warn(`Failed to fetch teams for league ${leagueId}:`, (err as any).message);
+        console.warn(`Failed to fetch teams for league ${leagueId}:`, (err as Error).message);
     }
     return [];
 }
@@ -1143,7 +1234,7 @@ export async function getTeamsByLeagueDirect(leagueId: number, season?: number) 
 export async function getPopularTeamsDirect(ids: number[]) {
     try {
         const idBatch = ids.join('-');
-        const data: any = await fetchFromSportsProvider(`/teams?id=${idBatch}`);
+        const data: ApiProviderResponse<any> = await fetchFromSportsProvider(`/teams?id=${idBatch}`);
         if (data.response && data.response.length > 0) {
             return data.response.map((item: any) => ({
                 id: item.team.id,
@@ -1154,14 +1245,14 @@ export async function getPopularTeamsDirect(ids: number[]) {
             }));
         }
     } catch (err) {
-        console.warn(`Failed to fetch popular teams:`, (err as any).message);
+        console.warn(`Failed to fetch popular teams:`, (err as Error).message);
     }
     return [];
 }
 
 export async function getTeamLeaguesDirect(teamId: number) {
     try {
-        const data: any = await fetchFromSportsProvider(`/leagues?team=${teamId}`);
+        const data: ApiProviderResponse<ApiLeagueRecord> = await fetchFromSportsProvider(`/leagues?team=${teamId}`);
         if (data.response) {
             return data.response
                 .filter((item: any) => item.seasons.some((s: any) => s.current)) // Only active leagues
@@ -1171,11 +1262,11 @@ export async function getTeamLeaguesDirect(teamId: number) {
                     logo: item.league.logo,
                     type: item.league.type,
                     country: item.country.name,
-                    season: item.seasons.find((s: any) => s.current)?.year
+                    season: item.seasons.find((s: { current: any; }) => s.current)?.year
                 }));
         }
     } catch (err) {
-        console.warn(`Failed to fetch leagues for team ${teamId}:`, (err as any).message);
+        console.warn(`Failed to fetch leagues for team ${teamId}:`, (err as Error).message);
     }
     return [];
 }

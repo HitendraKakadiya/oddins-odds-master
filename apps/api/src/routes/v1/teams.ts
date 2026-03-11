@@ -8,7 +8,6 @@ import {
   getLeagueStandingsDirect,
   getTeamSquadDirect,
   getTeamsByLeagueDirect,
-  getPopularTeamsDirect,
   getTopScorersDirect,
   getTopAssistsDirect,
   getTeamLeaguesDirect,
@@ -18,7 +17,6 @@ import {
   getLeagueFixturesDirect,
   calculateVirtualStandings
 } from '../../lib/sports';
-import { FEATURED_LEAGUES } from '../../config/leagues';
 
 interface TeamsQuery {
   query?: string;
@@ -43,12 +41,12 @@ export async function teamsRoutes(server: FastifyInstance) {
   // GET /v1/teams/featured
   server.get('/teams/featured', async () => {
     // Strategy: Fetch top leagues dynamically and get their first couple of teams
-    let allLeagues = await getLeaguesDirect() || [];
+    const allLeagues = await getLeaguesDirect() || [];
     const topCountries = ['England', 'Spain', 'Germany', 'Italy', 'France'];
     const fallbackMajorIds = [39, 140, 78, 135, 61]; // PL, La Liga, Bundesliga, Serie A, Ligue 1
 
-    let topLeagues = allLeagues.filter((item: any) => {
-      const isCurrent = item.seasons.some((s: any) => s.current === true);
+    const topLeagues = allLeagues.filter((item) => {
+      const isCurrent = item.seasons.some((s) => s.current === true);
       const isTop5 = topCountries.includes(item.country.name);
       return isCurrent && isTop5 && item.league.type === 'League';
     }).slice(0, 5);
@@ -116,16 +114,16 @@ export async function teamsRoutes(server: FastifyInstance) {
       }
 
       // 2. Fetch Initial Data (Leagues & Initial Matches)
-      let competitions: any[] = await getTeamLeaguesDirect(liveTeam.id).catch(() => []);
+      const competitions = await getTeamLeaguesDirect(liveTeam.id).catch(() => []);
       let statsLeagueId = requestedLeagueId;
-      let nextMatches: any[] = [];
-      let recentMatches: any[] = [];
+      let nextMatches: unknown[] = [];
+      let recentMatches: unknown[] = [];
       let detectedSeason = null;
 
       if (statsLeagueId) {
         // If league is requested, find its current season from the leagues list
-        const comp = competitions.find((c: any) => c.id === statsLeagueId);
-        detectedSeason = comp?.season;
+        const comp = competitions.find((c) => (c as any).id === statsLeagueId);
+        detectedSeason = (comp as any)?.season;
 
         // Fetch matches for this specific league (cross-season for better data in cups)
         [nextMatches, recentMatches] = await Promise.all([
@@ -140,7 +138,7 @@ export async function teamsRoutes(server: FastifyInstance) {
         ]);
 
         const leagueCounts = new Map<number, number>();
-        recentMatches.forEach((m: any) => {
+        (recentMatches as any[]).forEach((m) => {
           if (m.league?.id) {
             leagueCounts.set(m.league.id, (leagueCounts.get(m.league.id) || 0) + 1);
           }
@@ -148,12 +146,12 @@ export async function teamsRoutes(server: FastifyInstance) {
         statsLeagueId = [...leagueCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || 39;
 
         // Detect season from these matches for the detected league
-        const targetMatches = [...recentMatches, ...nextMatches].filter((m: any) => m.league?.id === statsLeagueId);
+        const targetMatches = [...(recentMatches as any[]), ...(nextMatches as any[])].filter((m) => m.league?.id === statsLeagueId);
         if (targetMatches.length > 0) {
           detectedSeason = targetMatches[0].league?.season;
         } else {
           // Fallback to competitions list for detected league
-          detectedSeason = competitions.find((c: any) => c.id === statsLeagueId)?.season;
+          detectedSeason = (competitions.find((c) => (c as any).id === statsLeagueId) as any)?.season;
         }
       }
 
@@ -162,9 +160,9 @@ export async function teamsRoutes(server: FastifyInstance) {
 
       // 4. Fetch Stats Summary
       const createDefaultStats = () => ({
-        overall: { played: 0, wins: 0, draws: 0, losses: 0 },
-        home: { played: 0, wins: 0, draws: 0, losses: 0 },
-        away: { played: 0, wins: 0, draws: 0, losses: 0 },
+        overall: { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 },
+        home: { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 },
+        away: { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 },
         cleanSheets: 0,
         homeCleanSheets: 0,
         awayCleanSheets: 0,
@@ -182,13 +180,14 @@ export async function teamsRoutes(server: FastifyInstance) {
         cornersAgainstAvg: 0,
         cardsAvg: 0,
         cardsForAvg: 0,
-        cardsAgainstAvg: 0
+        cardsAgainstAvg: 0,
+        winRate: 0
       });
 
-      let statsSummary: any = createDefaultStats();
+      let statsSummary: Record<string, unknown> = createDefaultStats();
       let liveStats: any = null;
 
-      let aggregatedCorners: any = {
+      const aggregatedCorners = {
         average: { overall: 0, home: 0, away: 0 },
         over_7_5: { overall: "0%", home: "0%", away: "0%" },
         over_8_5: { overall: "0%", home: "0%", away: "0%" },
@@ -199,7 +198,7 @@ export async function teamsRoutes(server: FastifyInstance) {
         over_13_5: { overall: "0%", home: "0%", away: "0%" }
       };
 
-      let firstGoalStats: any = {
+      const firstGoalStats: Record<string, Record<string, number>> = {
         scoring_first: { overall: 0, home: 0, away: 0 },
         conceded_first: { overall: 0, home: 0, away: 0 }
       };
@@ -219,14 +218,14 @@ export async function teamsRoutes(server: FastifyInstance) {
 
         // B. Deep Aggregation from recent matches (corners, cards, first goal)
         (async () => {
-          const finishedMatches = recentMatches.filter((m: any) =>
+          const finishedMatches = (recentMatches as any[]).filter((m) =>
             ['FT', 'AET', 'PEN'].includes(m.status) && m.league?.id === statsLeagueId
           ).slice(0, 5);
 
           if (finishedMatches.length === 0) return null;
 
-          const statsPromises = finishedMatches.map((m: any) => getFixtureStatisticsDirect(m.matchId));
-          const eventsPromises = finishedMatches.map((m: any) => getMatchEventsDirect(m.matchId));
+          const statsPromises = finishedMatches.map((m) => getFixtureStatisticsDirect(m.matchId));
+          const eventsPromises = finishedMatches.map((m) => getMatchEventsDirect(m.matchId));
 
           const [matchesStats, matchesEvents] = await Promise.all([
             Promise.all(statsPromises),
@@ -247,7 +246,9 @@ export async function teamsRoutes(server: FastifyInstance) {
                 results = await getLeagueFixturesDirect(statsLeagueId, seasonToTry - 1, 'last', 50).catch(() => []);
               }
               if (results && results.length > 0) return calculateVirtualStandings(results);
-            } catch (err) { }
+            } catch (err) {
+              server.log.debug(`Virtual standings calculation failed: ${(err as Error).message}`);
+            }
             return [];
           }).catch(() => []),
 
@@ -265,7 +266,7 @@ export async function teamsRoutes(server: FastifyInstance) {
           .catch(() => []),
 
         // G. Next Match Detail
-        nextMatches[0] ? getFullPredictionDetailDirect(nextMatches[0].matchId).catch(() => null) : Promise.resolve(null)
+        (nextMatches as any[])[0] ? getFullPredictionDetailDirect((nextMatches as any[])[0].matchId).catch(() => null) : Promise.resolve(null)
       ]);
 
       liveStats = liveStatsData;
@@ -314,9 +315,9 @@ export async function teamsRoutes(server: FastifyInstance) {
       // Process Aggregation
       if (aggregationData) {
         const { finishedMatches, matchesStats, matchesEvents } = aggregationData;
-        let totals = { overall: 0, home: 0, away: 0 };
-        let counts = { overall: 0, home: 0, away: 0 };
-        let overs = {
+        const totals = { overall: 0, home: 0, away: 0 } as Record<string, number>;
+        const counts = { overall: 0, home: 0, away: 0 } as Record<string, number>;
+        const overs = {
           7.5: { overall: 0, home: 0, away: 0 },
           8.5: { overall: 0, home: 0, away: 0 },
           9.5: { overall: 0, home: 0, away: 0 },
@@ -324,34 +325,63 @@ export async function teamsRoutes(server: FastifyInstance) {
           11.5: { overall: 0, home: 0, away: 0 },
           12.5: { overall: 0, home: 0, away: 0 },
           13.5: { overall: 0, home: 0, away: 0 }
+        } as Record<number, { overall: number, home: number, away: number }>;
+        
+        const cards = {
+          totals: { overall: 0, for: 0, against: 0 },
+          counts: { overall: 0, for: 0, against: 0 }
         };
 
-        matchesStats.forEach((matchStat: any, index: number) => {
+        matchesStats.forEach((matchStat: unknown, index: number) => {
+          const mStat = matchStat as any[];
           const match = finishedMatches[index];
           const isTargetHome = match.homeTeam.id === liveTeam.id;
           const splitKey = isTargetHome ? 'home' : 'away';
 
-          if (matchStat && matchStat.length >= 2) {
-            const homeCorners = parseInt(matchStat.find((s: any) => s.team.id === match.homeTeam.id)?.statistics?.find((st: any) => st.type === 'Corner Kicks')?.value || '0', 10);
-            const awayCorners = parseInt(matchStat.find((s: any) => s.team.id === match.awayTeam.id)?.statistics?.find((st: any) => st.type === 'Corner Kicks')?.value || '0', 10);
+          if (mStat && mStat.length >= 2) {
+            const homeCorners = parseInt(mStat.find((s: any) => s.team.id === match.homeTeam.id)?.statistics?.find((st: any) => st.type === 'Corner Kicks')?.value || '0', 10);
+            const awayCorners = parseInt(mStat.find((s: any) => s.team.id === match.awayTeam.id)?.statistics?.find((st: any) => st.type === 'Corner Kicks')?.value || '0', 10);
             const totalMatchCorners = homeCorners + awayCorners;
+            
             totals.overall += totalMatchCorners;
             counts.overall++;
             totals[splitKey] += totalMatchCorners;
             counts[splitKey]++;
+            
             [7.5, 8.5, 9.5, 10.5, 11.5, 12.5, 13.5].forEach(threshold => {
               if (totalMatchCorners > threshold) {
-                overs[threshold as 7.5].overall++;
-                overs[threshold as 7.5][splitKey]++;
+                overs[threshold].overall++;
+                overs[threshold][splitKey]++;
               }
             });
+
+            // Card stats
+            const teamsCards = mStat.map((te: any) => {
+              const y = (te.statistics || []).find((s: any) => s.type === 'Yellow Cards')?.value ?? 0;
+              const r = (te.statistics || []).find((s: any) => s.type === 'Red Cards')?.value ?? 0;
+              return {
+                id: te.team.id,
+                total: (typeof y === 'string' ? parseInt(y, 10) : y) + (typeof r === 'string' ? parseInt(r, 10) : r)
+              };
+            });
+            
+            const targetTeamCards = teamsCards.find((t: any) => t.id === liveTeam.id)?.total || 0;
+            const opponentCards = teamsCards.find((t: any) => t.id !== liveTeam.id)?.total || 0;
+            const totalMatchCards = targetTeamCards + opponentCards;
+            
+            cards.totals.overall += totalMatchCards;
+            cards.counts.overall++;
+            cards.totals.for += targetTeamCards;
+            cards.counts.for++;
+            cards.totals.against += opponentCards;
+            cards.counts.against++;
           }
 
           const events = matchesEvents[index];
           if (events && Array.isArray(events)) {
             const firstGoal = events.find((e: any) => e.type === 'Goal');
             if (firstGoal) {
-              const scorerTeamId = firstGoal.team?.id;
+              const scorerTeamId = (firstGoal as any).team?.id;
               if (scorerTeamId === liveTeam.id) {
                 firstGoalStats.scoring_first.overall++;
                 firstGoalStats.scoring_first[splitKey]++;
@@ -366,7 +396,7 @@ export async function teamsRoutes(server: FastifyInstance) {
         const calcAvg = (sum: number, count: number) => count > 0 ? (sum / count).toFixed(2) : "0.00";
         const calcPct = (matchCount: number, totalCount: number) => totalCount > 0 ? Math.round((matchCount / totalCount) * 100) + "%" : "0%";
 
-        aggregatedCorners = {
+        const updatedCorners = {
           average: {
             overall: calcAvg(totals.overall, counts.overall),
             home: calcAvg(totals.home, counts.home),
@@ -408,15 +438,19 @@ export async function teamsRoutes(server: FastifyInstance) {
             away: calcPct(overs[13.5].away, counts.away)
           }
         };
+        Object.assign(aggregatedCorners, updatedCorners);
 
-        statsSummary.cornersAvg = aggregatedCorners.average.overall;
+        statsSummary.cornersAvg = (aggregatedCorners as any).average.overall;
+        statsSummary.cardsAvg = calcAvg(cards.totals.overall, cards.counts.overall);
+        statsSummary.cardsForAvg = calcAvg(cards.totals.for, cards.counts.for);
+        statsSummary.cardsAgainstAvg = calcAvg(cards.totals.against, cards.counts.against);
 
         if (statsSummary.overall.played === 0 && finishedMatches.length > 0) {
-          let mTotals = { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 };
-          let hTotals = { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 };
-          let aTotals = { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 };
+          const mTotals = { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 };
+          const hTotals = { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 };
+          const aTotals = { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 };
 
-          finishedMatches.forEach((match: any) => {
+          finishedMatches.forEach((match) => {
             const isHome = match.homeTeam.id === liveTeam.id;
             const goalsFor = isHome ? match.score.home : match.score.away;
             const goalsAgainst = isHome ? match.score.away : match.score.home;
@@ -425,17 +459,17 @@ export async function teamsRoutes(server: FastifyInstance) {
             mTotals.ga += goalsAgainst || 0;
             if (isHome) { hTotals.played++; hTotals.gf += goalsFor || 0; hTotals.ga += goalsAgainst || 0; }
             else { aTotals.played++; aTotals.gf += goalsFor || 0; aTotals.ga += goalsAgainst || 0; }
-            if (goalsFor > goalsAgainst) { mTotals.wins++; if (isHome) hTotals.wins++; else aTotals.wins++; }
-            else if (goalsFor === goalsAgainst) { mTotals.draws++; if (isHome) hTotals.draws++; else aTotals.draws++; }
+            if ((goalsFor || 0) > (goalsAgainst || 0)) { mTotals.wins++; if (isHome) hTotals.wins++; else aTotals.wins++; }
+            else if ((goalsFor || 0) === (goalsAgainst || 0)) { mTotals.draws++; if (isHome) hTotals.draws++; else aTotals.draws++; }
             else { mTotals.losses++; if (isHome) hTotals.losses++; else aTotals.losses++; }
           });
 
-          statsSummary.overall = mTotals;
-          statsSummary.home = hTotals;
-          statsSummary.away = aTotals;
-          statsSummary.winRate = Math.round((mTotals.wins / mTotals.played) * 100);
-          statsSummary.goalsScoredAvg = parseFloat((mTotals.gf / mTotals.played).toFixed(2));
-          statsSummary.goalsConcededAvg = parseFloat((mTotals.ga / mTotals.played).toFixed(2));
+          (statsSummary as any).overall = mTotals;
+          (statsSummary as any).home = hTotals;
+          (statsSummary as any).away = aTotals;
+          (statsSummary as any).winRate = Math.round((mTotals.wins / mTotals.played) * 100);
+          (statsSummary as any).goalsScoredAvg = parseFloat((mTotals.gf / mTotals.played).toFixed(2));
+          (statsSummary as any).goalsConcededAvg = parseFloat((mTotals.ga / mTotals.played).toFixed(2));
         }
       }
 
@@ -467,15 +501,6 @@ export async function teamsRoutes(server: FastifyInstance) {
             });
           }
           return result;
-        };
-
-        const estimateOver = (avg: any, threshold: number) => {
-          const a = parseFloat(avg) || 0;
-          if (a === 0) return "0%";
-          const diff = a - threshold;
-          let prob = 0.5 + (diff * 0.12);
-          prob = Math.max(0.05, Math.min(0.95, prob));
-          return `${Math.round(prob * 100)}%`;
         };
 
         const getMinuteSum = (minuteObj: any, startInd: number, endInd: number) => {
@@ -603,7 +628,7 @@ export async function teamsRoutes(server: FastifyInstance) {
         return reply.status(404).send({ error: 'Team not found' });
       }
 
-      let items: any[] = [];
+      let items: unknown[] = [];
 
       switch (tab) {
         case 'fixtures':

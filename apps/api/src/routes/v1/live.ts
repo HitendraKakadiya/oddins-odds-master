@@ -14,8 +14,8 @@ function slugify(text: string): string {
 }
 
 // Safe hybrid fetcher: tries provider first, then DB
-async function getHybridMatches(targetDate: string): Promise<{ matches: any[], total: number }> {
-    let matches: any[] = [];
+async function getHybridMatches(targetDate: string): Promise<{ matches: unknown[], total: number }> {
+    let matches: unknown[] = [];
     let total = 0;
 
     // 1. Try Live Provider
@@ -25,7 +25,7 @@ async function getHybridMatches(targetDate: string): Promise<{ matches: any[], t
             return { matches: liveMatches, total: liveMatches.length };
         }
     } catch (err) {
-        console.warn(`Live provider failed for ${targetDate}:`, (err as any).message);
+        console.warn(`Live provider failed for ${targetDate}:`, (err as Error).message);
     }
 
     // 2. Fallback to DB
@@ -94,7 +94,7 @@ async function getHybridMatches(targetDate: string): Promise<{ matches: any[], t
             }
         }
     } catch (dbErr) {
-        console.warn(`DB fallback failed for ${targetDate}:`, (dbErr as any).message);
+        console.warn(`DB fallback failed for ${targetDate}:`, (dbErr as Error).message);
     }
 
     return { matches, total };
@@ -103,42 +103,40 @@ async function getHybridMatches(targetDate: string): Promise<{ matches: any[], t
 export async function liveRoutes(server: FastifyInstance) {
     // GET /v1/live/matches
     server.get<{ Querystring: { date?: string; page?: string; pageSize?: string; leagueId?: string; market?: string; minOdds?: string } }>('/live/matches', async (request) => {
-        const { date, page = '1', pageSize = '20', leagueId, market, minOdds } = request.query;
+        const { date, page = '1', pageSize = '20', leagueId } = request.query;
         const targetDate = date || new Date().toISOString().split('T')[0];
         const pageNum = Math.max(1, parseInt(page, 10));
         const pageSizeNum = Math.min(100, Math.max(1, parseInt(pageSize, 10)));
         const offset = (pageNum - 1) * pageSizeNum;
 
-        const { matches, total: originalTotal } = await getHybridMatches(targetDate);
+        const { matches } = await getHybridMatches(targetDate);
 
         let filteredMatches = matches;
 
         // 1. Filter by League
         if (leagueId) {
             const leagueIdNum = parseInt(leagueId, 10);
-            filteredMatches = filteredMatches.filter(m => m.league?.id === leagueIdNum);
+            filteredMatches = filteredMatches.filter(m => (m as any).league?.id === leagueIdNum);
         }
 
         // 2. Filter by Market (Placeholder logic for now as provider data varies)
         // In a real scenario, we would check if the match has odds for this market.
 
         // 3. Filter by Odds
-        if (minOdds) {
-            // Placeholder: Odds filtering for live provider data is complex as it requires extra API calls.
-            // For now, we align the params but filtering might only be effective for DB-sourced matches.
-        }
+        // Placeholder: Odds filtering for live provider data is complex as it requires extra API calls.
+        // For now, we align the params but filtering might only be effective for DB-sourced matches.
 
         const pagedMatches = filteredMatches.slice(offset, offset + pageSizeNum);
 
         // Fetch predictions for the paginated matches
         const pagedMatchesWithPredictions = await Promise.all(pagedMatches.map(async (m) => {
             try {
-                const realPred = await getPredictionsDirect(m.matchId);
+                const realPred = await getPredictionsDirect((m as any).matchId);
                 if (realPred) {
                     return {
-                        ...m,
+                        ...(m as object),
                         featuredTip: {
-                            id: m.matchId,
+                            id: (m as any).matchId,
                             title: realPred.selection || 'Expert Pick',
                             isPremium: false,
                             confidence: realPred.probabilities?.home ? parseInt(realPred.probabilities.home) : null
@@ -146,7 +144,7 @@ export async function liveRoutes(server: FastifyInstance) {
                     };
                 }
             } catch (err) {
-                console.warn(`Failed to fetch prediction for match ${m.matchId}`);
+                console.warn(`Failed to fetch prediction for match ${(m as any).matchId}`);
             }
             return m;
         }));
@@ -171,9 +169,10 @@ export async function liveRoutes(server: FastifyInstance) {
         const { matches } = await getHybridMatches(targetDate);
 
         // Group by country
-        const countryGroups: Record<string, any> = {};
+        const countryGroups: Record<string, { country: any, leagues: Map<number, any> }> = {};
 
-        matches.forEach((m: any) => {
+        matches.forEach((mItem) => {
+            const m = mItem as any;
             const cName = m.league.country.name || 'International';
             if (!countryGroups[cName]) {
                 countryGroups[cName] = {
@@ -224,7 +223,8 @@ export async function liveRoutes(server: FastifyInstance) {
             // Paginate matches before fetching predictions to save API calls
             const pagedMatches = matches.slice(offset, offset + pageSizeNum);
 
-            const predictionPromises = pagedMatches.map(async (m) => {
+            const predictionPromises = pagedMatches.map(async (mItem) => {
+                const m = mItem as any;
                 try {
                     const realPred = await getPredictionsDirect(m.matchId);
                     if (realPred) {
@@ -337,8 +337,8 @@ export async function liveRoutes(server: FastifyInstance) {
             // If provider fails, we redirect or call the internal DB helper.
             // For now, let's just return a placeholder or 404 if provider has nothing live.
             return reply.status(404).send({ error: 'Live data not available for this match' });
-        } catch (error) {
-            console.error(`Live match detail failed for ${matchId}:`, error);
+        } catch (err) {
+            console.error(`Live match detail failed for ${matchId}:`, (err as Error).message);
             return reply.status(500).send({ error: 'Internal server error fetching live match' });
         }
     });
