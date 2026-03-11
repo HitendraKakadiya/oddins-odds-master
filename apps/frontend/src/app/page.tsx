@@ -5,7 +5,21 @@ import MatchListInfinite from '@/components/MatchListInfinite';
 import FAQAccordion from '@/components/FAQAccordion';
 import HighlightBanner from '@/components/HighlightBanner';
 import FeaturedTeams from '@/components/FeaturedTeams';
-import { getTodayMatches, getLeagues, getFeaturedTips, getStreams, getFeaturedTeams, getPredictions, getLiveTodayMatches, getLiveLeagues, getLiveFeaturedTips, getLiveStreams, getLivePredictions } from '@/lib/api';
+import { 
+  getLiveTodayMatches, 
+  getLiveLeagues, 
+  getLiveFeaturedTips, 
+  getFeaturedTeams, 
+  getLivePredictions 
+} from '@/lib/api';
+import type { 
+  MatchData, 
+  LeaguesResponse, 
+  FeaturedTipsResponse, 
+  Prediction,
+  Team,
+  PredictionsResponse
+} from '@/lib/api/types';
 
 export default async function HomePage({ searchParams }: { searchParams: { date?: string; leagueId?: string; market?: string; minOdds?: string } }) {
   let selectedDate = searchParams.date || new Date().toISOString().split('T')[0];
@@ -14,27 +28,22 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
   const selectedMinOdds = searchParams.minOdds || '';
 
   // Fetch data from local database via API
-  let matches: any[] = [];
-  let leaguesData: any = { items: [], total: 0, page: 1, pageSize: 50 };
-  let tipsData: any[] = [];
-  let streamsData: any[] = [];
-  let featuredTeams: any[] = [];
-  let streamsTotal = 0;
+  let matches: MatchData[] = [];
+  let leaguesData: { items: LeaguesResponse[]; total: number; page: number; pageSize: number } = { items: [], total: 0, page: 1, pageSize: 50 };
+  let tipsData: FeaturedTipsResponse['tips'] | Prediction[] = [];
+  let featuredTeams: Team[] = []; 
   let pagination = { page: 1, pageSize: 20, total: 0 };
 
   try {
-    const [matchesRes, leaguesRes, tipsRes, streamsRes, featuredRes, predictionsRes] = await Promise.all([
+    const [matchesRes, leaguesRes, tipsRes, featuredRes, predictionsRes] = await Promise.all([
       getLiveTodayMatches(selectedDate, 1, 20, selectedLeague, selectedMarket, selectedMinOdds).catch(err => { console.error('Live matches fetch failed:', err); return { matches: [], total: 0, page: 1, pageSize: 20, date: selectedDate }; }),
       getLiveLeagues(1, 400, selectedDate).catch(err => { console.error('Live leagues fetch failed:', err); return { items: [], total: 0, page: 1, pageSize: 50 }; }),
       getLiveFeaturedTips(selectedDate).catch(err => { console.error('Tips fetch failed:', err); return { tips: [] }; }),
-      getLiveStreams(selectedDate).catch(err => { console.error('Streams fetch failed:', err); return { items: [], total: 10 }; }), 
       getFeaturedTeams().catch(err => { console.error('Featured teams fetch failed:', err); return []; }),
       getLivePredictions(selectedDate).catch(err => { console.error('Predictions fetch failed:', err); return { items: [] }; })
     ]);
 
-    // Smart Fallback Handling:
-    // If user didn't request a specific date (default view), and API returned a different date (fallback),
-    // update the selectedDate to reflect what we are actually showing.
+    // Smart Fallback Handling
     if (!searchParams.date && matchesRes?.date && matchesRes.date !== selectedDate) {
         selectedDate = matchesRes.date;
     }
@@ -45,30 +54,44 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
       pageSize: matchesRes?.pageSize || 20, 
       total: matchesRes?.total || 0 
     };
-    leaguesData = leaguesRes || { items: [], total: 0, page: 1, pageSize: 20 };
-    const autoTips = (predictionsRes?.items && predictionsRes.items.length > 0) 
-      ? predictionsRes.items 
-      : matches.slice(0, 3);
+    
+    // Explicitly type leaguesData to avoid any
+    leaguesData = leaguesRes as { items: LeaguesResponse[]; total: number; page: number; pageSize: number } || { items: [], total: 0, page: 1, pageSize: 20 };
+    
+    // Improved autoTips mapping with strict types
+    const tipsItems = (predictionsRes as PredictionsResponse)?.items || [];
+    const autoTips: FeaturedTipsResponse['tips'] = (tipsItems.length > 0 
+      ? (tipsItems as Prediction[])
+      : (matches as unknown as Prediction[])).slice(0, 3).map((item) => ({
+        id: item.id || item.matchId,
+        matchId: item.matchId,
+        title: item.title || `${item.homeTeam?.name} vs ${item.awayTeam?.name}`,
+        isPremium: item.isPremium || false,
+        confidence: item.confidence || null,
+        kickoffAt: item.kickoffAt || null,
+        homeTeam: item.homeTeam,
+        awayTeam: item.awayTeam,
+        league: item.league ? {
+          name: item.league.name,
+          slug: item.league.slug || '',
+          countryName: item.league.countryName || item.league.country?.name || 'Unknown',
+          countryCode: item.league.countryCode || item.league.country?.code || null
+        } : null
+      }));
       
     tipsData = (tipsRes?.tips && tipsRes.tips.length > 0) ? tipsRes.tips : autoTips;
-    streamsData = streamsRes?.items || [];
-    streamsTotal = streamsRes?.total || 0;
-    featuredTeams = featuredRes || [];
+    
+    featuredTeams = (featuredRes as Team[]).map(t => ({
+      id: Number(t.id),
+      name: String(t.name),
+      slug: String(t.slug),
+      logoUrl: t.logoUrl || t.logo || undefined,
+      logo: t.logo || t.logoUrl || undefined,
+      country: String(t.country || 'Unknown')
+    }));
   } catch (error) {
     console.error('Failed to fetch home page data:', error);
   }
-
-  // Map streams for Sidebar
-  const streams = streamsData.map(item => ({
-    id: item.matchId,
-    home: item.homeTeam?.name || 'Home',
-    away: item.awayTeam?.name || 'Away',
-    time: item.kickoffAt && new Date(item.kickoffAt) > new Date() ? 
-      new Date(item.kickoffAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }) : 
-      'LIVE',
-    icon: '⚽'
-  }));
-
 
   return (
     <div className="min-h-screen bg-brand-surface pb-20">
@@ -126,8 +149,8 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
 
                <section>
                   <div className="flex items-center gap-4 sm:gap-6 mb-8 sm:mb-10">
-                    <h2 className="text-2xl sm:text-3xl font-black text-slate-900 whitespace-nowrap">Frequently Asked Questions</h2>
-                    <div className="h-px flex-1 bg-slate-200/60"></div>
+                     <h2 className="text-2xl sm:text-3xl font-black text-slate-900 whitespace-nowrap">Frequently Asked Questions</h2>
+                     <div className="h-px flex-1 bg-slate-200/60"></div>
                   </div>
                   <p className="text-[10px] text-slate-400 mb-10 font-black uppercase tracking-[0.2em]">Common questions about today&apos;s schedule ({selectedDate})</p>
                   <FAQAccordion />

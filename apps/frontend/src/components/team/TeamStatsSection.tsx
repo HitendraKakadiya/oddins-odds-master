@@ -1,12 +1,18 @@
 import React from 'react';
 
+import type { 
+  TeamDetailResponse, 
+  MatchData,
+  StandingsRow
+} from '@/lib/api';
+
 interface TeamStatsSectionProps {
   teamName: string;
   venue?: string;
   city?: string;
-  stats: any;
-  nextMatch?: any;
-  nextMatchDetail?: any;
+  stats: TeamDetailResponse['statsSummary'];
+  nextMatch?: MatchData;
+  nextMatchDetail?: TeamDetailResponse['nextMatchDetail'];
 }
 
 export default function TeamStatsSection({ teamName, venue, city, stats, nextMatch, nextMatchDetail }: TeamStatsSectionProps) {
@@ -15,8 +21,8 @@ export default function TeamStatsSection({ teamName, venue, city, stats, nextMat
   const awayStats = nextMatchDetail?.stats?.away?.overall;
   const comparison = nextMatchDetail?.stats?.comparison;
   
-  const homeRank = nextMatchDetail?.standings?.find((s: any) => s.team.id === nextMatchInfo?.homeTeam?.id)?.rank || '-';
-  const awayRank = nextMatchDetail?.standings?.find((s: any) => s.team.id === nextMatchInfo?.awayTeam?.id)?.rank || '-';
+  const homeRank = nextMatchDetail?.standings?.find((s: StandingsRow) => s.team.id === nextMatchInfo?.homeTeam?.id)?.rank || '-';
+  const awayRank = nextMatchDetail?.standings?.find((s: StandingsRow) => s.team.id === nextMatchInfo?.awayTeam?.id)?.rank || '-';
 
   const getCountdown = () => {
     if (!nextMatchInfo?.kickoffAt) return "Match scheduled";
@@ -51,16 +57,16 @@ export default function TeamStatsSection({ teamName, venue, city, stats, nextMat
     });
   };
 
-  const StatRow = ({ label, home, away, isPercent = false }: { label: string; home: any; away: any; isPercent?: boolean }) => (
+  const StatRow = ({ label, home, away, isPercent = false }: { label: string; home: string | number | undefined; away: string | number | undefined; isPercent?: boolean }) => (
     <div className="grid grid-cols-3 gap-4 py-3 border-b border-gray-50 last:border-0">
       <div className="text-center font-black text-gray-900 text-sm">
-        {home}{isPercent && home !== '-' ? '%' : ''}
+        {home ?? '-'}{isPercent && home !== undefined ? '%' : ''}
       </div>
       <div className="text-center text-[10px] font-black text-gray-400 uppercase tracking-widest self-center">
         {label}
       </div>
       <div className="text-center font-black text-gray-900 text-sm">
-        {away}{isPercent && away !== '-' ? '%' : ''}
+        {away ?? '-'}{isPercent && away !== undefined ? '%' : ''}
       </div>
     </div>
   );
@@ -83,7 +89,9 @@ export default function TeamStatsSection({ teamName, venue, city, stats, nextMat
               <div className="flex items-center justify-between gap-4">
                 <div className="flex flex-col items-center space-y-3 flex-1">
                   <div className="w-16 h-16 flex items-center justify-center bg-white rounded-2xl shadow-md border border-gray-100 p-2 group-hover:scale-110 transition-transform">
-                    <img src={nextMatchInfo?.homeTeam?.logoUrl} alt={nextMatchInfo?.homeTeam?.name} className="w-full h-full object-contain" />
+                    {nextMatchInfo?.homeTeam?.logoUrl && (
+                      <img src={nextMatchInfo.homeTeam.logoUrl} alt={nextMatchInfo.homeTeam.name} className="w-full h-full object-contain" />
+                    )}
                   </div>
                   <span className="text-xs font-black text-gray-900 uppercase tracking-widest text-center">{nextMatchInfo?.homeTeam?.name}</span>
                 </div>
@@ -94,14 +102,16 @@ export default function TeamStatsSection({ teamName, venue, city, stats, nextMat
                     {formatDate(nextMatchInfo?.kickoffAt)} - {formatTime(nextMatchInfo?.kickoffAt)}
                   </span>
                   <div className="flex items-center space-x-2 px-3 py-1 bg-slate-100 rounded-full">
-                    <img src={nextMatchInfo?.league?.logoUrl} className="w-4 h-4 object-contain" alt="" />
+                    <img src={nextMatchInfo?.league?.logoUrl || ''} className="w-4 h-4 object-contain" alt={nextMatchInfo?.league?.name || 'League'} />
                     <span className="text-[9px] font-black text-gray-500 uppercase tracking-tighter">{nextMatchInfo?.league?.name}</span>
                   </div>
                 </div>
 
                 <div className="flex flex-col items-center space-y-3 flex-1">
                   <div className="w-16 h-16 flex items-center justify-center bg-white rounded-2xl shadow-md border border-gray-100 p-2 group-hover:scale-110 transition-transform">
-                    <img src={nextMatchInfo?.awayTeam?.logoUrl} alt={nextMatchInfo?.awayTeam?.name} className="w-full h-full object-contain" />
+                    {nextMatchInfo?.awayTeam?.logoUrl && (
+                      <img src={nextMatchInfo.awayTeam.logoUrl} alt={nextMatchInfo.awayTeam.name} className="w-full h-full object-contain" />
+                    )}
                   </div>
                   <span className="text-xs font-black text-gray-900 uppercase tracking-widest text-center">{nextMatchInfo?.awayTeam?.name}</span>
                 </div>

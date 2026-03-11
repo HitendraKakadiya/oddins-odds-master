@@ -10,11 +10,17 @@ interface PlayerStat {
   value: number;
 }
 
+import type { 
+  TeamDetailResponse, 
+  PlayerStatRow, 
+  MatchData 
+} from '@/lib/api';
+
 interface TeamTopPerformersTabProps {
-  topScorers?: any[];
-  topAssists?: any[];
-  nextMatch?: any;
-  nextMatchDetail?: any;
+  topScorers?: PlayerStatRow[];
+  topAssists?: PlayerStatRow[];
+  nextMatch?: MatchData;
+  nextMatchDetail?: TeamDetailResponse['nextMatchDetail'];
 }
 
 export default function TeamTopPerformersTab({ 
@@ -40,8 +46,8 @@ export default function TeamTopPerformersTab({
   }));
 
   const nextMatchInfo = nextMatchDetail?.match || nextMatch;
-  const predictions = nextMatchDetail?.predictions;
-  const winPercent = predictions?.percent;
+  const reactions = (nextMatchDetail as any)?.predictions;
+  const winPercent = reactions?.percent;
 
   const getKickoffStatus = () => {
     if (!nextMatchInfo?.kickoffAt) return 'Schedule Ready';

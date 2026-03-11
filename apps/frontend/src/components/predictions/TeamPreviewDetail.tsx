@@ -1,12 +1,12 @@
 'use client';
 
-import type { TeamStats, MatchData } from '@/lib/api/types';
+import type { TeamStats, DetailedRecentMatch } from '@/lib/api/types';
 
 interface TeamPreviewDetailProps {
   teamName: string;
   leagueName: string;
   stats: TeamStats['overall'];
-  recentMatches: MatchData[];
+  recentMatches: DetailedRecentMatch[];
   isHome: boolean;
 }
 

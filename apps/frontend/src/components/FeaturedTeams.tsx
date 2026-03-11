@@ -1,13 +1,5 @@
 import Link from 'next/link';
-
-interface Team {
-  id: number;
-  name: string;
-  country: string;
-  logoUrl?: string;
-  logo?: string;
-  slug: string;
-}
+import type { Team } from '@/lib/api/types';
 
 export default function FeaturedTeams({ initialTeams = [] }: { initialTeams?: Team[] }) {
   // Ensure we show between 6 and 9 teams

@@ -1,12 +1,12 @@
-import { getMatchDetail, api } from '@/lib/api';
+import { api } from '@/lib/api';
 import PredictionHero from '@/components/predictions/PredictionHero';
 import PredictionAnalysis from '@/components/predictions/PredictionAnalysis';
 import TeamPreviewDetail from '@/components/predictions/TeamPreviewDetail';
 import H2HComparison from '@/components/predictions/H2HComparison';
 import { WatchBanner } from '@/components/predictions/AdditionalInfo';
 import PredictionStickySidebar from '@/components/predictions/PredictionStickySidebar';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import type { Prediction, PredictionsResponse } from '@/lib/api/types';
 
 // ISR: Revalidate every 5 minutes
 export const revalidate = 300;
@@ -27,7 +27,7 @@ export default async function PredictionDetailPage({ params }: PageProps) {
   // Fetch data in parallel from Live API
   const [matchData, predictionDetail, todayPredictionsRes] = await Promise.all([
     api.matches.getLiveMatchDetail(matchId).catch(() => null),
-    api.predictions.getLivePredictions(new Date().toISOString().split('T')[0]).catch(() => ({ items: [] })), // Use list as fallback prediction detail for now if needed, though getLiveMatchDetail returns full details
+    api.predictions.getLivePredictions(new Date().toISOString().split('T')[0]).catch(() => ({ items: [] })), 
     api.predictions.getLivePredictions(new Date().toISOString().split('T')[0], 1, 5).catch(() => ({ items: [] }))
   ]);
 
@@ -35,14 +35,14 @@ export default async function PredictionDetailPage({ params }: PageProps) {
     return notFound();
   }
 
-  const { match, stats, predictions: livePredictions, h2h } = matchData;
-  const predictions = (livePredictions && livePredictions.length > 0) ? livePredictions : (predictionDetail as any).predictions || [];
+  const { match, stats, predictions: livePredictions } = matchData;
+  const predictions: Prediction[] = (livePredictions && livePredictions.length > 0) ? livePredictions : (predictionDetail as PredictionsResponse).items || [];
   const todayPredictions = todayPredictionsRes.items || [];
 
   return (
     <div className="bg-[#F8FAFC] min-h-screen pb-20">
        {/* Hero Section */}
-       <PredictionHero match={match as any} />
+       <PredictionHero match={match} />
 
        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 -mt-10 relative z-20">
           <div className="flex flex-col lg:flex-row gap-8">
@@ -61,7 +61,7 @@ export default async function PredictionDetailPage({ params }: PageProps) {
                          teamName={match.homeTeam.name}
                          leagueName={match.league.name}
                          stats={stats.home.overall}
-                         recentMatches={stats.home.recentMatchesDetailed as any || []}
+                         recentMatches={stats.home.recentMatchesDetailed || []}
                          isHome={true}
                       />
                    )}
@@ -72,7 +72,7 @@ export default async function PredictionDetailPage({ params }: PageProps) {
                          teamName={match.awayTeam.name}
                          leagueName={match.league.name}
                          stats={stats.away.overall}
-                         recentMatches={stats.away.recentMatchesDetailed as any || []}
+                         recentMatches={stats.away.recentMatchesDetailed || []}
                          isHome={false}
                       />
                    )}
@@ -80,8 +80,8 @@ export default async function PredictionDetailPage({ params }: PageProps) {
                    {/* H2H Comparison */}
                    {stats?.home && stats?.away && (
                       <H2HComparison 
-                         homeTeam={match.homeTeam as any}
-                         awayTeam={match.awayTeam as any}
+                         homeTeam={match.homeTeam}
+                         awayTeam={match.awayTeam}
                          homeStats={stats.home}
                          awayStats={stats.away}
                          h2hMatches={matchData.h2h || []}

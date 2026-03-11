@@ -3,8 +3,8 @@
 import type { H2HMatch, TeamStats } from '@/lib/api/types';
 
 interface H2HComparisonProps {
-  homeTeam: { name: string; logoUrl?: string; country?: string };
-  awayTeam: { name: string; logoUrl?: string; country?: string };
+  homeTeam: { name: string; logoUrl?: string | null; country?: string };
+  awayTeam: { name: string; logoUrl?: string | null; country?: string };
   homeStats: TeamStats;
   awayStats: TeamStats;
   h2hMatches?: H2HMatch[];

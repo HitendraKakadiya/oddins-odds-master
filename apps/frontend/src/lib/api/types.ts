@@ -2,6 +2,23 @@
  * Shared Type Definitions for OddinsOdds API
  */
 
+export interface Team {
+    id: number;
+    name: string;
+    slug: string;
+    logoUrl?: string; 
+    logo?: string;
+    country: string; 
+}
+
+export interface League {
+    id: number;
+    name: string;
+    slug: string;
+    logoUrl?: string | null;
+    countryCode?: string;
+}
+
 export interface MatchData {
     matchId: number;
     providerFixtureId?: number;
@@ -19,6 +36,7 @@ export interface MatchData {
             code?: string | null;
             flagUrl?: string | null;
         };
+        season?: number | string | null;
     };
     homeTeam: {
         id: number;
@@ -278,29 +296,33 @@ export interface H2HSummary {
 }
 
 export interface Prediction {
-    id?: number;
-    matchId?: number;
-    title?: string;
+    id: number;
+    matchId: number;
+    title: string;
     shortReason?: string | null;
     isPremium?: boolean;
     confidence?: number | null;
-    kickoffAt?: string;
+    kickoffAt?: string | null;
     league?: {
         name: string;
         slug?: string;
         countryName?: string;
-    };
+        countryCode?: string | null;
+        country?: {
+            name: string;
+            code?: string | null;
+        };
+    } | null;
     homeTeam?: {
         name: string;
-        logoUrl?: string;
-    };
+        logoUrl?: string | null;
+    } | null;
     awayTeam?: {
         name: string;
-        logoUrl?: string;
-    };
-    selection?: string;
+        logoUrl?: string | null;
+    } | null;
+    selection?: string | null;
     leagueName?: string;
-    [key: string]: unknown;
 }
 
 export interface TeamStatsDetail {
@@ -432,6 +454,37 @@ export interface StreamsResponse {
     items: StreamItem[];
 }
 
+export interface SquadPlayer {
+    id: number;
+    name: string;
+    position: string;
+    number?: number | null;
+    photo?: string | null;
+}
+
+export interface PlayerStatRow {
+    player?: {
+        id: number;
+        name: string;
+        photo?: string;
+        nationality?: string;
+        age?: number;
+    };
+    statistics?: Array<{
+        goals?: {
+            total?: number;
+            assists?: number;
+        };
+    }>;
+    playerId?: number;
+    playerName?: string;
+    goals?: number;
+    assists?: number;
+    yellowCards?: number;
+    redCards?: number;
+    appearences?: number;
+}
+
 export interface TeamDetailResponse {
     team: {
         id: number;
@@ -445,19 +498,51 @@ export interface TeamDetailResponse {
     nextMatch?: MatchData | null;
     recentMatches?: MatchData[] | null;
     statsSummary?: {
-        wins?: number;
-        draws?: number;
-        losses?: number;
-        goalsScored?: number;
-        goalsConceded?: number;
-        cleanSheets?: number;
+        overall: { played: number; wins: number; draws: number; losses: number };
+        home: { played: number; wins: number; draws: number; losses: number };
+        away: { played: number; wins: number; draws: number; losses: number };
+        cleanSheets: number;
+        homeCleanSheets: number;
+        awayCleanSheets: number;
+        bttsRate: number;
+        homeBttsRate: number;
+        awayBttsRate: number;
+        failedToScoreRate: number;
+        homeFailedToScoreRate: number;
+        awayFailedToScoreRate: number;
+        ppg: number;
+        goalsScoredAvg: number;
+        goalsConcededAvg: number;
+        cornersAvg: number;
+        cardsAvg: number;
+        cornersForAvg: number;
+        cornersAgainstAvg: number;
+        cardsForAvg: number;
+        cardsAgainstAvg: number;
+        winRate?: number;
     } | null;
-    standings?: any[];
-    squad?: any[];
-    topScorers?: any[];
-    topAssists?: any[];
-    detailedStats?: any;
-    competitions?: any[];
+    standings?: StandingsRow[] | null;
+    squad?: SquadPlayer[] | null;
+    topScorers?: PlayerStatRow[] | null;
+    topAssists?: PlayerStatRow[] | null;
+    detailedStats?: TeamStats | null;
+    competitions?: Array<{
+        id: number;
+        name: string;
+        slug: string;
+        logoUrl?: string;
+        type?: string;
+    }> | null;
+    nextMatchDetail?: {
+        match: MatchData;
+        standings: StandingsRow[];
+        stats: {
+            home: { overall: TeamStatsDetail };
+            away: { overall: TeamStatsDetail };
+            comparison: Record<string, { home: string | number; away: string | number; value?: number; homeValue?: number; awayValue?: number }>;
+        };
+    } | null;
+    activeLeagueId?: number;
 }
 
 export interface TabItem {

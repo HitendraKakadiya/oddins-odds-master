@@ -1,10 +1,10 @@
-import { api, type Prediction, getStreams } from '@/lib/api';
-import CompactPredictionCard from '@/components/CompactPredictionCard';
+import { api } from '@/lib/api';
 import FeaturedPredictionCard from '@/components/FeaturedPredictionCard';
 import PredictionDateSelector from '@/components/PredictionDateSelector';
 import Sidebar from '@/components/Sidebar';
 import PredictionsListContainer from '@/components/PredictionsListContainer';
 import Link from 'next/link';
+import type { Prediction } from '@/lib/api/types';
 
 // ISR: Revalidate every 60 seconds
 export const revalidate = 60;
@@ -27,30 +27,18 @@ export default async function PredictionsPage({
   const selectedDate = searchParams.date || new Date().toISOString().split('T')[0];
 
   // Fetch data in parallel from Live API
-  const [predictionsData, leaguesData, featuredTipsData, streamsRes] = await Promise.all([
+  const [predictionsData, leaguesData, featuredTipsData] = await Promise.all([
     api.predictions.getLivePredictions(selectedDate).catch(() => ({ page: 1, pageSize, total: 0, items: [] })),
-    api.leagues.getLiveLeagues(1, 100, selectedDate).catch(() => ({ items: [], total: 0 })),
+    api.leagues.getLiveLeagues(1, 100, selectedDate).catch(() => ({ items: [], total: 0, page: 1, pageSize: 100 })),
     api.predictions.getLiveFeaturedTips(selectedDate).catch(() => ({ tips: [] })),
-    api.streams.getLiveStreams(selectedDate).catch(() => ({ items: [], total: 0 }))
   ]);
 
-  const predictions = predictionsData.items || [];
+  const predictions: Prediction[] = predictionsData.items || [];
 
   // Use featured tips first, then top 2 from current day
   const featuredPredictions = (featuredTipsData.tips && featuredTipsData.tips.length > 0)
     ? featuredTipsData.tips.slice(0, 2)
     : predictions.slice(0, 2);
-
-  // Format streams for Sidebar
-  const sidebarStreams = (streamsRes.items || []).map((item: any) => ({
-    id: item.matchId,
-    home: item.homeTeam?.name || 'Home',
-    away: item.awayTeam?.name || 'Away',
-    time: item.kickoffAt && new Date(item.kickoffAt) > new Date() ? 
-      new Date(item.kickoffAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }) : 
-      'LIVE',
-    icon: '⚽'
-  }));
 
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -85,7 +73,7 @@ export default async function PredictionsPage({
                 
                 <div className="p-6 lg:p-10 bg-slate-50/50">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {featuredPredictions.map((prediction: any) => (
+                    {featuredPredictions.map((prediction) => (
                       <FeaturedPredictionCard key={prediction.matchId} prediction={prediction} />
                     ))}
                   </div>
@@ -141,12 +129,11 @@ export default async function PredictionsPage({
           </article>
         </main>
 
-        {/* Sidebar */}
         <aside className="w-full lg:w-[380px] shrink-0 order-1 lg:order-2">
           <Sidebar 
-            leagueData={Array.isArray(leaguesData) ? leaguesData : (leaguesData.items || [])} 
-            initialTotal={Array.isArray(leaguesData) ? 0 : (leaguesData.total || 0)}
-            featuredTips={featuredPredictions.slice(0, 3)} 
+            leagueData={leaguesData.items || []} 
+            initialTotal={leaguesData.total || 0}
+            featuredTips={featuredPredictions} 
             mode="predictions"
             date={selectedDate}
           />

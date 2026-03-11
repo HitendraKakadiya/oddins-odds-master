@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import { getTeamDetail, getFeaturedTeams } from '@/lib/api';
+import type { TeamDetailResponse, Team } from '@/lib/api/types';
 import TeamHeader from '@/components/team/TeamHeader';
 import TeamNavigation from '@/components/team/TeamNavigation';
-
 import TeamTabsContent from '@/components/team/TeamTabsContent';
 
 // ISR: Revalidate - disabled for dev troubleshooting
@@ -19,14 +19,16 @@ interface PageProps {
 }
 
 export default async function TeamDetailPage({ params, searchParams }: PageProps) {
-  let teamData: any = null;
-  let featuredTeams: any[] = [];
+  let teamData: TeamDetailResponse | null = null;
+  let featuredTeams: Team[] = []; 
   
   try {
-    [teamData, featuredTeams] = await Promise.all([
+    const results = await Promise.all([
       getTeamDetail(params.teamSlug, searchParams.league),
       getFeaturedTeams().catch(() => [])
     ]);
+    teamData = results[0];
+    featuredTeams = (results[1] as Team[]) || [];
   } catch (err) {
     console.error(`Error fetching team ${params.teamSlug}:`, err);
   }
@@ -49,11 +51,11 @@ export default async function TeamDetailPage({ params, searchParams }: PageProps
     squad, 
     competitions, 
     nextMatch, 
-    nextMatchDetail,
     recentMatches,
     topScorers,
     topAssists,
     detailedStats,
+    nextMatchDetail,
     activeLeagueId
   } = teamData;
 
@@ -91,16 +93,16 @@ export default async function TeamDetailPage({ params, searchParams }: PageProps
 
         <TeamTabsContent 
           team={team}
-          standings={standings}
-          statsSummary={statsSummary}
-          squad={squad}
-          nextMatch={nextMatch}
-          nextMatchDetail={nextMatchDetail}
-          recentMatches={recentMatches}
-          topScorers={topScorers}
-          topAssists={topAssists}
-          detailedStats={detailedStats}
-          competitions={competitions}
+          standings={standings || []}
+          statsSummary={statsSummary || undefined}
+          squad={squad || []}
+          nextMatch={nextMatch || undefined}
+          nextMatchDetail={nextMatchDetail || undefined}
+          recentMatches={recentMatches || []}
+          topScorers={topScorers || []}
+          topAssists={topAssists || []}
+          detailedStats={detailedStats || undefined}
+          competitions={competitions || []}
           activeLeagueId={activeLeagueId}
         />
       </div>

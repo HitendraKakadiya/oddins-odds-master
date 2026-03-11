@@ -63,7 +63,7 @@ export default function PredictionsListContainer({
         {predictions.map((prediction) => (
           <CompactPredictionCard 
             key={prediction.id || prediction.matchId || Math.random()} 
-            prediction={prediction as any} 
+            prediction={prediction} 
           />
         ))}
       </div>

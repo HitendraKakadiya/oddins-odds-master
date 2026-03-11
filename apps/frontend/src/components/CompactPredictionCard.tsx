@@ -5,29 +5,29 @@ import Link from 'next/link';
 interface CompactPredictionCardProps {
   prediction: {
     matchId: number;
-    kickoffAt: string;
-    league: {
+    kickoffAt?: string | null;
+    league?: {
       name: string;
-      slug: string;
-      countryName: string;
-    };
-    homeTeam: {
-      name: string;
-      logoUrl?: string | null;
-    };
-    awayTeam: {
+      slug?: string;
+      countryName?: string;
+    } | null;
+    homeTeam?: {
       name: string;
       logoUrl?: string | null;
-    };
+    } | null;
+    awayTeam?: {
+      name: string;
+      logoUrl?: string | null;
+    } | null;
   };
 }
 
 export default function CompactPredictionCard({ prediction }: CompactPredictionCardProps) {
-  const date = new Date(prediction.kickoffAt).toLocaleDateString('en-GB', {
+  const date = prediction.kickoffAt ? new Date(prediction.kickoffAt).toLocaleDateString('en-GB', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric'
-  });
+  }) : 'TBD';
 
   return (
     <Link href={`/predictions/${prediction.matchId}`} className="group py-6 flex items-center gap-6 transition-all hover:bg-slate-50/50 px-4">
@@ -35,11 +35,11 @@ export default function CompactPredictionCard({ prediction }: CompactPredictionC
           <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-brand-midnight opacity-90"></div>
           <div className="relative z-10 h-full flex items-center justify-center gap-3">
              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20 overflow-hidden shadow-inner">
-                {prediction.homeTeam.logoUrl ? <img src={prediction.homeTeam.logoUrl} alt="" className="w-6 h-6 object-contain" /> : <span className="text-xs">⚽</span>}
+                {prediction.homeTeam?.logoUrl ? <img src={prediction.homeTeam.logoUrl} alt="" className="w-6 h-6 object-contain" /> : <span className="text-xs">⚽</span>}
              </div>
              <span className="text-[10px] font-black text-white italic opacity-30">VS</span>
              <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20 overflow-hidden shadow-inner">
-                {prediction.awayTeam.logoUrl ? <img src={prediction.awayTeam.logoUrl} alt="" className="w-6 h-6 object-contain" /> : <span className="text-xs">⚽</span>}
+                {prediction.awayTeam?.logoUrl ? <img src={prediction.awayTeam.logoUrl} alt="" className="w-6 h-6 object-contain" /> : <span className="text-xs">⚽</span>}
              </div>
           </div>
           <div className="absolute top-2 left-2 bg-brand-emerald text-white text-[8px] font-black px-2 py-0.5 rounded shadow-sm tracking-widest">PREDICTION</div>
@@ -48,10 +48,10 @@ export default function CompactPredictionCard({ prediction }: CompactPredictionC
        <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2">
              <span className="text-brand-emerald font-bold">+</span>
-             <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">{prediction.league.name} <span className="opacity-30 px-1">•</span> {date}</span>
+             <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">{prediction.league?.name || 'Unknown League'} <span className="opacity-30 px-1">•</span> {date}</span>
           </div>
           <h4 className="text-lg font-black text-slate-800 group-hover:text-brand-emerald transition-colors line-clamp-2 leading-tight">
-             {prediction.homeTeam.name} vs {prediction.awayTeam.name} Prediction | {prediction.league.name} | {date.split('/')[0]}/{date.split('/')[1]}
+             {prediction.homeTeam?.name || 'Home Team'} vs {prediction.awayTeam?.name || 'Away Team'} Prediction | {prediction.league?.name || 'Unknown League'} | {date.split('/')[0]}/{date.split('/')[1]}
           </h4>
        </div>
 

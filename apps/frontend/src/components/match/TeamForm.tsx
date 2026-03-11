@@ -180,8 +180,8 @@ function StatComparisonCard({ title, homeValue, awayValue, homeTeam, awayTeam, u
     title: string; 
     homeValue: number; 
     awayValue: number;
-    homeTeam: any;
-    awayTeam: any;
+    homeTeam: { id: number; name: string; logoUrl?: string | null };
+    awayTeam: { id: number; name: string; logoUrl?: string | null };
     unit?: string;
     lowerIsBetter?: boolean;
 }) {

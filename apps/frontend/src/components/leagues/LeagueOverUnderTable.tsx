@@ -32,7 +32,7 @@ export default function LeagueOverUnderTable({ standings }: LeagueOverUnderTable
              <span className="px-3 py-2 text-xs font-black text-white/60 uppercase">Threshold:</span>
              <select 
               value={threshold}
-              onChange={(e) => setThreshold(e.target.value as any)}
+              onChange={(e) => setThreshold(e.target.value as '05' | '15' | '25' | '35' | '45' | '55')}
               className="bg-transparent text-white text-xs font-black focus:outline-none cursor-pointer pr-2"
              >
                {thresholds.map(t => <option key={t.value} value={t.value} className="text-slate-800">{t.label}</option>)}
@@ -72,10 +72,10 @@ export default function LeagueOverUnderTable({ standings }: LeagueOverUnderTable
           </thead>
           <tbody className="divide-y divide-slate-50">
             {standings.map((row, idx) => {
-              const key = `${type}${threshold}`;
-              const overall = (row.overall.overUnder as any)?.[key] || { count: 0, percentage: 0 };
-              const home = (row.home.overUnder as any)?.[key] || { count: 0, percentage: 0 };
-              const away = (row.away.overUnder as any)?.[key] || { count: 0, percentage: 0 };
+              const key = `${type}${threshold}` as keyof NonNullable<typeof row.overall.overUnder>;
+              const overall = row.overall.overUnder?.[key] || { count: 0, percentage: 0 };
+              const home = row.home.overUnder?.[key] || { count: 0, percentage: 0 };
+              const away = row.away.overUnder?.[key] || { count: 0, percentage: 0 };
 
               return (
                 <tr key={`${row.team.id}-${idx}`} className={`hover:bg-slate-50/50 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-[#FAFBFF]/40'}`}>

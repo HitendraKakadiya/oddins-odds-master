@@ -21,11 +21,10 @@ export default async function MatchDetailPage({ params }: PageProps) {
     if (!isNaN(matchId)) {
       matchData = await getLiveMatchDetail(matchId);
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(`Failed to fetch match ${params.matchId}:`, error);
     // If it's a real API failure (e.g. Rate Limit 429 or 500 Server Error), we MUST throw it
-    // so Next.js's Data Cache doesn't mistakenly cache a 200 OK "Match not found" layout.
-    if (error?.status !== 404) {
+    if (error && typeof error === 'object' && 'status' in error && error.status !== 404) {
       throw error;
     }
   }
@@ -37,7 +36,7 @@ export default async function MatchDetailPage({ params }: PageProps) {
            <span className="text-4xl text-slate-300">🔎</span>
         </div>
         <h1 className="text-3xl font-black text-slate-800 mb-4">Match not found</h1>
-        <p className="text-slate-400 font-bold mb-8">We couldn't find the details for this match. It might have been postponed or removed.</p>
+        <p className="text-slate-400 font-bold mb-8">We couldn&apos;t find the details for this match. It might have been postponed or removed.</p>
         <Link href="/predictions" className="bg-brand-emerald text-white px-8 py-4 rounded-2xl font-black shadow-lg shadow-brand-emerald/20 hover:scale-105 transition-transform inline-block">
           Return to Predictions
         </Link>

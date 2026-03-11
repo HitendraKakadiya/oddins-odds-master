@@ -2,15 +2,31 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import type { LeaguesResponse } from '@/lib/api';
+import type { LeaguesResponse, Prediction } from '@/lib/api';
 import { getLiveLeagues } from '@/lib/api';
 
 interface SidebarProps {
   leagueData: LeaguesResponse[];
   initialTotal?: number;
-  featuredTips?: any[];
+  featuredTips?: Prediction[];
   mode?: 'default' | 'predictions';
   date?: string;
+}
+
+interface SidebarPrediction {
+  id?: string | number;
+  kickoffAt?: string | null;
+  leagueName?: string;
+  league?: { name: string; slug?: string; countryName?: string; countryCode?: string | null; country?: { name: string; code?: string | null } } | null;
+  prediction?: string;
+  title?: string;
+  selection?: string | null;
+  matchId?: string | number;
+  time?: string;
+  date?: string;
+  homeTeam?: { name: string; logoUrl?: string | null; logo?: string | null } | null;
+  awayTeam?: { name: string; logoUrl?: string | null; logo?: string | null } | null;
+  countryCode?: string;
 }
 
 export default function Sidebar({ 
@@ -23,7 +39,6 @@ export default function Sidebar({
   // Leagues State
   const [competitions, setCompetitions] = useState<LeaguesResponse[]>(leagueData || []);
   const [page, setPage] = useState(1);
-  const [total, setTotal] = useState(initialTotal);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState((leagueData || []).length < initialTotal);
   const loaderRef = useRef<HTMLDivElement>(null);
@@ -36,7 +51,6 @@ export default function Sidebar({
   // Sync Leagues State with Props
   useEffect(() => {
     setCompetitions(leagueData || []);
-    setTotal(initialTotal);
     setPage(1);
     setHasMore((leagueData || []).length < initialTotal);
   }, [leagueData, initialTotal]);
@@ -53,8 +67,7 @@ export default function Sidebar({
       if (response && response.items) {
         setCompetitions(prev => [...prev, ...response.items]);
         setPage(nextPage);
-        setTotal(response.total);
-        setHasMore(competitions.length + response.items.length < response.total);
+        setHasMore((competitions.length + response.items.length) < response.total);
       } else {
         setHasMore(false);
       }
@@ -129,26 +142,26 @@ export default function Sidebar({
 
   const sourcePredictions = (featuredTips && featuredTips.length > 0 ? featuredTips : FALLBACK_PREDICTIONS).slice(0, 3);
   
-  const displayPredictions = sourcePredictions.map((tip, index) => {
+  const displayPredictions = sourcePredictions.map((tip: SidebarPrediction, index: number) => {
     const kickoffDate = tip.kickoffAt ? new Date(tip.kickoffAt) : null;
-    const leagueName = tip.leagueName || tip.league?.name || tip.leagueName || 'Elite Competition';
-    const predictionText = tip.prediction || tip.title || tip.selection || tip.featuredTip?.title || 'Expert Analysis';
+    const leagueName = tip.leagueName || tip.league?.name || 'Elite Competition';
+    const predictionText = tip.prediction || tip.title || tip.selection || 'Expert Analysis';
     
     return {
-      id: tip.id || tip.matchId || `tip-${index}`,
+      id: (tip.id || tip.matchId || `tip-${index}`).toString(),
       leagueName: leagueName,
       time: kickoffDate ? kickoffDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : (tip.time || '20:00'),
       date: kickoffDate ? kickoffDate.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) : (tip.date || 'Today'),
       homeTeam: { 
         name: tip.homeTeam?.name || 'Home Team', 
-        logo: tip.homeTeam?.logoUrl || tip.homeTeam?.logo 
+        logo: tip.homeTeam?.logoUrl || tip.homeTeam?.logo || 'https://via.placeholder.com/100' 
       },
       awayTeam: { 
         name: tip.awayTeam?.name || 'Away Team', 
-        logo: tip.awayTeam?.logoUrl || tip.awayTeam?.logo
+        logo: tip.awayTeam?.logoUrl || tip.awayTeam?.logo || 'https://via.placeholder.com/100' 
       },
       prediction: predictionText,
-      countryCode: tip.countryCode || tip.league?.countryCode || tip.league?.country?.code
+      countryCode: tip.countryCode || tip.league?.countryCode || tip.league?.country?.code || 'EU'
     };
   });
   
@@ -180,7 +193,7 @@ export default function Sidebar({
                     {currentPrediction.countryCode ? (
                       <img 
                         src={`https://flagcdn.com/${currentPrediction.countryCode.toLowerCase()}.svg`} 
-                        alt="" 
+                        alt={currentPrediction.leagueName} 
                         className="w-6 h-4 object-cover rounded-sm" 
                       />
                     ) : (
@@ -202,7 +215,7 @@ export default function Sidebar({
                 <div className="flex flex-col items-center w-[100px] group/team">
                   <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-2xl mb-2 flex items-center justify-center p-2.5 shadow-sm group-hover/team:scale-105 group-hover/team:-rotate-2 transition-all duration-300">
                     {currentPrediction.homeTeam.logo ? (
-                      <img src={currentPrediction.homeTeam.logo} alt="" className="w-full h-full object-contain" />
+                      <img src={currentPrediction.homeTeam.logo} alt={currentPrediction.homeTeam.name} className="w-full h-full object-contain" />
                     ) : (
                       <span className="text-2xl">⚽</span>
                     )}

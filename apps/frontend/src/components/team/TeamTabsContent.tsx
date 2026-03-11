@@ -10,18 +10,27 @@ import TeamCornersTab from './TeamCornersTab';
 import TeamStatsTab from './TeamStatsTab';
 import TeamTopPerformersTab from './TeamTopPerformersTab';
 
+import type { 
+  TeamDetailResponse, 
+  StandingsRow, 
+  SquadPlayer, 
+  MatchData, 
+  PlayerStatRow, 
+  TeamStats 
+} from '@/lib/api/types';
+
 interface TeamTabsContentProps {
-  team: any;
-  standings: any[];
-  statsSummary: any;
-  squad: any[];
-  nextMatch?: any;
-  recentMatches?: any[];
-  topScorers?: any[];
-  topAssists?: any[];
-  detailedStats?: any;
-  nextMatchDetail?: any;
-  competitions?: any[];
+  team: TeamDetailResponse['team'];
+  standings: StandingsRow[];
+  statsSummary: TeamDetailResponse['statsSummary'];
+  squad: SquadPlayer[];
+  nextMatch?: MatchData;
+  recentMatches?: MatchData[];
+  topScorers?: PlayerStatRow[];
+  topAssists?: PlayerStatRow[];
+  detailedStats?: TeamStats;
+  nextMatchDetail?: TeamDetailResponse['nextMatchDetail'];
+  competitions?: TeamDetailResponse['competitions'];
   activeLeagueId?: number;
 }
 
@@ -54,9 +63,9 @@ export default function TeamTabsContent({
   const searchParams = useSearchParams();
 
   // Highlight active league from competitions or defaults
-  const currentLeague = competitions?.find(c => c.id === activeLeagueId) || {
+  const currentLeague = competitions?.find(c => (c.id || (c as any).leagueId) === activeLeagueId) || {
     name: nextMatch?.league?.name || recentMatches?.[0]?.league?.name || 'Premier League',
-    logo: nextMatch?.league?.logoUrl || recentMatches?.[0]?.league?.logoUrl || 'https://media.api-sports.io/football/leagues/39.png',
+    logoUrl: nextMatch?.league?.logoUrl || recentMatches?.[0]?.league?.logoUrl || 'https://media.api-sports.io/football/leagues/39.png',
     id: activeLeagueId
   };
 
@@ -79,13 +88,17 @@ export default function TeamTabsContent({
       case 'squads':
         return <TeamSquadList squad={squad || []} />;
       case 'matches':
-        return <TeamMatchesTab team={team} upcomingMatches={nextMatch ? [nextMatch] : []} lastMatches={recentMatches || []} stats={statsSummary} standings={standings} />;
+        return <TeamMatchesTab team={{ 
+          id: team?.id || 0, 
+          name: team?.name || 'Unknown', 
+          logoUrl: team?.logoUrl || '' 
+        }} upcomingMatches={nextMatch ? [nextMatch] : []} lastMatches={recentMatches || []} stats={statsSummary} standings={standings} />;
       case 'corners':
         return <TeamCornersTab detailedStats={detailedStats} />;
       case 'stats':
         return <TeamStatsTab detailedStats={detailedStats} />;
       case 'top-scorers':
-        return <TeamTopPerformersTab topScorers={topScorers} topAssists={topAssists} nextMatch={nextMatch} nextMatchDetail={nextMatchDetail} />;
+        return <TeamTopPerformersTab topScorers={topScorers} topAssists={topAssists} nextMatch={nextMatch} nextMatchDetail={nextMatchDetail as any} />;
       default:
         return null;
     }
@@ -120,7 +133,7 @@ export default function TeamTabsContent({
           >
             <div className="flex items-center space-x-3">
               <div className="w-6 h-6 flex items-center justify-center p-0.5 bg-white rounded-lg shadow-sm border border-slate-100">
-                <img src={currentLeague.logo} alt="League" className="w-full h-full object-contain" />
+                <img src={currentLeague.logoUrl || ''} alt="League" className="w-full h-full object-contain" />
               </div>
               <span className="text-xs font-black text-slate-700 uppercase tracking-widest">{currentLeague.name}</span>
             </div>
@@ -146,7 +159,7 @@ export default function TeamTabsContent({
                     }`}
                   >
                     <div className="w-8 h-8 flex items-center justify-center p-1 bg-white rounded-lg border border-slate-100 shadow-sm">
-                      <img src={comp.logo} alt={comp.name} className="w-full h-full object-contain" />
+                      <img src={comp.logoUrl || (comp as any).logo} alt={comp.name} className="w-full h-full object-contain" />
                     </div>
                     <div className="flex flex-col items-start overflow-hidden">
                       <span className={`text-xs font-black uppercase tracking-wider truncate w-full text-left ${
@@ -171,12 +184,12 @@ export default function TeamTabsContent({
       {/* Static Sections - Always visible below the tab content */}
       <div className="mt-8 pt-8 border-t border-slate-100/50">
         <TeamStatsSection 
-          teamName={team.name} 
+          teamName={team?.name || 'Unknown Team'} 
           stats={statsSummary} 
-          venue={team.venue}
-          city={team.city}
+          venue={team?.venue}
+          city={team?.city}
           nextMatch={nextMatch}
-          nextMatchDetail={nextMatchDetail}
+          nextMatchDetail={nextMatchDetail as any}
         />
       </div>
     </>

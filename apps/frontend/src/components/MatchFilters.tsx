@@ -7,7 +7,18 @@ export type FilterType =
   | 'Win Either Halves' | 'Double Chance' | 'Both Teams to Score' | 'Sure 2 Odds' 
   | 'Over 9.5 Corners' | 'Under 9.5 Corners' | 'Correct Score' | 'HT/FT' | 'DNB' | 'Handicap' | 'Draw';
 
-export function MatchFilter({ leagues = [] }: { leagues?: any[] }) {
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { League } from '@/lib/api/types';
+
+interface LeagueGroup {
+  country: {
+    name: string;
+    flagUrl?: string | null;
+  };
+  leagues: League[];
+}
+
+export function MatchFilter({ leagues = [] }: { leagues?: LeagueGroup[] }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -132,7 +143,7 @@ export function MatchFilter({ leagues = [] }: { leagues?: any[] }) {
             className="w-full bg-white border border-slate-200/60 rounded-2xl px-5 py-3.5 text-sm font-bold text-slate-800 appearance-none focus:border-brand-emerald focus:ring-2 focus:ring-brand-emerald/5 outline-none transition-all shadow-sm"
           >
             <option value="">All Leagues</option>
-            {allLeagues.map((league: any) => (
+            {allLeagues.map((league) => (
               <option key={league.id} value={league.id}>{league.name}</option>
             ))}
           </select>
@@ -176,7 +187,6 @@ export function MatchFilter({ leagues = [] }: { leagues?: any[] }) {
   );
 }
 
-import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 
 export function DateSelector({ selectedDate }: { selectedDate?: string }) {
   const router = useRouter();

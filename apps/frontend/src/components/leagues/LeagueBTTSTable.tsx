@@ -12,8 +12,8 @@ export default function LeagueBTTSTable({ standings }: LeagueBTTSTableProps) {
   const [filter, setFilter] = useState<'overall' | 'home' | 'away'>('overall');
 
   const sorted = [...standings].sort((a, b) => {
-    const aCount = (a[filter] as any)?.btts?.count || 0;
-    const bCount = (b[filter] as any)?.btts?.count || 0;
+    const aCount = a[filter]?.btts?.count || 0;
+    const bCount = b[filter]?.btts?.count || 0;
     return bCount - aCount;
   });
 
@@ -44,7 +44,7 @@ export default function LeagueBTTSTable({ standings }: LeagueBTTSTableProps) {
           </thead>
           <tbody className="divide-y divide-slate-50">
             {sorted.map((row, idx) => {
-              const stats = (row[filter] as any);
+              const stats = row[filter];
               const btts = stats?.btts || { count: 0, percentage: 0 };
               return (
                 <tr key={`${row.team.id}-${idx}`} className={`hover:bg-slate-50/50 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'}`}>

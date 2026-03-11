@@ -15,11 +15,11 @@ export default function LeagueScoringFirstTable({ standings }: LeagueScoringFirs
   const [mode, setMode] = useState<StatMode>('scoringFirst');
 
   const sorted = [...standings].sort((a, b) => {
-    const aCount = (a[filter] as any)?.[mode]?.count || 0;
-    const bCount = (b[filter] as any)?.[mode]?.count || 0;
+    const aCount = a[filter]?.[mode]?.count || 0;
+    const bCount = b[filter]?.[mode]?.count || 0;
     return bCount - aCount;
   }).filter(row => {
-    const stats = (row[filter] as any)?.[mode];
+    const stats = row[filter]?.[mode];
     return stats && (stats.count > 0 || stats.percentage > 0);
   });
 
@@ -68,7 +68,7 @@ export default function LeagueScoringFirstTable({ standings }: LeagueScoringFirs
             </thead>
             <tbody className="divide-y divide-slate-50">
               {sorted.map((row, idx) => {
-                const stats = (row[filter] as any);
+                const stats = row[filter];
                 const stat = stats?.[mode] || { count: 0, percentage: 0 };
                 return (
                   <tr key={`${row.team.id}-${idx}`} className={`hover:bg-slate-50/50 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'}`}>

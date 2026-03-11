@@ -103,7 +103,7 @@ export default function Footer() {
     }
 
     fetchFooterData();
-  }, []);
+  }, []); // Run once on mount
 
   return (
     <footer className="bg-brand-midnight border-t border-white/5 mt-8 sm:mt-12 lg:mt-16 py-8 sm:py-12 lg:py-16 text-white">

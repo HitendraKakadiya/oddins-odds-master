@@ -26,7 +26,6 @@ export default function MatchListInfinite({
 }: MatchListInfiniteProps) {
   const [matches, setMatches] = useState<MatchData[]>(initialMatches);
   const [page, setPage] = useState(initialPage);
-  const [total, setTotal] = useState(initialTotal);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(initialMatches.length < initialTotal);
   
@@ -65,7 +64,6 @@ export default function MatchListInfinite({
       if (response && response.matches) {
         setMatches(prev => [...prev, ...response.matches]);
         setPage(nextPage);
-        setTotal(response.total);
         setHasMore((matches.length + response.matches.length) < response.total);
       } else {
         setHasMore(false);
@@ -99,7 +97,6 @@ export default function MatchListInfinite({
   useEffect(() => {
     setMatches(initialMatches);
     setPage(initialPage);
-    setTotal(initialTotal);
     setHasMore(initialMatches.length < initialTotal);
   }, [initialMatches, initialPage, initialTotal, selectedDate, leagueId, market, minOdds]);
 

@@ -5,7 +5,7 @@ import Link from 'next/link';
 interface LeagueHeroProps {
   league: {
     name: string;
-    logoUrl?: string;
+    logoUrl?: string | null;
     type?: string;
     country: {
       name: string;
@@ -28,7 +28,11 @@ export default function LeagueHero({ league, season, stats }: LeagueHeroProps) {
         {/* League Logo & Title Section */}
         <div className="flex-1 flex flex-col items-center text-center">
           <div className="w-32 h-32 md:w-40 md:h-40 rounded-[32px] bg-slate-50 border border-slate-100 p-6 mb-8 flex items-center justify-center shadow-sm">
-            <img src={league.logoUrl} alt={league.name} className="w-full h-full object-contain" />
+            {league.logoUrl ? (
+              <img src={league.logoUrl} alt={league.name} className="w-full h-full object-contain" />
+            ) : (
+              <span className="text-4xl text-slate-200">⚽</span>
+            )}
           </div>
           
           <div className="flex flex-col items-center gap-3 mb-4">

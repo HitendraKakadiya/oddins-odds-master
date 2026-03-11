@@ -8,6 +8,10 @@ interface MatchSummaryProps {
   match: MatchData;
 }
 
+interface MatchEventWithScore extends MatchEvent {
+  runningScore?: string;
+}
+
 export default function MatchSummary({ events, match }: MatchSummaryProps) {
   const sortedEvents = useMemo(() => {
     if (!events) return [];
@@ -52,7 +56,7 @@ export default function MatchSummary({ events, match }: MatchSummaryProps) {
 
       <div className="p-0">
         <div className="flex flex-col">
-          {eventsWithScore.map((event: any, index) => {
+          {eventsWithScore.map((event: MatchEventWithScore, index) => {
             const isHome = Number(event.team.id) === Number(match.homeTeam.id);
             
             return (
@@ -68,16 +72,16 @@ export default function MatchSummary({ events, match }: MatchSummaryProps) {
                     <div className="flex items-center justify-end gap-3">
                       <div className="flex flex-col items-end">
                         <span className="text-xs md:text-sm font-black text-slate-700">
-                           {event.player.name}
-                           {event.assist.name && (
+                           {event.player?.name || 'Player'}
+                           {event.assist?.name && (
                              <span className="text-[10px] text-slate-400 font-bold ml-1.5">({event.assist.name})</span>
                            )}
                         </span>
                         {event.type === 'subst' && (
                           <div className="flex items-center gap-1 mt-0.5">
-                             <span className="text-[9px] font-black text-red-400 uppercase">Out: {event.player.name}</span>
+                             <span className="text-[9px] font-black text-red-400 uppercase">Out: {event.player?.name || 'Player'}</span>
                              <span className="text-slate-300"> | </span>
-                             <span className="text-[9px] font-black text-green-500 uppercase">In: {event.assist.name}</span>
+                             <span className="text-[9px] font-black text-green-500 uppercase">In: {event.assist?.name || 'Player'}</span>
                           </div>
                         )}
                       </div>
@@ -107,16 +111,16 @@ export default function MatchSummary({ events, match }: MatchSummaryProps) {
                     <div className="flex items-center justify-start gap-3">
                       <div className="flex flex-col items-start">
                         <span className="text-xs md:text-sm font-black text-slate-700">
-                           {event.player.name}
-                           {event.assist.name && (
+                           {event.player?.name || 'Player'}
+                           {event.assist?.name && (
                              <span className="text-[10px] text-slate-400 font-bold ml-1.5">({event.assist.name})</span>
                            )}
                         </span>
                         {event.type === 'subst' && (
                           <div className="flex items-center gap-1 mt-0.5">
-                             <span className="text-[9px] font-black text-green-500 uppercase">In: {event.assist.name}</span>
+                             <span className="text-[9px] font-black text-green-500 uppercase">In: {event.assist?.name || 'Player'}</span>
                              <span className="text-slate-300"> | </span>
-                             <span className="text-[9px] font-black text-red-400 uppercase">Out: {event.player.name}</span>
+                             <span className="text-[9px] font-black text-red-400 uppercase">Out: {event.player?.name || 'Player'}</span>
                           </div>
                         )}
                       </div>

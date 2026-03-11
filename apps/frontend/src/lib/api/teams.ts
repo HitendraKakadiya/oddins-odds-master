@@ -3,11 +3,11 @@
  */
 
 import { fetchAPI } from './client';
-import { TeamDetailResponse, TabResponse } from './types';
+import { TeamDetailResponse, TabResponse, Team } from './types';
 import { MOCK_TEAMS, MOCK_TEAM_DETAIL, MOCK_TAB } from './mockTeams';
 
-export async function getFeaturedTeams(): Promise<any[]> {
-    return fetchAPI<any[]>('/v1/teams/featured');
+export async function getFeaturedTeams(): Promise<Team[]> {
+    return fetchAPI<Team[]>('/v1/teams/featured');
     // return MOCK_TEAMS;
 }
 

@@ -47,7 +47,7 @@ export function MatchRow({ match }: MatchProps) {
               <span className="font-bold text-[13px] md:text-sm text-slate-800 group-hover:text-brand-emerald transition-colors truncate">{match.homeTeam.name}</span>
               <div className="w-8 h-8 md:w-9 md:h-9 bg-slate-50 rounded-lg md:rounded-xl flex items-center justify-center text-[9px] md:text-[10px] font-black text-slate-400 border border-slate-100 shrink-0 overflow-hidden">
                 {match.homeTeam.logoUrl ? (
-                  <img src={match.homeTeam.logoUrl} alt="" className="w-5 h-5 md:w-6 md:h-6 object-contain" />
+                  <img src={match.homeTeam.logoUrl} alt={match.homeTeam.name} className="w-5 h-5 md:w-6 md:h-6 object-contain" />
                 ) : (
                   match.homeTeam.name.substring(0,2).toUpperCase()
                 )}
@@ -63,7 +63,7 @@ export function MatchRow({ match }: MatchProps) {
             <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
               <div className="w-8 h-8 md:w-9 md:h-9 bg-slate-50 rounded-lg md:rounded-xl flex items-center justify-center text-[9px] md:text-[10px] font-black text-slate-400 border border-slate-100 shrink-0 overflow-hidden">
                 {match.awayTeam.logoUrl ? (
-                  <img src={match.awayTeam.logoUrl} alt="" className="w-5 h-5 md:w-6 md:h-6 object-contain" />
+                  <img src={match.awayTeam.logoUrl} alt={match.awayTeam.name} className="w-5 h-5 md:w-6 md:h-6 object-contain" />
                 ) : (
                   match.awayTeam.name.substring(0,2).toUpperCase()
                 )}

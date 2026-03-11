@@ -3,13 +3,13 @@ import React from 'react';
 interface TeamHeaderProps {
   team: {
     name: string;
-    logoUrl?: string;
-    country?: string;
-    venue?: string;
+    logoUrl?: string | null;
+    country?: string | null;
+    venue?: string | null;
   };
   competitions: Array<{
     name: string;
-    logo: string;
+    logoUrl?: string | null;
   }>;
 }
 
@@ -65,7 +65,11 @@ export default function TeamHeader({ team, competitions }: TeamHeaderProps) {
             {competitions.map((comp, idx) => (
               <div key={idx} className="flex items-center space-x-4 group cursor-pointer hover:bg-gray-50 p-2 rounded-xl transition-colors duration-200">
                 <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-lg flex items-center justify-center p-1.5 transform transition-transform duration-200 group-hover:scale-110">
-                  <img src={comp.logo} alt={comp.name} className="w-full h-full object-contain" />
+                  {comp.logoUrl ? (
+                    <img src={comp.logoUrl} alt={comp.name} className="w-full h-full object-contain" />
+                  ) : (
+                    <span className="text-xs">⚽</span>
+                  )}
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[10px] font-bold text-gray-400 uppercase leading-none mb-1">{team.country || 'England'}</span>

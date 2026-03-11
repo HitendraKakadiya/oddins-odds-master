@@ -1,13 +1,13 @@
 "use client";
 
-import { MatchData } from '@/lib/api/types';
+import { MatchData, TeamDetailResponse, StandingsRow } from '@/lib/api/types';
 
 interface TeamMatchesTabProps {
   team: { id: number; name: string; logoUrl: string };
   upcomingMatches: MatchData[];
   lastMatches: MatchData[];
-  stats?: any;
-  standings?: any[];
+  stats?: TeamDetailResponse['statsSummary'] | null;
+  standings?: StandingsRow[] | null;
 }
 
 export default function TeamMatchesTab({ team, upcomingMatches = [], lastMatches = [], stats, standings = [] }: TeamMatchesTabProps) {
@@ -34,15 +34,15 @@ export default function TeamMatchesTab({ team, upcomingMatches = [], lastMatches
 
   const mappedUpcoming = upcomingMatches.map(m => ({
     ...m,
-    date: m.kickoffAt ? formatDate(m.kickoffAt) : (m as any).date,
-    time: m.kickoffAt ? formatTime(m.kickoffAt) : (m as any).time,
-    homeTeam: { name: m.homeTeam.name, logo: (m.homeTeam as any).logo || (m.homeTeam as any).logoUrl || 'https://media.api-sports.io/football/teams/unknown.png' },
-    awayTeam: { name: m.awayTeam.name, logo: (m.awayTeam as any).logo || (m.awayTeam as any).logoUrl || 'https://media.api-sports.io/football/teams/unknown.png' }
+    date: m.kickoffAt ? formatDate(m.kickoffAt) : '',
+    time: m.kickoffAt ? formatTime(m.kickoffAt) : '',
+    homeTeam: { name: m.homeTeam.name, logoUrl: m.homeTeam.logoUrl || 'https://media.api-sports.io/football/teams/unknown.png' },
+    awayTeam: { name: m.awayTeam.name, logoUrl: m.awayTeam.logoUrl || 'https://media.api-sports.io/football/teams/unknown.png' }
   }));
 
   const mappedLast = lastMatches.map(m => {
-    let result = (m as any).result;
-    if (!result && m.score && m.score.home !== null && m.score.away !== null) {
+    let result: 'W' | 'D' | 'L' = 'D';
+    if (m.score && m.score.home !== null && m.score.away !== null) {
       const isHome = m.homeTeam.name === team.name;
       if (m.score.home === m.score.away) result = 'D';
       else if (isHome) result = m.score.home > m.score.away ? 'W' : 'L';
@@ -51,11 +51,11 @@ export default function TeamMatchesTab({ team, upcomingMatches = [], lastMatches
 
     return {
       ...m,
-      date: m.kickoffAt ? formatDate(m.kickoffAt) : (m as any).date,
-      time: m.kickoffAt ? formatTime(m.kickoffAt) : (m as any).time,
-      homeTeam: { name: m.homeTeam.name, logo: (m.homeTeam as any).logo || (m.homeTeam as any).logoUrl || 'https://media.api-sports.io/football/teams/unknown.png' },
-      awayTeam: { name: m.awayTeam.name, logo: (m.awayTeam as any).logo || (m.awayTeam as any).logoUrl || 'https://media.api-sports.io/football/teams/unknown.png' },
-      result: result as 'W' | 'D' | 'L'
+      date: m.kickoffAt ? formatDate(m.kickoffAt) : '',
+      time: m.kickoffAt ? formatTime(m.kickoffAt) : '',
+      homeTeam: { name: m.homeTeam.name, logoUrl: m.homeTeam.logoUrl || 'https://media.api-sports.io/football/teams/unknown.png' },
+      awayTeam: { name: m.awayTeam.name, logoUrl: m.awayTeam.logoUrl || 'https://media.api-sports.io/football/teams/unknown.png' },
+      result: result
     };
   });
 
@@ -81,13 +81,13 @@ export default function TeamMatchesTab({ team, upcomingMatches = [], lastMatches
                         <div className="flex items-center space-x-3 w-40 justify-end">
                             <span className="text-sm font-bold text-gray-900">{match.homeTeam.name}</span>
                             <div className="w-8 h-8 flex items-center justify-center bg-white rounded-lg shadow-sm border border-gray-50 p-1">
-                                <img src={match.homeTeam.logo} alt={match.homeTeam.name} className="w-full h-full object-contain" />
+                                <img src={match.homeTeam.logoUrl} alt={match.homeTeam.name} className="w-full h-full object-contain" />
                             </div>
                         </div>
                         <div className="text-[10px] font-black text-gray-300 uppercase tracking-tighter italic">v.s</div>
                         <div className="flex items-center space-x-3 w-40 justify-start">
                             <div className="w-8 h-8 flex items-center justify-center bg-white rounded-lg shadow-sm border border-gray-50 p-1">
-                                <img src={match.awayTeam.logo} alt={match.awayTeam.name} className="w-full h-full object-contain" />
+                                <img src={match.awayTeam.logoUrl} alt={match.awayTeam.name} className="w-full h-full object-contain" />
                             </div>
                             <span className="text-sm font-bold text-gray-900">{match.awayTeam.name}</span>
                         </div>
@@ -125,7 +125,7 @@ export default function TeamMatchesTab({ team, upcomingMatches = [], lastMatches
                         <div className="flex items-center space-x-4 w-48 justify-end">
                             <span className={`text-sm font-bold ${match.homeTeam.name === team.name ? 'text-gray-900 font-extrabold' : 'text-gray-500'}`}>{match.homeTeam.name}</span>
                             <div className="w-8 h-8 flex items-center justify-center bg-white rounded-lg shadow-sm border border-gray-50 p-1">
-                                <img src={match.homeTeam.logo} alt={match.homeTeam.name} className="w-full h-full object-contain" />
+                                <img src={match.homeTeam.logoUrl} alt={match.homeTeam.name} className="w-full h-full object-contain" />
                             </div>
                         </div>
                         <div className="bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100 shadow-inner flex items-center space-x-2">
@@ -135,7 +135,7 @@ export default function TeamMatchesTab({ team, upcomingMatches = [], lastMatches
                         </div>
                         <div className="flex items-center space-x-4 w-48 justify-start">
                             <div className="w-8 h-8 flex items-center justify-center bg-white rounded-lg shadow-sm border border-gray-50 p-1">
-                                <img src={match.awayTeam.logo} alt={match.awayTeam.name} className="w-full h-full object-contain" />
+                                <img src={match.awayTeam.logoUrl} alt={match.awayTeam.name} className="w-full h-full object-contain" />
                             </div>
                             <span className={`text-sm font-bold ${match.awayTeam.name === team.name ? 'text-gray-900 font-extrabold' : 'text-gray-500'}`}>{match.awayTeam.name}</span>
                         </div>

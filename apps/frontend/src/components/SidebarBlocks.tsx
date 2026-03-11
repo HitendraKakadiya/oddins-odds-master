@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import type { LeaguesResponse } from '@/lib/api';
+import type { LeaguesResponse, Prediction, Team } from '@/lib/api/types';
 
 interface DailyTipProps {
-  featuredTips?: any[];
+  featuredTips?: Prediction[];
 }
 
 
@@ -15,24 +15,24 @@ export function FeaturedTipsSlider({ featuredTips = [] }: DailyTipProps) {
 
   if (featuredTips.length === 0) return null;
 
-  const displayPredictions = featuredTips.map(tip => {
+  const displayPredictions = featuredTips.map((tip: Prediction) => {
         const kickoffDate = tip.kickoffAt ? new Date(tip.kickoffAt) : null;
         return {
           id: tip.id,
-          leagueName: tip.leagueName || 'Unknown League',
+          leagueName: tip.leagueName || tip.league?.name || 'Unknown League',
           time: kickoffDate ? kickoffDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : '00:00',
           date: kickoffDate ? kickoffDate.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) : today.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }),
           homeTeam: { 
             name: tip.homeTeam?.name || 'Home', 
-            logo: tip.homeTeam?.logoUrl ? <img src={tip.homeTeam.logoUrl} className="w-8 h-8 object-contain" /> : '⚽' 
+            logo: tip.homeTeam?.logoUrl ? <img src={tip.homeTeam.logoUrl} alt="" className="w-8 h-8 object-contain" /> : '⚽' 
           },
           awayTeam: { 
             name: tip.awayTeam?.name || 'Away', 
-            logo: tip.awayTeam?.logoUrl ? <img src={tip.awayTeam.logoUrl} className="w-8 h-8 object-contain" /> : '⚽' 
+            logo: tip.awayTeam?.logoUrl ? <img src={tip.awayTeam.logoUrl} alt="" className="w-8 h-8 object-contain" /> : '⚽' 
           },
           prediction: tip.title || 'Match Winner',
           countdown: 'LIVE', 
-          countryCode: tip.countryCode
+          countryCode: tip.league?.countryCode || tip.league?.country?.code || null
         };
       });
 
@@ -138,7 +138,7 @@ export function FeaturedTipsSlider({ featuredTips = [] }: DailyTipProps) {
   );
 }
 
-export function SidebarStreams({ streams = [] }: { streams?: any[] }) {
+export function SidebarStreams({ streams = [] }: { streams?: Array<{ id: string | number; icon: string; home: string; away: string; time: string }> }) {
   return (
     <div className="card !p-0 overflow-hidden shadow-sm !border-slate-200/60 border-t-4 !border-t-brand-emerald w-full">
       <div className="p-5 border-b border-slate-100 bg-white">
@@ -215,7 +215,7 @@ export function SidebarLeagues({ leagueData = [] }: { leagueData: LeaguesRespons
   );
 }
 
-export function SidebarCompetitions({ competitionsData, openCountries, toggleCountry }: { competitionsData: any[], openCountries: string[], toggleCountry: (name: string) => void }) {
+export function SidebarCompetitions({ competitionsData, openCountries, toggleCountry }: { competitionsData: LeaguesResponse[], openCountries: string[], toggleCountry: (name: string) => void }) {
   return (
     <div className="flex flex-col gap-4 w-full">
        <h3 className="font-bold text-xl text-slate-800 ml-1">Today&apos;s Competitions</h3>
@@ -234,7 +234,7 @@ export function SidebarCompetitions({ competitionsData, openCountries, toggleCou
                 </button>
                 {openCountries.includes(group.country.name) && (
                   <div className="bg-slate-50/50 px-5 pb-4 space-y-2 pt-1">
-                    {group.leagues.map((league: any) => (
+                    {group.leagues.map((league) => (
                       <Link key={league.id} href={`/predictions?leagueSlug=${league.slug}`} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white hover:text-brand-emerald transition-all text-xs font-bold text-slate-500">
                         <span className="w-1.5 h-1.5 rounded-full bg-slate-200"></span>
                         {league.name}

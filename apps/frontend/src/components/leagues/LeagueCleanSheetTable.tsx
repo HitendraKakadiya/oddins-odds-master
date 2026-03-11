@@ -12,8 +12,8 @@ export default function LeagueCleanSheetTable({ standings }: LeagueCleanSheetTab
   const [filter, setFilter] = useState<'overall' | 'home' | 'away'>('overall');
 
   const sorted = [...standings].sort((a, b) => {
-    const aCount = (a[filter] as any)?.cleanSheets?.count || 0;
-    const bCount = (b[filter] as any)?.cleanSheets?.count || 0;
+    const aCount = a[filter]?.cleanSheets?.count || 0;
+    const bCount = b[filter]?.cleanSheets?.count || 0;
     return bCount - aCount;
   });
 
@@ -44,7 +44,7 @@ export default function LeagueCleanSheetTable({ standings }: LeagueCleanSheetTab
           </thead>
           <tbody className="divide-y divide-slate-50">
             {sorted.map((row, idx) => {
-              const stats = (row[filter] as any);
+              const stats = row[filter];
               const cs = stats?.cleanSheets || { count: 0, percentage: 0 };
               return (
                 <tr key={`${row.team.id}-${idx}`} className={`hover:bg-slate-50/50 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'}`}>

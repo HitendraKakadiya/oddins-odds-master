@@ -514,9 +514,9 @@ export default function Standings({ standings }: StandingsProps) {
                    <select 
                       value={activeSubTab === 'Goals' ? goalType : activeSubTab === 'Cards' ? 'Card Stage' : activeSubTab === 'Over Under Goals' ? ouMode : activeSubTab === 'Match Scoring / Conceding First' ? scoringFirstMode : 'League Stage'}
                       onChange={(e) => {
-                         if (activeSubTab === 'Goals') setGoalType(e.target.value as any);
-                         if (activeSubTab === 'Over Under Goals') setOuMode(e.target.value as any);
-                         if (activeSubTab === 'Match Scoring / Conceding First') setScoringFirstMode(e.target.value as any);
+                         if (activeSubTab === 'Goals') setGoalType(e.target.value as 'scored' | 'conceded');
+                         if (activeSubTab === 'Over Under Goals') setOuMode(e.target.value as 'over' | 'under');
+                         if (activeSubTab === 'Match Scoring / Conceding First') setScoringFirstMode(e.target.value as 'scoring' | 'conceding');
                       }}
                       className="appearance-none bg-white border border-slate-200 rounded-2xl px-6 py-2.5 pr-12 text-[11px] font-black text-slate-600 uppercase tracking-widest focus:outline-none focus:border-brand-emerald transition-colors shadow-sm cursor-pointer"
                    >
@@ -555,7 +555,7 @@ export default function Standings({ standings }: StandingsProps) {
                        return (
                          <button
                             key={val}
-                            onClick={() => setOuLine(val as any)}
+                            onClick={() => setOuLine(val as '05' | '15' | '25' | '35' | '45' | '55')}
                             className={`px-6 py-2.5 rounded-[14px] text-[11px] font-black uppercase tracking-widest whitespace-nowrap transition-all ${
                                ouLine === val 
                                   ? 'bg-brand-pink text-white shadow-lg shadow-brand-pink/20' 
@@ -570,7 +570,7 @@ export default function Standings({ standings }: StandingsProps) {
                      ['overall', 'for', 'against'].map((type) => (
                        <button
                           key={type}
-                          onClick={() => setActiveCardToggle(type as any)}
+                          onClick={() => setActiveCardToggle(type as 'overall' | 'for' | 'against')}
                           className={`px-8 py-2.5 rounded-[14px] text-[11px] font-black uppercase tracking-widest transition-all ${
                              activeCardToggle === type 
                                 ? 'bg-brand-pink text-white shadow-lg shadow-brand-pink/20' 
@@ -584,7 +584,7 @@ export default function Standings({ standings }: StandingsProps) {
                      ['overall', 'home', 'away'].map((type) => (
                        <button
                           key={type}
-                          onClick={() => setFilter(type as any)}
+                          onClick={() => setFilter(type as 'overall' | 'home' | 'away')}
                           className={`px-8 py-2.5 rounded-[14px] text-[11px] font-black uppercase tracking-widest transition-all ${
                              filter === type 
                                 ? 'bg-brand-pink text-white shadow-lg shadow-brand-pink/20' 
@@ -598,7 +598,7 @@ export default function Standings({ standings }: StandingsProps) {
                      ['overall', 'home', 'away'].map((type) => (
                        <button
                           key={type}
-                          onClick={() => setFilter(type as any)}
+                          onClick={() => setFilter(type as 'overall' | 'home' | 'away')}
                           className={`px-8 py-2.5 rounded-[14px] text-[11px] font-black uppercase tracking-widest transition-all ${
                              filter === type 
                                 ? 'bg-brand-pink text-white shadow-lg shadow-brand-pink/20' 

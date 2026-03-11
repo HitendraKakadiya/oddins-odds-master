@@ -24,7 +24,7 @@ export default function LeagueCornersTable({ standings }: LeagueCornersTableProp
 
   // Build sorted rows from standings enriched data
   const rows = standings.map((row, idx) => {
-    const stats = (row[filter] as any);
+    const stats = row[filter];
     const corners = stats?.corners || null;
     const mp = stats?.played || 0;
 

@@ -74,7 +74,7 @@ export default function LeagueDetailPage({ params }: PageProps) {
         </div>
 
         <LeagueHero 
-          league={data.league as any} 
+          league={data.league} 
           season={data.season} 
           stats={{ 
             teamCount: data.standings.length, 
@@ -101,8 +101,8 @@ export default function LeagueDetailPage({ params }: PageProps) {
             />
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-               <LeagueMatchList title="Recent Results" matches={data.results.slice(0, 5) as any} type="results" />
-               <LeagueMatchList title="Upcoming Matches" matches={data.fixtures.slice(0, 5) as any} type="fixtures" />
+               <LeagueMatchList title="Recent Results" matches={data.results.slice(0, 5)} type="results" />
+               <LeagueMatchList title="Upcoming Matches" matches={data.fixtures.slice(0, 5)} type="fixtures" />
             </div>
 
             <LeagueFAQ leagueName={data.league.name} faqs={data.faq || []} />

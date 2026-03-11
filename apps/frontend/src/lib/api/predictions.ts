@@ -3,7 +3,7 @@
  */
 
 import { fetchAPI } from './client';
-import { PredictionsResponse, FeaturedTipsResponse } from './types';
+import { PredictionsResponse, FeaturedTipsResponse, Prediction } from './types';
 
 export async function getPredictions(date?: string, region?: string, leagueSlug?: string, marketKey?: string, page?: number, pageSize?: number): Promise<PredictionsResponse> {
     const params = new URLSearchParams();
@@ -30,10 +30,19 @@ export async function getLiveFeaturedTips(date?: string): Promise<FeaturedTipsRe
     const params = new URLSearchParams();
     if (date) params.set('date', date);
     const query = params.toString();
-    const data = await fetchAPI<any>(`/v1/live/predictions${query ? `?${query}` : ''}`);
+    const data = await fetchAPI<PredictionsResponse>(`/v1/live/predictions${query ? `?${query}` : ''}`);
     return {
         date: date || new Date().toISOString().split('T')[0],
-        tips: data.items || []
+        tips: (data.items || []).map(item => ({
+            ...item,
+            isPremium: item.isPremium ?? false,
+            league: item.league ? {
+                name: item.league.name,
+                slug: item.league.slug || '',
+                countryName: item.league.countryName || item.league.country?.name || 'Unknown',
+                countryCode: item.league.countryCode || item.league.country?.code || null
+            } : null
+        }))
     };
 }
 
@@ -42,6 +51,6 @@ export async function getFeaturedTips(date?: string): Promise<FeaturedTipsRespon
     return fetchAPI<FeaturedTipsResponse>(`/v1/tips/featured?date=${dateParam}`);
 }
 
-export async function getPredictionDetail(matchId: number): Promise<{ predictions: any[] }> {
-    return fetchAPI<{ predictions: any[] }>(`/v1/predictions/${matchId}/detail`);
+export async function getPredictionDetail(matchId: number): Promise<{ predictions: Prediction[] }> {
+    return fetchAPI<{ predictions: Prediction[] }>(`/v1/predictions/${matchId}/detail`);
 }

@@ -19,7 +19,7 @@ interface StandingRow {
   team: {
     id: number;
     name: string;
-    logoUrl: string;
+    logoUrl?: string | null;
   };
   overall: SplitData;
   home: SplitData;
@@ -112,7 +112,9 @@ export default function TeamStandingsTable({ standings, currentTeamId }: TeamSta
                   <td className="py-5 px-4 min-w-[200px]">
                     <div className="flex items-center space-x-3">
                       <div className="w-8 h-8 flex items-center justify-center bg-white rounded-lg shadow-sm border border-gray-100 p-1">
-                        <img src={row.team.logoUrl} alt={row.team.name} className="w-full h-full object-contain" />
+                        {row.team.logoUrl && (
+                          <img src={row.team.logoUrl} alt={row.team.name} className="w-full h-full object-contain" />
+                        )}
                       </div>
                       <span className={`text-sm font-bold ${isCurrent ? 'text-brand-emerald' : 'text-gray-900'}`}>
                         {row.team.name}
