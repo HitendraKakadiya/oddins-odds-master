@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FastifyInstance } from 'fastify';
 import { getLeaguesDirect, getLeagueStandingsDirect, getLeagueFixturesDirect, getTopScorersDirect, getTopAssistsDirect, calculateVirtualStandings, fetchFromSportsProvider, providerCache } from '../../lib/sports';
 import { ApiLeagueRecord } from '../../lib/provider-types';
@@ -285,6 +284,8 @@ export async function leaguesRoutes(server: FastifyInstance) {
         homeWins,
         awayWins,
         draws,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         cardsAvg: uniqueMatchesPlayed > 0 ? parseFloat((standings.reduce((acc, s) => acc + (((s.overall as Record<string, any>).cards as any)?.average || 0), 0) / standings.length).toFixed(2)) || 3.8 : 3.8, // Fallback to 3.8 if data is missing
         // These would require extra API calls to fixtures or seasonal stats endpoints if we wanted them more accurately
         over25Percent: 55,
@@ -310,10 +311,18 @@ export async function leaguesRoutes(server: FastifyInstance) {
           mostLosses: mostLosses.team,
           fewestLosses: fewestLosses.team
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         playerStats: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           topScorer: (topScorers as any)[0]?.player?.name || 'N/A',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           topScorerGoals: (topScorers as any)[0]?.statistics?.goals?.total || 0,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           topAssist: (topAssists as any)[0]?.player?.name || 'N/A',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           topAssistCount: (topAssists as any)[0]?.statistics?.goals?.assists || 0
         }
       };
@@ -366,11 +375,13 @@ export async function leaguesRoutes(server: FastifyInstance) {
         providerCache.delete(key);
         cleared++;
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }
 
     try {
       if (teamId) {
         // Test teams/statistics response structure for corner data
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const tsData = await fetchFromSportsProvider<any>(`/teams/statistics?league=${leagueId}&season=${season}&team=${teamId}`);
         const ts = tsData?.response;
         if (!ts) return { cleared, error: 'No response for team stats' };
@@ -379,29 +390,49 @@ export async function leaguesRoutes(server: FastifyInstance) {
         const cornersObj = ts.corners;
         const statsArr = ts.statistics || [];
         const goalsKeys = Object.keys(ts.goals || {});
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return {
           cleared, teamId, topKeys, cornersObj, statsArr: statsArr.slice(0, 5), goalsKeys,
           fixturesPlayed: ts.fixtures?.played
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } else if (fixtureId) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         // Test a specific fixture's statistics
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const statsData: any = await fetchFromSportsProvider(`/fixtures/statistics?fixture=${fixtureId}`);
         const response = statsData?.response || [];
         const cornerTypes = response.map((t: unknown) => ({
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           team: (t as any).team?.name,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           cornerKicks: (t as any).statistics?.find((s: any) => s.type === 'Corner Kicks')?.value,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           allTypes: (t as any).statistics?.map((s: any) => s.type)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         }));
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return { cleared, fixtureId, cornerData: cornerTypes };
       } else {
         // Test fixtures availability for the league
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const d: any = await fetchFromSportsProvider(`/fixtures?league=${leagueId}&season=${season}&status=FT`);
         const fixtures = d?.response || [];
         const sample = fixtures.slice(0, 3).map((f: unknown) => ({
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           id: (f as any).fixture?.id,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           date: (f as any).fixture?.date,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           status: (f as any).fixture?.status?.short,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           home: (f as any).teams?.home?.name,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           away: (f as any).teams?.away?.name
         }));
         return { cleared, leagueId, season, fixturesCount: fixtures.length, sample };

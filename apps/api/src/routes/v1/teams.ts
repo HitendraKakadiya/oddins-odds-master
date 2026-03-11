@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FastifyInstance } from 'fastify';
 import {
   getTeamBySlugDirect,
@@ -123,7 +122,9 @@ export async function teamsRoutes(server: FastifyInstance) {
 
       if (statsLeagueId) {
         // If league is requested, find its current season from the leagues list
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const comp = competitions.find((c) => (c as any).id === statsLeagueId);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         detectedSeason = (comp as any)?.season;
 
         // Fetch matches for this specific league (cross-season for better data in cups)
@@ -139,6 +140,7 @@ export async function teamsRoutes(server: FastifyInstance) {
         ]);
 
         const leagueCounts = new Map<number, number>();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (recentMatches as any[]).forEach((m) => {
           if (m.league?.id) {
             leagueCounts.set(m.league.id, (leagueCounts.get(m.league.id) || 0) + 1);
@@ -147,11 +149,13 @@ export async function teamsRoutes(server: FastifyInstance) {
         statsLeagueId = [...leagueCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || 39;
 
         // Detect season from these matches for the detected league
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const targetMatches = [...(recentMatches as any[]), ...(nextMatches as any[])].filter((m) => m.league?.id === statsLeagueId);
         if (targetMatches.length > 0) {
           detectedSeason = targetMatches[0].league?.season;
         } else {
           // Fallback to competitions list for detected league
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           detectedSeason = (competitions.find((c) => (c as any).id === statsLeagueId) as any)?.season;
         }
       }
@@ -186,6 +190,7 @@ export async function teamsRoutes(server: FastifyInstance) {
       });
 
       let statsSummary: Record<string, unknown> = createDefaultStats();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let liveStats: any = null;
 
       const aggregatedCorners = {
@@ -219,6 +224,7 @@ export async function teamsRoutes(server: FastifyInstance) {
 
         // B. Deep Aggregation from recent matches (corners, cards, first goal)
         (async () => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const finishedMatches = (recentMatches as any[]).filter((m) =>
             ['FT', 'AET', 'PEN'].includes(m.status) && m.league?.id === statsLeagueId
           ).slice(0, 5);
@@ -246,6 +252,7 @@ export async function teamsRoutes(server: FastifyInstance) {
               if (!results || results.length === 0) {
                 results = await getLeagueFixturesDirect(statsLeagueId, seasonToTry - 1, 'last', 50).catch(() => []);
               }
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               if (results && results.length > 0) return calculateVirtualStandings(results as any);
             } catch (err) {
               server.log.debug(`Virtual standings calculation failed: ${(err as Error).message}`);
@@ -267,11 +274,13 @@ export async function teamsRoutes(server: FastifyInstance) {
           .catch(() => []),
 
         // G. Next Match Detail
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (nextMatches as any[])[0] ? getFullPredictionDetailDirect((nextMatches as any[])[0].matchId).catch(() => null) : Promise.resolve(null)
       ]);
 
       liveStats = liveStatsData;
       if (liveStats && liveStats.fixtures) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const getAvg = (val: any) => parseFloat(val || 0);
         statsSummary = {
           overall: {
@@ -334,13 +343,16 @@ export async function teamsRoutes(server: FastifyInstance) {
         };
 
         matchesStats.forEach((matchStat: unknown, index: number) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const mStat = matchStat as any[];
           const match = finishedMatches[index];
           const isTargetHome = match.homeTeam.id === liveTeam.id;
           const splitKey = isTargetHome ? 'home' : 'away';
 
           if (mStat && mStat.length >= 2) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const homeCorners = parseInt(mStat.find((s: any) => s.team.id === match.homeTeam.id)?.statistics?.find((st: any) => st.type === 'Corner Kicks')?.value || '0', 10);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const awayCorners = parseInt(mStat.find((s: any) => s.team.id === match.awayTeam.id)?.statistics?.find((st: any) => st.type === 'Corner Kicks')?.value || '0', 10);
             const totalMatchCorners = homeCorners + awayCorners;
             
@@ -357,8 +369,11 @@ export async function teamsRoutes(server: FastifyInstance) {
             });
 
             // Card stats
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const teamsCards = mStat.map((te: any) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const y = (te.statistics || []).find((s: any) => s.type === 'Yellow Cards')?.value ?? 0;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const r = (te.statistics || []).find((s: any) => s.type === 'Red Cards')?.value ?? 0;
               return {
                 id: te.team.id,
@@ -366,7 +381,9 @@ export async function teamsRoutes(server: FastifyInstance) {
               };
             });
             
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const targetTeamCards = teamsCards.find((t: any) => t.id === liveTeam.id)?.total || 0;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const opponentCards = teamsCards.find((t: any) => t.id !== liveTeam.id)?.total || 0;
             const totalMatchCards = targetTeamCards + opponentCards;
             
@@ -380,8 +397,10 @@ export async function teamsRoutes(server: FastifyInstance) {
 
           const events = matchesEvents[index];
           if (events && Array.isArray(events)) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const firstGoal = events.find((e: any) => e.type === 'Goal');
             if (firstGoal) {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const scorerTeamId = (firstGoal as any).team?.id;
               if (scorerTeamId === liveTeam.id) {
                 firstGoalStats.scoring_first.overall++;
@@ -441,11 +460,13 @@ export async function teamsRoutes(server: FastifyInstance) {
         };
         Object.assign(aggregatedCorners, updatedCorners);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         statsSummary.cornersAvg = (aggregatedCorners as any).average.overall;
         statsSummary.cardsAvg = calcAvg(cards.totals.overall, cards.counts.overall);
         statsSummary.cardsForAvg = calcAvg(cards.totals.for, cards.counts.for);
         statsSummary.cardsAgainstAvg = calcAvg(cards.totals.against, cards.counts.against);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if ((statsSummary as any).overall.played === 0 && finishedMatches.length > 0) {
           const mTotals = { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 };
           const hTotals = { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 };
@@ -465,31 +486,43 @@ export async function teamsRoutes(server: FastifyInstance) {
             else { mTotals.losses++; if (isHome) hTotals.losses++; else aTotals.losses++; }
           });
 
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (statsSummary as any).overall = mTotals;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (statsSummary as any).home = hTotals;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (statsSummary as any).away = aTotals;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (statsSummary as any).winRate = Math.round((mTotals.wins / mTotals.played) * 100);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (statsSummary as any).goalsScoredAvg = parseFloat((mTotals.gf / mTotals.played).toFixed(2));
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (statsSummary as any).goalsConcededAvg = parseFloat((mTotals.ga / mTotals.played).toFixed(2));
         }
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const transformDetailedStats = (raw: any) => {
         if (!raw) return null;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const getMap = (obj: any) => ({
           overall: obj?.total || 0,
           home: obj?.home || 0,
           away: obj?.away || 0
         });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const getAvgMap = (obj: any) => ({
           overall: obj?.total || "0.0",
           home: obj?.home || "0.0",
           away: obj?.away || "0.0"
         });
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const getOverUnderMap = (uo: any, type: 'over' | 'under') => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const result: any = {};
           if (uo) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             Object.entries(uo).forEach(([threshold, vals]: [string, any]) => {
               const key = `${type}-${threshold.replace('.', '_')}`;
               result[key] = {
@@ -504,6 +537,7 @@ export async function teamsRoutes(server: FastifyInstance) {
           return result;
         };
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const getMinuteSum = (minuteObj: any, startInd: number, endInd: number) => {
           if (!minuteObj) return 0;
           const intervals = ["0-15", "16-30", "31-45", "46-60", "61-75", "76-90", "91-105", "106-120"];
@@ -579,9 +613,12 @@ export async function teamsRoutes(server: FastifyInstance) {
           slug: teamSlug,
           logoUrl: liveTeam.logo,
           country: liveTeam.country,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           venue: (liveTeam as any).venue?.name || 'Unknown Stadium',
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           city: (liveTeam as any).venue?.city || 'Unknown City',
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         competitions: (competitions || []).map((c: any) => ({
           id: c.id,
           name: c.name,
@@ -597,14 +634,18 @@ export async function teamsRoutes(server: FastifyInstance) {
         standings: standings || [],
         squad: squad || [],
         topScorers: (topScorers || [])
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .filter((s: any) => s.statistics?.[0]?.team?.id === liveTeam.id)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .map((s: any) => ({
             ...s,
             // Ensure statistics is an array as expected by the frontend mapping
             statistics: Array.isArray(s.statistics) ? s.statistics : [s.statistics]
           })),
         topAssists: (topAssists || [])
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .filter((s: any) => s.statistics?.[0]?.team?.id === liveTeam.id)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .map((s: any) => ({
             ...s,
             // Ensure statistics is an array as expected by the frontend mapping
