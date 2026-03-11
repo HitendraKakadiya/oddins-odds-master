@@ -7,10 +7,7 @@ import {
     ApiFixtureResponse,
     ApiPredictionResponse,
     ApiLeagueStandings,
-    ApiLeague,
-    ApiFixture,
     ApiLeagueRecord,
-    ApiTeams,
     ApiStanding,
     ApiStandingStats
 } from './provider-types';
@@ -235,10 +232,6 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
         };
     }
 
-    // Map match data
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const mappedMatchData = mapMatch(fixture as any, league as any, teams as any, res as any);
-
     // Helper to map team stats
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mapTeamStats = (side: 'home' | 'away', allMatches: any[] = []) => {
@@ -377,7 +370,6 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
     const homeId = (teams as any)?.home?.id || (fixture as any)?.homeTeam?.id || 0;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const awayId = (teams as any)?.away?.id || (fixture as any)?.awayTeam?.id || 0;
-    const fixtureIdNum = Number(fixture?.id || fixtureId);
 
     const [homeRecent, awayRecent, events, homeNext] = await Promise.all([
         homeId ? getTeamMatchesDirect(homeId, 'last', 20) : Promise.resolve([]),
@@ -778,7 +770,7 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
                 .slice(0, MAX_FIXTURES);
 
             const teamStatsMap = new Map<number, { corners: { overall: number[]; home: number[]; away: number[] }; cards: { overall: number[]; home: number[]; away: number[] } }>();
-            const initStatsEntry = () => ({ 
+            const initStatsEntry = () => ({
                 corners: { overall: [] as number[], home: [] as number[], away: [] as number[] },
                 cards: { overall: [] as number[], home: [] as number[], away: [] as number[] }
             });
@@ -811,13 +803,13 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
                     const yellowStat = (te?.statistics || []).find((s: any) => s.type === 'Yellow Cards');
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const redStat = (te?.statistics || []).find((s: any) => s.type === 'Red Cards');
-                    
+
                     const y = yellowStat?.value ?? 0;
                     const r = redStat?.value ?? 0;
-                    
+
                     const yn = typeof y === 'string' ? parseInt(y as string, 10) : (y as number || 0);
                     const rn = typeof r === 'string' ? parseInt(r as string, 10) : (r as number || 0);
-                    
+
                     if (yellowStat || redStat) {
                         cardsFoundForMatch = true;
                         matchTotalCards += (yn + rn);
@@ -910,7 +902,7 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
                     }
                     return enriched;
                 }
-                
+
                 // Fallback to cached corner stats if available
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const cs = (row as any).__cornerStats;
@@ -944,6 +936,7 @@ export async function getLeagueStandingsDirect(leagueId: number, season: number)
  * Useful when the official API standings are missing for a cup or tournament.
  */
 export function calculateVirtualStandings(fixtures: ApiFixtureResponse[]) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const teams: Record<number, any> = {};
 
     const getOrCreateTeam = (teamData: { id: number; name: string; logo?: string; logoUrl?: string }) => {
@@ -964,6 +957,7 @@ export function calculateVirtualStandings(fixtures: ApiFixtureResponse[]) {
         return teams[teamData.id];
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     fixtures.forEach((f: any) => {
         // Support both raw API format and mapped match format
         const status = f.status || f.fixture?.status?.short;
@@ -1067,17 +1061,7 @@ export function calculateVirtualStandings(fixtures: ApiFixtureResponse[]) {
     }));
 }
 
-function getEmptyTeamStatsDetail() {
-    return {
-        played: 0, wins: 0, draws: 0, losses: 0, scored: 0, conceded: 0,
-        btts: 0, cleanSheets: 0, failedToScore: 0, ppg: 0, winRate: 0,
-        scoredAvg: 0, concededAvg: 0, bttsRate: 0, cleanSheetRate: 0,
-        failedToScoreRate: 0, over05Rate: 0, over15Rate: 0, over25Rate: 0,
-        over35Rate: 0, over45Rate: 0, over55Rate: 0
-    };
-}
 
-// function getEmptyTeamStats() {
 //     return {
 //         overall: getEmptyTeamStatsDetail(),
 //         home: getEmptyTeamStatsDetail(),

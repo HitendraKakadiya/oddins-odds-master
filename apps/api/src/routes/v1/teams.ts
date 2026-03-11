@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FastifyInstance } from 'fastify';
 import {
   getTeamBySlugDirect,
@@ -245,7 +246,7 @@ export async function teamsRoutes(server: FastifyInstance) {
               if (!results || results.length === 0) {
                 results = await getLeagueFixturesDirect(statsLeagueId, seasonToTry - 1, 'last', 50).catch(() => []);
               }
-              if (results && results.length > 0) return calculateVirtualStandings(results);
+              if (results && results.length > 0) return calculateVirtualStandings(results as any);
             } catch (err) {
               server.log.debug(`Virtual standings calculation failed: ${(err as Error).message}`);
             }
@@ -445,7 +446,7 @@ export async function teamsRoutes(server: FastifyInstance) {
         statsSummary.cardsForAvg = calcAvg(cards.totals.for, cards.counts.for);
         statsSummary.cardsAgainstAvg = calcAvg(cards.totals.against, cards.counts.against);
 
-        if (statsSummary.overall.played === 0 && finishedMatches.length > 0) {
+        if ((statsSummary as any).overall.played === 0 && finishedMatches.length > 0) {
           const mTotals = { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 };
           const hTotals = { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 };
           const aTotals = { played: 0, wins: 0, draws: 0, losses: 0, gf: 0, ga: 0 };
@@ -578,8 +579,8 @@ export async function teamsRoutes(server: FastifyInstance) {
           slug: teamSlug,
           logoUrl: liveTeam.logo,
           country: liveTeam.country,
-          venue: liveTeam.venue?.name || 'Unknown Stadium',
-          city: liveTeam.venue?.city || 'Unknown City',
+          venue: (liveTeam as any).venue?.name || 'Unknown Stadium',
+          city: (liveTeam as any).venue?.city || 'Unknown City',
         },
         competitions: (competitions || []).map((c: any) => ({
           id: c.id,

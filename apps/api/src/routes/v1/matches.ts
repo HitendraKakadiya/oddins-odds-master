@@ -46,6 +46,7 @@ export async function matchesRoutes(server: FastifyInstance) {
 
       if (market || minOdds) {
         filteredMatches = filteredMatches.filter((m) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const matchOdds = (allOdds as any[]).find((o) => o.matchId === m.matchId);
           if (!matchOdds) return false;
 
@@ -59,12 +60,14 @@ export async function matchesRoutes(server: FastifyInstance) {
           };
 
           const providerMarketName = marketMap[market || ''] || 'Match Winner';
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const oddsForMarket = (matchOdds as any).bookmakers?.[0]?.markets?.find((mk: any) => mk.name === providerMarketName);
 
           if (!oddsForMarket) return false;
 
           if (minOdds) {
             const minOddsVal = parseFloat(minOdds.replace('>', '').replace('<', ''));
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             return (oddsForMarket as any).values?.some((v: any) => v.odd >= minOddsVal);
           }
 
@@ -146,6 +149,7 @@ export async function matchesRoutes(server: FastifyInstance) {
               name: m.league.name,
               slug: m.league.slug,
               countryName: m.league.country?.name,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               countryCode: (m.league.country as any)?.code,
             },
             homeTeam: {

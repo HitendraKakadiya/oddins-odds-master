@@ -116,7 +116,11 @@ export async function liveRoutes(server: FastifyInstance) {
         // 1. Filter by League
         if (leagueId) {
             const leagueIdNum = parseInt(leagueId, 10);
-            filteredMatches = filteredMatches.filter(m => (m as any).league?.id === leagueIdNum);
+            filteredMatches = filteredMatches.filter(m => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const matchAny = m as any;
+                return matchAny.league?.id === leagueIdNum;
+            });
         }
 
         // 2. Filter by Market (Placeholder logic for now as provider data varies)
@@ -131,12 +135,14 @@ export async function liveRoutes(server: FastifyInstance) {
         // Fetch predictions for the paginated matches
         const pagedMatchesWithPredictions = await Promise.all(pagedMatches.map(async (m) => {
             try {
-                const realPred = await getPredictionsDirect((m as any).matchId);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const matchAny = m as any;
+                const realPred = await getPredictionsDirect(matchAny.matchId);
                 if (realPred) {
                     return {
                         ...(m as object),
                         featuredTip: {
-                            id: (m as any).matchId,
+                            id: matchAny.matchId,
                             title: realPred.selection || 'Expert Pick',
                             isPremium: false,
                             confidence: realPred.probabilities?.home ? parseInt(realPred.probabilities.home) : null
@@ -144,7 +150,9 @@ export async function liveRoutes(server: FastifyInstance) {
                     };
                 }
             } catch (err) {
-                console.warn(`Failed to fetch prediction for match ${(m as any).matchId}`);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const matchAny = m as any;
+                console.warn(`Failed to fetch prediction for match ${matchAny.matchId}`);
             }
             return m;
         }));
@@ -169,9 +177,11 @@ export async function liveRoutes(server: FastifyInstance) {
         const { matches } = await getHybridMatches(targetDate);
 
         // Group by country
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const countryGroups: Record<string, { country: any, leagues: Map<number, any> }> = {};
 
         matches.forEach((mItem) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const m = mItem as any;
             const cName = m.league.country.name || 'International';
             if (!countryGroups[cName]) {
@@ -224,6 +234,7 @@ export async function liveRoutes(server: FastifyInstance) {
             const pagedMatches = matches.slice(offset, offset + pageSizeNum);
 
             const predictionPromises = pagedMatches.map(async (mItem) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const m = mItem as any;
                 try {
                     const realPred = await getPredictionsDirect(m.matchId);
@@ -270,6 +281,7 @@ export async function liveRoutes(server: FastifyInstance) {
         const targetDate = date || new Date().toISOString().split('T')[0];
 
         const { matches } = await getHybridMatches(targetDate);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const liveStreams = matches.filter((m: any) => m.status === '1H' || m.status === '2H' || m.status === 'HT').map((m: any) => ({
             matchId: m.matchId,
             kickoffAt: m.kickoffAt,
