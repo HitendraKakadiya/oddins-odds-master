@@ -77,14 +77,14 @@ export default async function LeagueDetailPage({ params }: PageProps) {
                       <span className="font-medium">{row.team.name}</span>
                     </Link>
                   </td>
-                  <td className="text-center py-3 px-2 text-sm">{row.played}</td>
-                  <td className="text-center py-3 px-2 text-sm">{row.wins}</td>
-                  <td className="text-center py-3 px-2 text-sm">{row.draws}</td>
-                  <td className="text-center py-3 px-2 text-sm">{row.losses}</td>
-                  <td className="text-center py-3 px-2 text-sm">{row.gf}</td>
-                  <td className="text-center py-3 px-2 text-sm">{row.ga}</td>
-                  <td className="text-center py-3 px-2 text-sm">{row.gf - row.ga}</td>
-                  <td className="text-center py-3 px-2 text-sm font-bold">{row.points}</td>
+                  <td className="text-center py-3 px-2 text-sm">{row.overall.played}</td>
+                  <td className="text-center py-3 px-2 text-sm">{row.overall.wins}</td>
+                  <td className="text-center py-3 px-2 text-sm">{row.overall.draws}</td>
+                  <td className="text-center py-3 px-2 text-sm">{row.overall.losses}</td>
+                  <td className="text-center py-3 px-2 text-sm">{row.overall.gf}</td>
+                  <td className="text-center py-3 px-2 text-sm">{row.overall.ga}</td>
+                  <td className="text-center py-3 px-2 text-sm">{row.overall.gf - row.overall.ga}</td>
+                  <td className="text-center py-3 px-2 text-sm font-bold">{row.overall.points}</td>
                 </tr>
               ))}
             </tbody>

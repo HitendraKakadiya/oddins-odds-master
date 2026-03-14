@@ -84,7 +84,7 @@ export function MatchRow({ match }: MatchProps) {
 
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 md:pl-16">
         <div className="flex-1 bg-slate-50/80 rounded-xl p-3 md:p-3.5 text-center italic text-[10px] md:text-[11px] font-bold text-slate-500 border border-slate-100 group-hover:border-brand-emerald/20 transition-all shadow-sm">
-          &quot;{match.featuredTip?.title || 'Waiting for prediction analysis...'}&quot;
+          &quot;{match.featuredTip?.title || `${match.homeTeam.name} vs ${match.awayTeam.name} Analysis`}&quot;
         </div>
         <div className="flex gap-2 justify-center sm:justify-start">
             <button 

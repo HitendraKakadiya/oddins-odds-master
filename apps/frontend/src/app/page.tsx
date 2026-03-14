@@ -33,6 +33,7 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
   let tipsData: FeaturedTipsResponse['tips'] | Prediction[] = [];
   let featuredTeams: Team[] = []; 
   let pagination = { page: 1, pageSize: 20, total: 0 };
+  let allPredictions: Prediction[] = [];
 
   try {
     const [matchesRes, leaguesRes, tipsRes, featuredRes, predictionsRes] = await Promise.all([
@@ -40,7 +41,7 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
       getLiveLeagues(1, 400, selectedDate).catch(err => { console.error('Live leagues fetch failed:', err); return { items: [], total: 0, page: 1, pageSize: 50 }; }),
       getLiveFeaturedTips(selectedDate).catch(err => { console.error('Tips fetch failed:', err); return { tips: [] }; }),
       getFeaturedTeams().catch(err => { console.error('Featured teams fetch failed:', err); return []; }),
-      getLivePredictions(selectedDate).catch(err => { console.error('Predictions fetch failed:', err); return { items: [] }; })
+      getLivePredictions(selectedDate, 1, 100).catch(err => { console.error('Predictions fetch failed:', err); return { items: [] }; })
     ]);
 
     // Smart Fallback Handling
@@ -58,8 +59,11 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
     // Explicitly type leaguesData to avoid any
     leaguesData = leaguesRes as { items: LeaguesResponse[]; total: number; page: number; pageSize: number } || { items: [], total: 0, page: 1, pageSize: 20 };
     
+    // Pass all predictions to MatchListInfinite for enrichment
+    allPredictions = (predictionsRes as PredictionsResponse)?.items || [];
+    
     // Improved autoTips mapping with strict types
-    const tipsItems = (predictionsRes as PredictionsResponse)?.items || [];
+    const tipsItems = allPredictions;
     const autoTips: FeaturedTipsResponse['tips'] = (tipsItems.length > 0 
       ? (tipsItems as Prediction[])
       : (matches as unknown as Prediction[])).slice(0, 3).map((item) => ({
@@ -119,6 +123,7 @@ export default async function HomePage({ searchParams }: { searchParams: { date?
                 leagueId={selectedLeague}
                 market={selectedMarket}
                 minOdds={selectedMinOdds}
+                predictions={allPredictions}
               />
             </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import type { H2HMatch, TeamStats } from '@/lib/api/types';
+import type { H2HMatch, TeamStats, TeamStatsDetail } from '@/lib/api/types';
 
 interface H2HComparisonProps {
   homeTeam: { name: string; logoUrl?: string | null; country?: string };
@@ -37,9 +37,9 @@ export default function H2HComparison({ homeTeam, awayTeam, homeStats, awayStats
                       <FormCircles results={homeStats?.last5 || []} size="md" />
                    </div>
 
-                   <MetricRow label="Overall" ppg={homeStats?.overall?.ppg || 0} results={homeStats?.last5 || []} />
-                   <MetricRow label="Home" ppg={homeStats?.home?.ppg || 0} results={homeStats?.last5Home || []} />
-                   <MetricRow label="Away" ppg={homeStats?.away?.ppg || 0} results={homeStats?.last5Away || []} />
+                   <MetricRow label="Overall" stats={homeStats?.overall} results={homeStats?.last5 || []} />
+                   <MetricRow label="Home" stats={homeStats?.home} results={homeStats?.last5Home || []} />
+                   <MetricRow label="Away" stats={homeStats?.away} results={homeStats?.last5Away || []} />
                 </div>
 
 
@@ -62,9 +62,9 @@ export default function H2HComparison({ homeTeam, awayTeam, homeStats, awayStats
                       <FormCircles results={awayStats?.last5 || []} size="md" />
                    </div>
 
-                   <MetricRow label="Overall" ppg={awayStats?.overall?.ppg || 0} results={awayStats?.last5 || []} />
-                   <MetricRow label="Home" ppg={awayStats?.home?.ppg || 0} results={awayStats?.last5Home || []} />
-                   <MetricRow label="Away" ppg={awayStats?.away?.ppg || 0} results={awayStats?.last5Away || []} />
+                   <MetricRow label="Overall" stats={awayStats?.overall} results={awayStats?.last5 || []} />
+                   <MetricRow label="Home" stats={awayStats?.home} results={awayStats?.last5Home || []} />
+                   <MetricRow label="Away" stats={awayStats?.away} results={awayStats?.last5Away || []} />
                 </div>
 
 
@@ -143,14 +143,18 @@ function FormCircles({ results, size = 'sm' }: { results: string[]; size?: 'sm' 
    );
 }
 
-function MetricRow({ label, ppg, results }: { label: string; ppg: number; results: string[] }) {
+import { calculatePPG } from '@/lib/utils/stats';
+
+function MetricRow({ label, stats, results }: { label: string; stats: TeamStatsDetail; results: string[] }) {
+  const ppg = stats?.ppg || calculatePPG(stats?.wins, stats?.draws, stats?.played);
+  
   return (
     <div className="flex items-center justify-between bg-slate-50/50 p-4 rounded-2xl border border-slate-100/50">
        <span className="text-sm font-black text-slate-800 uppercase tracking-widest shrink-0">{label}</span>
        <div className="flex items-center gap-3">
           <FormCircles results={results} />
           <div className="bg-brand-emerald/10 text-brand-emerald px-3 py-1.5 rounded-lg text-xs font-black min-w-[50px] text-center border border-brand-emerald/20">
-             {(ppg || 0).toFixed(2)}
+             {ppg.toFixed(2)}
           </div>
        </div>
     </div>

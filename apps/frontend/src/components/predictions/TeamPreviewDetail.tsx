@@ -10,18 +10,24 @@ interface TeamPreviewDetailProps {
   isHome: boolean;
 }
 
+import { calculatePPG, calculateAvg } from '@/lib/utils/stats';
+
 export default function TeamPreviewDetail({ teamName, leagueName, stats, recentMatches, isHome: _isHome }: TeamPreviewDetailProps) {
+  const ppg = stats.ppg || calculatePPG(stats.wins, stats.draws, stats.played);
+  const scoredAvg = stats.scoredAvg || calculateAvg(stats.scored, stats.played);
+  const concededAvg = stats.concededAvg || calculateAvg(stats.conceded, stats.played);
+
   return (
     <div className="flex flex-col gap-6">
        <h2 className="text-2xl md:text-3xl font-black text-brand-midnight">{teamName} Preview</h2>
        
        <div className="prose prose-slate max-w-none text-slate-600 text-lg leading-relaxed">
           <p>
-            <strong>{teamName}</strong> has played <strong>{stats.played}</strong> matches in the <strong>{leagueName}</strong> so far, with <strong>{stats.wins} wins, {stats.draws} draws, and {stats.losses} losses</strong>. This results in an <strong>average of {(stats.ppg || 0).toFixed(2)} points</strong> per match.
+            <strong>{teamName}</strong> has played <strong>{stats.played}</strong> matches in the <strong>{leagueName}</strong> so far, with <strong>{stats.wins} wins, {stats.draws} draws, and {stats.losses} losses</strong>. This results in an <strong>average of {ppg.toFixed(2)} points</strong> per match.
           </p>
           <p>
-            In the 2025/26 season, the team has recorded <strong>{stats.wins} wins in {stats.played} matches</strong>. The team has scored <strong>{stats.scored} goals</strong>, which gives an average of <strong>{(stats.scoredAvg || 0).toFixed(2)} goals</strong> per league match. 
-            Defensively, {teamName} has conceded <strong>{stats.conceded} goals</strong> in the league (an average of <strong>{(stats.concededAvg || 0).toFixed(2)}</strong>) and kept <strong>{stats.cleanSheets} clean sheets</strong> throughout the season.
+            In the 2025/26 season, the team has recorded <strong>{stats.wins} wins in {stats.played} matches</strong>. The team has scored <strong>{stats.scored} goals</strong>, which gives an average of <strong>{scoredAvg.toFixed(2)} goals</strong> per league match. 
+            Defensively, {teamName} has conceded <strong>{stats.conceded} goals</strong> in the league (an average of <strong>{concededAvg.toFixed(2)}</strong>) and kept <strong>{stats.cleanSheets} clean sheets</strong> throughout the season.
           </p>
        </div>
 

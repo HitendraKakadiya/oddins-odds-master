@@ -250,6 +250,9 @@ export interface LeagueDetailResponse {
             topAssist: string;
             topAssistCount: number;
         };
+        goalsAvg?: string | number | null;
+        cornersAvg?: string | number | null;
+        cardsAvg?: string | number | null;
     };
     faq?: FAQItem[] | null;
 }
@@ -323,6 +326,9 @@ export interface Prediction {
     } | null;
     selection?: string | null;
     leagueName?: string;
+    marketKey?: string;
+    line?: string | number;
+    probability?: string | number;
 }
 
 export interface TeamStatsDetail {

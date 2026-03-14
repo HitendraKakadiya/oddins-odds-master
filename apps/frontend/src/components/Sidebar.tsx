@@ -374,7 +374,7 @@ export default function Sidebar({
                         {group.leagues.map((league) => (
                           <Link 
                             key={league.id} 
-                            href={`/predictions?leagueSlug=${league.slug}`}
+                            href={`/leagues/${group.country.name.toLowerCase()}/${league.slug}`}
                             className="flex items-center gap-3 p-2 rounded-lg hover:bg-white hover:text-brand-emerald transition-all text-sm font-bold text-slate-500"
                           >
                             <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>

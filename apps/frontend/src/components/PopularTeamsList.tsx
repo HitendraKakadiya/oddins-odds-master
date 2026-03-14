@@ -8,7 +8,7 @@ interface PopularTeam {
   id: number;
   name: string;
   country: string;
-  logoUrl: string;
+  logoUrl?: string;
   slug: string;
 }
 

@@ -36,7 +36,9 @@ export default async function PredictionDetailPage({ params }: PageProps) {
   }
 
   const { match, stats, predictions: livePredictions } = matchData;
-  const predictions: Prediction[] = (livePredictions && livePredictions.length > 0) ? livePredictions : (predictionDetail as PredictionsResponse).items || [];
+  const predictions: Prediction[] = (livePredictions && livePredictions.length > 0) 
+    ? livePredictions 
+    : (predictionDetail as PredictionsResponse).items?.filter(p => p.matchId === matchId) || [];
   const todayPredictions = todayPredictionsRes.items || [];
 
   return (

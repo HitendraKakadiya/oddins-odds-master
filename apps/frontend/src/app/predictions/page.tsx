@@ -28,7 +28,7 @@ export default async function PredictionsPage({
 
   // Fetch data in parallel from Live API
   const [predictionsData, leaguesData, featuredTipsData] = await Promise.all([
-    api.predictions.getLivePredictions(selectedDate).catch(() => ({ page: 1, pageSize, total: 0, items: [] })),
+    api.predictions.getLivePredictions(selectedDate, page, pageSize, searchParams.leagueSlug).catch(() => ({ page: 1, pageSize, total: 0, items: [] })),
     api.leagues.getLiveLeagues(1, 100, selectedDate).catch(() => ({ items: [], total: 0, page: 1, pageSize: 100 })),
     api.predictions.getLiveFeaturedTips(selectedDate).catch(() => ({ tips: [] })),
   ]);

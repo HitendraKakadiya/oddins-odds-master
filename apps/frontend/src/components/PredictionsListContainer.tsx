@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Prediction } from '@/lib/api/types';
 import CompactPredictionCard from './CompactPredictionCard';
 import { api } from '@/lib/api';
@@ -22,25 +22,31 @@ export default function PredictionsListContainer({
   initialTotal,
   pageSize,
   date,
-  region: _region,
-  leagueSlug: _leagueSlug,
-  marketKey: _marketKey,
+  region,
+  leagueSlug,
+  marketKey,
 }: PredictionsListContainerProps) {
   const [predictions, setPredictions] = useState<Prediction[]>(initialPredictions);
   const [page, setPage] = useState(initialPage);
   const [total, setTotal] = useState(initialTotal);
   const [loading, setLoading] = useState(false);
+  // Reset state when props change (specifically filters)
+  useEffect(() => {
+    setPredictions(initialPredictions);
+    setPage(initialPage);
+    setTotal(initialTotal);
+  }, [initialPredictions, initialPage, initialTotal]);
 
   const loadMore = async () => {
     if (loading || predictions.length >= total) return;
-
     setLoading(true);
     try {
       const nextPage = page + 1;
       const response = await api.predictions.getLivePredictions(
         date,
         nextPage,
-        pageSize
+        pageSize,
+        leagueSlug
       );
 
       if (response && response.items) {

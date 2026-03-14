@@ -17,11 +17,12 @@ export async function getPredictions(date?: string, region?: string, leagueSlug?
     return fetchAPI<PredictionsResponse>(`/v1/predictions${query ? `?${query}` : ''}`);
 }
 
-export async function getLivePredictions(date?: string, page?: number, pageSize?: number): Promise<PredictionsResponse> {
+export async function getLivePredictions(date?: string, page?: number, pageSize?: number, leagueSlug?: string): Promise<PredictionsResponse> {
     const params = new URLSearchParams();
     if (date) params.set('date', date);
     if (page) params.set('page', page.toString());
     if (pageSize) params.set('pageSize', pageSize.toString());
+    if (leagueSlug) params.set('leagueSlug', leagueSlug);
     const query = params.toString();
     return fetchAPI<PredictionsResponse>(`/v1/live/predictions${query ? `?${query}` : ''}`);
 }

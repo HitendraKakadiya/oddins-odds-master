@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { LeagueGroup } from './MatchCard';
 import { getLiveTodayMatches } from '@/lib/api';
-import type { MatchData } from '@/lib/api';
+import type { MatchData, Prediction } from '@/lib/api/types';
 
 interface MatchListInfiniteProps {
   initialMatches: MatchData[];
@@ -13,6 +13,7 @@ interface MatchListInfiniteProps {
   leagueId?: string;
   market?: string;
   minOdds?: string;
+  predictions?: Prediction[]; // Map or list of predictions for enrichment
 }
 
 export default function MatchListInfinite({
@@ -22,9 +23,40 @@ export default function MatchListInfinite({
   selectedDate,
   leagueId,
   market,
-  minOdds
+  minOdds,
+  predictions = []
 }: MatchListInfiniteProps) {
   const [matches, setMatches] = useState<MatchData[]>(initialMatches);
+  
+  // Utility to enrich matches with predictions
+  const enrichMatches = useCallback((matchesToEnrich: MatchData[]) => {
+    if (!predictions || predictions.length === 0) return matchesToEnrich;
+    
+    // Create a lookup map for faster access
+    const pMap = new Map((predictions || []).map(p => [String(p.matchId), p]));
+    
+    return matchesToEnrich.map(m => {
+      const pred = pMap.get(String(m.matchId));
+      if (!m.featuredTip && pred) {
+        return {
+          ...m,
+          featuredTip: {
+            id: pred.id,
+            title: pred.selection || pred.title,
+            isPremium: pred.isPremium || false,
+            confidence: pred.confidence
+          }
+        };
+      }
+      return m;
+    });
+  }, [predictions]);
+
+  useEffect(() => {
+    // Re-enrich initial matches if predictions change
+    setMatches(enrichMatches(initialMatches));
+  }, [initialMatches, enrichMatches]);
+
   const [page, setPage] = useState(initialPage);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(initialMatches.length < initialTotal);
@@ -62,7 +94,8 @@ export default function MatchListInfinite({
       const response = await getLiveTodayMatches(selectedDate, nextPage, 20, leagueId, market, minOdds);
       
       if (response && response.matches) {
-        setMatches(prev => [...prev, ...response.matches]);
+        const enrichedNewMatches = enrichMatches(response.matches);
+        setMatches(prev => [...prev, ...enrichedNewMatches]);
         setPage(nextPage);
         setHasMore((matches.length + response.matches.length) < response.total);
       } else {
@@ -74,7 +107,7 @@ export default function MatchListInfinite({
     } finally {
       setLoading(false);
     }
-  }, [page, loading, hasMore, selectedDate, leagueId, market, minOdds, matches.length]);
+  }, [page, loading, hasMore, selectedDate, leagueId, market, minOdds, matches.length, enrichMatches]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(

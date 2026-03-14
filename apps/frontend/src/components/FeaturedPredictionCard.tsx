@@ -11,19 +11,22 @@ interface FeaturedPredictionCardProps {
       slug?: string;
       countryName?: string;
     } | null;
-    homeTeam: {
+    homeTeam?: {
       name: string;
       logoUrl?: string | null;
-    };
-    awayTeam: {
+    } | null;
+    awayTeam?: {
       name: string;
       logoUrl?: string | null;
-    };
-    selection: string;
+    } | null;
+    selection?: string | null;
   };
 }
 
 export default function FeaturedPredictionCard({ prediction }: FeaturedPredictionCardProps) {
+  const homeTeamName = prediction.homeTeam?.name || 'Home Team';
+  const awayTeamName = prediction.awayTeam?.name || 'Away Team';
+  
   const date = prediction.kickoffAt ? new Date(prediction.kickoffAt).toLocaleDateString('en-GB', {
     day: '2-digit',
     month: '2-digit',
@@ -54,13 +57,13 @@ export default function FeaturedPredictionCard({ prediction }: FeaturedPredictio
           <div className="flex items-center justify-between gap-4 w-full px-2">
              <div className="flex flex-col items-center gap-3 flex-1">
                 <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/10 shadow-xl group-hover:scale-110 transition-transform duration-500">
-                   {prediction.homeTeam.logoUrl ? (
-                     <img src={prediction.homeTeam.logoUrl} alt={prediction.homeTeam.name} className="w-10 h-10 object-contain drop-shadow-lg" />
+                   {prediction.homeTeam?.logoUrl ? (
+                     <img src={prediction.homeTeam.logoUrl} alt={homeTeamName} className="w-10 h-10 object-contain drop-shadow-lg" />
                    ) : (
                      <span className="text-2xl">⚽</span>
                    )}
                 </div>
-                <span className="text-xs font-black text-center line-clamp-2 max-w-[100px] leading-tight h-8 flex items-center">{prediction.homeTeam.name}</span>
+                <span className="text-xs font-black text-center line-clamp-2 max-w-[100px] leading-tight h-8 flex items-center">{homeTeamName}</span>
              </div>
 
              <div className="flex flex-col items-center gap-4">
@@ -74,19 +77,19 @@ export default function FeaturedPredictionCard({ prediction }: FeaturedPredictio
 
              <div className="flex flex-col items-center gap-3 flex-1">
                 <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/10 shadow-xl group-hover:scale-110 transition-transform duration-500">
-                   {prediction.awayTeam.logoUrl ? (
-                     <img src={prediction.awayTeam.logoUrl} alt={prediction.awayTeam.name} className="w-10 h-10 object-contain drop-shadow-lg" />
+                   {prediction.awayTeam?.logoUrl ? (
+                     <img src={prediction.awayTeam.logoUrl} alt={awayTeamName} className="w-10 h-10 object-contain drop-shadow-lg" />
                    ) : (
                      <span className="text-2xl">⚽</span>
                    )}
                 </div>
-                <span className="text-xs font-black text-center line-clamp-2 max-w-[100px] leading-tight h-8 flex items-center">{prediction.awayTeam.name}</span>
+                <span className="text-xs font-black text-center line-clamp-2 max-w-[100px] leading-tight h-8 flex items-center">{awayTeamName}</span>
              </div>
           </div>
 
           <div className="text-lg font-black text-brand-emerald mt-2 uppercase tracking-tight">
-            {prediction.selection === 'Home' ? `${prediction.homeTeam.name} Win` : 
-             prediction.selection === 'Away' ? `${prediction.awayTeam.name} Win` : 
+            {prediction.selection === 'Home' ? `${homeTeamName} Win` : 
+             prediction.selection === 'Away' ? `${awayTeamName} Win` : 
              prediction.selection}
           </div>
           <div className="text-[11px] font-bold text-white/40 italic mt-1">Match Analysis & Insights</div>
