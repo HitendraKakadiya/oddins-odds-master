@@ -2,12 +2,23 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { FiBarChart2, FiCalendar, FiGrid, FiChevronDown, FiMenu, FiX, FiSearch } from 'react-icons/fi';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   const navItems = [
-    { name: 'Predictions', href: '/predictions', hasDropdown: true },
+    { 
+      name: 'Predictions', 
+      href: '/predictions', 
+      hasDropdown: true,
+      dropdownItems: [
+        { name: 'Predictions', href: '/predictions', icon: <FiBarChart2 className="w-5 h-5 text-indigo-500" />, description: 'Daily football predictions' },
+        { name: 'Prime Betting Pick', href: '/predictions/prime-pick', icon: <FiCalendar className="w-5 h-5 text-brand-pink" />, description: 'Our top expert daily choice' },
+        { name: 'Expert Combo Picks', href: '/predictions/combo-picks', icon: <FiGrid className="w-5 h-5 text-brand-emerald" />, description: 'Highly rated multi-bet combos' },
+      ]
+    },
     { name: 'Betting Sites', href: '/betting-sites' },
     { name: 'Statistics', href: '/statistics', hasDropdown: true },
     { name: 'Leagues', href: '/leagues' },
@@ -27,65 +38,96 @@ export default function Header() {
             <span className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">OddinsOdds</span>
           </Link>
 
-          <div className="hidden lg:flex items-center space-x-8">
+          {/* Desktop Nav */}
+          <div className="hidden lg:flex items-center space-x-1">
             {navItems.map((item) => (
-              <Link 
+              <div 
                 key={item.name} 
-                href={item.href} 
-                className="text-slate-600 hover:text-brand-emerald font-semibold flex items-center transition-colors text-sm"
+                className="relative group py-2 px-3"
+                onMouseEnter={() => item.hasDropdown && setOpenDropdown(item.name)}
+                onMouseLeave={() => setOpenDropdown(null)}
               >
-                {item.name}
-                {item.hasDropdown && (
-                  <svg className="w-4 h-4 ml-1 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                <Link 
+                  href={item.href} 
+                  className="text-slate-600 hover:text-brand-emerald font-bold flex items-center transition-all text-sm px-2 py-1.5 rounded-lg hover:bg-slate-50"
+                >
+                  {item.name}
+                  {item.hasDropdown && (
+                    <FiChevronDown className={`ml-1 w-3.5 h-3.5 transition-transform duration-200 ${openDropdown === item.name ? 'rotate-180' : ''}`} />
+                  )}
+                </Link>
+
+                {/* Dropdown Menu */}
+                {item.hasDropdown && item.dropdownItems && (
+                  <div className={`absolute top-full left-0 w-80 bg-white rounded-3xl shadow-2xl border border-slate-100 p-3 transition-all duration-200 origin-top ${openDropdown === item.name ? 'opacity-100 translate-y-2 scale-100' : 'opacity-0 translate-y-4 scale-95 pointer-events-none'}`}>
+                    <div className="grid gap-2">
+                       {item.dropdownItems.map((dropItem) => (
+                         <Link 
+                           key={dropItem.name}
+                           href={dropItem.href}
+                           className="flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-all group/item"
+                         >
+                            <div className="w-11 h-11 bg-slate-50 rounded-xl flex items-center justify-center shadow-sm group-hover/item:bg-white transition-colors">
+                                {dropItem.icon}
+                            </div>
+                            <div>
+                               <div className="text-sm font-bold text-slate-900 group-hover/item:text-brand-emerald transition-colors">{dropItem.name}</div>
+                               <div className="text-[11px] text-slate-400 font-medium leading-tight mt-0.5">{dropItem.description}</div>
+                            </div>
+                         </Link>
+                       ))}
+                    </div>
+                  </div>
                 )}
-              </Link>
+              </div>
             ))}
           </div>
 
-          <div className="flex items-center space-x-2 sm:space-x-3">
-            <button className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-slate-50 rounded-xl text-slate-400 hover:text-brand-emerald hover:bg-slate-100 transition-all border border-slate-100">
-              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </button>
-
+          <div className="flex items-center">
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="lg:hidden w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-slate-50 rounded-xl text-slate-600 hover:text-brand-emerald hover:bg-slate-100 transition-all border border-slate-100"
               aria-label="Toggle menu"
             >
-              {isMobileMenuOpen ? (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              )}
+              {isMobileMenuOpen ? <FiX className="w-5 h-5" /> : <FiMenu className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
+        {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="lg:hidden border-t border-slate-200/60 py-4 animate-in slide-in-from-top duration-200 max-h-[calc(100vh-5rem)] overflow-y-auto scrollbar-hide">
             <div className="flex flex-col space-y-1">
               {navItems.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="px-4 py-3 text-slate-600 hover:text-brand-emerald hover:bg-slate-50 font-semibold flex items-center justify-between transition-colors rounded-lg text-lg sm:text-xl"
-                >
-                  <span>{item.name}</span>
-                  {item.hasDropdown && (
-                    <svg className="w-4 h-4 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
+                <div key={item.name}>
+                  <Link
+                    href={item.href}
+                    onClick={() => !item.hasDropdown && setIsMobileMenuOpen(false)}
+                    className="px-4 py-4 text-slate-900 hover:text-brand-emerald hover:bg-slate-50 font-bold flex items-center justify-between transition-colors rounded-xl text-lg"
+                  >
+                    <span>{item.name}</span>
+                    {item.hasDropdown && (
+                      <FiChevronDown className="w-5 h-5 text-slate-300" />
+                    )}
+                  </Link>
+                  {item.hasDropdown && item.dropdownItems && (
+                     <div className="px-6 pb-4 grid gap-4 mt-2">
+                        {item.dropdownItems.map((dropItem) => (
+                            <Link 
+                                key={dropItem.name}
+                                href={dropItem.href}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="flex items-center gap-4 group"
+                            >
+                                <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center">
+                                    {dropItem.icon}
+                                </div>
+                                <span className="text-sm font-bold text-slate-600 group-hover:text-brand-emerald">{dropItem.name}</span>
+                            </Link>
+                        ))}
+                     </div>
                   )}
-                </Link>
+                </div>
               ))}
             </div>
           </div>

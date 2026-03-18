@@ -412,6 +412,7 @@ export interface MatchDetailResponse {
     prevMatch?: { matchId: number; homeTeam: { logoUrl?: string | null }; awayTeam: { logoUrl?: string | null } } | null;
     nextMatch?: { matchId: number; homeTeam: { logoUrl?: string | null }; awayTeam: { logoUrl?: string | null } } | null;
     events?: MatchEvent[] | null;
+    matchStats?: any[] | null;
     oddsLatest?: OddsLatest | null;
     predictions?: Prediction[] | null;
     h2h?: H2HMatch[] | null;

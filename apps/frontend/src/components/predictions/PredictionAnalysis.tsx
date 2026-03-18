@@ -41,7 +41,7 @@ export default function PredictionAnalysis({ match, predictions }: PredictionAna
           </div>
 
           <h2 className="text-2xl md:text-3xl font-black text-brand-midnight mb-8">
-             APWin predictions for {match.homeTeam.name} vs {match.awayTeam.name}
+             OddinsOdds predictions for {match.homeTeam.name} vs {match.awayTeam.name}
           </h2>
 
           <div className="space-y-6">

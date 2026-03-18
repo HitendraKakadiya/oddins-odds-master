@@ -175,7 +175,7 @@ export default function TeamStatsSection({ teamName, venue, city, stats, nextMat
             
             <p className="text-slate-400 font-medium leading-relaxed">
               Check {teamName} standings for the 2025/26 season, upcoming matches, recent results, full squad, and performance metrics. 
-              Our live data integration ensures you get real-time insights that only APWin users get, helping you make smarter, data-driven decisions.
+              Our live data integration ensures you get real-time insights that only OddinsOdds users get, helping you make smarter, data-driven decisions.
             </p>
 
             <div className="grid grid-cols-2 gap-8">

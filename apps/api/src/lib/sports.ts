@@ -371,11 +371,12 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const awayId = (teams as any)?.away?.id || (fixture as any)?.awayTeam?.id || 0;
 
-    const [homeRecent, awayRecent, events, homeNext] = await Promise.all([
+    const [homeRecent, awayRecent, events, homeNext, matchStats] = await Promise.all([
         homeId ? getTeamMatchesDirect(homeId, 'last', 20) : Promise.resolve([]),
         awayId ? getTeamMatchesDirect(awayId, 'last', 20) : Promise.resolve([]),
         getMatchEventsDirect(fixtureId),
-        homeId ? getTeamMatchesDirect(homeId, 'next', 10) : Promise.resolve([])
+        homeId ? getTeamMatchesDirect(homeId, 'next', 10) : Promise.resolve([]),
+        getFixtureStatisticsDirect(fixtureId)
     ]);
 
     // Map matches and stats
@@ -480,6 +481,7 @@ export async function getFullPredictionDetailDirect(fixtureId: number) {
         nextMatch: nextMatchDetails,
         stats,
         events,
+        matchStats,
         predictions: mappedPredictions,
         h2h: mappedH2H,
         h2hSummary,
