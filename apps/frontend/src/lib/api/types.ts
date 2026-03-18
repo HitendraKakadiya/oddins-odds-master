@@ -562,6 +562,44 @@ export interface TabItem {
     [key: string]: unknown;
 }
 
-export interface TabResponse {
-    items: TabItem[];
+export interface InsightItem {
+    matchId: number;
+    kickoffAt: string;
+    status: string;
+    league: {
+        id: number;
+        name: string;
+        slug: string;
+        logoUrl?: string | null;
+        country: {
+            name: string;
+            code?: string | null;
+            flagUrl?: string | null;
+        };
+    };
+    homeTeam: {
+        id: number;
+        name: string;
+        slug: string;
+        logoUrl?: string | null;
+    };
+    awayTeam: {
+        id: number;
+        name: string;
+        slug: string;
+        logoUrl?: string | null;
+    };
+    trend: {
+        name: string;
+        value: number | string;
+        icon?: string;
+    };
+}
+
+export interface InsightResponse {
+    items: InsightItem[];
+    total: number;
+    page: number;
+    pageSize: number;
+    date: string;
 }

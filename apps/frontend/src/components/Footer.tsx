@@ -41,6 +41,7 @@ export default function Footer() {
     {
       title: "Resources",
       links: [
+        { name: "Match Insights", href: "/insights" },
         { name: "Predictions", href: "/predictions" },
         { name: "Betting Sites", href: "/betting-sites" },
         { name: "Leagues", href: "/leagues" },

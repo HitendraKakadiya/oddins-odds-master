@@ -20,7 +20,15 @@ export default function Header() {
       ]
     },
     { name: 'Betting Sites', href: '/betting-sites' },
-    { name: 'Statistics', href: '/statistics', hasDropdown: true },
+    { 
+      name: 'Statistics', 
+      href: '/statistics', 
+      hasDropdown: true,
+      dropdownItems: [
+        { name: 'Match Insights', href: '/insights', icon: <FiBarChart2 className="w-5 h-5 text-brand-emerald" />, description: 'Top statistical streaks & trends' },
+        { name: 'Decreasing Stats', href: '/statistics/decreasing', icon: <FiGrid className="w-5 h-5 text-indigo-500" />, description: 'Stats following a cooling trend' },
+      ]
+    },
     { name: 'Leagues', href: '/leagues' },
     { name: 'Teams', href: '/teams' },
     { name: 'Streams', href: '/streams' },

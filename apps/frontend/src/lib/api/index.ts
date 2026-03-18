@@ -9,6 +9,7 @@ import * as leagues from './leagues';
 import * as articles from './articles';
 import * as matches from './matches';
 import * as misc from './misc';
+import * as insights from './insights';
 
 export * from './types';
 export * from './client';
@@ -19,6 +20,7 @@ export * from './leagues';
 export * from './articles';
 export * from './matches';
 export * from './misc';
+export * from './insights';
 
 export const api = {
     predictions,
@@ -28,6 +30,7 @@ export const api = {
     articles,
     matches,
     misc,
+    insights,
 };
 
 export default api;

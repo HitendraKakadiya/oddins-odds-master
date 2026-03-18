@@ -9,6 +9,7 @@ import { matchDetailRoutes } from './match-detail';
 import { articlesRoutes } from './articles';
 import { searchRoutes } from './search';
 import { liveRoutes } from './live';
+import { insightsRoutes } from './insights';
 
 export async function v1Routes(server: FastifyInstance) {
   await server.register(metaRoutes);
@@ -21,5 +22,6 @@ export async function v1Routes(server: FastifyInstance) {
   await server.register(articlesRoutes);
   await server.register(searchRoutes);
   await server.register(liveRoutes);
+  await server.register(insightsRoutes);
 }
 
