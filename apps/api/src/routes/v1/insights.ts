@@ -2,6 +2,66 @@ import { FastifyInstance } from 'fastify';
 import { query } from '../../db';
 import { getLiveMatchesDirect, getPredictionsDirect } from '../../lib/sports';
 
+interface ComparisonValue {
+  home: string;
+  away: string;
+}
+
+interface Comparison {
+  corners?: ComparisonValue;
+  possession?: ComparisonValue;
+  [key: string]: ComparisonValue | undefined;
+}
+
+interface Match {
+  matchId: number;
+  providerFixtureId: number;
+  kickoffAt: string;
+  status: string;
+  elapsed: number;
+  league: {
+    id: number;
+    name: string;
+    slug: string;
+    logoUrl: string;
+    season: number;
+    country: {
+      name: string;
+      code: string | null;
+      flagUrl: string;
+    };
+  };
+  homeTeam: {
+    id: number;
+    name: string;
+    logoUrl: string;
+  };
+  awayTeam: {
+    id: number;
+    name: string;
+    logoUrl: string;
+  };
+  score: {
+    home: number | null;
+    away: number | null;
+  };
+}
+
+interface HotStatMatch {
+  matchId: number;
+  kickoffAt: string;
+  league: {
+    id: number;
+    name: string;
+    country: string;
+    logoUrl: string;
+  };
+  homeTeam: { name: string; logoUrl: string };
+  awayTeam: { name: string; logoUrl: string };
+  market: string;
+  probability: number;
+}
+
 export async function insightsRoutes(server: FastifyInstance) {
   server.get<{ Querystring: { date?: string; page?: string; pageSize?: string } }>('/insights', async (request) => {
     const { date, page = '1', pageSize = '12' } = request.query;
@@ -12,7 +72,7 @@ export async function insightsRoutes(server: FastifyInstance) {
 
     try {
       // 1. Fetch matches for the date
-      const liveMatches = await getLiveMatchesDirect(targetDate);
+      const liveMatches = await getLiveMatchesDirect(targetDate) as Match[];
 
       if (!liveMatches || liveMatches.length === 0) {
         return { items: [], total: 0, page: pageNum, pageSize: pageSizeNum, date: targetDate };
@@ -21,7 +81,7 @@ export async function insightsRoutes(server: FastifyInstance) {
       // 2. Paginate matches
       const pagedMatches = liveMatches.slice(offset, offset + pageSizeNum);
 
-      const items = await Promise.all(pagedMatches.map(async (m: any) => {
+      const items = await Promise.all(pagedMatches.map(async (m: Match) => {
         try {
           const prediction = await getPredictionsDirect(m.matchId);
 
@@ -117,7 +177,7 @@ export async function insightsRoutes(server: FastifyInstance) {
     if (sortBy === 'time') dbSort = 'm.kickoff_at ASC';
     else if (sortBy === 'prob_low') dbSort = 'mp.probability ASC';
 
-    let finalData: any[] = [];
+    let finalData: HotStatMatch[] = [];
     let totalCount = 0;
     
     // 1. Try Database
@@ -192,14 +252,14 @@ export async function insightsRoutes(server: FastifyInstance) {
     // 2. Try Proxy Fallback if DB was empty or failed
     if (finalData.length === 0) {
       try {
-        const matches = await getLiveMatchesDirect(targetDate);
+        const matches = await getLiveMatchesDirect(targetDate) as Match[];
         if (matches && matches.length > 0) {
           // Stagger the selection based on market to show different matches
           const marketIndex = Object.keys(marketMap).indexOf(market);
           const startIndex = Math.max(0, (marketIndex * 5) % Math.max(1, matches.length - 15));
           const selectedMatches = matches.slice(startIndex, startIndex + 25); // Take a larger pool to filter/sort
 
-          finalData = await Promise.all(selectedMatches.map(async (m: any) => {
+          finalData = await Promise.all(selectedMatches.map(async (m: Match) => {
             const prediction = await getPredictionsDirect(m.matchId);
             
             // Base default probability with market-specific salt
@@ -207,7 +267,7 @@ export async function insightsRoutes(server: FastifyInstance) {
             let prob = 0.60 + ((m.matchId + salt) % 30) / 100; 
             
             const probs = prediction?.probabilities;
-            const comparison = (prediction as any)?.comparison;
+            const comparison = prediction?.comparison as Comparison;
             
             if (probs) {
               if (market === 'btts' && probs.btts) {
@@ -241,7 +301,7 @@ export async function insightsRoutes(server: FastifyInstance) {
                 league: {
                     id: m.league.id,
                     name: m.league.name,
-                    country: m.league.country?.name || m.league.country || '',
+                    country: m.league.country.name || '',
                     logoUrl: m.league.logoUrl
                 },
                 homeTeam: { name: m.homeTeam.name, logoUrl: m.homeTeam.logoUrl },
