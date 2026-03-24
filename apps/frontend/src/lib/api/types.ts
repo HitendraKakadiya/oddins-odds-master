@@ -641,3 +641,14 @@ export interface HotStatsResponse {
     page: number;
     pageSize: number;
 }
+
+export interface TabResponse {
+    team: {
+        id: number;
+        name: string;
+        slug: string;
+        logoUrl: string;
+    };
+    tab: string;
+    items: TabItem[];
+}
