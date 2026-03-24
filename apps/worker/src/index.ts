@@ -14,6 +14,7 @@ import { syncEvents } from './jobs/syncEvents';
 import { syncLineups } from './jobs/syncLineups';
 import { syncDailyFixtures, syncFixturesWindow } from './jobs/syncDailyFixtures';
 import { syncPredictions } from './jobs/syncPredictions';
+import { syncHotStats } from './jobs/syncHotStats';
 import { cleanupOldData } from './jobs/cleanup';
 import { startScheduler } from './scheduler';
 
@@ -29,6 +30,7 @@ Available commands:
   sync:window     Sync fixtures for past 10 days + future 14 days
   sync:odds       Sync betting odds for upcoming fixtures
   sync:predictions Sync match predictions for recent and upcoming matches
+  sync:hot-stats   Sync high-probability stats (Hot Stats)
   sync:players    Sync player data for all teams
   sync:events     Sync match events (goals, cards, subs)
   sync:lineups    Sync match lineups (starting XI + subs)
@@ -88,6 +90,10 @@ async function main() {
 
       case 'sync:predictions':
         await syncPredictions();
+        break;
+      
+      case 'sync:hot-stats':
+        await syncHotStats();
         break;
 
       case 'sync:daily':

@@ -55,42 +55,45 @@ export default function HeadToHead({ homeTeam, awayTeam, h2h, h2hSummary }: Head
         
         <div className="p-2 md:p-4">
            {filteredH2H.slice(0, 5).map((match, idx) => (
-             <div key={idx} className="flex items-center justify-between px-8 py-6 hover:bg-slate-50/50 transition-all rounded-[24px] group">
-                <div className="flex items-center gap-6 flex-1">
-                   <div className="flex items-center gap-3 shrink-0">
-                      <div className="p-2 bg-slate-50 rounded-lg">
-                         <svg className="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                      </div>
-                      <div className="flex flex-col">
-                         <span className="text-[11px] font-black text-slate-800 tabular-nums">
-                            {new Date(match.date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
-                         </span>
-                         <span className="text-[10px] font-bold text-slate-400 tabular-nums">
-                            {new Date(match.date).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })}
-                         </span>
+             <div key={idx} className="flex flex-col md:flex-row md:items-center justify-between px-4 md:px-8 py-4 md:py-6 hover:bg-slate-50/50 transition-all rounded-[24px] group border border-slate-50 md:border-transparent mb-2 md:mb-0">
+                {/* Date/Time - Top on Mobile, Left on Desktop */}
+                <div className="flex items-center gap-3 shrink-0 mb-4 md:mb-0">
+                   <div className="p-2 bg-slate-50 rounded-lg">
+                      <svg className="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                   </div>
+                   <div className="flex flex-col">
+                      <span className="text-[11px] font-black text-slate-800 tabular-nums">
+                         {new Date(match.date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                      </span>
+                      <span className="text-[10px] font-bold text-slate-400 tabular-nums">
+                         {new Date(match.date).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })}
+                      </span>
+                   </div>
+                </div>
+
+                {/* Match Score & Teams */}
+                <div className="flex items-center justify-between md:justify-center flex-1 gap-2 md:gap-8">
+                   {/* Home Team */}
+                   <div className="flex items-center gap-2 md:gap-4 flex-1 justify-end min-w-0">
+                      <span className="text-xs md:text-sm font-black text-slate-700 truncate group-hover:text-brand-emerald transition-colors text-right">{match.homeTeam.name}</span>
+                      <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-white border border-slate-100 p-1.5 md:p-2 shadow-sm shrink-0">
+                         {match.homeTeam.logoUrl ? <img src={match.homeTeam.logoUrl} alt="" className="w-full h-full object-contain" /> : <div className="w-full h-full flex items-center justify-center text-[10px] text-slate-300">⚽</div>}
                       </div>
                    </div>
 
-                   <div className="flex items-center justify-center flex-1 gap-8">
-                      <div className="flex items-center gap-4 flex-1 justify-end min-w-0">
-                         <span className="text-sm font-black text-slate-700 truncate group-hover:text-brand-emerald transition-colors">{match.homeTeam.name}</span>
-                         <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 p-2 shadow-sm shrink-0">
-                            {match.homeTeam.logoUrl ? <img src={match.homeTeam.logoUrl} alt="" className="w-full h-full object-contain" /> : <div className="w-full h-full flex items-center justify-center text-xs text-slate-300">⚽</div>}
-                         </div>
-                      </div>
+                   {/* Score */}
+                   <div className="flex items-center gap-1.5 md:gap-2 font-black text-slate-900 bg-slate-50 px-3 md:px-4 py-1.5 md:py-2 rounded-xl border border-slate-100 shadow-inner tabular-nums shrink-0">
+                      <span className="text-sm md:text-base">{match.homeScore}</span>
+                      <span className="text-slate-200 text-sm md:text-base">:</span>
+                      <span className="text-sm md:text-base">{match.awayScore}</span>
+                   </div>
 
-                      <div className="flex items-center gap-2 font-black text-slate-900 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100 shadow-inner tabular-nums">
-                         <span>{match.homeScore}</span>
-                         <span className="text-slate-200">:</span>
-                         <span>{match.awayScore}</span>
+                   {/* Away Team */}
+                   <div className="flex items-center gap-2 md:gap-4 flex-1 min-w-0">
+                      <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-white border border-slate-100 p-1.5 md:p-2 shadow-sm shrink-0">
+                         {match.awayTeam.logoUrl ? <img src={match.awayTeam.logoUrl} alt="" className="w-full h-full object-contain" /> : <div className="w-full h-full flex items-center justify-center text-[10px] text-slate-300">⚽</div>}
                       </div>
-
-                      <div className="flex items-center gap-4 flex-1 min-w-0">
-                         <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 p-2 shadow-sm shrink-0">
-                            {match.awayTeam.logoUrl ? <img src={match.awayTeam.logoUrl} alt="" className="w-full h-full object-contain" /> : <div className="w-full h-full flex items-center justify-center text-xs text-slate-300">⚽</div>}
-                         </div>
-                         <span className="text-sm font-black text-slate-700 truncate group-hover:text-brand-emerald transition-colors">{match.awayTeam.name}</span>
-                      </div>
+                      <span className="text-xs md:text-sm font-black text-slate-700 truncate group-hover:text-brand-emerald transition-colors">{match.awayTeam.name}</span>
                    </div>
                 </div>
              </div>

@@ -134,7 +134,7 @@ export async function syncPredictions(): Promise<void> {
 
                 // Pre-cache central markets
                 const marketFT1X2 = await upsertMarket(client, 1, 'Match Winner', 'FT_1X2', false);
-                await upsertMarket(client, 8, 'Both Teams Score', 'BTTS', false);
+                const marketBTTS = await upsertMarket(client, 8, 'Both Teams Score', 'BTTS', false);
                 const marketOU25 = await upsertMarket(client, 5, 'Goals Over/Under', 'OU_GOALS', true);
 
                 let predictionsCount = 0;
@@ -194,10 +194,33 @@ export async function syncPredictions(): Promise<void> {
                         );
                         predictionsCount++;
 
-                        // 2. OU_GOALS (Usually 2.5 is the standard for under_over if available)
+                        // 2. BTTS Prediction (Both Teams to Score)
+                        // API-Football v3 /predictions advice often contains BTTS info
+                        // We also check comparison stats
+                        const bttsYes = data.predictions.advice?.toLowerCase().includes('btts') || 
+                                       data.predictions.advice?.toLowerCase().includes('both teams') ||
+                                       (parseFloat(data.comparison.goals.home) > 45 && parseFloat(data.comparison.goals.away) > 45);
+                        
+                        await upsertMatchPrediction(
+                            client,
+                            matchId,
+                            modelId,
+                            marketBTTS,
+                            null,
+                            bttsYes ? 'Yes' : 'No',
+                            {
+                                advice: data.predictions.advice,
+                                comparison: data.comparison.goals
+                            },
+                            bttsYes ? 0.75 : 0.25, // Fallback probability if not explicitly provided
+                            75
+                        );
+                        predictionsCount++;
+
+                        // 3. OU_GOALS (Usually 2.5 is the standard for under_over if available)
                         if (data.predictions.under_over) {
                             const isOver = data.predictions.under_over.includes('+');
-                            const line = 2.5; // API-Football usually provides +/- 2.5 in advice and under_over string
+                            const line = 2.5; 
 
                             await upsertMatchPrediction(
                                 client,
@@ -210,8 +233,8 @@ export async function syncPredictions(): Promise<void> {
                                     raw: data.predictions.under_over,
                                     advice: data.predictions.advice
                                 },
-                                null,
-                                null
+                                0.7, // Default probability
+                                70
                             );
                             predictionsCount++;
                         }

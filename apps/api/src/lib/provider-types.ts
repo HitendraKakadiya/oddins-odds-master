@@ -110,6 +110,9 @@ export interface ApiPrediction {
         home: string;
         draw: string;
         away: string;
+        btts: string | null;
+        over: string | null;
+        under: string | null;
     };
 }
 

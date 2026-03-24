@@ -7,6 +7,11 @@ import { FiBarChart2, FiCalendar, FiGrid, FiChevronDown, FiMenu, FiX, FiSearch }
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [expandedMobileItem, setExpandedMobileItem] = useState<string | null>(null);
+
+  const toggleMobileDropdown = (itemName: string) => {
+    setExpandedMobileItem(expandedMobileItem === itemName ? null : itemName);
+  };
 
   const navItems = [
     { 
@@ -26,7 +31,7 @@ export default function Header() {
       hasDropdown: true,
       dropdownItems: [
         { name: 'Match Insights', href: '/insights', icon: <FiBarChart2 className="w-5 h-5 text-brand-emerald" />, description: 'Top statistical streaks & trends' },
-        { name: 'Decreasing Stats', href: '/statistics/decreasing', icon: <FiGrid className="w-5 h-5 text-indigo-500" />, description: 'Stats following a cooling trend' },
+        { name: 'Hot Stats', href: '/statistics/hot-stats', icon: <FiGrid className="w-5 h-5 text-indigo-500" />, description: 'High probability statistical outcomes' },
       ]
     },
     { name: 'Leagues', href: '/leagues' },
@@ -107,30 +112,43 @@ export default function Header() {
           <div className="lg:hidden border-t border-slate-200/60 py-4 animate-in slide-in-from-top duration-200 max-h-[calc(100vh-5rem)] overflow-y-auto scrollbar-hide">
             <div className="flex flex-col space-y-1">
               {navItems.map((item) => (
-                <div key={item.name}>
-                  <Link
-                    href={item.href}
-                    onClick={() => !item.hasDropdown && setIsMobileMenuOpen(false)}
-                    className="px-4 py-4 text-slate-900 hover:text-brand-emerald hover:bg-slate-50 font-bold flex items-center justify-between transition-colors rounded-xl text-lg"
-                  >
-                    <span>{item.name}</span>
-                    {item.hasDropdown && (
-                      <FiChevronDown className="w-5 h-5 text-slate-300" />
-                    )}
-                  </Link>
-                  {item.hasDropdown && item.dropdownItems && (
-                     <div className="px-6 pb-4 grid gap-4 mt-2">
+                <div key={item.name} className="px-2">
+                  {item.hasDropdown ? (
+                    <button
+                      onClick={() => toggleMobileDropdown(item.name)}
+                      className={`w-full px-4 py-4 font-bold flex items-center justify-between transition-all rounded-xl text-lg ${
+                        expandedMobileItem === item.name ? 'bg-slate-50 text-brand-emerald' : 'text-slate-900 hover:bg-slate-50'
+                      }`}
+                    >
+                      <span>{item.name}</span>
+                      <FiChevronDown className={`w-5 h-5 text-slate-300 transition-transform duration-300 ${expandedMobileItem === item.name ? 'rotate-180 text-brand-emerald' : ''}`} />
+                    </button>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="px-4 py-4 text-slate-900 hover:text-brand-emerald hover:bg-slate-50 font-bold flex items-center justify-between transition-colors rounded-xl text-lg"
+                    >
+                      {item.name}
+                    </Link>
+                  )}
+                  
+                  {item.hasDropdown && item.dropdownItems && expandedMobileItem === item.name && (
+                     <div className="px-4 pb-2 grid gap-1 mt-1 animate-in slide-in-from-top-2 duration-200">
                         {item.dropdownItems.map((dropItem) => (
                             <Link 
                                 key={dropItem.name}
                                 href={dropItem.href}
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="flex items-center gap-4 group"
+                                className="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 group transition-all"
                             >
-                                <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center">
+                                <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center group-hover:bg-white transition-colors">
                                     {dropItem.icon}
                                 </div>
-                                <span className="text-sm font-bold text-slate-600 group-hover:text-brand-emerald">{dropItem.name}</span>
+                                <div className="flex flex-col text-left">
+                                  <span className="text-sm font-bold text-slate-700 group-hover:text-brand-emerald">{dropItem.name}</span>
+                                  <span className="text-[10px] text-slate-400 font-medium">{dropItem.description}</span>
+                                </div>
                             </Link>
                         ))}
                      </div>

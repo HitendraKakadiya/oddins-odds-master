@@ -158,7 +158,10 @@ export async function getPredictionsDirect(fixtureId: number) {
         probabilities: {
             home: prediction.percent.home,
             draw: prediction.percent.draw,
-            away: prediction.percent.away
+            away: prediction.percent.away,
+            btts: prediction.percent.btts,
+            over: prediction.percent.over,
+            under: prediction.percent.under
         },
         goals: {
             home: prediction.goals.home,
