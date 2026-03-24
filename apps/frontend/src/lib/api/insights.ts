@@ -3,7 +3,7 @@
  */
 
 import { fetchAPI } from './client';
-import { InsightResponse } from './types';
+import { InsightResponse, HotStatsResponse } from './types';
 
 /**
  * Fetch match insights for a specific date
@@ -27,7 +27,7 @@ export async function getInsights(date?: string, page?: number, pageSize?: numbe
  * @param date YYYY-MM-DD
  * @returns 
  */
-export async function getHotStats(market?: string, date?: string, sortBy?: string, leagueId?: string, page?: number, pageSize?: number): Promise<{ matches: any[], leagues: any[], total: number, page: number, pageSize: number }> {
+export async function getHotStats(market?: string, date?: string, sortBy?: string, leagueId?: string, page?: number, pageSize?: number): Promise<HotStatsResponse> {
     const params = new URLSearchParams();
     if (market) params.set('market', market);
     if (date) params.set('date', date);
@@ -36,5 +36,5 @@ export async function getHotStats(market?: string, date?: string, sortBy?: strin
     if (page) params.set('page', page.toString());
     if (pageSize) params.set('pageSize', pageSize.toString());
     const query = params.toString();
-    return fetchAPI<{ matches: any[], leagues: any[], total: number, page: number, pageSize: number }>(`/v1/hot-stats${query ? `?${query}` : ''}`);
+    return fetchAPI<HotStatsResponse>(`/v1/hot-stats${query ? `?${query}` : ''}`);
 }

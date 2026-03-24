@@ -22,9 +22,9 @@ export default function PredictionsListContainer({
   initialTotal,
   pageSize,
   date,
-  region,
+  region: _region,
   leagueSlug,
-  marketKey,
+  marketKey: _marketKey,
 }: PredictionsListContainerProps) {
   const [predictions, setPredictions] = useState<Prediction[]>(initialPredictions);
   const [page, setPage] = useState(initialPage);

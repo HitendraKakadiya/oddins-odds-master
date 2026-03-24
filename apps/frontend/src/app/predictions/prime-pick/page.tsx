@@ -2,7 +2,6 @@ import PrimePickHero from '@/components/predictions/PrimePickHero';
 import PrimePickFAQ from '@/components/predictions/PrimePickFAQ';
 import { getFeaturedTips } from '@/lib/api/predictions';
 import { Prediction } from '@/lib/api/types';
-import Link from 'next/link';
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -36,8 +35,6 @@ export default async function PrimePickPage() {
     ];
 
     const tips = apiTips && apiTips.length > 0 ? apiTips : fallbackTips;
-
-    const today = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
     return (
         <main className="min-h-screen bg-white">

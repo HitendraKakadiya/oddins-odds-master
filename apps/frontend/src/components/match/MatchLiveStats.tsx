@@ -47,11 +47,11 @@ export default function MatchLiveStats({ matchStats }: MatchLiveStatsProps) {
     return stat ? stat.value : 0;
   };
 
-  const parseValue = (val: any) => {
+  const parseValue = (val: string | number | null) => {
     if (typeof val === 'string' && val.endsWith('%')) {
       return parseInt(val.replace('%', ''), 10);
     }
-    return parseInt(val, 10) || 0;
+    return parseInt(val as string, 10) || 0;
   };
 
   return (

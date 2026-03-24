@@ -7,11 +7,12 @@ import HotStatList from '@/components/statistics/HotStatList';
 import Link from 'next/link';
 import { getHotStats } from '@/lib/api/insights';
 import { FiRefreshCw, FiAlertCircle } from 'react-icons/fi';
+import { HotStatMatch } from '@/lib/api/types';
 
 export default function HotStatsPage() {
   const [activeMarket, setActiveMarket] = useState('btts');
   const [selectedDate, setSelectedDate] = useState('today');
-  const [matches, setMatches] = useState<any[]>([]);
+  const [matches, setMatches] = useState<HotStatMatch[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,7 +40,7 @@ export default function HotStatsPage() {
 
   const [sortBy, setSortBy] = useState('prob_high');
   const [selectedLeague, setSelectedLeague] = useState('all');
-  const [leagues, setLeagues] = useState<any[]>([]);
+  const [leagues, setLeagues] = useState<Array<{ id: number; name: string }>>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -59,7 +60,7 @@ export default function HotStatsPage() {
       setError(null);
       try {
         const today = new Date();
-        let targetDate = new Date();
+        const targetDate = new Date();
         
         if (selectedDate === 'tomorrow') {
           targetDate.setDate(today.getDate() + 1);
@@ -71,16 +72,17 @@ export default function HotStatsPage() {
         const response = await getHotStats(activeMarket, dateStr, sortBy, selectedLeague, page, 12);
         
         const newMatches = response.matches || [];
-        setMatches(prev => page === 1 ? newMatches : [...prev, ...newMatches]);
+        setMatches(prev => {
+          const next = page === 1 ? newMatches : [...prev, ...newMatches];
+          const totalSoFar = (page === 1 ? 0 : prev.length) + newMatches.length;
+          setHasMore(newMatches.length === 12 && totalSoFar < response.total);
+          return next;
+        });
         
         // Update available leagues if the selection is 'all'
         if (selectedLeague === 'all' && page === 1) {
           setLeagues(response.leagues || []);
         }
-
-        // Determine if more matches exist
-        const totalSoFar = (page === 1 ? 0 : matches.length) + newMatches.length;
-        setHasMore(newMatches.length === 12 && totalSoFar < response.total);
       } catch (err) {
         console.error('Failed to fetch hot stats:', err);
         setError('Failed to load statistical data. Please try again later.');
@@ -201,7 +203,7 @@ export default function HotStatsPage() {
                   <h2 className="text-3xl font-black text-slate-900 mb-8 leading-tight">More About Hot Stats</h2>
                   <div className="text-slate-500 font-medium text-lg leading-relaxed space-y-6">
                     <p>Are you looking for the best stats to make your sports betting predictions today? Check our hot stats. We have filtered the best opportunities so that you can go straight to the point in analyzing football matches to make your bets for today. Make sure you start your analysis here, and your sports bets will not only be more accurate, but also you will be much more efficient.</p>
-                    <p>Our algorithm analyzes thousands of matches every day to identify statistical anomalies and high-probability outcomes. By focusing on "Hot Stats", you're looking at patterns that have consistent backing in recent performance data.</p>
+                    <p>Our algorithm analyzes thousands of matches every day to identify statistical anomalies and high-probability outcomes. By focusing on &quot;Hot Stats&quot;, you&apos;re looking at patterns that have consistent backing in recent performance data.</p>
                   </div>
                </div>
             </div>

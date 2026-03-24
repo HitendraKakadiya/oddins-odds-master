@@ -319,16 +319,22 @@ export interface Prediction {
     homeTeam?: {
         name: string;
         logoUrl?: string | null;
+        logo?: string | null;
     } | null;
     awayTeam?: {
         name: string;
         logoUrl?: string | null;
+        logo?: string | null;
     } | null;
     selection?: string | null;
     leagueName?: string;
     marketKey?: string;
     line?: string | number;
     probability?: string | number;
+    score?: {
+        home: number | null;
+        away: number | null;
+    } | null;
 }
 
 export interface TeamStatsDetail {
@@ -412,7 +418,17 @@ export interface MatchDetailResponse {
     prevMatch?: { matchId: number; homeTeam: { logoUrl?: string | null }; awayTeam: { logoUrl?: string | null } } | null;
     nextMatch?: { matchId: number; homeTeam: { logoUrl?: string | null }; awayTeam: { logoUrl?: string | null } } | null;
     events?: MatchEvent[] | null;
-    matchStats?: any[] | null;
+    matchStats?: Array<{
+        team: {
+            id: number;
+            name: string;
+            logo: string;
+        };
+        statistics: Array<{
+            type: string;
+            value: string | number | null;
+        }>;
+    }> | null;
     oddsLatest?: OddsLatest | null;
     predictions?: Prediction[] | null;
     h2h?: H2HMatch[] | null;
@@ -602,4 +618,26 @@ export interface InsightResponse {
     page: number;
     pageSize: number;
     date: string;
+}
+export interface HotStatMatch {
+    matchId: number;
+    kickoffAt: string;
+    league: {
+        id: number;
+        name: string;
+        country: string;
+        logoUrl: string;
+    };
+    homeTeam: { name: string; logoUrl: string };
+    awayTeam: { name: string; logoUrl: string };
+    market: string;
+    probability: number;
+}
+
+export interface HotStatsResponse {
+    matches: HotStatMatch[];
+    leagues: Array<{ id: number; name: string }>;
+    total: number;
+    page: number;
+    pageSize: number;
 }

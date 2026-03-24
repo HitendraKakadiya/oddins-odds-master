@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { FiCalendar, FiClock, FiCheckCircle, FiLoader, FiAlertCircle } from 'react-icons/fi';
+import { FiCalendar, FiClock, FiLoader, FiAlertCircle } from 'react-icons/fi';
 import { getLivePredictions } from '@/lib/api/predictions';
 import { Prediction } from '@/lib/api/types';
 
@@ -65,7 +65,7 @@ export default function ComboHero() {
                 getLivePredictions(threeDaysAgo, 1, 4)
             ]);
 
-            const mapToComboLeg = (p: any): ComboLeg => {
+            const mapToComboLeg = (p: Prediction): ComboLeg => {
                 // Heuristic for odds based on probability string/number from live API
                 const probValue = typeof p.probability === 'string' ? parseInt(p.probability) : (p.probability || 50);
                 const calculatedOdds = Math.max(1.10, parseFloat((100 / (probValue || 50)).toFixed(2)));

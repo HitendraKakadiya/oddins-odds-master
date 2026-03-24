@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import HotStatCard from './HotStatCard';
 import { FiSearch, FiChevronDown, FiRefreshCw } from 'react-icons/fi';
+import { HotStatMatch } from '@/lib/api/types';
 
 interface HotStatListProps {
-  initialMatches: any[];
+  initialMatches: HotStatMatch[];
   sortBy: string;
   onSortChange: (val: string) => void;
-  leagues: any[];
+  leagues: Array<{ id: number; name: string }>;
   selectedLeague: string;
   onLeagueChange: (id: string) => void;
   hasMore: boolean;
@@ -196,7 +197,7 @@ export default function HotStatList({
             <FiSearch className="w-10 h-10 text-slate-200" />
           </div>
           <h3 className="text-xl font-black text-slate-900 mb-2">No Matches Found</h3>
-          <p className="text-slate-500 font-medium text-center max-w-xs">We couldn't find any statistical trends matching your search.</p>
+          <p className="text-slate-500 font-medium text-center max-w-xs">We couldn&apos;t find any statistical trends matching your search.</p>
         </div>
       )}
     </div>

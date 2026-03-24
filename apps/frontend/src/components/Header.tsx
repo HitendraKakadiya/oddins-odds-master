@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { FiBarChart2, FiCalendar, FiGrid, FiChevronDown, FiMenu, FiX, FiSearch } from 'react-icons/fi';
+import { FiBarChart2, FiCalendar, FiGrid, FiChevronDown, FiMenu, FiX } from 'react-icons/fi';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -27,7 +27,6 @@ export default function Header() {
     { name: 'Betting Sites', href: '/betting-sites' },
     { 
       name: 'Statistics', 
-      href: '/statistics', 
       hasDropdown: true,
       dropdownItems: [
         { name: 'Match Insights', href: '/insights', icon: <FiBarChart2 className="w-5 h-5 text-brand-emerald" />, description: 'Top statistical streaks & trends' },
@@ -60,35 +59,46 @@ export default function Header() {
                 onMouseEnter={() => item.hasDropdown && setOpenDropdown(item.name)}
                 onMouseLeave={() => setOpenDropdown(null)}
               >
-                <Link 
-                  href={item.href} 
-                  className="text-slate-600 hover:text-brand-emerald font-bold flex items-center transition-all text-sm px-2 py-1.5 rounded-lg hover:bg-slate-50"
-                >
-                  {item.name}
-                  {item.hasDropdown && (
-                    <FiChevronDown className={`ml-1 w-3.5 h-3.5 transition-transform duration-200 ${openDropdown === item.name ? 'rotate-180' : ''}`} />
-                  )}
-                </Link>
+                {item.href ? (
+                  <Link 
+                    href={item.href} 
+                    className="text-slate-600 hover:text-brand-emerald font-bold flex items-center transition-all text-sm px-2 py-1.5 rounded-lg hover:bg-slate-50"
+                  >
+                    {item.name}
+                    {item.hasDropdown && (
+                      <FiChevronDown className={`ml-1 w-3.5 h-3.5 transition-transform duration-200 ${openDropdown === item.name ? 'rotate-180' : ''}`} />
+                    )}
+                  </Link>
+                ) : (
+                  <div className="text-slate-600 hover:text-brand-emerald font-bold flex items-center transition-all text-sm px-2 py-1.5 rounded-lg hover:bg-slate-50 cursor-default">
+                    {item.name}
+                    {item.hasDropdown && (
+                      <FiChevronDown className={`ml-1 w-3.5 h-3.5 transition-transform duration-200 ${openDropdown === item.name ? 'rotate-180' : ''}`} />
+                    )}
+                  </div>
+                )}
 
                 {/* Dropdown Menu */}
                 {item.hasDropdown && item.dropdownItems && (
-                  <div className={`absolute top-full left-0 w-80 bg-white rounded-3xl shadow-2xl border border-slate-100 p-3 transition-all duration-200 origin-top ${openDropdown === item.name ? 'opacity-100 translate-y-2 scale-100' : 'opacity-0 translate-y-4 scale-95 pointer-events-none'}`}>
-                    <div className="grid gap-2">
-                       {item.dropdownItems.map((dropItem) => (
-                         <Link 
-                           key={dropItem.name}
-                           href={dropItem.href}
-                           className="flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-all group/item"
-                         >
-                            <div className="w-11 h-11 bg-slate-50 rounded-xl flex items-center justify-center shadow-sm group-hover/item:bg-white transition-colors">
-                                {dropItem.icon}
-                            </div>
-                            <div>
-                               <div className="text-sm font-bold text-slate-900 group-hover/item:text-brand-emerald transition-colors">{dropItem.name}</div>
-                               <div className="text-[11px] text-slate-400 font-medium leading-tight mt-0.5">{dropItem.description}</div>
-                            </div>
-                         </Link>
-                       ))}
+                  <div className={`absolute top-full left-0 w-80 pt-2 transition-all duration-200 origin-top ${openDropdown === item.name ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-2 scale-95 pointer-events-none'}`}>
+                    <div className="bg-white rounded-3xl shadow-2xl border border-slate-100 p-3">
+                      <div className="grid gap-2">
+                         {item.dropdownItems.map((dropItem) => (
+                           <Link 
+                             key={dropItem.name}
+                             href={dropItem.href}
+                             className="flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-all group/item"
+                           >
+                              <div className="w-11 h-11 bg-slate-50 rounded-xl flex items-center justify-center shadow-sm group-hover/item:bg-white transition-colors">
+                                  {dropItem.icon}
+                              </div>
+                              <div>
+                                 <div className="text-sm font-bold text-slate-900 group-hover/item:text-brand-emerald transition-colors">{dropItem.name}</div>
+                                 <div className="text-[11px] text-slate-400 font-medium leading-tight mt-0.5">{dropItem.description}</div>
+                              </div>
+                           </Link>
+                         ))}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -123,7 +133,7 @@ export default function Header() {
                       <span>{item.name}</span>
                       <FiChevronDown className={`w-5 h-5 text-slate-300 transition-transform duration-300 ${expandedMobileItem === item.name ? 'rotate-180 text-brand-emerald' : ''}`} />
                     </button>
-                  ) : (
+                  ) : item.href ? (
                     <Link
                       href={item.href}
                       onClick={() => setIsMobileMenuOpen(false)}
@@ -131,7 +141,7 @@ export default function Header() {
                     >
                       {item.name}
                     </Link>
-                  )}
+                  ) : null}
                   
                   {item.hasDropdown && item.dropdownItems && expandedMobileItem === item.name && (
                      <div className="px-4 pb-2 grid gap-1 mt-1 animate-in slide-in-from-top-2 duration-200">
