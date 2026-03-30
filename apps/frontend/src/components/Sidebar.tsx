@@ -11,6 +11,8 @@ interface SidebarProps {
   featuredTips?: Prediction[];
   mode?: 'default' | 'predictions';
   date?: string;
+  hidePrediction?: boolean;
+  hideCompetitionHeader?: boolean;
 }
 
 interface SidebarPrediction {
@@ -34,7 +36,9 @@ export default function Sidebar({
   initialTotal = 0, 
   featuredTips = [], 
   date, 
-  mode = 'default' 
+  mode = 'default',
+  hidePrediction = false,
+  hideCompetitionHeader = false
 }: SidebarProps) {
   // Leagues State
   const [competitions, setCompetitions] = useState<LeaguesResponse[]>(leagueData || []);
@@ -172,7 +176,7 @@ export default function Sidebar({
 
   return (
     <aside className="w-full lg:w-[380px] flex flex-col gap-6 ">
-      {currentPrediction && (
+      {!hidePrediction && currentPrediction && (
         <div className="bg-gradient-to-br from-[#059669] via-[#10B981] to-[#047857] rounded-[36px] p-1 text-white overflow-hidden relative shadow-2xl shadow-emerald-500/20 group border border-white/10">
            {/* Decorative Elements */}
            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:bg-white/20 transition-all duration-700"></div>
@@ -340,7 +344,7 @@ export default function Sidebar({
         </div>
       ) : (
         <div className="flex flex-col gap-4">
-           <h3 className="font-bold text-xl text-slate-800 ml-1">Today&apos;s Competitions</h3>
+           {!hideCompetitionHeader && <h3 className="font-bold text-xl text-slate-800 ml-1">Today&apos;s Competitions</h3>}
            <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-hidden">
               <div className="divide-y divide-slate-100 max-h-[800px] overflow-y-auto custom-scrollbar">
                 {competitions.map((group) => (

@@ -1,86 +1,84 @@
 'use client';
 
 import Link from 'next/link';
+import type { StreamItem } from '@/lib/api';
 
 interface StreamsMatchRowProps {
-  match: {
-    matchId: number;
-    kickoffAt: string;
-    homeTeam: {
-      name: string;
-      logoUrl?: string | null;
-    };
-    awayTeam: {
-      name: string;
-      logoUrl?: string | null;
-    };
-  };
+  match: StreamItem;
 }
 
 export default function StreamsMatchRow({ match }: StreamsMatchRowProps) {
   const kickoffTime = new Date(match.kickoffAt).toLocaleTimeString('en-GB', {
     hour: '2-digit',
     minute: '2-digit',
-  });
-  
-  const kickoffDate = new Date(match.kickoffAt).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
+    hour12: false
   });
 
   return (
-    <div className="flex items-center justify-between p-4 py-6 bg-white border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors group">
-      {/* Time and Icon */}
-      <div className="flex items-center gap-6 flex-1">
-        <div className="flex flex-col text-slate-400 font-bold items-start min-w-[120px]">
-          <span className="text-sm">{kickoffDate} {kickoffTime}</span>
-        </div>
-        
-        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-pink-50 border border-pink-100">
-           <div className="w-2 h-2 rounded-full bg-brand-emerald"></div>
+    <div className="group flex items-center justify-between p-4 px-6 hover:bg-slate-50/80 transition-all duration-300 relative overflow-hidden">
+      {/* Time and Status */}
+      <div className="flex flex-col items-center justify-center min-w-[70px] border-r border-slate-100 pr-4 shrink-0">
+        <span className="text-[13px] font-black text-slate-900 tracking-tight">{kickoffTime}</span>
+        {match.status && match.status !== 'NS' && (
+          <span className="text-[9px] font-black text-red-500 uppercase tracking-widest mt-0.5 flex items-center gap-1">
+            <span className="w-1 h-1 rounded-full bg-red-500 animate-pulse"></span>
+            {match.status === 'LIVE' || match.status?.includes('1') || match.status?.includes('2') ? 'LIVE' : match.status}
+          </span>
+        )}
+      </div>
+
+      {/* Teams Section */}
+      <div className="flex-1 flex items-center justify-center gap-2 sm:gap-8 px-4">
+        {/* Home Team */}
+        <div className="flex items-center justify-end gap-3 flex-1 min-w-0">
+          <span className="text-[14px] font-bold text-slate-800 truncate text-right">{match.homeTeam.name}</span>
+          <div className="w-9 h-9 bg-white border border-slate-100 rounded-xl flex items-center justify-center p-1.5 shadow-sm shrink-0 group-hover:scale-110 transition-transform duration-300">
+            {match.homeTeam.logoUrl ? (
+              <img src={match.homeTeam.logoUrl} alt="" className="w-full h-full object-contain" />
+            ) : (
+              <span className="text-xl">⚽</span>
+            )}
+          </div>
         </div>
 
-        {/* Teams */}
-        <div className="flex items-center gap-4 flex-grow justify-center max-w-md mx-auto">
-          <div className="flex items-center gap-3 flex-1 justify-end">
-             <span className="font-bold text-slate-700 text-sm sm:text-base">{match.homeTeam.name}</span>
-             {match.homeTeam.logoUrl ? (
-               <img src={match.homeTeam.logoUrl} alt="" className="w-6 h-6 object-contain" />
-             ) : (
-               <div className="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center text-[8px] font-bold text-slate-400">
-                 {match.homeTeam.name.substring(0, 1)}
-               </div>
-             )}
+        {/* Score or VS */}
+        <div className="flex flex-col items-center justify-center min-w-[50px]">
+          {match.score && (match.score.home !== null || match.score.away !== null) ? (
+            <div className="bg-slate-900 text-white px-3 py-1 rounded-lg text-[14px] font-black tracking-tighter shadow-sm">
+              {match.score.home ?? 0} - {match.score.away ?? 0}
+            </div>
+          ) : (
+            <span className="text-[10px] font-black text-slate-300 tracking-widest uppercase">VS</span>
+          )}
+        </div>
+
+        {/* Away Team */}
+        <div className="flex items-center justify-start gap-3 flex-1 min-w-0">
+          <div className="w-9 h-9 bg-white border border-slate-100 rounded-xl flex items-center justify-center p-1.5 shadow-sm shrink-0 group-hover:scale-110 transition-transform duration-300">
+            {match.awayTeam.logoUrl ? (
+              <img src={match.awayTeam.logoUrl} alt="" className="w-full h-full object-contain" />
+            ) : (
+              <span className="text-xl">⚽</span>
+            )}
           </div>
-          
-          <span className="text-slate-400 font-bold text-xs uppercase tracking-widest px-2">v.s</span>
-          
-          <div className="flex items-center gap-3 flex-1 justify-start">
-             {match.awayTeam.logoUrl ? (
-               <img src={match.awayTeam.logoUrl} alt="" className="w-6 h-6 object-contain" />
-             ) : (
-               <div className="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center text-[8px] font-bold text-slate-400">
-                 {match.awayTeam.name.substring(0, 1)}
-               </div>
-             )}
-             <span className="font-bold text-slate-700 text-sm sm:text-base">{match.awayTeam.name}</span>
-          </div>
+          <span className="text-[14px] font-bold text-slate-800 truncate">{match.awayTeam.name}</span>
         </div>
       </div>
 
-      {/* Button */}
-      <div className="ml-4">
+      {/* Where to Watch Button */}
+      <div className="flex items-center justify-end min-w-[140px] pl-4 shrink-0">
         <Link 
-          href={`/match/${match.matchId}`} 
-          className="flex items-center gap-2 border-2 border-brand-emerald text-brand-emerald px-4 py-2 rounded-xl font-black text-xs uppercase tracking-wider hover:bg-brand-emerald hover:text-white transition-all group-hover:shadow-lg group-hover:shadow-brand-emerald/20"
+          href={match.whereToWatch?.[0]?.url || '#'} 
+          target="_blank"
+          className="bg-brand-emerald text-white px-5 py-2.5 rounded-[18px] text-[11px] font-black uppercase tracking-widest hover:bg-emerald-600 transition-all hover:shadow-lg hover:shadow-emerald-500/30 active:scale-95 flex items-center gap-2 group/btn"
         >
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M8 5v14l11-7z" />
+          <span>Watch</span>
+          <svg className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7-7 7" />
           </svg>
-          Where to Watch
         </Link>
       </div>
     </div>
   );
 }
+

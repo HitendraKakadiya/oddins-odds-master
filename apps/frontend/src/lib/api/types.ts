@@ -454,19 +454,32 @@ export interface PredictionsResponse {
 export interface StreamItem {
     matchId: number;
     kickoffAt: string;
+    status?: string;
+    elapsed?: number;
     league: {
         id: number;
         name: string;
-        logoUrl?: string;
+        slug: string;
+        logoUrl?: string | null;
     };
     homeTeam: {
         name: string;
-        logoUrl?: string;
+        slug: string;
+        logoUrl?: string | null;
     };
     awayTeam: {
         name: string;
-        logoUrl?: string;
+        slug: string;
+        logoUrl?: string | null;
     };
+    score?: {
+        home: number | null;
+        away: number | null;
+    };
+    whereToWatch: Array<{
+        name: string;
+        url: string;
+    }>;
 }
 
 export interface StreamsResponse {
