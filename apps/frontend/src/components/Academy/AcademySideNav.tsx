@@ -6,7 +6,7 @@ import Link from 'next/link';
 const navItems = [
   { href: '/academy', title: 'Academy Home' },
   { href: '/academy/strategies', title: 'Betting Strategies' },
-  { href: '/academy/bet-types', title: 'Bet Types' },
+  { href: '/academy/bet-type', title: 'Bet Types' },
 ];
 
 export default function AcademySideNav() {

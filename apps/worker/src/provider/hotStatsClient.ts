@@ -1,6 +1,6 @@
 /**
  * Hot Stats API Client
- * Integration with third-party statistics provider (e.g., APWin-style data)
+ * Integration with third-party statistics provider (e.g., OddinsOdds-style data)
  */
 
 import { config } from '../config';
@@ -38,13 +38,13 @@ class HotStatsClient {
      */
     async getHotStats(date: string): Promise<HotStatResponse[]> {
         logger.info(`Fetching hot stats for date: ${date}`);
-        
+
         try {
             // This is a placeholder for actual third-party API call
             // If using API-Sports, we might fetch predictions for all top leagues
-            
+
             // For now, returning a sample structure that matches the expected output
-            return []; 
+            return [];
         } catch (error) {
             logger.error('Failed to fetch hot stats from provider', error);
             throw error;

@@ -11,28 +11,28 @@ const strategies = [
   { 
     id: 'arbitrage', 
     title: 'Arbitrage Guide', 
-    description: 'This APWin Academy guide teaches you how to place sure bets with the advanced Arbitrage strategy. From spotting Arbing opportunities, to real life examples.',
+    description: 'This OddinsOdds Academy guide teaches you how to place sure bets with the advanced Arbitrage strategy. From spotting Arbing opportunities, to real life examples.',
     icon: '💹',
     color: 'amber'
   },
   { 
     id: 'martingale', 
     title: 'Martingale System', 
-    description: 'Learn how the Martingale system works, its risks, variations, and tips for safe betting. This APWin Academy article breaks it down with real life examples.',
+    description: 'Learn how the Martingale system works, its risks, variations, and tips for safe betting. This OddinsOdds Academy article breaks it down with real life examples.',
     icon: '📈',
     color: 'indigo'
   },
   { 
     id: 'psychology', 
     title: 'Confirmation Bias', 
-    description: 'Learn how to deal with confirmation bias in this APWin Academy guide. We explain the concept, how to recognise it and how to minimise its impact on your bets.',
+    description: 'Learn how to deal with confirmation bias in this OddinsOdds Academy guide. We explain the concept, how to recognise it and how to minimise its impact on your bets.',
     icon: '🧠',
     color: 'violet'
   },
   { 
     id: 'matched-betting', 
     title: 'Matched Betting Guide', 
-    description: 'Learn how to make profits in either outcome by using the matched betting strategy. This APWin Academy guide explains the ins and outs of this strategy.',
+    description: 'Learn how to make profits in either outcome by using the matched betting strategy. This OddinsOdds Academy guide explains the ins and outs of this strategy.',
     icon: '🤝',
     color: 'emerald'
   },
@@ -46,14 +46,14 @@ const strategies = [
   { 
     id: 'halo-effect', 
     title: 'Halo Effect In Betting', 
-    description: 'Learn how to recognize the Halo Effect in betting with this APWin Academy guide. We explain how to limit its effect by offering a step-by-step checklist.',
+    description: 'Learn how to recognize the Halo Effect in betting with this OddinsOdds Academy guide. We explain how to limit its effect by offering a step-by-step checklist.',
     icon: '😇',
     color: 'sky'
   },
   { 
     id: 'bankroll-management', 
     title: 'Bankroll Management Guide', 
-    description: 'Learn how to manage your bankroll in this detailed APWin Academy guide. We explain how to create your bankroll, set your standard stake and give useful tips.',
+    description: 'Learn how to manage your bankroll in this detailed OddinsOdds Academy guide. We explain how to create your bankroll, set your standard stake and give useful tips.',
     icon: '💰',
     color: 'teal'
   },

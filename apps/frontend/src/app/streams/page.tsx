@@ -95,10 +95,10 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
                
                <div className="space-y-8 text-slate-600 leading-relaxed text-base sm:text-lg">
                   <p>
-                    <strong className="text-slate-900">APWin</strong> delivers the <strong className="text-slate-900">top options for watching football live and for free</strong>. With the information on our platform, users who like to enjoy football live can know where they can watch today&apos;s games for free and follow their favourite team closely.
+                    <strong className="text-slate-900">OddinsOdds</strong> delivers the <strong className="text-slate-900">top options for watching football live and for free</strong>. With the information on our platform, users who like to enjoy football live can know where they can watch today&apos;s games for free and follow their favourite team closely.
                   </p>
                   <p>
-                    In addition to providing the complete list of channels that will show today&apos;s games, APWin also allows you to watch football live and online in <strong className="text-slate-900">HD</strong> on mobile devices such as cell phones, tablets and even on your computer. Everything is directly connected to our website.
+                    In addition to providing the complete list of channels that will show today&apos;s games, OddinsOdds also allows you to watch football live and online in <strong className="text-slate-900">HD</strong> on mobile devices such as cell phones, tablets and even on your computer. Everything is directly connected to our website.
                   </p>
                   
                   <div className="pt-4">

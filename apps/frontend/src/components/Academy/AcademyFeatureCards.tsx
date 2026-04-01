@@ -34,7 +34,7 @@ export default function AcademyFeatureCards() {
              <div className="text-5xl group-hover:scale-110 transition-transform">📈</div>
           </div>
           <Link 
-            href="#bet-types" 
+            href="/academy/bet-type" 
             className="w-full bg-brand-emerald text-white font-black text-xs uppercase tracking-[0.2em] py-4 rounded-2xl shadow-lg shadow-brand-emerald/20 hover:bg-brand-emerald/90 transition-colors"
           >
             Bet Types
