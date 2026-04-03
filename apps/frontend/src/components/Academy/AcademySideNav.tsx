@@ -7,6 +7,7 @@ const navItems = [
   { href: '/academy', title: 'Academy Home' },
   { href: '/academy/strategies', title: 'Betting Strategies' },
   { href: '/academy/bet-type', title: 'Bet Types' },
+  { href: '/academy/strategies/kelly-criterion', title: 'Kelly Criterion' },
 ];
 
 export default function AcademySideNav() {

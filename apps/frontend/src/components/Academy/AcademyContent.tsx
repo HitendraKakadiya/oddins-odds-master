@@ -23,7 +23,7 @@ export default function AcademyContent() {
             with your gut, as you&apos;re using information to gain an edge.
           </p>
           <p className="text-sm sm:text-base leading-relaxed font-medium bg-slate-50 p-6 rounded-2xl border border-slate-100 border-l-4 border-l-brand-emerald">
-            If you&apos;re interested in a more mathematical edge, you&apos;ll be introduced to value betting and the <span className="font-bold text-slate-900 underline underline-offset-4 decoration-slate-200">Kelly Criterion</span>, which are tools that help you spot overpriced odds and calculate optimal stake sizes.
+            If you&apos;re interested in a more mathematical edge, you&apos;ll be introduced to value betting and the <Link href="/academy/strategies/kelly-criterion" className="font-bold text-slate-900 underline underline-offset-4 decoration-brand-emerald hover:text-brand-emerald transition-colors">Kelly Criterion</Link>, which are tools that help you spot overpriced odds and calculate optimal stake sizes.
           </p>
         </div>
       </section>
