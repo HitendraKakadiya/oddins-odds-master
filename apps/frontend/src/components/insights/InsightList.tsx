@@ -57,7 +57,7 @@ export default function InsightList({ initialInsights, initialTotal, date }: Ins
     <div className="flex flex-col">
       <InsightTabs selectedDate={date} onDateChange={handleDateChange} />
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
         {insights.map((insight, idx) => (
           <InsightCard key={`${insight.matchId}-${idx}`} insight={insight} />
         ))}
