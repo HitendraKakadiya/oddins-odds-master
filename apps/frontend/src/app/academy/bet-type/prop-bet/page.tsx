@@ -8,80 +8,106 @@ import StrategyTOC from '@/components/Academy/StrategyTOC';
 
 const sections = [
   { 
-    id: 'what-is-a-prop-bet', 
-    title: 'What Is a Prop Bet?', 
-    content: "A prop bet is a wager on something that happens during a game, but not necessarily the final result. It answers a \"yes or no\" question or a specific measurable event.\n\nFor example:\n• Will LeBron James score over 25 points tonight?\n• Which team will score the first touchdown?\n• Will there be a penalty in the match?\n\nUnlike traditional bets that focus on the outcome of a match, prop bets focus on individual players, team milestones, or in-game events. Prop bets have become very popular in North America and are now common across the rest of the world, too.\n\nYou'll see them a lot during big games and major leagues, where online bookmakers offer hundreds of markets on both players and the game itself.",
+    id: 'exogenous-variables', 
+    title: 'Exogenous Variables: The Architecture of the Prop', 
+    content: (
+      <>
+        A <strong>Prop Bet</strong> (Proposition Bet) is a wager on <strong>event-specific occurrences</strong> that do not necessarily dictate the final match outcome. In professional markets, props are the primary tool for monetizing granular player data and tactical outliers.
+        <br /><br />
+        <strong>The Proposition Framework:</strong>
+        <br />
+        • <strong>Player Props:</strong> Metrics-based bets on individual performance (e.g., NBA Points, NFL Rushing Yards, Soccer Tackles).
+        <br />
+        • <strong>Game Props:</strong> Structural events within the match (e.g., Will there be a Red Card? Will the game go to Overtime?).
+        <br />
+        • <strong>Statistical Isolation:</strong> Props allow you to isolate a single variable—like a striker's shot volume—without needing to predict the winner of the match.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'types-of-prop-bets', 
-    title: 'Types of Prop Bets', 
-    content: "Prop bets come in many forms, and understanding the different types helps you choose the right markets and strategies that match your style of betting.\n\nBelow, you will find the most common types:\n• **Player Props:** These are bets on a specific player's performance. In basketball, it could be points, assists, or rebounds. In football, it might be passing yards or touchdowns.\n• **Team Props:** These involve outcomes tied to the entire team. For example, betting on the Lakers to score more than 110 points in a game, regardless of whether they win or lose.\n• **Game Props:** These focus on certain events during a match. For example, wagering on whether there will be overtime in an NBA game or if a football match will have more than 10 corners.\n• **Novelty Props:** These are more unusual and often appear during major events. For instance, betting on the coin toss in the Super Bowl or on who will win an MVP award.",
-    advantages: [],
-    risks: []
-  },
-  {
-    id: 'how-do-prop-bet-odds-work',
-    title: 'How Do Prop Bet Odds Work?',
-    content: "Prop bet odds are presented in the same way as other sports bets.\n\nLet's say you see:\n\n**Over 22.5 Points for Kevin Durant: 1.90.** This means if you place $100, you'll get a return of $190 if Durant scores 23 or more points.\n\nHere is the calculation:\n• **Stake** = $100\n• **Odds** = 1.90\n• **Payout** = 1.90 × 100 = $190\n• **Profit** = $90\n\nUnderstanding how to translate odds into implied probability is key - if a line is 1.90, it implies about a 52.6% chance of happening.",
-    advantages: [],
-    risks: []
-  },
-  {
-    id: 'why-bettors-love-prop-bets',
-    title: 'Why Bettors Love Prop Bets',
-    content: "When you dive into prop betting, you're stepping into a whole new level of action that traditional bets can't match.\n\nHere's why you'll love prop bets and keep coming back for more:\n• **Entertainment Value:** With prop bets, you don't need to wait until the final whistle to know if you've won. You can lock in on a single player, a specific stat. This makes every moment of the game more exciting because you're invested in more than just the outcome.\n• **More Opportunities:** Every game is filled with dozens, sometimes hundreds, of prop markets. This gives you far more opportunities to find value.\n• **Stat-Driven Edge:** Player props in particular can be broken down using stats like averages, minutes played, or matchup history.\n• **Variety and Flexibility:** From points scored to number of fouls, or even whether a game will go into overtime, props let you bet on almost anything.",
-    advantages: [],
-    risks: []
-  },
-  {
-    id: 'where-to-place-prop-bets',
-    title: 'Where to Place Prop Bets?',
-    content: "While almost every online bookmaker offers this market, not all are equal.\n\nWhen choosing a site for prop betting, look for:\n\n• **Depth of Markets:** The best betting sites offer hundreds of props per NBA or NFL game.\n• **Competitive Odds:** Even a small difference in odds can have a large impact in the long run. Some bookmakers are known to offer better odds than others.\n• **Live Betting:** Many props are released while the game is taking place. This created in-play opportunities.\n• **Secure Payments:** Ensure the betting site is legal in your country. SSL encryption and reliable payment gateways are in place.",
-    advantages: [],
-    risks: []
-  },
-  {
-    id: 'tips-for-winning-prop-bets',
-    title: 'Tips for Winning at Prop Bets',
-    content: "Prop bets may look simple, but winning consistently takes more than just a gut feeling. By following a few proven tips, you can give yourself a real edge and avoid the common mistakes.\n\n• **Do Your Research:** Player form, injuries, minutes, and matchups matter more than overall team strength.\n• **Track Stats:** Keep a record of how players perform against specific opponents or in certain conditions.\n• **Focus on One Market:** Rather than betting randomly, specialise in one stat (like NBA assists or NFL rushing yards).\n• **Bankroll Management:** Bet a fixed percentage (1-2%) of your bankroll to avoid swings.\n• **Avoid Chasing:** If you lose, don't double down emotionally. Stick to your strategy.\n• **Use In-Play Wisely:** Sometimes betting during the game gives you better information, especially if you notice a player's role has changed.",
+    id: 'market-inefficiency', 
+    title: 'Market Inefficiency: Exploiting the Soft Lines', 
+    content: (
+      <>
+        Prop lines are notoriously "soft" compared to primary markets like the Point Spread or Moneyline. Because bookmakers must manage thousands of individual prop lines across a single weekend, they often rely on <strong>historical averages</strong> rather than deep situational analysis.
+        <br /><br />
+        <strong>The Analyst’s Edge:</strong>
+        <br />
+        By identifying <strong>situational shifts</strong>—such as a key teammate being injured or a change in defensive scheme—you can exploit lines that have not yet adjusted to the new tactical reality. This is where the highest "Alpha" in modern sports betting is found.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'final-thoughts', 
-    title: 'Final Thoughts', 
-    content: "Prop bets are one of the most exciting and potentially profitable ways for you to bet on sports. Whether you place an NBA prop bet, try a football proposition bet, or explore a special market, you get countless opportunities to find value.\n\nIf you are new to this, start by focusing on one market, such as a player prop bet and build your strategy gradually.",
+    id: 'correlated-risk', 
+    title: 'Correlated Risk: The Same-Game Multiplier', 
+    content: (
+      <>
+        Modern sportsbooks now allow for <strong>Correlated Prop Parlays</strong> (Same-Game Parlays). This involves pairing props that are logically linked.
+        <br /><br />
+        <strong>Logic of Positive Correlation:</strong>
+        <br />
+        If you bet on an NFL Quarterback to have <strong>Over 300 Passing Yards</strong>, it is mathematically consistent to pair it with his primary Wide Receiver having <strong>Over 100 Receiving Yards</strong>. Understanding how these props 'feed' into one another allows you to build high-coefficient tickets with logically consistent foundations.
+      </>
+    ),
+    advantages: [],
+    risks: []
+  },
+  { 
+    id: 'operational-variance', 
+    title: 'Operational Variance: Injury and Rotation Risk', 
+    content: (
+      <>
+        The primary risk in prop betting is <strong>Rotational Volatility</strong>. Unlike a standard team bet, a player prop is hypersensitive to minutes played.
+        <br /><br />
+        <strong>Potential Disruptors:</strong>
+        <br />
+        • <strong>Late Scratches:</strong> A player being ruled out minutes before tip-off can void your bet or trigger a "push" depending on house rules.
+        <br />
+        • <strong>Blowout Minutes:</strong> In high-parity leagues like the NBA, "Garbage Time" can see star players benched early, causing them to fall short of their prop lines despite high efficiency.
+        <br />
+        • <strong>Tactical Substitution:</strong> A change in formation can move a player into a less offensive role, immediately devaluing their "Over" props.
+      </>
+    ),
+    advantages: [],
+    risks: []
+  },
+  { 
+    id: 'conclusion', 
+    title: 'The Granular Edge', 
+    content: (
+      <>
+        Prop betting is the ultimate market for specialists. It rewards those who study the individual rather than the collective. By understanding the architectural nuances of the prop, exploiting soft bookmaker lines, and managing the inherent risks of player rotation, you can find consistent value in the most granular corners of the sporting world.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
     id: 'faqs', 
-    title: 'FAQs', 
+    title: 'Expert Q&A', 
     content: '',
     advantages: [],
     risks: [],
     faqs: [
       {
-        question: "What is a prop bet?",
-        answer: "A prop (proposition) bet is a wager on a specific occurrence or non-occurrence of an event during a game that doesn't inherently affect the final outcome."
+        question: "What happens if my player doesn't start?",
+        answer: "Most sportsbooks require a player to actually take the field (or court) for the bet to stand. If they are an 'Active Inactive' or never leave the bench, the bet is typically voided and your stake is returned."
       },
       {
-        question: "Are prop bets worth it?",
-        answer: "Yes, they can be highly valuable if you do your research. Since there are so many prop markets, bookmakers often struggle to set perfect lines for every single one, allowing smart bettors to find edges."
+        question: "Are Props harder to win than Moneyline bets?",
+        answer: "Professionally, no. Prop markets are often easier to beat because they have lower liquidity and less sophisticated modeling from the bookmakers. The challenge is the lower betting limits often placed on prop markets."
       },
       {
-        question: "What is a prop bet 2+ touchdown?",
-        answer: "A '2+ touchdown' prop bet means you are wagering that a specific player will score at least two touchdowns during a single game."
+        question: "What is a 'Hook' in prop betting?",
+        answer: "A hook is the '.5' at the end of a line (e.g., 22.5 points). It ensures there can be no 'Push' (draw)—the bet must either win or lose."
       },
       {
-        question: "What are some common prop bets?",
-        answer: "Common prop bets include player totals (e.g., Over/Under passing yards or points), team totals, who will score first, and game-specific events like will there be a safety or a penalty."
-      },
-      {
-        question: "What is an example of a prop?",
-        answer: "An example of a prop bet is a wager on whether Erling Haaland will have Over 1.5 Shots on Target in an upcoming match, or if LeBron James will score more than 28.5 points."
+        question: "Can I parlay props from different games?",
+        answer: "Yes. Combining player props from different matches is a common strategy for building high-yield tickets, though it increases your exposure to individual variance across multiple environments."
       }
     ]
   }
@@ -138,16 +164,16 @@ export default function PropBetPage() {
           <main className="flex-1 min-w-0 order-2 lg:order-1">
             <header className="mb-12">
               <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-8 tracking-tight leading-[1.1]">
-                Prop Bet Guide
+                Prop Bet <span className="text-brand-emerald">Masterclass</span>
               </h1>
               
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
-                  <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6">
-                    'Prop bet', 'proposition bet', or 'player prop', if these terms confuse you when looking at an online bookmaker, don't worry. This guide will explain them in plain language and show you how they work. You'll learn what prop bets are, how the odds make sense, how fans use them, where to find the best betting markets, and see real examples with practical tips.
+                  <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
+                    "Prop bets represent the most granular way to monetize individual player matchups—monetizing the detail that main markets ignore."
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    By the end of this <span className="font-bold text-brand-emerald">OddinsOdds Academy</span> guide, you'll know how to spot value and place smarter, safer bets.
+                    In this technical guide, we break down the clinical 'Architecture of the Prop.' We reveal the specific 'Market Inefficiencies' found in soft player lines, analyze the logic of 'Correlated Parlays' (Same-Game Parlays), and provide a professional framework for managing 'Operational Variance' like injury-scrubs and rotation risks.
                   </p>
                 </div>
               </div>

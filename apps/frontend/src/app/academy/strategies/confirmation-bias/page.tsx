@@ -8,73 +8,114 @@ import StrategyTOC from '@/components/Academy/StrategyTOC';
 
 const sections = [
   { 
-    id: 'what-is-confirmation-bias', 
-    title: 'What Is Confirmation Bias?', 
-    content: "Confirmation bias is your brain's way of taking the easy route. You already have an idea about a team, a player, or a match outcome, and instead of looking at the facts evenly, you selectively pick information that agrees with what you think.\n\nImagine you believe Manchester United will win because their star player, Bruno Fernandes, has been on fire. You notice every stat, article, or highlight showing that player scoring, but completely ignore injuries, poor teamwork, or their opponent's strengths. That's confirmation bias in action.",
+    id: 'echo-chamber', 
+    title: "The Echo Chamber of Choice: Your Brain's Shortcut", 
+    content: (
+      <>
+        Confirmation bias is a cognitive shortcut where the brain prioritizes information that confirms its pre-existing beliefs while subconsciously filtering out contradictory evidence. In sports betting, this often manifests as a "locked-in" opinion on a team or outcome that survives even in the face of overwhelming negative data.
+        <br /><br />
+        <strong>The Psychological Mechanism:</strong>
+        <br />
+        • <strong>Selective Perception:</strong> Noticing every stat that favors your pick.
+        <br />
+        • <strong>Biased Interpretation:</strong> Explaining away negative news (e.g., "the injury won't matter").
+        <br />
+        • <strong>Memory Recall:</strong> Remembering your successful "gut feeling" bets while forgetting the failures.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'how-it-affects-betting', 
-    title: 'How Does Confirmation Bias Affect Sports Betting?', 
-    content: "In sports betting, confirmation bias can change your decisions in subtle ways, often without you even noticing. Here's how it usually shows up:\n\n• **Focusing Only on Wins:** You might keep recalling the times your bets won, and conveniently forget the times they didn't. This makes you overconfident and more likely to increase stakes without proper analysis.\n• **Ignoring Contradictory Stats:** Even if the numbers say your team is likely to lose, you might dismiss them as irrelevant or overrated just because they don't fit your narrative.\n• **Overvaluing Recent Performance:** A player scored a double or a hat-trick last week, so you automatically assume he will perform the same way next game. Past performance is a data point, not a guarantee.",
+    id: 'narrative-vs-data', 
+    title: "Narrative vs. Data: Why Facts Lose to Stories", 
+    content: (
+      <>
+        Human beings are hardwired for stories, not statistics. We are more likely to bet on a "narrative"—such as a team seeking revenge or a star player returning from injury—than we are to follow a dry probability model. Confirmation bias feeds these narratives, allowing us to build a case for almost any outcome by selectively picking data points.
+        <br /><br />
+        <strong>Narrative Traps:</strong>
+        <br />
+        • <strong>Recentism:</strong> Overweighting the most recent game highlights.
+        <br />
+        • <strong>Media Hype:</strong> Adopting the consensus opinion of pundits without verifying the stats.
+        <br />
+        • <strong>Emotional Attachment:</strong> Difficulty betting against a team you personally like.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'real-life-examples', 
-    title: 'Real Life Examples', 
-    content: "It's easier to understand confirmation bias when you see it in action. Here are a few examples you might recognise:\n\n• **Betting on Underdogs:** You love betting on underdogs because when they win, the payout is massive. You remember when your underdog pick won, but forget all the times they lost. This selective memory makes it seem like underdogs win more often than they do, and you end up making riskier bets than you should.\n• **Star Player Focus:** Imagine a star striker scored twice in the last match. You assume he will dominate the next game too, ignoring other factors like team strategy or the opponent's defence. By focusing only on the star player's performance, you overlook the bigger picture.\n• **Betting After a Big Win:** You had a big win last weekend, and now you feel overconfident. You start believing that your picks are always right and place bigger bets. This overconfidence is fueled by confirmation bias - you're only remembering your successes and ignoring your losses.\n• **Following Public Opinion:** You read a forum where everyone says Arsenal is going to crush Man United. You immediately start thinking the same, even though the statistics show a close match. Social platforms cloud your mind, making you ignore data that doesn't fit the popular narrative.",
+    id: 'overconfidence-traps', 
+    title: "Overconfidence Traps: The Blind Spots of Experience", 
+    content: (
+      <>
+        Counterintuitively, the more experienced a bettor becomes, the more susceptible they may be to confirmation bias. Experts often believe their "intuition" is a valid data source, leading them to ignore new variables that contradict their established model. This is known as "Expert Blindness."
+        <br /><br />
+        <strong>The Dangers:</strong>
+        <br />
+        • <strong>Ignoring Regression:</strong> Expecting an outlier performance to continue indefinitely.
+        <br />
+        • <strong>Stake Escalation:</strong> Increasing bets because you are "sure" of a biased conclusion.
+        <br />
+        • <strong>Strategy Stagnation:</strong> Refusing to adapt your model because it worked in the past.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'dangers-of-bias', 
-    title: 'The Dangers of Confirmation Bias', 
-    content: "If you don't address confirmation bias, it can seriously impact your betting results. When you're guided by bias, you're often making decisions based on emotion, not facts.\n\nWhen your decisions are biased, you're more likely to place bets that don't make sense. Over time, these losses can add up. Even small repeated mistakes can drain your bankroll faster than you realise.\n\nThis bias can make you cling to the same strategy or team picks, even if they're not working. This resistance to change prevents you from learning and improving your betting skills.\n\nIf you constantly reinforce your beliefs, you start thinking you can't be wrong. This overconfidence can lead to higher stakes and riskier bets, which often end badly.",
+    id: 'operational-neutrality', 
+    title: "Operational Neutrality: Building an Unbiased Workflow", 
+    content: (
+      <>
+        To achieve long-term profitability, you must move from emotional betting to <strong>Operational Neutrality</strong>. This requires a workflow designed to actively challenge your own assumptions before a single dollar is staked.
+        <br /><br />
+        <strong>The Neutrality Toolkit:</strong>
+        <br />
+        • <strong>The Devil’s Advocate:</strong> Force yourself to write three reasons why your bet will lose.
+        <br />
+        • <strong>Blind Audits:</strong> Review stats without team names to see if the value still exists.
+        <br />
+        • <strong>Betting Journals:</strong> Specifically track bets where you "ignored" red flags.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'how-to-challenge', 
-    title: 'How to Challenge your Bias', 
-    content: "The good news is you can take concrete steps to reduce the influence of confirmation bias on your bets. If you keep the below pointers in mind, you are more likely to beat the bias:\n\n• Make it a habit to actively look for reasons why your pick might lose. Ask yourself questions.\n• Write down every bet you make, why you placed it, and the outcome. Over time, this journal will reveal patterns where confirmation bias has influenced your decisions.\n• Don't rely on one expert, one website, or social media hype. Check multiple sources, including stats websites, expert analysis, and historical performance data.\n• Numbers don't lie. Use head-to-head stats, player performance trends, injuries, and other objective data when making decisions.\n• Force yourself to argue against your pick. Imagine every reason your bet could lose.",
-    advantages: [],
-    risks: []
-  },
-  {
-    id: 'conclusion',
-    title: 'Conclusion',
-    content: "Confirmation bias is like an invisible opponent in sports betting. It doesn't talk, but it quietly guides your decisions, often toward mistakes. By learning to recognise it, seeking contradictory evidence, and relying on data rather than emotions, you can make smarter, more profitable bets.\n\nBetting is not just about luck; it's about mental discipline, clear analysis, and honesty with yourself. The better you get at spotting confirmation bias, the sharper your decisions will become. Keep your research solid, question your assumptions, and let facts, not feelings, guide your bets.\n\nWith this approach, you'll increase your chances of long-term success while keeping your losses under control.",
+    id: 'conclusion', 
+    title: "Objectivity as an Edge", 
+    content: (
+      <>
+        In a market full of emotional, biased recreational bettors, <strong>objectivity is an edge</strong>. By recognizing your brain's natural tendency to seek confirmation, you can build systems that force you to look at the cold, hard reality of the numbers.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
     id: 'faqs', 
-    title: 'FAQs', 
+    title: 'Expert Q&A', 
     content: '',
     advantages: [],
     risks: [],
     faqs: [
       {
-        question: "What is confirmation bias in betting?",
-        answer: "A cognitive bias where bettors selectively focus on information that supports their pre-existing beliefs about a team or outcome, while ignoring data that contradicts them."
+        question: "Is confirmation bias always a bad thing?",
+        answer: "In betting, yes. While it's a helpful brain shortcut for daily life, it is lethal for capital management because it hides the real risks of a wager."
       },
       {
-        question: "What is an example of confirmation bias in sports?",
-        answer: "Focusing only on a star player's recent goals while ignoring that the team's defense is missing key players due to injury."
+        question: "How can I tell if I'm being biased?",
+        answer: "Ask yourself: 'What piece of information would make me change my mind about this bet?' If the answer is 'nothing,' you are suffering from severe confirmation bias."
       },
       {
-        question: "How to identify confirmation bias?",
-        answer: "Ask yourself if you are only looking for reasons to support your bet, or if you are genuinely considering reasons why you might lose."
+        question: "Do professional syndicates suffer from this?",
+        answer: "Less so. Pros use algorithmic models and team-based 'vetting' processes specifically designed to remove the individual human's biased perspective from the decision."
       },
       {
-        question: "How to defeat confirmation bias?",
-        answer: "Actively look for 'disconfirming' evidence, keep a betting journal, and use objective data from multiple independent sources."
-      },
-      {
-        question: "How to balance confirmation bias?",
-        answer: "Balance it by playing 'Devil's Advocate' against your own picks and setting strict, data-driven criteria for every wager."
+        question: "Does 'Value Betting' fix confirmation bias?",
+        answer: "Only if you trust the numbers. Many bettors find value in the stats but then use confirmation bias to talk themselves *out* of the bet because they 'don't like' the team."
       }
     ]
   }
@@ -147,16 +188,16 @@ export default function ConfirmationBiasPage() {
           <main className="flex-1 min-w-0 order-2 lg:order-1">
             <header className="mb-12">
               <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-8 tracking-tight leading-[1.1]">
-                Confirmation <span className="text-brand-emerald">Bias</span>
+                Defeating <span className="text-brand-emerald">Confirmation Bias</span>
               </h1>
               
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
-                  <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6 italic">
-                    "In sports betting, the thrill of predicting outcomes can sometimes cloud your judgment. Confirmation bias is one intellectual trap that can affect you."
+                  <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
+                    "The brain is a master story-teller, but a terrible odds-maker. Learning to see the data as it is, not as you want it to be, is the ultimate betting discipline."
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    Confirmation bias makes you focus on information that supports your existing beliefs while ignoring evidence that goes against them. Recognising this bias and learning how to manage it is key to making smarter and better decisions. This OddinsOdds Academy guide will help you understand how it works.
+                    Confirmation bias is the invisible hand that moves you toward loss. It makes you prioritize the stories that agree with you while silencing the statistics that warn you. In this guide, we dive into the cognitive psychology of the betting mind and build a workflow designed for total objectivity.
                   </p>
                 </div>
               </div>

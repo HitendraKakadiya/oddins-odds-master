@@ -8,79 +8,114 @@ import StrategyTOC from '@/components/Academy/StrategyTOC';
 
 const sections = [
   { 
-    id: 'what-is-matched-betting', 
-    title: 'What Is Matched Betting?', 
-    content: "Matched betting is a technique that leverages the free bet promotions offered by bookmakers. By placing two opposing bets - one with the bookmaker (a \"back\" bet) and one with a betting exchange (a \"lay\" bet) - you can cover all possible outcomes of an event.\n\nThis approach ensures a profit regardless of the result. The key to matched betting is using the free bet credits or bonuses offered by bookmakers and covering your position by laying off the bet on an exchange. This eliminates the element of chance and turns bookmaker offers into guaranteed returns.\n\nSounds complicated? Let us break it down for you in the sections below.",
+    id: 'arbitrage-of-incentives', 
+    title: 'The Arbitrage of Incentives: Profiting from Promotions', 
+    content: (
+      <>
+        Matched betting is an analytical technique used to extract guaranteed profit from bookmaker marketing budgets (free bets and bonuses). It is not gambling because it eliminates risk by covering every possible outcome of an event. By mathematically neutralizing the variance, you turn promotional offers into predictable cash flow.
+        <br /><br />
+        <strong>The Core Principles:</strong>
+        <br />
+        • <strong>Zero Risk:</strong> Every "Back" bet at a bookmaker is matched by a "Lay" bet at an exchange.
+        <br />
+        • <strong>Mathematical Extraction:</strong> Converting a non-withdrawable free bet into withdrawable cash at a 70-80% efficiency rate.
+        <br />
+        • <strong>Market Neutrality:</strong> You do not care who wins the match; you only care about the discrepancy between bookmaker and exchange prices.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'how-does-it-work', 
-    title: 'How Does Matched Betting Work?', 
-    content: "Matched betting is a method that helps you take advantage of bookmaker offers by placing carefully planned bets to reduce or eliminate risk. Here's how it works:\n\n1. **Place a Qualifying Bet:** To unlock free bet offers, you must first place a qualifying bet using your own money. This is a normal bet placed at the bookmaker on a specific outcome.\n2. **Place the Lay Bet:** Simultaneously, you place a lay bet on a betting exchange against the same outcome you backed at the bookmaker. The lay bet covers all other possible results.\n3. **Qualifying Bet Settles:** When the event finishes, one of your bets wins and the other loses, but your overall loss is minimal or zero. This qualifies you to receive the free bet from the bookmaker.\n4. **Use the Free Bet:** You then use your free bet to place another back bet at the bookmaker and a corresponding lay bet on the betting exchange. This time, because the stake is free, you are guaranteed a profit regardless of the outcome.",
+    id: 'back-lay-neutralize', 
+    title: 'Back, Lay, and Neutralize: The Anatomy of a Dual Bet', 
+    content: (
+      <>
+        To perform matched betting, you must operate across two different types of platforms: a standard bookmaker and a betting exchange (such as Betfair or Smarkets).
+        <br /><br />
+        <strong>The Two Sides:</strong>
+        <br />
+        • <strong>The Back Bet:</strong> Betting *for* an event to happen (placed at the bookmaker).
+        <br />
+        • <strong>The Lay Bet:</strong> Betting *against* an event happening (placed at the exchange).
+        <br /><br />
+        When you place both simultaneously at near-identical odds, you create a "matched" position where your total bankroll (spread across both accounts) remains stable regardless of the final score.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'calculator', 
-    title: 'What Is a Matched Betting Calculator and Why Do You Need It?', 
-    content: "A matched betting calculator is a vital tool that helps you figure out exactly how much to stake on your lay bet to balance your risk and lock in profit. It calculates the precise amount needed based on:\n\n• The stake of your back bet\n• The odds of the back bet\n• The odds of the lay bet\n• The commission charged by the betting exchange\n\nUsing a calculator ensures your lay bet matches your back bet perfectly so that your profit is guaranteed or your loss is minimised.",
+    id: 'extraction-efficiency', 
+    title: 'Extraction Efficiency: From Qualifying Bets to Cash', 
+    content: (
+      <>
+        A standard matched betting operation consists of two distinct phases. Understanding the difference between a "Qualifying Bet" and a "Free Bet" is essential for professional extraction.
+        <br /><br />
+        <strong>Phase 1: The Qualifier</strong>
+        <br />
+        You place a bet with your own money to unlock a bonus. You aim for a "Qualifying Loss" of just a few cents by matching the odds as closely as possible.
+        <br /><br />
+        <strong>Phase 2: The Free Bet</strong>
+        <br />
+        Once the bonus is received, you repeat the process. However, since the stake isn't yours, the "winnings" from the back bet (minus the lay liability) result in pure, guaranteed profit.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'where-to-find-offers', 
-    title: 'Where to Find Matched Betting Offers?', 
-    content: "Bookmakers constantly run promotional offers to attract and retain you on their platform. These offers are your opportunity to profit through matched betting. Common types of matched betting offers include:\n\n• **Sign-up Bonuses:** Free bets or bonus funds given to you as a new customer after placing a qualifying bet.\n• **Reload Offers:** Bonuses available if you are an existing customer and are often triggered by a certain amount of deposits or specific bets.\n• **Profit Boosts:** Enhanced odds on certain events that increase potential returns.\n• **Cashback Offers:** Partial refund on losing bets, providing a safety net.\n\nTo maximise your matched betting profits, regularly check bookmaker websites and matched betting forums or sites that list the latest offers.",
+    id: 'operational-longevity', 
+    title: "Operational Longevity: Avoiding the 'Promo Ban'", 
+    content: (
+      <>
+        Bookmakers are aware of matched betting and will "gub" (ban from promotions) players who appear too efficient. To maintain your accounts long-term, you must mimic the behavior of a recreational loser.
+        <br /><br />
+        <strong>Longevity Tactics:</strong>
+        <br />
+        • <strong>Mugging Bets:</strong> Placing occasional bets on high-margin markets without a promotional hook.
+        <br />
+        • <strong>Avoid 100% Extraction:</strong> Don't always take the absolute best mathematical match; prioritize looking "natural."
+        <br />
+        • <strong>Mobile App Usage:</strong> Betting via the app rather than a browser can make you look like a casual fan.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'is-it-legal', 
-    title: 'Is Matched Betting Legal?', 
-    content: "Matched betting is legal in most countries where online sports betting is regulated, including Nigeria, the UK, and the US. You're simply making bets on both sides of an event and using promotional offers honestly provided by bookmakers.\n\nThat said, bookmakers don't like matched betting because it cuts into their profits. If they detect that you are using matched betting techniques, they may limit your account, restrict bonuses, or close your account altogether. So, be very careful while using this method and try to make an account with different bookmakers to stay under the radar.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'how-much-can-you-make', 
-    title: 'How Much Can You Make on Matched Betting?', 
-    content: "The amount you can make on matched betting depends largely on the time and effort you put in, as well as how many bookmaker offers you can take advantage of. When you're just starting, focusing on sign-up bonuses from various matched betting sites can earn you anywhere from $500 to $1,000 per month with consistent work.\n\nThese welcome offers often provide the biggest profits because they are designed to attract you to their platform.\n\nAs you gain experience and move beyond sign-up promotions, you'll want to focus on matched betting reload offers - bonuses given to you as an existing customer to keep you betting on the platform. By regularly using reload offers, cashback deals, and profit boosts, you can maintain a steady monthly income.\n\nYour earnings will also depend on how well you manage your bankroll and how efficiently you use tools like a matched betting calculator to minimise mistakes. But do remember, matched betting won't make you rich overnight. It requires discipline, patience, and consistent betting.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'tips-for-success', 
-    title: 'Matched Betting Tips for Success', 
-    content: "To make the most of matched betting and avoid common pitfalls, follow these practical tips that will keep you organised, efficient, and profitable.\n\n• Always use a matched betting calculator to ensure your stakes are correct.\n• Read the terms and conditions of every offer carefully before placing bets.\n• Spread your bets across multiple bookmakers to avoid detection and account restrictions.\n• Keep detailed records of all your bets, stakes, odds, and profits for tracking purposes.\n• Join matched betting forums and communities to stay updated on the latest offers and strategies.\n• Be patient and consistent, matched betting is about steady, long-term profits, not quick wins.\n• Avoid placing bets impulsively; stick to your plan and bankroll management rules.\n• Take advantage of reload offers to maintain a steady income beyond initial sign-up bonuses.",
-    advantages: [],
-    risks: []
-  },
-  {
-    id: 'conclusion',
-    title: 'Conclusion',
-    content: "Matched betting is a reliable, legal, and effective strategy to make money from sports betting promotions with minimal risk.\n\nBy understanding how matched betting works, using a matched betting calculator, and following a disciplined approach, you can build a steady stream of profits.",
+    id: 'conclusion', 
+    title: 'Discipline Over Gambling', 
+    content: (
+      <>
+        Matched betting is often described as a "data-entry job with a high hourly wage." It requires meticulous record-keeping, emotional detachment, and technical precision. For those who treat it as a business rather than a hobby, it remains the most reliable way to extract wealth from the sports betting ecosystem.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
     id: 'faqs', 
-    title: 'FAQs', 
+    title: 'Expert Q&A', 
     content: '',
     advantages: [],
     risks: [],
     faqs: [
       {
-        question: "How does matched betting work?",
-        answer: "It involves placing two opposing bets: a 'back' bet with a bookmaker to unlock a promotion, and a 'lay' bet on a betting exchange to cover the other outcome, ensuring a profit regardless of the result."
+        question: "Is matched betting sustainable in 2024?",
+        answer: "Yes, but it requires more 'account hygiene' than in the past. While sign-up offers are finite, 'reload' offers for existing customers provide a consistent monthly income for those with healthy accounts."
       },
       {
-        question: "Can you actually make money from matched betting?",
-        answer: "Yes, it is a proven method to extract value from bookmaker promotions. Beginners can often make hundreds or even thousands of dollars from sign-up offers alone."
+        question: "Can I do this with a small starting bankroll?",
+        answer: "You can start with as little as $100 to complete a single sign-up offer. As your bankroll grows, you can complete multiple offers simultaneously, which speeds up your profit generation."
       },
       {
-        question: "What are matched and unmatched bets?",
-        answer: "A matched bet is one where another user on the exchange has taken the opposite side of your wager. An unmatched bet waits for someone to accept those odds before it becomes active."
+        question: "Is my credit score affected by matched betting?",
+        answer: "No. Bookmakers perform a 'soft' identity check that does not impact your credit score. However, many pros use a separate bank account to keep betting transactions away from their primary mortgage or loan applications."
+      },
+      {
+        question: "Is matched betting tax-free?",
+        answer: "In many jurisdictions, including the UK, gambling winnings (which matched betting is classified as) are entirely tax-free. Always check your local regulations."
       }
     ]
   }
@@ -153,16 +188,16 @@ export default function MatchedBettingPage() {
           <main className="flex-1 min-w-0 order-2 lg:order-1">
             <header className="mb-12">
               <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-8 tracking-tight leading-[1.1]">
-                Matched Betting <span className="text-brand-emerald">Guide</span>
+                Matched Betting <span className="text-brand-emerald">Masterclass</span>
               </h1>
               
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
-                  <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6 italic">
-                    "If you're looking for a way to earn consistent profits from sports betting without risking your own money, matched betting is the strategy you need to understand."
+                  <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
+                    "Matched betting is not gambling—it is a systematic process of capturing the arbitrage between bookmaker promotions and market realities."
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    Matched betting is not gambling - it's a smart technique that uses bookmaker offers to generate nearly risk-free returns. In this OddinsOdds Academy guide, you'll learn exactly what matched betting is, how it works, and much more. By the end, you'll have a clear, step-by-step plan to start profiting with this proven method.
+                    In this technical guide, we move beyond the basics of sign-up offers and explore the heavy-lifting of matched betting: extraction efficiency, exchange liquidity, and the vital importance of account hygiene for long-term operational longevity.
                   </p>
                 </div>
               </div>

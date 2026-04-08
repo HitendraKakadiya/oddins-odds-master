@@ -8,86 +8,131 @@ import StrategyTOC from '@/components/Academy/StrategyTOC';
 
 const sections = [
   { 
-    id: 'what-is-arbitrage', 
-    title: 'What Is Arbitrage Betting?', 
-    content: "Arbitrage betting, often called “arbing” or “sure betting,” is the practice of placing bets on all possible outcomes of a sporting event in a way that guarantees a profit, no matter the result. It’s not impossible, it’s a real strategy.\n\nBut to make it work, you need speed, precision, and a strong understanding of how odds and betting markets operate. A casual approach usually leads to errors, while a disciplined approach can create good profits.\n\nThis APWin Academy guide will explain what arbitrage betting is, how it works, the tools you’ll need, the risks involved, and the methods that can help you use it effectively. By the end, you’ll know whether this is a strategy worth adding to your betting approach.",
+    id: 'mechanics-of-a-sure-bet', 
+    title: 'The Mechanics of a Sure Bet: Mathematical Arbitrage', 
+    content: (
+      <>
+        Arbitrage betting, or "arbing," is the practice of exploiting price discrepancies between different bookmakers to guarantee a profit regardless of the outcome. In an efficient market, odds represent probability plus a margin (the "overround"). Arbitrage occurs when the composite overround of two or more bookmakers drops below 0%, creating a mathematical gap where the bettor cannot lose.
+        <br /><br />
+        <strong>Key Mechanics:</strong>
+        <br />
+        • <strong>Cross-Market Hedging:</strong> Placing complementary bets on opposing platforms.
+        <br />
+        • <strong>Price Inefficiency:</strong> Capitalizing on "soft" bookmakers who are slow to react to market moves.
+        <br />
+        • <strong>Mathematical Certainty:</strong> Removing the element of sports knowledge and replacing it with pure calculation.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'how-it-works', 
-    title: 'How Does Arbitrage Betting Work?', 
-    content: "To really understand arbitrage, you need to look at the math behind it. Every odd can be converted into a probability. For decimal odds, the formula is simple:\n\n**Implied Probability = 1 / Odds**\n\nIf the sum of implied probabilities across all outcomes is less than 1, you have an arbitrage opportunity. Let's take a practical example. Suppose you find a football match with the following odds:\n\n• **Bookmaker A:** Liverpool to win at 2.40\n• **Bookmaker B:** Chelsea to win at 2.10\n\nThe implied probabilities are:\n\n• **Liverpool:** 1 / 2.40 = 0.416 (41.6%)\n• **Chelsea:** 1 / 2.10 = 0.476 (47.6%)\n\nAdd them together: 41.6% + 47.6% = 89.2%. That's below 100%, which means there's about 10.8% left over as guaranteed profit. The final step is to calculate your stakes. You can do this manually with formulas, or you can use an arbitrage calculator, which saves time and prevents mistakes.",
+    id: 'formula-of-arbitrage', 
+    title: 'The Formula of Profit: Calculating the Edge', 
+    content: (
+      <>
+        To identify an arb, you must calculate the implied probability of every possible outcome. If the sum of these probabilities is less than 100%, an arbitrage opportunity exists.
+        <br /><br />
+        <strong>The Formula:</strong>
+        <br />
+        (1 / Odds A) + (1 / Odds B) + (1 / Odds C) {"<"} 1.00
+        <br /><br />
+        For example, if Bookmaker A offers 2.10 on Team X, and Bookmaker B offers 2.10 on Team Y, the total implied probability is (1/2.1) + (1/2.1) = 95.2%. The remaining 4.8% is your guaranteed margin, assuming you balance your stakes correctly using an arbitrage calculator.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'how-to-place', 
-    title: 'How to Place an Arbing Bet', 
-    content: "If you're interested in trying arbitrage betting, here's the step-by-step guide to make your process easier:\n\n1. **Open Multiple Accounts:** You can't do arbing with just one bookmaker. You need accounts with several betting sites. The more accounts you have, the more likely you are to find price differences that create arbs.\n2. **Spot the Opportunities:** You can search manually by comparing odds, but in today's betting world, software is essential. There are dedicated tools that scan thousands of markets in real time and help you with arbitrage opportunities.\n3. **Calculate the Stakes:** Once you've spotted an arb, you need to know how much to stake on each outcome. An arbitrage betting calculator makes this easy. You enter the odds and your total stake, and it instantly shows you how much to put on each side.\n4. **Place Bets Quickly:** Speed is crucial. Odds can shift within minutes, especially if the market is thin. That's why you must be ready to click quickly.",
+    id: 'operational-risk', 
+    title: 'Operational Risk Management: Beyond the Math', 
+    content: (
+      <>
+        While arbing is mathematically certain, operational risks are significant. <strong>Slippage</strong> occurs when odds change at one bookmaker while you are still placing the bet at another, potentially leaving you with an unhedged position. <strong>Voided bets</strong> are even more dangerous—if a bookmaker cancels a leg of your arb due to a "palpable error," you are left with massive exposure.
+        <br /><br />
+        <strong>Risk Mitigation:</strong>
+        <br />
+        • <strong>Speed is Essential:</strong> Use professional API-driven tools to execute within seconds.
+        <br />
+        • <strong>Check Max Stakes:</strong> Always verify that both bookmakers will accept your full stake before placing either bet.
+        <br />
+        • <strong>Avoid 'Obvious' Errors:</strong> If odds are 50% higher than the market average, it is likely a stay-away error.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'arbing-example', 
-    title: 'Arbing Example', 
-    content: "Let’s say you want to arb a Premier League football match between Chelsea and Arsenal.\n\n• Bookmaker A offers Chelsea to win at 2.50.\n• Bookmaker B offers Arsenal to win at 2.60.\n\nIf you want to invest $200, an arbitrage calculator might suggest:\n\n• $104 on Chelsea at 2.50 = $260 return\n• $96 on Arsenal at 2.60 = $249.60 return\n\nNo matter who wins, your return is between $249.60 and $260. Since you staked $200 total, you’re guaranteed at least $49.60 profit. That’s a return of almost 25% on a single event.\n\nFor this example, we used odds that are quite far apart to give you a better idea of how it works. You need to keep in mind that not all arbs are this lucrative. Many will offer just 1-3% profit margins. The most important thing to remember is that even a margin of 1-3% can give you steady profits if you place multiple of these bets.",
+    id: 'gubbing-problem', 
+    title: 'The "Gubbing" Problem: Evading Detection', 
+    content: (
+      <>
+        Bookmakers use advanced algorithms to detect arbitrage patterns. Once identified, your account will be "gubbed"—meaning your stakes will be limited to pennies or your account closed entirely. Protecting your account longevity is as important as finding the arbs themselves.
+        <br /><br />
+        <strong>How to Stay Under the Radar:</strong>
+        <br />
+        • <strong>Round Your Stakes:</strong> Instead of betting $104.57 (as a calculator might suggest), bet $105.
+        <br />
+        • <strong>Avoid Minor Markets:</strong> Focus on liquid markets where price moves are natural and harder to track.
+        <br />
+        • <strong>Mugging Bets:</strong> Occasionally place high-margin recreational bets to mimic a "loser" profile.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'advantages', 
-    title: 'Advantages of Arbitrage betting', 
-    content: "The main appeal of arbitrage betting is simple: **guaranteed profit**. You don't have to guess the winner, study stats, or depend on luck—if your bets are placed correctly, you know you'll make money.\n\nAnother benefit is that it doesn't rely on deep sports knowledge. You don't need to understand team tactics or player form. What matters is knowing how odds work, doing the math, and understanding how bookmakers operate.\n\nArbitrage is also scalable. With more betting accounts and a larger bankroll, you can grab more opportunities and increase returns.",
+    id: 'pro-toolkit', 
+    title: 'The Professional Toolkit: Scaling for Profit', 
+    content: (
+      <>
+        Manual arbing is largely obsolete in today's high-speed market. Success requires professional software that scans hundreds of bookmakers in real-time. To scale, professional arbers often use dedicated browsers and e-wallets to manage capital movement without triggering security flags.
+        <br /><br />
+        <strong>The Pro Stack:</strong>
+        <br />
+        • <strong>Arbitrage Software:</strong> Tools like RebelBetting or OddsMonkey to source opportunities.
+        <br />
+        • <strong>Capital Velocity:</strong> Fast movement of funds via Skrill or Neteller to capture window-limited arbs.
+        <br />
+        • <strong>Digital Hygiene:</strong> Preventing tracking via dedicated hardware or clean-state browsers.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'challenges-risks', 
-    title: 'Challenges and Risks', 
-    content: "For all its advantages, arbitrage betting comes with some major challenges, which you can find below:\n\n• **Profit margins are often small.** Most arbs only offer 1-5% return. To make meaningful money, you need to risk large sums, sometimes thousands at a time.\n• **Bookmakers don't like arbers** because you’re taking advantage of their mistakes. If they suspect you’re arbing, they may limit your account, reduce your stakes, or even close it.\n• **If you place one bet and the odds change** before you place the second, you can end up stuck with a bad position. This is known as “slippage,” and it can wipe out profits if you aren’t careful.\n• **Arbing requires time and focus.** Opportunities don’t last long, and if you hesitate, they’ll disappear. You need to be ready to act quickly, often within minutes.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'legal', 
-    title: 'Is Arbitrage Betting Legal?', 
-    content: "A common question is whether arbitrage betting is legal. The short answer is yes. Arbitrage betting is perfectly legal in most countries, including Nigeria, the UK, and many parts of Europe.\n\nYou’re simply placing bets with licensed bookmakers, and there’s nothing unlawful about that. The issue is not legality but acceptance. Bookmakers may view arbing as an abuse of their odds and will often take steps to protect themselves. This means that while you aren’t breaking the law, you could face issues with bookmakers policies.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'tools-tips', 
-    title: 'Tools and Tips for Success', 
-    content: "Tools and discipline make all the difference in arbitrage betting. An arbitrage calculator is essential to make sure your stakes are split correctly. Arbitrage software is just as important, since manually checking odds across multiple sites isn't realistic.\n\nA few practical tips help keep things smooth: start small with low stakes until you're confident. Spread your bets across different bookmakers to avoid getting suspended, and stick to short-term markets that settle quickly rather than long-term bets where odds can change.\n\nFinally, don’t let arbing take over your entire day— it's easy to get caught chasing every opportunity, but consistency matters more than volume.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'final-thoughts', 
-    title: 'Final Thoughts', 
-    content: "Arbitrage betting is one of the most fascinating strategies in sports betting because it flips the traditional approach. Instead of predicting outcomes, you exploit price differences. Instead of hoping for luck, you rely on math.\n\nIf you're willing to put in the time, build multiple accounts, and accept the limitations, arbitrage betting can become a steady source of profit.\n\nArbitrage betting isn't glamorous, and it requires patience, spreadsheets, and a sharp eye for detail. But if you're serious about betting strategies and you want guaranteed profits instead of risky predictions, this method might be exactly what you’ve been looking for.",
+    id: 'conclusion', 
+    title: 'Efficiency Above All', 
+    content: (
+      <>
+        Arbitrage is a grind, not a gamble. It requires meticulous record-keeping, emotional detachment, and constant vigilance. For those with the discipline to treat betting as a high-frequency trading operation, it remains one of the few ways to extract consistent wealth from the sports betting ecosystem by simply correcting market errors.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
     id: 'faqs', 
-    title: 'FAQs', 
+    title: 'Expert Q&A', 
     content: '',
     advantages: [],
     risks: [],
     faqs: [
       {
-        question: "Is arbitrage betting risk-free?",
-        answer: "Mathematically, yes. However, practical risks like 'slippage' (odds changing mid-process) or bookmakers canceling bets mean you must be careful and fast."
+        question: "Is arbitrage betting ethical?",
+        answer: "Strictly speaking, arbing is simply corrective price action. You are providing liquidity and correcting market errors—the same way hedge funds operate in financial markets."
       },
       {
-        question: "What tools do I need for arbing?",
-        answer: "An arbitrage calculator is essential. Professional arbers also use software that scans multiple bookmakers in real-time to find opportunities."
+        question: "How much capital is needed to start?",
+        answer: "To see meaningful returns at a 2-3% margin, a rolling bankroll of at least $2,000 spread across 5-10 different bookmakers is considered the professional standard."
       },
       {
-        question: "Why do bookmakers ban arbitrage bettors?",
-        answer: "Bookmakers want a 'house edge'. Arbing removes that edge by exploiting price differences between competitors, which reduces the bookie's profitability."
+        question: "How long can an arbitrage career last?",
+        answer: "Arbing is often a finite game. The 'burn rate' of bookmaker accounts is high. The goal for many is to maximize profits over 12-24 months before account limits become too restrictive."
+      },
+      {
+        question: "Can I arb using only one bookmaker?",
+        answer: "No. Arbitrage requires a discrepancy between two platforms. It is impossible to arb within a single bookmaker because their internal margins are always positive."
       }
     ]
   }
@@ -160,16 +205,16 @@ export default function ArbitragePage() {
           <main className="flex-1 min-w-0 order-2 lg:order-1">
             <header className="mb-12">
               <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-8 tracking-tight leading-[1.1]">
-                Arbitrage <span className="text-brand-emerald">Guide</span>
+                Mastering <span className="text-brand-emerald">Arbitrage</span>
               </h1>
               
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
-                  <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6 italic">
-                    "Arbitrage betting, often called “arbing” or “sure betting,” is the practice of placing bets on all possible outcomes of a sporting event in a way that guarantees a profit."
+                  <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
+                    "In sports betting, as in finance, arbitrage is the art of capturing risk-free profit by exploiting price discrepancies across different markets."
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    This APWin Academy guide will explain what arbitrage betting is, how it works, the tools you’ll need, the risks involved, and the methods that can help you use it effectively. By the end, you’ll know whether this is a strategy worth adding to your betting approach.
+                    Welcome to the OddinsOdds Academy masterclass on Arbitrage. We move beyond theoretical "sure bets" to explore the mathematical formulas, operational risks, and tactical execution required to extract consistent profit from the betting ecosystem.
                   </p>
                 </div>
               </div>

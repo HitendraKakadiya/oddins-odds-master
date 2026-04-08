@@ -8,66 +8,104 @@ import StrategyTOC from '@/components/Academy/StrategyTOC';
 
 const sections = [
   { 
-    id: 'what-are-booking-points', 
-    title: 'What Are Booking Points in Football?', 
-    content: "Booking points in football refer to a numerical system online bookmakers use to measure the number of yellow and red cards shown during a match. Instead of simply counting the number of cards, betting sites assign points to each card.\n\nThese points are used to create markets for you if you want to bet on the intensity or discipline level of a match, rather than just the scoreline.\n\n### How Are Booking Points Calculated?\nTo place a bet on booking points, you need to understand how booking points are calculated in detail. This calculation is not random. It’s a fixed system that bookmakers apply to assign values to cards shown during the game. These values are then used to determine if your bet has won or lost, depending on the market you’ve chosen.\n\nHere’s how booking points are allocated:\n\n• **A single yellow card** shown to a player earns 10 booking points.\n• **A direct red card** (without a prior yellow) earns 25 booking points.\n• If a player receives **two yellow cards resulting in a red**, the total is 35 booking points – this combines 10 points for the first yellow and 25 for the red card. The second yellow itself is not counted separately.\n\nLet’s clarify this with examples:\n\n• **Scenario 1:** A player receives one yellow card = 10 booking points.\n• **Scenario 2:** A player receives a straight red card = 25 booking points.\n• **Scenario 3:** A player gets two yellows, which lead to a red = 35 booking points (10 + 25).\n\nThese points are cumulative. If a match has 6 yellow cards and 1 red card, the total booking points would be 85 points (6 × 10 = 60 for yellows, 1 × 25 = 25 for red).\n\n**Do note** that cards issued to managers or coaching staff do not count toward booking points. Additionally, the booking time market usually only includes cards that are shown during the regular 90 minutes plus overtime, excluding extra time and penalties.\n\n### Why Do Bookmakers Use Booking Points?\nInstead of offering bets like 'over 3.5 cards,' bookmakers use booking points to provide more flexibility and options. With booking points, you can:\n\n• Bet on a broader range of outcomes (e.g., 0-30, 31-60, 61+ points)\n• Combine yellow and red cards into one market\n• Predict team-specific or half-specific outcomes",
+    id: 'disciplinary-quantization', 
+    title: 'Disciplinary Quantization: The Booking Point Scale', 
+    content: (
+      <>
+        Booking Points represent the <strong>mathematical quantization of match discipline</strong>. Instead of merely counting cards, bookmakers assign specific point values to 'Yellow' and 'Red' incidents to create a high-resolution market for match aggression.
+        <br /><br />
+        <strong>The Universal Point Hierarchy:</strong>
+        <br />
+        • <strong>Yellow Card:</strong> 10 Points.
+        <br />
+        • <strong>Red Card:</strong> 25 Points.
+        <br />
+        • <strong>The 'Double-Yellow' (Yellow + Red):</strong> 35 Points. In this scenario, the second yellow is discarded, and the player is credited with 10 (1st Yellow) + 25 (Red). Mastering these totals is essential for accurate margin analysis.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'popular-markets', 
-    title: 'Popular Booking Points Markets', 
-    content: "Booking points betting has caught on lately; it makes even a one-sided match more fun to watch. Instead of just picking a winner, you’re keeping an eye on the referee and how many cards get handed out.\n\n### Total Booking Points (Over/Under)\nThis is the most straightforward market. You’re betting on whether the total booking points in a match will be over or under a specified number. For example, if the line is set at 40.5 points, and the game ends with three yellow cards (30 points) and one red card (25 points), the total would be 55, meaning 'Over' wins.\n\n### First Half Total Booking Points\nUnlike the total booking points market, this betting market is limited to the first 45 minutes. This is especially valuable if you know that one or both teams start aggressively or if the referee is known to stamp his authority early.\n\n### Team Booking Points\nHere, you bet on a single team’s card tally. You might predict that a team playing away under pressure will commit more fouls and receive more cards.\n\n### Booking Points Handicap\nIn this market, the bookmaker gives one team a head start in booking points. For instance, Arsenal +10 booking points vs Chelsea means that if Arsenal receives 10 points and Chelsea receives 20, the handicap adjusted score is a draw (20-20).",
+    id: 'referee-profiling', 
+    title: 'The Third Team: Referee Profiling', 
+    content: (
+      <>
+        In the Booking Points market, the referee is often more significant than the two teams on the pitch. Professional analysts maintain <strong>"Strictness Coefficients"</strong> for officials.
+        <br /><br />
+        <strong>Key Variables:</strong>
+        <br />
+        • <strong>Cards-Per-Game (CPG):</strong> The average volume of cards an official issues.
+        <br />
+        • <strong>The 'Early-Tone' bias:</strong> Referees who issue yellow cards in the first 15 minutes are statistically more likely to trigger a 50+ point match, as early bookings limit players' ability to commit "tactical fouls" later in the game.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'strategic-tips', 
-    title: 'Strategic Tips for Betting on Booking Points', 
-    content: "Before you jump into booking points betting, it’s worth doing more than just guessing. Knowing how certain teams play, how strict the referee is, and what’s at stake in the match can make a big difference.\n\nHere are some tips to keep in mind:\n\n• **Understand Team Discipline Profiles:** Teams like Getafe or Everton have historically been card-heavy, while others like Manchester City or Bayern tend to receive fewer cards.\n• **Study Referee Tendencies:** Some referees issue more cards than others. If a strict referee is in charge, expect higher booking points.\n• **Consider Match Type:** Derbies, relegation battles, or playoff games are more likely to be heated and aggressive, leading to more bookings.\n• **Watch Player Matchups:** Clashes between aggressive midfielders or tricky wingers and rash defenders often lead to more cards.\n• **Use In-Play Betting Wisely:** If the game gets heated early or there’s a red card threat, betting on live booking points markets can offer good value.",
+    id: 'environmental-triggers', 
+    title: 'The Derby Multiplier: Environmental Triggers', 
+    content: (
+      <>
+        Psychological load dictates card volume. High-intensity environments—such as <strong>Local Derbies</strong> or <strong>Relegation Deciders</strong>—drastically lower the threshold for tactical and emotional fouls.
+        <br /><br />
+        <strong>Spotting the 60+ Point Spike:</strong>
+        <br />
+        Look for matchups featuring high-frequency dribblers (who draw fouls) against aggressive "enforcer" midfielders. If the match has historical disciplinary baggage, the probability of multiple 25-point red cards increases, making the "Over" markets highly attractive.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'mistakes-to-avoid', 
-    title: 'Mistake to Avoid', 
-    content: "Even if you’ve been betting for a while, it’s easy to make mistakes with booking points. Knowing the common errors helps you make smarter choices and keep your money safe.\n\n• **Ignoring Referee Statistics:** Some referees are far stricter than others when it comes to issuing cards. Always check how many yellow and red cards a ref typically gives per game.\n• **Misunderstanding the Rules:** A common mistake is thinking a red card is just 1 card. In a booking points system, it's worth 25 points. Read the rules carefully.\n• **Chasing Late Bets:** Don’t chase the total just because the first half was aggressive. Games often cool off in the second half, especially if one team is leading comfortably.",
+    id: 'operational-risk', 
+    title: 'Operational Risk: Calculating the Tipping Point', 
+    content: (
+      <>
+        The primary operational risk in this market is the <strong>35-point cap per player</strong>. Most sportsbooks cap a single player's contribution at 35 points, even if they receive multiple yellows followed by a straight red.
+        <br /><br />
+        <strong>Technical Tip:</strong>
+        <br />
+        Always check the specific bookmaker's "Settlement Rules." Cards shown to substitutes (not on the pitch) or coaching staff traditionally contribute <strong>zero points</strong> to the total. Ignoring these nuances can lead to a "Winning Loss" during settlement.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
     id: 'conclusion', 
-    title: 'Conclusion', 
-    content: "Booking points might not grab as much attention as goals or winners, but it’s one of the smartest markets out there if you know what to look for. It’s less about who scores and more about how the game is played.\n\nFocus on heated matchups, keep an eye on strict referees, and don’t overlook first-half cards. The better your preparation, the better your chances of outsmarting the bookmakers.",
+    title: 'Mastering the Whistle', 
+    content: (
+      <>
+        Booking Points allow you to monetize the psychological state of a match. It is the clinical market for analysts who understand that football is played on a spectrum of discipline. Profile your referee, analyze the environment, and quantize the aggression.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
     id: 'faqs', 
-    title: 'FAQs', 
+    title: 'Expert Q&A', 
     content: '',
     advantages: [],
     risks: [],
     faqs: [
       {
-        question: "How to calculate booking points in football?",
-        answer: "Yellow = 10, Red = 25. Two yellows resulting in a red = 35. This cumulative system helps bookmakers create a wider range of betting markets based on match discipline."
+        question: "Does a Straight Red card count as 25 or 35 points?",
+        answer: "A straight red card is almost universally 25 points. The 35-point total only occurs if the player had already received a yellow card (10 points) before being sent off."
       },
       {
-        question: "What are 10 booking points in football?",
-        answer: "10 booking points is the standard value for a single yellow card shown to a player during regular time."
+        question: "Do cards shown after the final whistle count?",
+        answer: "Usually, no. Most markets only settle on cards shown between the kick-off and the end of regular time. Always verify your bookmaker's specific 'Settlement Window'."
       },
       {
-        question: "What does 40+ booking points mean?",
-        answer: "It means the match had high disciplinary action, exceeding 40 points. This could be 5 yellow cards, or 1 red and 2 yellows, or any combination reaching at least 41 points."
+        question: "What is the 'Time of First Booking' market?",
+        answer: "This is a prediction of how early the first 10-point increment (Yellow) will occur. It is highly dependent on the referee's profiling and the match's importance."
       },
       {
-        question: "What does Under 55.5 booking points mean?",
-        answer: "Under 55.5 booking points means that the total disciplinary points in the match must be 55 or fewer. For example, if there are 5 yellow cards (50 points), the bet wins. If there are 6 yellow cards (60 points) or a red card and 4 yellows (65 points), the bet loses."
-      },
-      {
-        question: "What is a booking in football?",
-        answer: "A booking in football occurs when a referee officially records a player's name in their notebook for a foul or misconduct, accompanied by showing a yellow or red card. In booking points markets, these 'bookings' are translated into numerical values (10 for yellow, 25 for red) to create more diverse betting options."
+        question: "How do VAR reviews affect Booking Points?",
+        answer: "VAR can significantly increase the frequency of 25-point red cards. Referees who are frequently called to the screen for 'Violent Conduct' reviews are prime candidates for high-scoring booking matches."
       }
     ]
   }
@@ -122,16 +160,16 @@ export default function BookingPointsPage() {
           <main className="flex-1 min-w-0 order-2 lg:order-1">
             <header className="mb-12">
               <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-8 tracking-tight leading-[1.1]">
-                Booking Points <span className="text-brand-emerald">Guide</span>
+                Booking Points <span className="text-brand-emerald">Masterclass</span>
               </h1>
               
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
-                  <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6">
-                    Football betting isn’t just about picking winners anymore. Niche markets like booking points can give you a serious edge, especially once you start reading how teams react in high-stakes situations.
+                  <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
+                    "Booking points are the mathematical quantization of aggression—monetizing the psychological state of a match."
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    This <span className="text-brand-emerald font-bold">OddinsOdds Academy</span> guide teaches you exactly what booking points are, how they’re calculated, and how to use them to make smarter bets.
+                    In this technical guide, we break down the clinical point hierarchy of disciplinary markets. We analyze the crucial variable of 'Referee Profiling,' identify the specific environmental triggers for '60+ Point Spikes,' and reveal the operational risks of the 35-point 'Double-Yellow' settlement cap.
                   </p>
                 </div>
               </div>

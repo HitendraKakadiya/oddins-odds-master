@@ -8,93 +8,110 @@ import StrategyTOC from '@/components/Academy/StrategyTOC';
 
 const sections = [
   { 
-    id: 'what-is-rollover', 
-    title: 'What is Rollover in Betting?', 
-    content: "Rollover is simply the number of times you need to wager your deposit or bonus before you're allowed to withdraw. Online bookmakers use it to stop you from signing up, grabbing a bonus and cashing out immediately.\n\nLet’s say you deposit $100, and the bookmaker gives you another $100 bonus with a 5x rollover requirement. That means you must wager $1,000 total ($200 × 5) before you can withdraw anything connected to that bonus. It doesn’t matter whether you win or lose along the way - what matters is the total amount staked. That’s why strategy is very important.",
+    id: 'hidden-tax', 
+    title: 'The Hidden Tax of Bonuses: Deciphering Wagering Requirements', 
+    content: (
+      <>
+        In the betting industry, a "bonus" is rarely immediate cash. Instead, it is a liability that must be converted into an asset through a process called <strong>Rollover</strong> (or Wagering Requirements). This is a multiplier—often 5x to 15x—applied to your deposit and bonus amount that determines how much total volume you must bet before a withdrawal is permitted.
+        <br /><br />
+        <strong>The Commitment:</strong>
+        <br />
+        • <strong>Deposit:</strong> $100
+        <br />
+        • <strong>Bonus:</strong> $100
+        <br />
+        • <strong>Rollover (10x):</strong> You must place $2,000 worth of total bets before cashing out.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'why-it-matters', 
-    title: 'Why the Rollover Strategy Matters?', 
-    content: "If you are trying to beat rollover without a proper plan and strategy, you will exhaust your betting budget. But on the other hand, if you treat this as a proper structured system, you can grow your balance by fulfilling the requirements. Rollover betting is less about chasing \"big wins\" and more about playing consistent, controlled bets that keep your budget alive until the rollover is complete.\n\nOnce you’re done, your winnings are yours to withdraw. Here’s the formula you should always keep in mind:\n\n**Total Wager Required = Rollover Multiple × (Deposit + Bonus)**\n\n**Example:**\n• Deposit = $100\n• Bonus = $100\n• Rollover = 5x\n\n**Total wager required = 5 × ($100 + $100) = $1,000**\n\nThis formula works as a simple tracker so that you know how much you need to bet. If you are not keeping a track, then you might realise that you have still not staked the required amount.",
+    id: 'persistence-formula', 
+    title: 'The Persistence Formula: Growth vs. Burn Rate', 
+    content: (
+      <>
+        The key to a successful rollover is managing your <strong>Burn Rate</strong>—the speed at which you lose your initial capital versus the speed at which you complete the wagering target. Your goal is to maximize turnover while minimizing the "house edge" impact on your balance.
+        <br /><br />
+        <strong>Calculation:</strong>
+        <br />
+        Turnover Required = (Deposit + Bonus) × Multiplier
+        <br /><br />
+        If you bet on markets with a 5% house edge, you can expect to "lose" 5% of your turnover. If your bonus is larger than this 5%, the rollover is mathematically profitable.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'rules-to-watch', 
-    title: 'Rules to Watch Before You Start Betting', 
-    content: "Not all bets count equally toward rollover. Bookmakers add some rules and regulations that can trick you if you are not careful. Here are some points you need to keep in mind:\n\n• **Minimum Odds:** Most books require your bets to be above 1.20, 1.30, or 1.50 odds. If you bet on a heavy favourite at 1.05, it may not even count.\n• **Eligible Bet Types:** Single bets usually count. Some sportsbooks exclude acca, cash-outs, or certain markets.\n• **Time Limits:** Some rollovers must be completed within 7 days, others within 30. Rushing often leads to bad bets.\n• **Stakes vs. Winnings:** Some betting sites count the full stake; others only count winnings toward the rollover. Always double-check.",
+    id: 'low-variance-grinding', 
+    title: 'Low-Variance Grinding: Selecting High-Probability Markets', 
+    content: (
+      <>
+        Professional rollover completion is not about "winning big"; it is about <strong>surviving the turnover</strong>. This requires a shift toward low-variance markets that provide high strike rates, even if the individual returns are small.
+        <br /><br />
+        <strong>Optimal Markets:</strong>
+        <br />
+        • <strong>Asian Handicaps (+1.5, +2.0):</strong> Providing significant safety margins for the underdog.
+        <br />
+        • <strong>Over 0.5/1.5 Goals:</strong> Capitalizing on the high statistical probability of goals in modern league football.
+        <br />
+        • <strong>Double Chance (1X or X2):</strong> Covering 66% of the possible match outcomes in a single bet.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'explaining-strategy', 
-    title: 'Explaining the Rollover Strategy', 
-    content: "So, how do you clear the rollover? The trick is to balance safe bets with the odds that qualify. You don’t want to put all your money on risky bets that could wipe out your bankroll, but at the same time, you can’t waste time on bets that don’t even count toward the rollover. The key to this is finding the middle ground.",
+    id: 'minimum-odds-trap', 
+    title: 'The Trap of Minimum Odds: Navigating T&Cs', 
+    content: (
+      <>
+        Bookmakers use <strong>Minimum Odds</strong> requirements to prevent you from betting on "sure things" to clear a bonus. They often require odds between 1.50 and 2.00. Navigating this threshold without taking on unnecessary risk is the core skill of a rollover specialist.
+        <br /><br />
+        <strong>Strategic Tips:</strong>
+        <br />
+        • <strong>Odd-Hunting:</strong> Look for bets exactly at the minimum threshold (e.g., 1.51) to minimize the risk while fulfilling the requirement.
+        <br />
+        • <strong>Time Management:</strong> Don't rush. Use the full 30-day window to find high-value, lower-risk opportunities rather than forcing bad bets to meet a deadline.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'odds-range', 
-    title: 'Choose the Right Odds Range', 
-    content: "### 1.20 Odds Rollover Strategy\nThis is the ultra-safe approach. You stack small favourites or use handicaps like “Over 0.5 goals” or “+2 Asian Handicap.” It’s slow, but you minimise the risk of losing your funds early.\n\n### 1.50 Odds Rollover Strategy\nThis gives you a higher return. For example, betting on a team to win but with a double chance betting market (home win or draw) often falls around 1.45-1.55. It keeps the risk manageable while moving you faster through the rollover.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'track-every-bet', 
-    title: 'Track Every Bet', 
-    content: "Imagine you've got a $500 rollover target. You've placed $400 worth of bets, but you lose track and think you're finished. You try to withdraw, only to see the money locked. That frustration can demotivate you and might lead to a bad bet. Keep a simple tracker:\n\n• Total rollover target\n• Amount staked so far\n• Balance left to play",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'pick-correct-market', 
-    title: 'Pick the Correct Market', 
-    content: "Picking the right betting market means as much as the odds. The best rollover bets that you can give it a shot at are:\n\n• Over 0.5 goals (almost guaranteed unless you’re betting very late in a match)\n• Asian handicaps like +1.5 or +2\n• Double chance on strong favourites\n• Tennis set betting (top players to win at least a set often fall in safe ranges)\n\nAvoid long parlays or props like first goalscorer. They may hit once in a while, but you can’t build a steady rollover with them.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'mistakes-to-avoid', 
-    title: 'Mistakes to Avoid', 
-    content: "Even the best of strategies can fail. A single bad decision or overlooking rules and regulations could cost you badly. Let’s check the avoidable mistakes:\n\n• **Chasing Losses:** If you are trying to double your bets after a loss, that’s a bad strategy. Don’t do it.\n• **Ignoring the Odds Requirement:** A 1.05 odds bet on Barcelona’s win won’t count if the minimum is 1.20. Always double-check the wagering requirements.\n• **Overloading Your Betting Slip:** Trying to bet five or six games or markets simultaneously can be tempting, but it could end up being shocking as well. Don’t overbet.\n• **Underestimating the Deadline:** Don’t accept a bonus with a 7-day rollover if you can’t realistically meet it. Go for a 15-day or 30-day instead.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'advanced-tips', 
-    title: 'Advanced Tips for Rollover Strategy', 
-    content: "Once you have understood the basics of rollover strategy, you can take one step further. These extra tips can help you finish the rollover faster and keep your money safer while you are betting.\n\n• **Use Multiple Sports:** Don’t just rely on football. Also bet on tennis, basketball, and esports, which also have steady odds of 1.50-1.75.\n• **Live Betting Opportunities:** Sometimes, live odds are perfect to make the most of the wagering requirements. You can easily find markets like over 0.5 goals around 1.50 around the 40-minute mark.\n• **Cash-Out (If Allowed):** If your bookmaker counts the stake toward rollover even with cash-outs, you can use it strategically and make the most of it.\n• **Don’t Get Excited:** Rollover betting might give you adrenaline pump, but it's not about getting excited. It's about being calm and consistent.",
-    advantages: [],
-    risks: []
-  },
-  {
-    id: 'final-thoughts',
-    title: 'Final Thoughts',
-    content: "The rollover strategy is one of the smartest ways to turn betting bonuses into real profits, but only if you approach it with discipline and patience. Instead of seeing rollover as a hurdle, think of it as a structured plan that keeps your betting controlled. By using safe odds like 1.20 or 1.30, you can steadily make progress, or by using 1.50 odds, you can make faster progress.\n\nThis can give you the best chance to complete any betting rollover requirement without blowing your bankroll. The key is to place qualifying bets consistently. In addition to that, track your betting slips and don’t make a risky bet to overcome losses. If you keep all the above points in mind, you will stop thinking of rollover as a hurdle and will consistently build profits.",
+    id: 'conclusion', 
+    title: 'Strategic Liquidity', 
+    content: (
+      <>
+        A bonus should be viewed as an illiquid asset. Through a disciplined rollover strategy, you are performing an <strong>Asset Conversion</strong>. By treating the process with the same rigor as a financial audit, you turn "stuck" bonus credits into spendable profit.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
     id: 'faqs', 
-    title: 'FAQs', 
+    title: 'Expert Q&A', 
     content: '',
     advantages: [],
     risks: [],
     faqs: [
       {
-        question: "How do do rollover in betting?",
-        answer: "By placing strategic, consistent bets that meet the bookmaker's minimum odds and eligible market requirements until the total wagering target is reached."
+        question: "Can I use 'Cash Out' to clear my rollover?",
+        answer: "Usually, no. Most bookmakers exclude 'cashed-out' bets from counting toward the rollover target. Always Read the terms and conditions specifically for 'settled' bet requirements."
       },
       {
-        question: "How to calculate a rollover?",
-        answer: "Use the formula: Total Wager Required = Rollover Multiple × (Deposit + Bonus)."
+        question: "What happens if my balance hits zero during a rollover?",
+        answer: "If your balance reaches zero, the rollover requirement is typically considered 'null' or cleared. However, some books may apply it to your *next* deposit, so verify if the rollover is 'reset' after a loss."
       },
       {
-        question: "What is the most profitable betting strategy?",
-        answer: "While profits vary, a structured rollover strategy using safe odds (1.20-1.50) is one of the most reliable ways to convert bonus funds into withdrawable cash."
+        question: "Is it better to place one big bet or many small ones?",
+        answer: "Smaller, consistent bets are always better. They distribute the risk and prevent a single 'bad beat' from wiping out your entire capital before you've reached even 10% of the target."
+      },
+      {
+        question: "Does betting on both sides of a game count?",
+        answer: "No. Bookmakers explicitly ban 'opposite betting' (e.g., betting on both Over and Under 2.5) to clear rollover. This will likely lead to your account being closed and funds confiscated."
       }
     ]
   }
@@ -167,16 +184,16 @@ export default function RolloverStrategyPage() {
           <main className="flex-1 min-w-0 order-2 lg:order-1">
             <header className="mb-12">
               <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-8 tracking-tight leading-[1.1]">
-                Rollover Strategy <span className="text-brand-emerald">Guide</span>
+                Rollover <span className="text-brand-emerald">Masterclass</span>
               </h1>
               
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
-                  <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6 italic">
-                    "When you first hear the word 'rollover' in betting, it can sound confusing. But if you want to make money from betting sites, you need to know what it means."
+                  <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
+                    "Rollover is the price of admission for bookmaker bonuses. Clearing it requires the patience of an auditor and the strategy of a risk manager."
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    Rollover is a kind of barrier that stops you from withdrawing your bonus right away. The good news is, with the right plan, that barrier becomes more like a set of steps, you just climb them one by one until you can finally cash out real money. In this OddinsOdds Academy guide, we will talk about rollover strategy in detail.
+                    Most bettors see rollover as an impossible hurdle. We see it as a liquidity conversion task. In this masterclass, we explore high-probability turnover strategies, the math of 'Burn Rates,' and how to navigate the complex T&Cs that bookmakers use to protect their capital.
                   </p>
                 </div>
               </div>

@@ -8,83 +8,128 @@ import StrategyTOC from '@/components/Academy/StrategyTOC';
 
 const sections = [
   { 
-    id: 'what-is-losing-streak', 
-    title: 'What Is a Losing Streak in Betting?', 
-    content: "A losing streak is a run of consecutive bets that end in losses. For example, if you place five bets in a row and all five lose, you are experiencing a five-bet losing streak. This can be frustrating, but it is a normal part of betting - even the best bettors go through losing streaks because sports outcomes are unpredictable.\n\nLosing streaks happen mainly because of:\n\n• **Variance:** Variance means the natural ups and downs in sports results. Even bets that are likely to win can lose several times in a row.\n• **Sample Size:** In betting, short runs of losses or wins happen regularly; it's only over a large number of bets that you see your true performance.\n• **Mistakes:** Mistakes happen when you make bad betting choices or don't follow your plan, which can make losing streaks worse.\n• **External Factors:** External factors like injuries, referee calls, or weather changes can affect game results in ways you can't predict.",
+    id: 'anatomy-of-a-slump', 
+    title: 'The Anatomy of a Slump: Beyond Bad Luck', 
+    content: (
+      <>
+        A losing streak isn't just a series of unfortunate events; it's a mathematical certainty in the world of high-volume betting. Whether you're a seasoned pro or a recreational bettor, understanding that streaks are a natural byproduct of variance—not a sign of failure—is the first step toward professional resilience.
+        <br /><br />
+        Losing streaks are often driven by:
+        <br /><br />
+        <ul className="space-y-2">
+          <li>• <strong>Statistical Variance:</strong> The natural ebb and flow of probability.</li>
+          <li>• <strong>Sample Size Bias:</strong> Small clusters of losses are common in the short term.</li>
+          <li>• <strong>Market Shifts:</strong> Changes in how bookmakers price certain variables.</li>
+          <li>• <strong>Execution Errors:</strong> Slippage in your own betting discipline or analysis.</li>
+        </ul>
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'recognising-signs', 
-    title: 'Recognising the Signs of a Losing Streak', 
-    content: "It's important to recognise early signs that a losing streak is beginning so you can take action before things get worse. Being aware of these warning signals helps you stay in control, avoid bigger losses, and make smarter decisions to protect your bankroll and mindset.\n\nSome common signs to watch for include:\n\n• Losing several bets one after another in a short time.\n• Feeling more upset or emotional because of the losses.\n• Making quick or bigger bets, trying to win back what you lost.\n• Changing your normal betting plan or how you manage your money.",
+    id: 'math-of-variance', 
+    title: 'The Math of Variance: The Monte Carlo Fallacy', 
+    content: (
+      <>
+        Many bettors fall into the 'Gambler's Fallacy'—believing that because they've lost five in a row, a win is 'due.' In reality, every event is independent. We use standard deviation to calculate the 'Expected Maximum Drawdown,' which helps you prepare for the reality that a 10-loss streak is statistically inevitable over a 1,000-bet sample size.
+        <br /><br />
+        Consider the probabilities:
+        <br />
+        • Even with a 55% win rate (a professional edge), the chance of hitting a 7-bet losing streak in a 500-bet sample is nearly 60%.
+        <br />
+        • Higher odds (underdogs) dramatically increase the frequency and length of these streaks.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'how-long-can-streaks-last', 
-    title: 'How Long Can Losing Streaks Last?', 
-    content: "When it comes to losing streaks in sports betting, there's no fixed duration. The length of a losing streak can vary widely based on several factors, including the type of bets you place, the odds involved, and pure luck.\n\nLet's break down the math behind losing streaks to help you see why they happen and how long they might last:\n\n• If you place bets with a 50% chance of winning, like betting on a coin toss or a 50/50 sports outcome, the probability of losing 1 bet is 50%.\n• The probability of losing 2 bets in a row is 0.5 × 0.5 = 25%.\n• The chance of losing 3 bets consecutively is 0.5 × 0.5 × 0.5 = 12.5%.\n\nThis means that even if you make bets with a fair 50/50 chance, losing streaks of 3 or more bets happen relatively often, roughly 1 out of every 8 times.\n\nMeanwhile, losing streaks of 5, 7, or even 10 bets are less common, but possible. As the length of the streak increases, the probability decreases, but it never drops to zero. For example:\n\n• Losing 5 bets in a row at 50% odds has about a 3% chance of happening (0.5^5 = 0.03125).\n• Losing 10 bets in a row is about a 0.1% chance (0.5^10 = 0.0009765625).\n\nWhile rare, longer losing streaks can and do happen, especially over a larger number of bets.",
+    id: 'psychological-trap', 
+    title: 'The Psychological Trap: Mastering "Tilt"', 
+    content: (
+      <>
+        The greatest danger of a losing streak isn't the financial loss—it's the psychological 'tilt.' When emotions take over, bettors often deviate from their proven models, increase stake sizes to 'break even,' or bet on unfamiliar markets. Mastering your mindset is what separates the winners from the bankrupt.
+        <br /><br />
+        Watch for these 'Tilt' triggers:
+        <br />
+        • <strong>Revenge betting</strong> immediately after a loss.
+        <br />
+        • Feeling 'cheated' by late goals or referee decisions.
+        <br />
+        • Obsessively checking scores of games you didn't even bet on.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'impact-high-odds', 
-    title: 'Impact of High Odds on Losing Streaks', 
-    content: "The odds of your bets play a huge role in the length and frequency of losing streaks. High odds bets (say odds of 3.00 or higher) are riskier and less likely to win, meaning the chance of losing multiple bets in a row increases.\n\nFor example, If you place bets with a 30% chance of winning (which corresponds to odds around 3.0), the chance of losing 3 bets consecutively is 0.7 × 0.7 × 0.7 = 34.3%. That’s more than 1 in 3 times.\n\nThis means when you chase big payouts with high odds, you should be prepared for potentially longer and more frequent losing streaks.",
+    id: 'survival-tactics', 
+    title: 'Tactical Survival: The "Stake Down" Strategy', 
+    content: (
+      <>
+        When a streak hits, the best defense is a strategic retreat. Instead of chasing, professional bettors often 'Stake Down'—reducing their unit size (e.g., from 2% to 0.5% of their bankroll). This preserves capital while you wait for the variance to normalize, ensuring you stay in the game long enough for your edge to manifest again.
+        <br /><br />
+        <strong>Key Survival Rules:</strong>
+        <br />
+        • <strong>Never</strong> increase stakes to recover losses.
+        <br />
+        • <strong>Lower</strong> your unit size during high-variance periods.
+        <br />
+        • <strong>Set</strong> a hard 'Stop-Loss' limit for the day or week.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'role-bankroll-management', 
-    title: 'The Role of Bankroll Management During Losing Streaks', 
-    content: "One of the most important factors in surviving losing streaks is betting bankroll management. This means allocating only a small portion of your total betting funds on any one bet, so losing streaks don't wipe you out.\n\nHere are some points you should keep in mind:\n\n• **Bet a fixed percentage of your bankroll** (for example, 1-3%) rather than fixed amounts.\n• **Avoid increasing bet sizes to chase losses** - this usually leads to bigger losses.\n• **Set loss limits** (daily or weekly) to avoid spending more than you can afford.\n• **Adjust bet sizes if your bankroll shrinks**, to protect what remains.\n\nManaging your betting wallet well helps you bet longer and lowers the stress when you go through losing streaks.\n\nRead more in our Bankroll Management guide.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'financial-impact', 
-    title: 'How a Losing Streak Can Affect You Financially', 
-    content: "Imagine you start with a $1,000 bankroll and bet 2% ($20) per bet on average odds of 2.0. You expect to win about 50% of your bets over the long term.\n\nIf you hit a 5-bet losing streak (losing $100 total), your bankroll reduces to $900. If you continue betting 2%, your stake drops to $18, which limits further losses while allowing recovery.\n\nBut if instead you chase losses and increase bets to $40 or $50, you risk depleting your bankroll quickly. This example shows why sticking to bankroll management during losing streaks is critical.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'avoiding-streaks', 
-    title: 'Can Losing Streaks Be Avoided?', 
-    content: "When you bet on sports, you might wonder if it's possible to avoid losing streaks altogether. The simple answer is no, not a single system or betting strategy can stop losing streaks completely.\n\nThat's because sports are unpredictable and affected by many things you can't control, like how players perform, the weather, referee calls, and just plain luck. However, while you can't prevent losing streaks entirely, you can reduce how often they happen and, more importantly, limit their impact on your bankroll and overall betting success.\n\nHere's how:\n\n• **Focus on value bets** with positive expected value to increase your chances of long-term profit.\n• **Avoid high-risk bets** with poor odds that often lead to longer losing streaks.\n• **Continuously research** and improve your betting strategy to make smarter decisions.\n• **Practice strict bankroll discipline** by betting only a small percentage of your funds per wager.",
+    id: 'road-to-recovery', 
+    title: 'The Road to Recovery: Audit and Restart', 
+    content: (
+      <>
+        A losing streak is the best time for a rigorous audit. Was it bad luck, or has the market moved against your model? Review every bet placed during the streak. If the logic holds, stay the course. If not, pivot. Sometimes, the most profitable move you can make is taking a three-day break to reset your perspective.
+        <br /><br />
+        <strong>Audit Checklist:</strong>
+        <br />
+        • Did I follow my pre-defined criteria for every bet?
+        <br />
+        • Is my closing line value (CLV) still positive?
+        <br />
+        • Am I making decisions based on data or desperation?
+      </>
+    ),
     advantages: [],
     risks: []
   },
   {
     id: 'conclusion',
-    title: 'Conclusion',
-    content: "Even though you can't fully avoid losing streaks in betting because sports are unpredictable, you can lower how often and how badly they happen.\n\nBy choosing bets with good value, avoiding risky bets, always working to improve your strategy, and carefully managing your money, you protect your bankroll and boost your chances of winning over the long run despite ups and downs.",
+    title: 'Resilience as a Strategy',
+    content: "Winning bettors aren't those who never lose—they're those who lose better. By accepting variance, managing emotions, and strictly adhering to bankroll discipline, you turn a losing streak from a crisis into a routine part of your professional evolution. Remember: the long run is much longer than most people think.",
     advantages: [],
     risks: []
   },
   { 
     id: 'faqs', 
-    title: 'FAQs', 
+    title: 'Expert Q&A', 
     content: '',
     advantages: [],
     risks: [],
     faqs: [
       {
-        question: "How to handle a losing streak?",
-        answer: "The best way is to stay disciplined. Stick to your bankroll plan, take a break if needed, and re-evaluate your betting model without chasing losses."
+        question: "Can a losing streak be a sign of a bad model?",
+        answer: "Yes. If the streak exceeds your calculated 'Max Drawdown' based on historical data, or if your Closing Line Value (CLV) is consistently negative, it's time to re-evaluate your edge."
       },
       {
-        question: "How long can a losing streak last?",
-        answer: "There is no limit. Mathematical variance can lead to 10+ losses in a row even for professional bettors. This is why bankroll management is essential."
+        question: "How do I know when to stop?",
+        answer: "Stop immediately if you find yourself betting out of anger, or if you've hit your pre-defined 'Stop-Loss' limit. Professionalism is knowing when the edge has vanished."
       },
       {
-        question: "Do 90% of gamblers quit before they win?",
-        answer: "While often cited as a motivation quote, it highlights a truth: many quit due to poor bankroll management during a normal losing streak."
+        question: "Is it better to follow a streak or go against it?",
+        answer: "Neither. Statistics show that 'streaks' in independent events don't influence future outcomes. Always bet based on value and probability, not recent history."
       },
       {
-        question: "Is there any skill in gambling?",
-        answer: "Yes. Identifying 'value' (when odds are higher than true probability) is a skill that separates successful bettors from those relying on luck."
+        question: "How can I stay calm during a 10-bet loss?",
+        answer: "Focus on the process, not the outcome. If your analysis was correct and you achieved good value, consider the loss a 'cost of doing business' rather than a personal failure."
       }
     ]
   }
@@ -157,16 +202,16 @@ export default function LosingStreaksPage() {
           <main className="flex-1 min-w-0 order-2 lg:order-1">
             <header className="mb-12">
               <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-8 tracking-tight leading-[1.1]">
-                Understanding <span className="text-brand-emerald">Losing Streaks</span>
+                Mastering the <span className="text-brand-emerald">Losing Streak</span>
               </h1>
               
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
-                  <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6 italic">
-                    "Going through a losing streak in betting is something you will face at some point. Whether you are just starting or have been betting for a long time, losing several times in a row can feel frustrating."
+                  <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
+                    "Variance is not your enemy; it's the environment in which an edge thrives. Learning to survive a slump is what defines a professional bettor."
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    But if you learn why these losing streaks happen and use smart ways to handle them, you can get through tough times and become stronger as a bettor. In this OddinsOdds Academy article, we will talk about how to overcome a losing streak in betting.
+                    In this deep dive, we move beyond the basics of "bad luck." We explore the mathematics of variance, the psychology of tilt, and the tactical retreats necessary to protect your bankroll. Welcome to the OddinsOdds Academy masterclass on resilience.
                   </p>
                 </div>
               </div>

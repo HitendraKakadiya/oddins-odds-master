@@ -8,65 +8,114 @@ import StrategyTOC from '@/components/Academy/StrategyTOC';
 
 const sections = [
   { 
-    id: 'what-is-bankroll', 
-    title: 'What Is Bankroll in Betting?', 
-    content: "Before we get into the strategies, let's clarify the term. Your bankroll in sports betting is the total amount of money you have set aside specifically for placing bets. It's separate from your everyday finances and should be money you can afford to lose without impacting your lifestyle.\n\nThink of your bankroll as your \"betting budget.\" Whether you're a casual bettor or someone who bets professionally, managing this budget is the cornerstone of sustainable betting.",
+    id: 'capital-preservation', 
+    title: 'The Capital Preservation Mindset: Betting as an Asset Class', 
+    content: (
+      <>
+        Professional betting is not about "winning a match"; it is about <strong>risk management</strong>. Your bankroll is your inventory. Without it, you cannot trade in the betting markets. Bankroll management is the systematic process of protecting that inventory against the statistical inevitability of variance.
+        <br /><br />
+        <strong>The Golden Rules:</strong>
+        <br />
+        • <strong>Isolation:</strong> Your bankroll must be separate from your life savings.
+        <br />
+        • <strong>Emotional Neutrality:</strong> Money on the table is already "lost"—you are simply managing its turnover.
+        <br />
+        • <strong>Capital Preservation:</strong> The priority is to avoid "The Zero"—the point where you can no longer place a value bet.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'why-important', 
-    title: 'Why Is Bankroll Management Important?', 
-    content: "When you jump into sports betting without managing your bankroll, it's easy to burn through all your funds fast. Here's why you need to manage your bankroll well:\n\n• **You avoid ruin:** Without a plan, a few unlucky bets can wipe out everything you've put in.\n• **You reduce emotional decisions:** Having a betting strategy stops you from chasing losses or betting on impulse.\n• **You enable long-term growth:** Managing your funds let you build your bankroll steadily instead of risking it all at once.\n• **You improve discipline:** It keeps you sticking to your strategy and staying patient through ups and downs.\n\nIn short, good bankroll management helps you stay in the game longer and boosts your chances of becoming a winning bettor.",
+    id: 'unit-system', 
+    title: 'The Unit System: Standardizing Risk Across Markets', 
+    content: (
+      <>
+        Betting arbitrary amounts is the fastest route to ruin. Professionals use a <strong>Unit System</strong>, where 1 Unit represents a small, fixed percentage of their total bankroll (typically 1-2%).
+        <br /><br />
+        <strong>Standardized Sizing:</strong>
+        <br />
+        • <strong>1 Unit (1%):</strong> Standard confidence/value bet.
+        <br />
+        • <strong>3 Units (3%):</strong> High-conviction edge (Rare).
+        <br />
+        • <strong>0.5 Units (0.5%):</strong> Speculative "Long Shot" or experimental market.
+        <br /><br />
+        By using units, you ensure that no single "bad beat" can significantly damage your long-term growth.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'how-to-manage', 
-    title: 'How to Manage Your Bankroll?', 
-    content: "Here are the core principles that form the foundation of effective betting bankroll management:\n\n• **Set a Fixed Bankroll Amount:** Decide on a specific amount of money solely for betting. This should be an amount you are comfortable risking entirely. Avoid using emergency funds or money meant for bills.\n• **Use a Unit System for Bets:** Rather than betting arbitrary amounts, use units. A unit is a small percentage of your total bankroll, commonly between 1% to 5%. For example, if your bankroll is $1,000 and you decide a unit is 2%, each unit bet will be $20.\n  - Control losses by limiting bet size.\n  - Standardise your bets, making tracking easier.\n  - Prevent emotional betting by sticking to a plan.\n• **Bet a Consistent Percentage Per Wager:** Your bet size should reflect your confidence, but always remain within your unit size limits. Many pros recommend betting between 1% and 3% of your bankroll per bet. You can also change the units you bet based on the risk of the bet you place.\n• **Avoid Chasing Losses:** If you lose a bet, don't increase your stake to recover quickly. This behaviour, called \"chasing losses,\" can rapidly drain your bankroll. Stick to your units and strategy.\n• **Adjust Your Unit Size with Bankroll Changes:** As your bankroll grows or shrinks, recalculate your unit size. If your bankroll increases to $1,200, and your unit is 2%, your new unit size is $24. Likewise, if it drops to $800, your unit drops to $16.",
+    id: 'variance-downswing', 
+    title: 'Variance and the "Downswing": Protecting Your Mental Edge', 
+    content: (
+      <>
+        Even a 60% strike-rate bettor has a 5% chance of suffering <strong>10 consecutive losses</strong> at some point in their career. This is variance. Bankroll management provides the buffer needed to survive these mathematical slumps without going broke.
+        <br /><br />
+        <strong>The Psychology of the Slump:</strong>
+        <br />
+        • <strong>Resist the Chase:</strong> Never increase stakes to "win back" losses.
+        <br />
+        • <strong>Trust the Volume:</strong> If your edge is mathematically proven, profit will arrive over thousands of bets, not tens.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'strategies', 
-    title: 'Different Bankroll Management Strategies', 
-    content: "You can adopt different bankroll management systems depending on your risk tolerance and betting style:\n\n• **Flat Betting:** The simplest and safest method is flat betting - wagering the same unit size every time, regardless of confidence. This keeps your risk steady but may limit growth if you have strong edges.\n• **Percentage Betting:** This is betting a fixed percentage of your current bankroll on each bet. It automatically scales your bet size up or down based on your bankroll performance. This method reduces risk but can result in very small bets after a losing streak.\n• **Kelly Criterion:** The Kelly Criterion is a mathematical formula to calculate the optimal bet size based on your estimated edge and odds. It maximises growth but requires accurate predictions of your edge, which can be difficult. For example, if you estimate a 5% edge and the odds imply a 4% edge, Kelly suggests betting about 1% of your bankroll. Kelly bets can be aggressive, so you must use a \"fractional Kelly\" approach, betting half or a quarter of the Kelly amount.\n\nFor example, if you start with a $1,000 bankroll and decide to bet 2% per wager, you'd place $20 bets. If you maintain a 55% win rate over 10 bets with average odds around 2.0, your bankroll could grow to about $1,100. At that point, you would adjust your unit size to $22, which is 2% of your new bankroll.\n\nBy consistently betting the same percentage and resisting the urge to increase your stakes after losses, you protect your bankroll from big swings and set yourself up for steady growth, even during losing streaks.",
+    id: 'operational-hygiene', 
+    title: 'Operational Hygiene: Tracking, Auditing, and Recalibrating', 
+    content: (
+      <>
+        You cannot manage what you do not measure. A professional bankroll workflow requires meticulous tracking and a monthly "audit" of your performance data.
+        <br /><br />
+        <strong>Audit Checklist:</strong>
+        <br />
+        • <strong>ROI Tracking:</strong> What is your Return on Investment per unit?
+        <br />
+        • <strong>Market Analysis:</strong> Are you more profitable in Over/Under than Match Results?
+        <br />
+        • <strong>Unit Realignment:</strong> If your bankroll grows by 20%, increase your unit value proportionately. If it drops, scale down to protect the core capital.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'tips-for-success', 
-    title: 'Bankroll Management Tips for Sports Betting Success', 
-    content: "Here are practical bankroll management tips to keep you disciplined and profitable:\n\n• **Never Bet More Than You Can Afford to Lose:** Only use disposable income for betting. Treat your bankroll as entertainment money.\n• **Keep Records of Your Bets and Bankroll:** Track every bet, amount wagered, odds, and result. This helps you evaluate your performance and adjust your strategy.\n• **Set Win and Loss Limits:** Decide on a profit goal or loss limit for each session or month. For example, stop betting for the day after winning 10% of your bankroll or losing 5%.\n• **Don’t Increase Your Stake After Wins or Losses:** Stick to your unit size regardless of streaks to avoid risking too much during hot streaks or trying to recover losses quickly.\n• **Use Multiple Bookmakers to Get the Best Odds:** Maximise value by shopping around for the best odds, which improves your long-term profitability without increasing risk.\n• **Review and Adjust Your Bankroll Management Regularly:** As your bankroll changes or if your betting style evolves, revisit your unit size and strategy. We advise doing this at least once a month.",
-    advantages: [],
-    risks: []
-  },
-  {
-    id: 'conclusion',
-    title: 'Conclusion',
-    content: "To sum it up, effective bankroll management in sports betting is about protecting your funds, betting consistently within your means, and making data-driven decisions.\n\nRemember to define your bankroll separately from your finances and determine your unit size before you start betting. Don't chase losses and make sure to adjust your unit size based on your bankroll regularly.\n\nBy following these bankroll management tips, you give yourself the best chance to enjoy sports betting as a sustainable and profitable activity rather than a losing gamble.",
+    id: 'conclusion', 
+    title: 'The Foundation of Success', 
+    content: (
+      <>
+        In the betting world, math trumps sports knowledge every time. Bankroll management is the mathematical shield that allows you to stay in the game long enough for your edge to manifest. Without it, you are not a bettor—you are a guest donor to the bookmakers.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
     id: 'faqs', 
-    title: 'FAQs', 
+    title: 'Expert Q&A', 
     content: '',
     advantages: [],
     risks: [],
     faqs: [
       {
-        question: "What is bankroll management?",
-        answer: "It is the structured process of managing your betting funds to protect your capital, minimize risk, and maximize long-term profit potential."
+        question: "Is 'Flat Betting' better than 'Proportional Sizing'?",
+        answer: "Flat betting is more conservative and safer for beginners. Proportional sizing (betting a % of the *current* balance) allows for faster bankroll growth during winning streaks but requires more discipline during losses."
       },
       {
-        question: "What is 1% of bankroll?",
-        answer: "If your total betting budget (bankroll) is $1,000, 1% would be $10. This is often recommended as a safe base unit size."
+        question: "How large should my bankroll be?",
+        answer: "Large enough that a 1% unit bet is meaningful to you, but small enough that losing the entire amount wouldn't impact your ability to pay rent or bills. For beginners, $500 - $1,000 is a standard starting point."
       },
       {
-        question: "What is the 1 3 2 6 method?",
-        answer: "The 1-3-2-6 system is a positive progression betting strategy where you increase your stakes after wins in a specific sequence (1 unit, then 3, then 2, then 6) before resetting."
+        question: "What is the biggest mistake in bankroll management?",
+        answer: "Speculative 'Accas' or 'Parlays'. Adding multiple legs to a bet exponentially increases the house edge and is the leading cause of bankroll drainage for recreational bettors."
+      },
+      {
+        question: "When should I withdraw my profits?",
+        answer: "Ideally, only after you have reached a significant milestone (e.g., doubling your bankroll). Constant withdrawals prevent the power of compound interest from growing your unit size effectively."
       }
     ]
   }
@@ -139,16 +188,16 @@ export default function BankrollManagementPage() {
           <main className="flex-1 min-w-0 order-2 lg:order-1">
             <header className="mb-12">
               <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-8 tracking-tight leading-[1.1]">
-                Bankroll <span className="text-brand-emerald">Management</span> Guide
+                Bankroll <span className="text-brand-emerald">Masterclass</span>
               </h1>
               
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
-                  <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6 italic">
-                    "If you want to succeed in sports betting, understanding bankroll management is essential. Without a solid strategy, even the best knowledge can't save you from losing all your money."
+                  <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
+                    "Strategy without capital management is just an expensive hobby. Protecting your bankroll is the first and most important law of professional betting."
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    This OddinsOdds Academy article dives deep into what bankroll is in betting, why bankroll management matters, and practical tip to help you protect your funds and maximise your profit potential.
+                    In this definitive guide, we move beyond basic 'budgeting' to explore the mathematics of capital preservation. We cover unit standardisation, the psychology of variance, and the operational hygiene required to treat your betting as a high-performance asset class.
                   </p>
                 </div>
               </div>

@@ -8,90 +8,110 @@ import StrategyTOC from '@/components/Academy/StrategyTOC';
 
 const sections = [
   { 
-    id: 'what-is-kelly-criterion', 
-    title: 'What Is the Kelly Criterion?', 
-    content: "John L. Kelly Jr. introduced the Kelly Criterion in 1956 as a mathematical formula for determining how much to invest in a specific asset to grow wealth over time. However, the concept soon found applications in sports betting and casino games.\n\nWhen applied to betting, the Kelly Criterion tells you how much of your bankroll you should stake if you have an edge. The main aim is to grow your money steadily over time while keeping the risk of losing it as low as possible.\n\nIn simple terms:\n\n• Kelly tells you the exact amount for each bet to maximise long-term growth.\n• It prevents you from betting too much and going broke.\n• It also stops you from betting too little and missing out on potential growth.\n\nLike many betting strategies, the Kelly Criterion is not foolproof. The calculation is extremely sensitive to your input probability. As a result, overestimating your edge can lead to losses.",
+    id: 'gold-standard', 
+    title: 'The Gold Standard of Risk: Balancing Edge and Bankroll', 
+    content: (
+      <>
+        The Kelly Criterion is widely considered the "Holy Grail" of money management. Developed by John Kelly in 1956, it is a mathematical formula designed to determine the optimal size of a series of bets to maximize the logarithm of wealth. In simpler terms, it finds the exact point where you bet enough to grow your bankroll as fast as possible without ever risking a total wipeout.
+        <br /><br />
+        <strong>The Kelly Mandate:</strong>
+        <br />
+        • <strong>Growth Maximization:</strong> It compounds your winnings more efficiently than any other system.
+        <br />
+        • <strong>Mathematical Safety:</strong> Theoretically, you can never go bust because your stake is always a percentage of your *current* balance.
+        <br />
+        • <strong>Dynamic Calibration:</strong> Your bet sizes automatically shrink during losing streaks and expand during winning runs.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'the-formula', 
-    title: 'The Kelly Criterion Formula', 
-    content: "The Kelly Criterion formula finds the sweet spot between risk and reward. When you overbet, you are at risk of losing your entire bankroll. At the same time, a stake that is too low will limit your bankroll growth.\n\nWith this formula, you can achieve an exponential increase in your bankroll over time, provided you get your estimates right. The formula for Kelly Criterion is:\n\n**f* = p - (q / b)**\n\nWhere:\n\n• **f*** = fraction of your bankroll to bet (Kelly percentage)\n• **p** = probability of winning (your estimate)\n• **q** = probability of losing = 1 - p\n• **b** = \"to-1\" odds (how much profit per unit stake, e.g., 2.0 odds = 1.0b)",
+    id: 'formula-of-ambition', 
+    title: 'The Formula of Ambition: Calculating the Optimal Stake', 
+    content: (
+      <>
+        The formula calculates the fraction of your bankroll (f*) you should wager based on your perceived edge.
+        <br /><br />
+        <strong>The Formula: f* = (bp - q) / b</strong>
+        <br /><br />
+        • <strong>b:</strong> The decimal odds minus 1 (e.g., 2.0 odds = 1.0b).
+        <br />
+        • <strong>p:</strong> Your estimated probability of winning (e.g., 55% = 0.55).
+        <br />
+        • <strong>q:</strong> Your probability of losing (1 - p).
+        <br /><br />
+        If the result is zero or negative, the formula is telling you that the bet has no value and should be avoided entirely.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'step-by-step', 
-    title: 'How to Calculate the Kelly Criterion Step-by-Step?', 
-    content: "Understanding the formula is one thing, but applying it correctly is an entirely different matter. We have broken down the process using easy-to-understand examples.\n\n**Example: Palmeiras (3.10) vs. Flamengo (1.85)**\nFor this bet option, we are backing Flamengo (1.85) to win due to their recent form. Here is how we use the formula:\n\n**Step 1: Convert Odds to profit per unit stake (b)**\nCalculate the unit per stake: b = 1.85 - 1 = **0.85**\n\n**Step 2: Estimate Probability of Winning (p)**\nDetermine the winning chances based on your research. For this example, we estimate Flamengo has a 65% chance: p = 65% / 100 = **0.65**\n\n**Step 3: Calculate Probability of Losing (q)**\nq = 1 - p = 1 - 0.65 = **0.35**\n\n**Step 4: Apply the formula**\nf* = 0.65 - (0.35 / 0.85)\nf* = 0.65 - 0.412\nf* ≈ 0.239 -> **23.9%**\n\nWith a bankroll of $1,000, a **Full Kelly** bet would be **$239**.",
+    id: 'sensitivity-crisis', 
+    title: 'The Sensitivity Crisis: Why Garbage In Equals Garbage Out', 
+    content: (
+      <>
+        The Kelly Criterion’s greatest strength is also its fatal flaw: <strong>Sensitivity</strong>. The formula assumes your probability estimate (p) is 100% accurate. If you believe a team has a 60% chance of winning, but in reality, they only have a 52% chance, the Kelly Criterion will suggest a stake that is far too aggressive, leading to rapid capital depletion.
+        <br /><br />
+        <strong>The Accuracy Requirement:</strong>
+        <br />
+        To use Kelly effectively, you don't just need to be a good bettor—you need to be a master statistician. You must have a proven model that generates winning probabilities more accurately than the bookmaker's market price.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'calculator', 
-    title: 'Kelly Criterion Calculator', 
-    content: "There are two significant ways to calculate the Kelly Criterion. The most traditional way is to use the step-by-step example above and do it manually. On the flip side, you can also use online calculators to save time and reduce mistakes.\n\nMost calculators ask for:\n• Your estimated win probability (p)\n• The decimal odds (converted to b)\n• Whether you want full, half, or quarter Kelly\n\n**Tip:** The calculator is only as good as your 'p' estimate. If you overestimate your edge, you may still lose money despite using the formula.",
+    id: 'fractional-mitigation', 
+    title: 'Fractional Mitigation: Half-Kelly and the Safety Net', 
+    content: (
+      <>
+        Because humans are prone to overconfidence (Overestimation Bias), professional bettors almost never use "Full Kelly." Instead, they use <strong>Fractional Kelly</strong>.
+        <br /><br />
+        <strong>Risk Tiers:</strong>
+        <br />
+        • <strong>Half-Kelly (0.5x):</strong> Betting 50% of what the formula suggests. This dramatically reduces volatility while still capturing 75% of the growth.
+        <br />
+        • <strong>Quarter-Kelly (0.25x):</strong> Betting 25%. This is the "Industry Standard" for professional syndicates, providing a massive safety buffer against model error.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'applying-kelly', 
-    title: 'Applying the Kelly Criterion in Betting', 
-    content: "Applying the Kelly Criterion means matching your analysis with the right level of risk. Let's look at more examples:\n\n**Example 1: Boca Juniors (2.80) vs River Plate (2.00)**\nYou estimate Boca (2.80 odds) has a 50% chance of winning.\n• b = 1.80\n• p = 0.50, q = 0.50\n• f* = 0.50 - (0.50 / 1.80) ≈ 0.223 -> **22.3%**\nFor a $2,000 bankroll: Full Kelly = $446, Half Kelly = $223.\n\n**Example 2: Club Brugge (2.50) vs Anderlecht (1.65)**\nYou estimate Brugge (2.50 odds) has a 55% chance.\n• b = 1.50\n• p = 0.55, q = 0.45\n• f* = 0.55 - (0.45 / 1.50) = 0.25 -> **25% stake**\nFor a $1,000 bankroll: Full Kelly = $250, Half Kelly = $125.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'fractional-kelly', 
-    title: 'Why to Use Fractional Kelly?', 
-    content: "Full Kelly provides the potential for huge payouts but comes with high volatility. That's why fractional Kelly (e.g., half-Kelly or quarter-Kelly) is usually better for sustainable growth.\n\n**Benefits of Fractional Kelly:**\n\n• **Reduces drawdowns**: Helps control your bankroll better during bad streaks.\n• **Margin for error**: Compensates for overly optimistic probability estimates.\n• **Emotional Stability**: Smaller bet sizes are easier to handle mentally during losing streaks.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'tips', 
-    title: 'Tips For Using the Kelly Criterion for Sports Betting', 
-    content: "To get the most out of the Kelly Criterion, follow these expert tips:\n\n1. **Build a reliable model**: Don't guess. Use stats, injuries, and form to derive your 'p' value.\n2. **Avoid Full Kelly**: Unless you have perfect information, half or quarter Kelly is safer.\n3. **Diversify**: Avoid putting too much on a single match even if the formula suggests so.\n4. **Update Bankroll**: Recalculate your stake after every bet based on your current total.\n5. **Be Honest**: The formula works only if your winning probability estimate is accurate.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'pros-cons', 
-    title: 'Pros and Cons of Using the Kelly Criterion', 
-    content: "Like any system, Kelly has its trade-offs. It is widely considered the gold standard for bankroll management, but it requires a high level of discipline and accuracy to be effective.",
-    advantages: [],
-    risks: []
-  },
-  {
-    id: 'conclusion',
-    title: 'Conclusion',
-    content: "The Kelly Criterion is more than just a betting formula; it is a philosophy of risk management. By balancing your edge with the size of your bankroll, you can navigate the volatile waters of sports betting with more confidence and logic. While it's not a shortcut to riches, it is one of the most powerful tools in a professional bettor's arsenal.\n\nStart small, perhaps with a Quarter Kelly, and refine your probability estimation skills. Over time, the math will work in your favor as long as you maintain accuracy and discipline.",
+    id: 'conclusion', 
+    title: 'Clinical Precision', 
+    content: (
+      <>
+        The Kelly Criterion is the bridge between gambling and finance. It transforms a series of sports bets into a high-performance investment portfolio. However, it is a sharp blade that cuts both ways; use it only when you have the data to back up your convictions.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
     id: 'faqs', 
-    title: 'FAQs', 
+    title: 'Expert Q&A', 
     content: '',
     advantages: [],
     risks: [],
     faqs: [
       {
-        question: "Is Kelly Criterion better than Flat Betting?",
-        answer: "Kelly is more aggressive and can grow a bankroll faster, but Flat Betting is much safer for beginners as it doesn't require precise probability estimates."
+        question: "Why is my Kelly percentage so high?",
+        answer: "If the formula suggests 20% or 30%, you likely have a massive discrepancy between your estimate and the bookie's odds. Usually, this means your probability estimate is too optimistic. Re-evaluate your model's accuracy."
       },
       {
-        question: "What happens if the calculation is negative?",
-        answer: "If f* is negative, it means you have no edge over the bookmaker and should avoid the bet entirely."
+        question: "Can I use Kelly for simultaneous bets?",
+        answer: "Yes, but it's complex. If you have 5 matches starting at the same time, you cannot bet 20% on each (100% total bankroll). You must use 'Simultaneous Kelly' which scales the stakes down so the total risk remains manageable."
       },
       {
-        question: "Can I use Kelly for Parlays?",
-        answer: "Yes, but be careful. Probability estimates for multi-leg bets are even more sensitive and prone to error."
+        question: "Is Kelly better than Flat Betting for beginners?",
+        answer: "No. Beginners should stick to Flat Betting (1-2%). Kelly requires a level of probabilistic accuracy that most novice bettors haven't developed yet."
       },
       {
-        question: "How often should I update my bankroll size?",
-        answer: "Ideally, after every bet. The Kelly Criterion is dynamic, so your next stake should be based on your current total bankroll, win or lose."
+        question: "How does commission affect the Kelly formula?",
+        answer: "Commission (on exchanges like Betfair) must be subtracted from the 'b' value. If you have 2.0 odds but pay 2% commission, your true 'b' is 0.98, not 1.0."
       }
     ]
   }
@@ -166,16 +186,16 @@ export default function KellyCriterionPage() {
           <main className="flex-1 min-w-0 order-2 lg:order-1">
             <header className="mb-12">
               <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-8 tracking-tight leading-[1.1]">
-                Kelly Criterion <span className="text-brand-emerald">Strategy</span>
+                Kelly Criterion <span className="text-brand-emerald">Masterclass</span>
               </h1>
               
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
-                  <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6 italic">
-                    "Making the most of your betting money is important if you want to win more often and build your winnings steadily. The Kelly Criterion is a method that can help you do this."
+                  <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
+                    "The Kelly Criterion is the bridge between pure gambling and clinical finance. It determines not just *what* to bet, but exactly *how much* your edge is worth."
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    This OddinsOdds Academy guide explains the betting concept using simple examples. We also reveal how the Kelly calculator works, how to use Kelly Criterion in betting, and common mistakes to avoid.
+                    Used by hedge fund managers and professional gambling syndicates alike, the Kelly Criterion is the ultimate tool for exponential bankroll growth. In this technical guide, we break down the formula, address the 'sensitivity crisis' of probability estimation, and explain why 'Fractional Kelly' is the industry secret for long-term sustainability.
                   </p>
                 </div>
               </div>

@@ -8,87 +8,100 @@ import StrategyTOC from '@/components/Academy/StrategyTOC';
 
 const sections = [
   { 
-    id: 'what-does-ht-ft-mean', 
-    title: 'What Does HT/FT Betting Mean in Football?', 
-    content: "In an HT/FT bet, you are predicting two results within the same game: the result at half-time and the final result at full-time. Both predictions must be correct for your bet to win. In football betting, three possible outcomes exist for each half: Home win (1), Draw (X), or Away win (2).\n\nWhen combined, this gives nine possible HT/FT outcomes:\n\n• **1/1** – Home team leads at half-time and wins at full-time.\n• **1/X** – Home team leads at half-time, match ends in a draw.\n• **1/2** – Home team leads at half-time, away team wins.\n• **X/1** – Draw at half-time, home team wins full-time.\n• **X/X** – Draw at both half-time and full-time.\n• **X/2** – Draw at half-time, away team wins full-time.\n• **2/1** – Away team leads at half-time, home team wins full-time.\n• **2/X** – Away team leads at half-time, match ends in a draw.\n• **2/2** – Away team leads at half-time and wins at full-time.\n\nFor example, when you see \"home/draw halftime/fulltime\" in betting terms, it refers to the 1/X option. This means you expect the home side to be leading after the first half, but for the away side to claw back and level the match by the end.\n\nSimilarly, home/away halftime/fulltime refers to 1/2, where the home team is ahead at the break, but the away team finishes as the winner.\n\nAs you can see, there are different ways of naming the outcomes, either with numbers or with the sides of the teams. It's important to understand that they have the same meaning and that the list above shows you the full range of outcomes.",
+    id: 'compound-variance', 
+    title: 'The Compound Variance: Mastering HT/FT Dynamics', 
+    content: (
+      <>
+        Half-Time/Full-Time (HT/FT) is the definitive market for bettors who specialize in <strong>Interval Analysis</strong>. By requiring you to correctly predict the match state at both the 45-minute and 90-minute marks, it introduces significant compound variance. However, this added complexity is mathematically compensated for with substantially higher odds than the standard Match Result market.
+        <br /><br />
+        <strong>The Matrix of Outcomes:</strong>
+        <br />
+        There are 9 possible combinations, ranging from the stable 1/1 (Favorite leads throughout) to the highly volatile 1/2 or 2/1 (Full-match reversals). Mastery of this market requires moving beyond "who wins" to "how the winning narrative unfolds."
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'why-should-i-choose', 
-    title: 'Why Should I Choose the HT/FT Market?', 
-    content: "The main attraction of HT/FT betting is the odds. Because you are predicting two separate outcomes, bookmakers price these markets higher than standard 1X2 bets. For example, if a strong favourite is playing at home, a straight win might be offered at 1.30 odds. The same result predicted as HT/FT - 1/1 could jump to 1.80 or higher. This makes it a way to get better value while placing bets.\n\nHowever, the decision isn't easy. Even if you correctly call the full-time result, getting the half-time position wrong means you lose. If the strong team starts off slowly, you're still likely to lose your bet.",
-    advantages: [],
-    risks: []
-  },
-  {
-    id: 'how-it-differs',
-    title: 'How HT/FT Differs from Standard 1X2',
-    content: "A 1X2 bet asks for one prediction: the result at full-time. In contrast, an HT/FT bet is like putting two 1X2 bets together - one for half-time, one for full-time.\n\nSo, while in a 1X2 you might simply back the home team to win, in HT/FT you could choose 1/1 if you think they will dominate both halves, or X/1 if you expect a slower start followed by a strong finish. The x/1 meaning in betting specifically refers to a match that is level at half-time but ends with a home win. This is a common choice when the home side tends to start cautiously but grows into the game.",
-    advantages: [],
-    risks: []
-  },
-  {
-    id: 'real-match-example',
-    title: 'Real Match Example',
-    content: "Imagine a Premier League clash between Chelsea and Aston Villa giving you the perfect HT/FT opportunity.\n\nChelsea are heavy favourites, but you know Aston Villa often defend deep in the first half. So, you go for X/1 - expecting a tight first half and a Chelsea surge after the break. The match stays 0-0 at half-time, just as you predicted. In the second half, Chelsea's midfield took control, scoring twice to seal a 2-0 win.\n\nYour X/1 bet pays out at odds of 2.80, far better than the 1.40 you'd get for a straight home win.",
-    advantages: [],
-    risks: []
-  },
-  {
-    id: 'factors-to-consider',
-    title: 'Factors to Consider Before Placing an HT/FT Bet',
-    content: "Successful half-time/full-time betting comes down to understanding patterns.\n\nHere are the main elements to study:\n\n• **Team tendencies** - Some teams start fast and fade, while others take time to build momentum.\n• **Home vs away form** - The home/away halftime/fulltime bets work best when you understand how each team performs in their respective roles.\n• **Manager tactics** - Coaches who prefer attacking from the whistle may create more 1/1 or 2/2 scenarios. Defensive managers often produce X/X results.\n• **In-game context** - Is the match part of a tight schedule? Are players being rested? Cup ties, relegation battles, and title deciders can influence energy levels across halves.\n• **Head-to-head history** - Some fixtures repeatedly follow the same pattern, offering insight into likely HT/FT outcomes.",
-    advantages: [],
-    risks: []
-  },
-  {
-    id: 'common-mistakes-to-avoid',
-    title: 'Common Mistakes to Avoid in Half Time Full Time Bet',
-    content: "Halftime/Fulltime betting can reward good analysis, but it also punishes careless decisions. Many losses in this market come from predictable errors that can be avoided with the right approach. If you understand these mistakes, you can improve your chances of consistent wins.\n\n• **Backing favourites blindly** - Strong teams don't always start fast; check first-half scoring stats before going for 1/1.\n• **Ignoring match conditions** - Weather, pitch quality, and even kickoff time can slow down early play, changing likely HT/FT outcomes.\n• **Chasing rare reversals** - Results like 2/1 or 1/2 offer big odds but occur infrequently without clear tactical reasons.\n• **Underestimating derbies and cup ties** - Rivalry intensity or second-leg strategy can disrupt expected match flow.\n• **Forgetting extra-time rules** - HT/FT bets are settled on 90 minutes only; extra time and penalties don't count.",
-    advantages: [],
-    risks: []
-  },
-  {
-    id: 'ht-ft-in-other-sports',
-    title: 'HT/FT in Other Sports',
-    content: "While you probably associate half-time/full-time betting with football, you can use the same concept in other sports that have distinct halves or periods.\n\nIn basketball, for example, you can bet on who will be leading at half-time and at full-time. Because scoring is more frequent, the lead can change multiple times, making patterns harder to predict than in football.\n\nRugby and American football also offer this market, but the flow of play and scoring patterns are very different, so your approach needs to adapt. If you bet on HT/FT in these sports, focus on how teams perform in each half rather than just their overall form.\n\nSome basketball teams start aggressively before tiring, while in rugby, momentum shifts often come after substitutions. Understanding these patterns is key to making accurate predictions.",
+    id: 'x1-alpha', 
+    title: "The 'X/1' Alpha: Exploiting the Slow Start", 
+    content: (
+      <>
+        One of the most profitable sectors of the HT/FT market is the <strong>X/1 selection</strong> (Draw at Half-Time, Home Win at Full-Time). This pattern is frequent when elite teams face disciplined "Low-Block" defenses.
+        <br /><br />
+        <strong>The Tactical Hook:</strong>
+        <br />
+        A favorite may take 60 minutes to break down a stubborn opponent. If your model suggests a "Stale Phase" in the first half followed by a high-intensity second half (due to fatigue or tactical substitutions), the X/1 line offers a massive price boost compared to a straight 1X2 bet.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'final-thoughts', 
-    title: 'Final Thoughts', 
-    content: "The half-time/full-time market is for you if you enjoy breaking down how a game will play out and spotting patterns most bettors miss. It's not just about picking the winner - it's about predicting how the match will unfold from the first whistle to the last.\n\nWhen you understand terms like home/draw halftime/fulltime, home/away halftime/fulltime, and x/1 in betting, you give yourself the clarity and confidence to start placing bets on this exciting market.",
+    id: 'urgency-dynamics', 
+    title: 'Urgency vs. Fatigue: Predicting the Two halves', 
+    content: (
+      <>
+        Successful HT/FT betting requires an audit of manager philosophies. Coaches who prioritize <strong>"Blitz" tactics</strong> (high pressing from the first whistle) are prime candidates for 1/1 or 1/X results. Conversely, managers who favor <strong>"Control" tactics</strong> often produce X/1 or X/X patterns.
+        <br /><br />
+        <strong>Key Indicators:</strong>
+        <br />
+        • <strong>Substitute Depth:</strong> A favorite with high-quality bench options is more likely to turn a Half-Time draw (X) into a Full-Time win (1) in the final 20 minutes.
+        <br />
+        • <strong>Historical Intervals:</strong> Some clubs are historically "Slow Starters"—this data is gold for HT/FT market refinement.
+      </>
+    ),
+    advantages: [],
+    risks: []
+  },
+  { 
+    id: 'reversal-probabilities', 
+    title: 'Reversal Probabilities: The Comeback Longshots', 
+    content: (
+      <>
+        The 2/1 and 1/2 selections (leading at half-time but losing at full-time) offer the highest odds in the market, often exceeding 25.0+. While rare, they represent the ultimate value in <strong>volatility betting</strong>.
+        <br /><br />
+        <strong>Spotting the Reversal:</strong>
+        <br />
+        These outcomes are statistically more likely in derbies or high-stakes knockout games where emotional momentum can shift rapidly after a red card or a key tactical substitution. Professionally, these are "Lotto" style bets that should only be deployed with a tiny fraction of the stake.
+      </>
+    ),
+    advantages: [],
+    risks: []
+  },
+  { 
+    id: 'conclusion', 
+    title: 'Predicting the Narrative', 
+    content: (
+      <>
+        HT/FT betting is about predicting the *story* of the game. It rewards the analyst who understands match flow, manager temperament, and the inevitable shift from tactical discipline to second-half fatigue. When used correctly, it is the most efficient way to maximize ROI on heavy favorites.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
     id: 'faqs', 
-    title: 'FAQs', 
+    title: 'Expert Q&A', 
     content: '',
     advantages: [],
     risks: [],
     faqs: [
       {
-        question: "What does half time/full time mean in betting?",
-        answer: "Half-time/full-time betting is a market where you predict the result at the end of the first half and the final outcome of the match. For your bet to win, both predictions must be correct."
+        question: "Why is 1/1 odds so much lower than X/1?",
+        answer: "Because 1/1 implies total dominance from the start. A team leading at half-time has over an 80% statistical probability of winning the match. Winning from a draw (X/1) is harder and therefore pays much more."
       },
       {
-        question: "How does a half time/full time bet work?",
-        answer: "You simply pick the outcome for the first half (Home win, Draw, Away win) and combine it with the final result at full-time. For example, selecting 1/X means you predict the Home team will lead at half-time, but the match will end in a Draw."
+        question: "Does HT/FT include injury time?",
+        answer: "Yes. The 'Half-Time' result is settled after the first-half injury time, and 'Full-Time' is settled after the second-half injury time. It does NOT include extra time or penalties."
       },
       {
-        question: "Is a half-time/full-time bet worth it?",
-        answer: "Yes, if you do your research and understand team patterns. Because you are making two predictions instead of one, HT/FT markets usually offer significantly higher odds and better value than standard 1X2 bets."
+        question: "What is the best HT/FT strategy for underdogs?",
+        answer: "The '2/X' or '1/X' (Lead at HT, Draw at FT). Many underdogs start with high intensity and take a shock lead, but eventually succumb to the favorite's pressure and settle for a draw. These 'Lead-Fade' scenarios offer excellent value."
       },
       {
-        question: "Do half-time/full-time bets include overtime?",
-        answer: "No. Just like standard full-time result bets, half-time/full-time bets are settled at the end of regular time (90 minutes plus injury time in football). Extra time and penalty shootouts do not count."
-      },
-      {
-        question: "How to bet on halftime performance?",
-        answer: "If you only want to bet on a team's performance strictly during the first half, you should look for the 'Half Time Result' market instead, which is settled entirely based on the score at half-time, regardless of the full-time result."
+        question: "Can I use HT/FT in-play?",
+        answer: "Yes, but only before the first half ends. Once the second half begins, you can only bet on the 'Second Half Result' or 'Full Time Result,' not the combined HT/FT narrative."
       }
     ]
   }
@@ -145,16 +158,16 @@ export default function HTFTPage() {
           <main className="flex-1 min-w-0 order-2 lg:order-1">
             <header className="mb-12">
               <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-8 tracking-tight leading-[1.1]">
-                Halftime/Fulltime (HT/FT) Betting Guide
+                HT/FT <span className="text-brand-emerald">Masterclass</span>
               </h1>
               
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
-                  <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6">
-                    Half-Time / Full-Time betting, that is often referred to as HT/FT, lets you predict not just the result at full-time, but also who leads at half-time. It's an all-or-nothing wager: both halves must go your way for a payout, making it harder than a straight 1X2 bet, but the payoff can be much sweeter.
+                  <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
+                    "HT/FT betting is the clinical breakdown of match narrative—it is about predicting the *how* as much as the *who*."
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    This <span className="font-bold text-brand-emerald">OddinsOdds Academy</span> article breaks down what HT/FT means, its variations, practical examples, strategic angles, common mistakes, and some professional tips.
+                    In this technical guide, we explore the 'Compound Variance' of HT/FT markets. We examine the specific alpha of the 'X/1' slow-start pattern, analyze how manager philosophy dictates interval scoring, and reveal the statistical triggers for high-yield reversal betting.
                   </p>
                 </div>
               </div>

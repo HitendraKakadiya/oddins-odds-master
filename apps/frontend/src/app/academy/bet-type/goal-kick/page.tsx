@@ -8,79 +8,104 @@ import StrategyTOC from '@/components/Academy/StrategyTOC';
 
 const sections = [
   { 
-    id: 'what-is-goal-kick-betting', 
-    title: 'What Is Goal Kick Betting?', 
-    content: "If you've been betting on football for a while, you probably stick to the familiar markets – match winner, over/under goals, maybe corners or cards. But there’s a quieter, lesser-known bet type option that can open up fresh angles and value: goal kick betting.\n\nUnlike the usual markets that everyone follows, goal kick bets let you predict something that happens dozens of times in a match but rarely gets the spotlight. A goal kick happens when the ball crosses the goal line, last touched by the attacking team, without a goal being scored. The defending side restarts play from within their goal area. bookmakers have turned this regular event into a countable, trackable betting market.",
+    id: 'restart-dynamics', 
+    title: 'Restart Dynamics: The Mechanics of the Goal Kick', 
+    content: (
+      <>
+        In professional modeling, a <strong>Goal Kick</strong> is analyzed not as a simple stoppage, but as a "Possession Reset." It is the primary statistical marker for <strong>Inefficient Attacking</strong>. Every goal kick represents an offensive sequence that failed to result in a goal, a corner, or a parried save.
+        <br /><br />
+        <strong>The Strategic Context:</strong>
+        <br />
+        • <strong>Attacking Waste:</strong> High goal kick counts often correlate with teams that take low-quality "hopeful" shots from distance.
+        <br />
+        • <strong>Tactical Reset:</strong> For the defending team, a goal kick is a controlled moment to re-establish their shape and launch a structured build-up from the back.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'types-of-goal-kick-bets', 
-    title: 'The Main Types of Goal Kick Bets', 
-    content: "When you open up a betting site that offers this market, you’ll usually find a few variations:\n\n• **Total Goal Kicks (Over/Under):** You bet on whether the total number of goal kicks in the match will be over or under a set line. Example: Over 10.5 or Under 10.5.\n• **Goal Kick Ranges:** Instead of just over/under, you choose a bracket like 0-5, 6-10, 11-15. If the match ends with that total, you win.\n• **First Goal Kick:** You predict which team will take the first goal kick of the match.\n• **Last Goal Kick:** You predict which team will take the last goal kick before the final whistle.\n• **Team-Specific Totals:** Some bookies also offer markets on how many goal kicks one specific team will take.",
+    id: 'inefficiency-coefficient', 
+    title: 'The Inefficiency Coefficient: Accuracy Analysis', 
+    content: (
+      <>
+        To find value in the Over/Under goal kick markets, you must calculate the <strong>Inefficiency Coefficient</strong>. This is the volume of shots that completely miss the frame (Off-Target) relative to total attempts.
+        <br /><br />
+        <strong>High-Yield Predictors:</strong>
+        <br />
+        • <strong>Low-Accuracy Strikers:</strong> Teams with forwards who have a high "Shot-Volume" but low "SoT-Percentage" are the primary drivers of high goal-kick counts.
+        <br />
+        • <strong>Distance Bias:</strong> Teams that are forced to shoot from outside the box due to a compact defense will naturally produce more off-target balls, leading to a surplus of goal kicks.
+      </>
+    ),
     advantages: [],
     risks: []
   },
-  {
-    id: 'how-bookies-settle',
-    title: 'How do Bookmakers Settle Goal Kick Bets?',
-    content: "Before you place a goal kick bet, always check how your bookmaker defines and settles it. In general, here is what you can expect:\n\n• A goal kick counts once the referee officially awards it. Even if the kick is retaken due to encroachment or a technical error, it still only counts as one.\n• Bets usually cover the full 90 minutes plus added time, but not extra time or penalties.\n• If a match is abandoned or postponed, most bookmakers void the bet unless the game is completed within a set period.\n\nIt's worth noting that rules can differ slightly between betting sites. Always read the terms and conditions before betting.",
+  { 
+    id: 'defensive-depth', 
+    title: 'Defensive Depth: The Low-Block Effect', 
+    content: (
+      <>
+        A common misconception is that under-pressure teams always concede more goal kicks. In reality, a team playing a <strong>"Deep Low-Block"</strong> may actually concede <em>fewer</em> goal kicks because they focus on blocking shot lanes and forcing corners.
+        <br /><br />
+        <strong>The Variable:</strong>
+        <br />
+        Active pressure in the mid-block often forces rushed, inaccurate shots. If your model predicts a frantic, end-to-end match with low tactical discipline, the "Over" lines on Goal Kicks provide an excellent "Non-Goal" safety net.
+      </>
+    ),
     advantages: [],
     risks: []
   },
-  {
-    id: 'why-bet-on-goal-kicks',
-    title: 'Why Bet on Goal Kicks?',
-    content: "At first glance, betting on goal kicks may seem odd. But there are solid reasons why this market can be worth your time:\n\n• **Less Attention:** Other bettors tend to ignore this market, which means the odds aren’t always as sharp as in popular markets.\n• **Predictable Patterns:** Teams that dominate possession and shoot often will force their opponents into conceding more goal kicks. Defensive teams under pressure naturally take more.\n• **In-play Opportunities:** If you’re watching a match and notice a clear trend – for example, constant shots going wide – you can jump in with a live bet on goal kicks.",
-    advantages: [],
-    risks: []
-  },
-  {
-    id: 'factors-influence-goal-kicks',
-    title: 'Factors That Influence Goal Kicks',
-    content: "If you want to win on goal kick betting, you need to look deeper than just guessing. Here are the main factors that affect how many goal kicks happen in a match:\n\n• **Team styles:** High-pressing teams and those that take lots of shots usually create more goal kicks for their opponents.\n• **Shot volume and accuracy:** A team that takes 20 shots with half going off-target will almost guarantee plenty of goal kicks.\n• **Match state:** A team leading by a goal might defend deep, inviting more shots and more goal kicks.\n• **Pitch conditions:** Poor weather or a heavy pitch can make shots less accurate, leading to more goal kicks.\n• **Referee approach:** Some referees are stricter with restarts, while others allow more play to continue. This can slightly affect totals.",
-    advantages: [],
-    risks: []
-  },
-  {
-    id: 'live-goal-kick-betting',
-    title: 'Live Goal Kick Betting',
-    content: "In-play betting is where goal kick markets can get really interesting. Odds often lag behind match events, which means you can catch value if you’re paying attention.\n\nFor example, if there have already been 7 goal kicks by halftime and the line is still at Over 10.5, you might get strong odds to back the over, knowing the match is trending that way. The key is to combine live viewing with your pre-match research.",
-    advantages: [],
-    risks: []
-  },
-  {
-    id: 'strategies-to-use',
-    title: 'Strategies to Use',
-    content: "Here are a few tested strategies you can apply when betting on goal kicks:\n\n• **Research shot data:** Look at average shots per team, shot accuracy, and shots conceded. This is the strongest predictor of goal kicks.\n• **Target mismatches:** Games where one team dominates possession often lead to high totals for the underdog.\n• **Avoid low-stakes friendlies:** Matches with little intensity produce fewer shots, which means fewer goal kicks.\n• **Use ranges:** If your bookmaker offers 6-10, 11-15 brackets, these can give you better value than a straight over/under.\n• **Keep stakes small:** Goal kick markets don’t have the same liquidity as match winner markets, so don’t overcommit.",
+  { 
+    id: 'operational-settlement', 
+    title: 'Operational Settlement: Technical Boundaries', 
+    content: (
+      <>
+        Precision in settlement is vital. A goal kick is officially counted when the ball is kicked and clearly moves.
+        <br /><br />
+        <strong>Settlement Nuances:</strong>
+        <br />
+        • <strong>Retaken Kicks:</strong> If a keeper takes a goal kick but the referee orders a retake (due to encroachment or a moving ball), it almost always counts as <strong>one incident</strong> toward the total.
+        <br />
+        • <strong>90-Minute Rule:</strong> Unless specified as a 'Full Match' market, these bets are settled on regular time. Goal kicks in Extra Time are excluded from standard market calculations.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
     id: 'conclusion', 
-    title: 'Conclusion', 
-    content: "Adding goal kicks to your betting portfolio gives you a new angle that most people ignore. You’re no longer tied only to goals or match outcomes, but to an event that happens dozens of times a game. If you do your homework, read the patterns, and manage your stakes, this market can give you a steady, lower-profile way of finding value.\n\nThe key is treating it seriously: study the stats, check the bookmaker rules, and use live betting smartly. Once you start building confidence, you’ll see how goal kicks can be more than just a restart – they can be a winning bet.",
+    title: 'The Value in the Reset', 
+    content: (
+      <>
+        Goal Kick markets are the ultimate contrarian edge. By focusing on match inefficiency rather than clinical success, you can monetize the "waste" in an opponent's game plan. Analyze the off-target volume, understand the defensive shape, and exploit the markets that the public ignores.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
     id: 'faqs', 
-    title: 'FAQs', 
+    title: 'Expert Q&A', 
     content: '',
     advantages: [],
     risks: [],
     faqs: [
       {
-        question: "What is a goal kick in betting?",
-        answer: "A restart of play by the defending team after the ball goes out of play over the goal line, having been last touched by an attacking player."
+        question: "Does a deflection off a defender that goes wide count as a goal kick?",
+        answer: "No. If the ball is last touched by a defender and goes over the goal line, it is a corner. A goal kick only occurs if the attacking team touched it last."
       },
       {
-        question: "Are goal kicks difficult to predict?",
-        answer: "Not necessarily. If you analyze team shot volume and accuracy (specifically shots that miss the target), patterns become very predictable."
+        question: "What is a 'Goal Kick Range' bet?",
+        answer: "This is a prediction that the total kicks will fall within a specific bracket (e.g., 10-12). It offers higher odds but requires a precise read on the match's 'Tactical Tempo'."
       },
       {
-        question: "Do own goals count in goal kick bets?",
-        answer: "No. A goal kick only occurs when the ball goes out of play without a goal being scored. An own goal is settled as a regular goal."
+        question: "Do 'Woodwork' hits count as goal kicks?",
+        answer: "Only if the ball goes out of play after hitting the post. If the keeper saves the rebound or the ball stays in play, no goal kick is awarded."
+      },
+      {
+        question: "How does wind affect goal kick totals?",
+        answer: "Strong head-winds can reduce shot accuracy from distance, leading to more off-target attempts and potentially increasing the goal kick count for the defending team."
       }
     ]
   }
@@ -137,16 +162,16 @@ export default function GoalKickPage() {
           <main className="flex-1 min-w-0 order-2 lg:order-1">
             <header className="mb-12">
               <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-8 tracking-tight leading-[1.1]">
-                Goal Kick <span className="text-brand-emerald">Betting Guide</span>
+                Goal Kick <span className="text-brand-emerald">Masterclass</span>
               </h1>
               
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
-                  <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6">
-                    Looking for a fresh angle in football betting? Moving beyond the usual 1X2 and Over/Under markets can reveal quieter, high-value opportunities.
+                  <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
+                    "Goal kicks are the tactical marker for attacking inefficiency—monetizing the waste in an opponent's game plan."
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    This <span className="text-brand-emerald font-bold">OddinsOdds Academy</span> guide shows you exactly what goal kick betting is, how bookies settle it, and smarter strategies you can use to find value in this trackable market.
+                    In this technical guide, we break down the clinical mechanics of 'Restart Dynamics.' We analyze the 'Inefficiency Coefficient' of shot-accuracy data, identify the specific 'Low-Block' effects that dictate kick volume, and reveal the operational settlement rules that protect your bankroll from technical errors.
                   </p>
                 </div>
               </div>

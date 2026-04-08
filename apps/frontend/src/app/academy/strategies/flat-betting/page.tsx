@@ -8,72 +8,110 @@ import StrategyTOC from '@/components/Academy/StrategyTOC';
 
 const sections = [
   { 
-    id: 'what-is-flat-betting', 
-    title: 'What Is Flat Betting?', 
-    content: "Flat betting means you wager the same fixed amount on every bet, regardless of whether you're on a winning streak, a losing run, or feel extra confident about a match. For example, if your bankroll is $1,000 and you decide on 2% per bet, your stake is $20.\n\nEvery single wager, win or lose, is $20. That's flat betting. By using this method, you avoid the rollercoaster of aggressive staking systems and create a stable foundation to judge whether your betting strategy is actually profitable.",
+    id: 'stoic-baseline', 
+    title: 'The Stoic Baseline: Eliminating Staking Volatility', 
+    content: (
+      <>
+        Flat betting is the most disciplined form of money management in sports betting. It involves wagering the exact same amount on every single event, regardless of your confidence level, recent win/loss streaks, or the odds of the match. By removing the "Bet Sizing" variable, you isolate the only thing that matters: your ability to find <strong>Positive Expected Value (+EV)</strong>.
+        <br /><br />
+        <strong>The Mechanics:</strong>
+        <br />
+        • <strong>Bankroll:</strong> $2,000
+        <br />
+        • <strong>Flat Stake (1%):</strong> $20
+        <br />
+        • <strong>Constraint:</strong> Every bet is $20. Always.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'why-flat-betting-works', 
-    title: 'Why Flat Betting Works', 
-    content: "**Bankroll Protection:** Flat betting protects you from big losses. Losing streaks will happen, but since you always bet the same amount, your bankroll doesn't disappear as fast as it would with risky systems like Martingale or doubling bets. Imagine losing five bets in a row at $20 each. You've lost $100, which is painful but still manageable with a $1,000 bankroll. In comparison, a doubling system could wipe out half your bankroll in the same stretch.\n\n**Emotional Control:** When you keep your bets the same, you avoid the trap of betting bigger just because you feel lucky or chasing losses to win money back. This discipline makes you focus on long-term profit instead of getting caught up in short-term wins and losses.\n\n**Accurate Tracking:** Since every bet is the same size, it's easy to calculate your success rate and measure whether you're actually profitable. You're evaluating your ability to pick winners, not your ability to manage wild swings in stake size.\n\n**Long-Term Sustainability:** Flat betting allows you to stay in the game longer. Even if you hit a losing streak, you won't be wiped out quickly. That longevity is key because sports betting is all about sample size – the more bets you place, the clearer your edge (or lack of one) becomes.",
+    id: 'law-of-large-numbers', 
+    title: 'The Law of Large Numbers: Surviving the Mathematical Grind', 
+    content: (
+      <>
+        Sports betting is a high-volume business. To overcome the bookmaker's "vig" (margin), you need a massive sample size of bets. Flat betting is the only strategy that guarantees you will stay in the game long enough for the <strong>Law of Large Numbers</strong> to work in your favor.
+        <br /><br />
+        <strong>Survival over Sensation:</strong>
+        <br />
+        Unlike progressive systems (Martingale), flat betting ensures that a 10game losing streak only costs you 10% of your bankroll. This resilience allows you to weather the inevitable "downswings" of sports variance without the risk of insolvency.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'flat-betting-sports', 
-    title: 'Flat Betting in Sports', 
-    content: "Flat betting works in sports where anything can happen, like a last-minute penalty in football or rain suspending play in cricket. By keeping the same bet size, you don't let these events wipe out your bankroll. Here is an example:\n\n• **Starting bankroll:** $1,000\n• **Flat stake:** $20 per match\n• **Number of bets:** 30 matches\n\nYou win 16 bets and lose 14, with average odds of 1.90.\n\n• 16 wins - profit of $18 each = $288\n• 14 losses - loss of $20 each = $280\n• **Net result:** $8 profit.\n\nThe profit isn't huge, but the key is that your results depend only on how good your picks are.",
+    id: 'selection-purity', 
+    title: 'Selection Purity: Evaluating Your Edge', 
+    content: (
+      <>
+        Professional syndicates use flat betting to "Audit" their analysts. If a bettor is not profitable using flat stakes, it proves they do not have a genuine <strong>Predictive Edge</strong>.
+        <br /><br />
+        <strong>The Audit Protocol:</strong>
+        <br />
+        • <strong>Step 1:</strong> Place 500 flat-stake bets.
+        <br />
+        • <strong>Step 2:</strong> Calculate your yield.
+        <br />
+        • <strong>Step 3:</strong> If ROI is positive, you have found value. If negative, you are likely just guessing.
+        <br /><br />
+        Flat betting removes the "noise" created by varying bet sizes, giving you a clinical view of your actual sports knowledge.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'flat-betting-systems', 
-    title: 'Types of Flat Betting Systems', 
-    content: "Flat betting isn't always rigid; there are slight variations depending on how cautious or aggressive you want to be. Let's check out types of flat betting systems:\n\n• **Static Flat Betting:** You always bet the same amount, regardless of bankroll changes. If you start at $20 per bet, you stick with it no matter what.\n\n• **Proportional Flat Betting:** You bet using a fixed percentage of your bankroll. As your bankroll goes up, your bet size increases. If your bankroll goes down, your bet size decreases.\n\n• **Aggressive Flat Betting:** Instead of betting 1-2% of your bankroll, you risk 3-5% each time. This means you can win more when things go well, but you can also lose money much faster if you hit a bad streak.",
+    id: 'operational-resilience', 
+    title: 'Operational Resilience: The Psychological Anchor', 
+    content: (
+      <>
+        The biggest enemy of a bettor is their own brain. The "Gambler's Fallacy" and "Loss Aversion" drive people to bet more when they are losing. Flat betting acts as a <strong>Psychological Anchor</strong>, forcing you to remain rational when emotions are high.
+        <br /><br />
+        <strong>Mental Advantages:</strong>
+        <br />
+        • <strong>Eliminates the "Chase":</strong> No more doubling down to win back losses.
+        <br />
+        • <strong>Reduces Stress:</strong> Since the risk is always known and controlled, you can focus on analysis rather than anxiety.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'how-to-use', 
-    title: 'How to Use Flat Betting?', 
-    content: "To make flat betting work for you, all you need is a clear bankroll plan, a fixed stake size, and the discipline to stick with it on every wager.\n\n1. **Set Your Bankroll:** Decide how much money you’re okay with losing. Think of it like paying for entertainment, not using your savings.\n2. **Choose Your Flat Bet Size:** Pick 1-3% of your bankroll as your fixed bet. For example, with $1,000, 2% = $20.\n3. **Bet the Same Amount Every Time:** Always bet $20, no matter what happens. Don’t increase or decrease it based on wins or losses.\n4. **Keep Records:** Note down each bet- odds, stake, result, profit/loss, and new bankroll.\n5. **Review After Many Bets:** After 50-100 bets, check if you’re making money. Flat betting makes it easy to see if your picks are good.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'pros-cons', 
-    title: 'Pros and Cons of Flat Betting', 
-    content: "Like every betting strategy, flat betting has its advantages and drawbacks. Understanding both sides will help you decide whether this system fits your goals and betting style.\n\n### Pros\n• **Simple to understand and apply:** You don't need complex formulas or advanced bankroll calculators. Once you set your flat unit, you place the same bet every time.\n• **Strong bankroll protection:** Since you don't raise your bets after losing, you avoid the quick bankroll wipeouts that happen with chasing systems.\n• **Keeps emotions in check:** Flat betting removes the temptation to bet bigger when you're feeling confident or desperate after a loss.\n\n### Cons\n• **Slow growth:** If you're on a winning run, your profits grow steadily but not explosively.\n• **Doesn't exploit high confidence spots:** Sometimes you might feel strongly about a bet and want to stake more on it. Flat betting stops you from doing that, which can feel restrictive.\n• **May feel boring:** Flat betting isn’t exciting – it’s more about patience and discipline. If you like the thrill of big wins and losses, this method might feel too slow or controlled.",
-    advantages: [],
-    risks: []
-  },
-  {
-    id: 'conclusion',
-    title: 'Conclusion',
-    content: "Flat betting might not sound glamorous, but if you are serious about sports betting, it's the most reliable system you can use. By sticking to the same stake size on every bet, you give yourself the best chance to grow steadily. Whether you're betting on football, cricket, basketball, or tennis, flat betting puts you in control.\n\nIt’s not about quick wins – it’s about building a sustainable betting approach that lasts. If you want one system that keeps you disciplined and protects your bankroll, flat betting is the strategy you should go for.",
+    id: 'conclusion', 
+    title: "The Professional's Foundation", 
+    content: (
+      <>
+        Flat betting might seem boring, but in the world of professional betting, "boring" is synonymous with "sustainable." It is the benchmark against which all other strategies (Kelly, Fibonacci, Proportional) are measured. If you cannot survive a flat-betting grind, you will not survive professional betting.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
     id: 'faqs', 
-    title: 'FAQs', 
+    title: 'Expert Q&A', 
     content: '',
     advantages: [],
     risks: [],
     faqs: [
       {
-        question: "What is flat betting?",
-        answer: "Wagering the same fixed amount on every bet, regardless of wins or losses."
+        question: "Is flat betting better for favorites or underdogs?",
+        answer: "Flat betting is mathematically neutral. However, it is especially effective for underdogs because the higher payouts on a fixed stake allow you to remain profitable even with a lower strike rate."
       },
       {
-        question: "What is flat betting in blackjack?",
-        answer: "Betting the same amount on every hand, unlike progressive betting strategies."
+        question: "How do I know when to increase my flat stake?",
+        answer: "Professional protocol usually dictates a re-evaluation of the 'Unit' after a significant bankroll milestone (e.g., every 25% or 50% increase). If your $1,000 bankroll hits $1,500, you might move your stake from $10 to $15."
       },
       {
-        question: "Is flat betting a good strategy?",
-        answer: "Yes, it is often recommended for beginners and professional bettors alike for its superior bankroll protection."
+        question: "Does flat betting work for parlays?",
+        answer: "While you *can* flat-bet parlays, it is generally discouraged. Flat betting is designed for single bets where the house edge is manageable. Parlays carry a much higher house margin, which flat betting cannot fully mitigate."
+      },
+      {
+        question: "Is 5% too high for a flat stake?",
+        answer: "Yes. In professional circles, 5% is considered 'reckless.' Even at 5%, a moderate losing streak (20 bets) can wipe you out completely. High-volume pros stick to 1% to 2%."
       }
     ]
   }
@@ -146,16 +184,16 @@ export default function FlatBettingPage() {
           <main className="flex-1 min-w-0 order-2 lg:order-1">
             <header className="mb-12">
               <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-8 tracking-tight leading-[1.1]">
-                Flat <span className="text-brand-emerald">Betting</span>
+                Flat Betting <span className="text-brand-emerald">Masterclass</span>
               </h1>
               
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
-                  <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6 italic">
-                    "When you step into the world of sports betting, one of the biggest challenges you face is managing your bankroll. If you chase losses or keep increasing your bets, you’ll likely lose your bankroll fast."
+                  <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
+                    "Excitement is the tax you pay for lack of discipline. Flat betting is the clinical benchmark for serious capital management."
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    With this method, you always bet the same amount, no matter if you win or lose. It keeps things simple, protects your money, and lets you see how good your betting choices really are without emotions getting in the way. In this OddinsOdds Academy guide, we will talk about flat betting in detail.
+                    While progressive systems promise quick recoveries and 'hot streaks' promise riches, flat betting provides the one thing every professional needs: <strong>Statistical Survival</strong>. In this masterclass, we explore how flat staking allows you to isolate your predictive edge, survive the inevitable laws of variance, and build a sustainable long-term betting career.
                   </p>
                 </div>
               </div>

@@ -8,87 +8,102 @@ import StrategyTOC from '@/components/Academy/StrategyTOC';
 
 const sections = [
   { 
-    id: 'meaning-with-examples', 
-    title: 'Double Chance Soccer Bet Meaning with Examples', 
-    content: "Double chance betting in football allows you to cover two of the three possible match outcomes - win, draw, or loss - with a single bet. Instead of choosing just one team to win or backing a draw, you bet on two outcomes at once, reducing your risk of losing.\n\nLet's say Manchester United are playing Chelsea. A standard 1X2 bet would force you to pick only one result - a home win, a draw, or an away win. But with double chance, you can bet on 1X, covering a Man Utd win or a draw. If Chelsea wins, you lose, but if the match ends in a draw or Man Utd win, your bet lands.\n\nThis is especially helpful when you're backing underdogs or in matches where a draw seems highly likely. If Brentford are playing Newcastle and you're unsure if Brentford will win but believe they won't lose, an X2 bet can be the safer route. Even if Brentford only manage a draw, you'll still win the bet.",
-    advantages: [],
-    risks: []
-  },
-  {
-    id: 'what-is-x2-1x-12',
-    title: 'What Does Double Chance X2, 1X, and 12 Mean?',
-    content: "1X, X2 and 12 are the three possible outcomes of a Double Chance wager. Here's the breakdown of what each of them means:\n\n• **The double chance 1X market** covers a win for the home team or a draw.\n• **The double chance X2** covers a win for the away team or a draw.\n• **And the double chance 12** means either team wins - the only result that makes you lose is a draw.\n\nEach of these options lowers your risk by covering two of the three possible outcomes. The odds, in return, are also lower compared to a traditional 1X2 bet, but the probability of winning is much higher.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'why-popular', 
-    title: 'Why is Double Chance Betting Popular?', 
-    content: "One of the main reasons double chance betting is so popular in soccer is that it offers a safety net. Football matches, especially in lower leagues or international fixtures, can be unpredictable. A late red card, a dodgy penalty, or just a well-organised underdog can completely change the outcome.\n\nWith double chance bets, you give yourself a cushion. You don't have to rely solely on your team winning; you're also covered if they avoid defeat (or, in the case of 12, if anyone wins). This makes it especially attractive if you are a casual bettor and are building up a small bankroll.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'strategy', 
-    title: 'Double Chance Betting Strategy: When and How to Use It?', 
-    content: "The most effective way to use a double chance football betting system is to match it with team form and context. If a team has a solid home record, but they're playing a strong opponent, betting on 1X might be the right move. If an away team is on a hot streak or the home side is struggling with injuries, you might go for X2.\n\nThe double chance 12 market is often overlooked but works well in situations where both teams need to win, such as knockout games or final-day league matches. If a draw doesn't help either side, chances are the match will produce a winner.\n\nYou can use this betting strategy to build accumulators, combining multiple double chance selections into one bet to increase potential payouts. For example, selecting four 1X double chance bets on strong home sides can return a decent profit with a higher success rate than traditional win/draw/win bets.",
+    id: 'probability-floor', 
+    title: 'The Probability Floor: Securing 66.6% of Outcomes', 
+    content: (
+      <>
+        Double Chance (DC) is the most fundamental tool for increasing your "Probability Floor." In a standard 3-way (1X2) market, you are mathematically selecting only 33.3% of the possible match states. Double Chance immediately elevates that coverage to <strong>66.6%</strong> by allowing you to combine two of the three outcomes into a single wager.
+        <br /><br />
+        <strong>The Three Pillars of DC:</strong>
+        <br />
+        • <strong>1X (Home or Draw):</strong> Covers the home win and the stalemate. Your bet only fails if the away team wins.
+        <br />
+        • <strong>X2 (Away or Draw):</strong> Covers the away win and the stalemate. Your bet only fails if the home team wins.
+        <br />
+        • <strong>12 (Home or Away):</strong> Eliminates the "Draw" entirely. Your bet wins as long as the match does not end in a tie.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'when-to-avoid', 
-    title: 'When to Avoid Double Chance Betting', 
-    content: "Despite its safety, there are times when double chance bets aren't the right call. For instance, backing a heavy favourite at home with a 1X bet often gives odds so low they're barely worth the risk. If you're getting odds like 1.10 or less, the return doesn't justify the bet - you'd need to win 10 out of 11 bets just to stay ahead.\n\nAlso, if you're betting on a match with little motivation - say, a mid-table end-of-season fixture - the draw becomes very likely, and the result harder to call. Unless you have a clear angle, it's better to skip such games than force a double chance play.",
+    id: 'variant-12', 
+    title: "The '12' Variant: Elimination of the Stale Match", 
+    content: (
+      <>
+        The <strong>'12' betting market</strong> is often the most underutilized tool in a professional's arsenal. It is specifically designed for high-stakes environments where a draw serves no party—such as second-leg knockout matches or final-day survival battles.
+        <br /><br />
+        <strong>Tactical Deployment:</strong>
+        <br />
+        Deploy '12' when you observe "Glass-Cannon" dynamics: two teams with high attacking efficiency but catastrophic defensive lapses. In these scenarios, the probability of a 0-0 or 1-1 stalemate is statistically lower than a decisive result in either direction.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'live-betting', 
-    title: 'Live Betting in Double Chance Wagers', 
-    content: "Another smart use of the double chance market is during in-play betting. After 20-30 minutes of a goalless match, the odds on double chance selections often improve slightly, giving you more value. This is especially useful when a favourite is underperforming, or if you're seeing something live that wasn't priced into the pre-match odds.\n\nSuppose Bayern Munich is playing a lower-table Bundesliga team and fails to score in the first half-hour. You might jump on 12 (either team wins) at better odds, especially if the underdog looks threatening.",
+    id: 'accumulator-safety', 
+    title: 'Accumulator Safety Margins: The Volatility Buffer', 
+    content: (
+      <>
+        For serious parlay (accumulator) construction, Double Chance provides a <strong>volatility buffer</strong>. While a straight win offers higher individual odds, the cumulative variance of five straight wins is exponentially higher than five Double Chance selections.
+        <br /><br />
+        <strong>The Yield Curve:</strong>
+        <br />
+        By using DC in your combos, you trade off peak "Alpha" (maximum possible profit) for a significantly higher "Expected Hit Rate." This is a primary strategy for professional bankrolls aiming for consistent, incremental growth rather than high-risk "moon-shots."
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'compare-dnb', 
-    title: 'How Does Double Chance Compare to Draw No Bet?', 
-    content: "It's important to understand the distinction between double chance and draw no bet (DNB). With a DNB wager, if the match ends in a draw, you get your stake refunded. You only win if your selected team wins outright. Double chance, on the other hand, pays out on a draw if it's one of the two covered outcomes.\n\nDNB generally offers slightly higher odds than double chance because it doesn't cover two outcomes in the same way. But a double chance provides actual win potential on a draw, making it more appealing if you think a stalemate is likely.",
+    id: 'pricing-efficiency', 
+    title: 'Pricing Efficiency: DC vs. Asian Handicap +0.5', 
+    content: (
+      <>
+        A technical secret shared by professional bettors is the parity between <strong>Double Chance (1X/X2)</strong> and <strong>Asian Handicap (+0.5)</strong>. Both bets cover the win and the draw.
+        <br /><br />
+        <strong>The Value Arbitrage:</strong>
+        <br />
+        Always compare the price of DC with the +0.5 AH line on the same team. Occasionally, due to different liquidity pools or bookmaker "bias," one market will offer a 2-5% higher payout for the exact same mathematical probability. Exploiting these discrepancies is the hallmark of a masterclass bettor.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'final-thoughts', 
-    title: 'Final Thoughts', 
-    content: "A double chance should be in your arsenal if you're serious about football betting and want to maintain a more stable win rate.\n\nIt's a practical, low-risk strategy ideal for underdog bets, tight fixtures, or when you're looking to combine picks in an accumulator without swinging for the fences. Like any strategy, it works best with knowledge, team form, match context, motivation, and smart bankroll management.",
+    id: 'conclusion', 
+    title: 'The Conservative Alpha', 
+    content: (
+      <>
+        Double Chance is the foundation of defensive betting. It rewards the analyst who correctly identifies that a team is <strong>unlikely to lose</strong>, even if they aren't clinical enough to guarantee a win. When managed with a clear focus on pricing efficiency, DC becomes one of the most stable revenue streams in sports betting.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
     id: 'faqs', 
-    title: 'FAQs', 
+    title: 'Expert Q&A', 
     content: '',
     advantages: [],
     risks: [],
     faqs: [
       {
-        question: "What does Double Chance mean in betting?",
-        answer: "Double Chance is a betting market that allows you to cover two of the three possible outcomes (Win, Loss, Draw) in a single bet, significantly increasing your chances of winning."
+        question: "When is Double Chance mathematically 'bad value'?",
+        answer: "When backing heavy favorites at home (e.g., odds under 1.15). The risk of a freak 'loss' event usually outweighs the negligible return. If you need 1X to make a favorite bet viable, the selection is likely flawed to begin with."
       },
       {
-        question: "What does Double Chance 2X mean?",
-        answer: "2X (or X2) is a bet on the Away team to either win the match or for the match to end in a draw. You only lose if the Home team wins."
+        question: "Is DC better than Draw No Bet?",
+        answer: "If you believe the draw is a high-probability event, DC is superior because it pays out on the stalemate. DNB merely refunds your stake, which can lead to 'stagnant' bankroll performance in high-draw leagues."
       },
       {
-        question: "Is Double Chance betting profitable?",
-        answer: "Yes, it can be very profitable, especially as part of an accumulator or when backing underdogs. However, because the risk is lower, the odds are typically shorter than 1X2 markets."
+        question: "How does '12' betting behave in overtime?",
+        answer: "Crucially, Double Chance markets in football almost exclusively apply to 'Regular Time' (90 mins + injury time). They do not extend to Extra Time or Penalty Shootouts unless specifically stated as a 'To Qualify' or 'To Lift Trophy' market."
       },
       {
-        question: "Is Double Chance only 90 minutes?",
-        answer: "Yes, standard football bets, including Double Chance, usually apply to the regular 90 minutes plus injury time. Extra time and penalties are typically not included unless specified."
-      },
-      {
-        question: "When should I use Double Chance betting?",
-        answer: "It's best used in matches where you expect a tight contest, when backing an underdog to avoid defeat, or when building low-risk accumulators."
+        question: "What leagues are best for X2 Double Chance?",
+        answer: "Lower-tier leagues with high parity. When parity is high, bookmakers often overestimate 'Home Advantage.' Backing resilient away teams at X2 allows you to exploit this bias with a massive 66% probability coverage."
       }
     ]
   }
@@ -143,16 +158,16 @@ export default function DoubleChancePage() {
           <main className="flex-1 min-w-0 order-2 lg:order-1">
             <header className="mb-12">
               <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-8 tracking-tight leading-[1.1]">
-                Double Chance Betting in <span className="text-brand-emerald">Football</span>
+                Double Chance <span className="text-brand-emerald">Masterclass</span>
               </h1>
               
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
-                  <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6">
-                    Double chance betting in football allows you to cover two of the three possible match outcomes - win, draw, or loss - with a single bet. Instead of choosing just one team to win or backing a draw, you bet on two outcomes at once, reducing your risk of losing.
+                  <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
+                    "Double Chance is the clinical expansion of probability—it is the defensive foundation of any professional bankroll strategy."
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    This <span className="text-brand-emerald font-bold">OddinsOdds Academy</span> guide explains how the double chance market works, when to use it strategically, and how it compares to other popular bet types like Draw No Bet.
+                    In this technical breakdown, we examine the 'Probability Floor' of Double Chance betting. We explore the tactical utility of the '12' variant in must-win scenarios, the mathematical buffer it provides to high-volatility accumulators, and the value arbitrage between Double Chance and Asian Handicap markets.
                   </p>
                 </div>
               </div>

@@ -8,66 +8,104 @@ import StrategyTOC from '@/components/Academy/StrategyTOC';
 
 const sections = [
   { 
-    id: 'what-does-over-under-mean', 
-    title: 'What Does Over/Under Mean in Betting?', 
-    content: "If you've been betting on sports for a while, you’ve probably come across over/under betting. It's one of the most straightforward ways to wager, and once you understand the concept, you’ll see opportunities in almost every match.\n\nOver/under betting is when you wager on whether the total number of goals, points, or runs in a game will be higher or lower than a number set by the bookmaker. You don’t need to worry about who wins the game – just how much action there’ll be.",
+    id: 'totalization-framework', 
+    title: 'The Totalization Framework: Predicting Market Lines', 
+    content: (
+      <>
+        Over/Under betting, often referred to as "Totals," represents a pure clinical analysis of match intensity. Instead of predicting a winner, you are wagering on the <strong>Board Efficiency</strong>—whether the total goals, points, or corners will exceed a specific line set by the bookmaker. The 2.5 goal line serves as the global anchor for football, derived from the mathematical average of goals scored in major professional leagues.
+        <br /><br />
+        <strong>The Mechanics of the Line:</strong>
+        <br />
+        • <strong>Half-Goal Increments:</strong> Use of .5 (e.g., 2.5, 3.5) ensures a binary outcome—it is physically impossible to score exactly 2.5 goals, thus eliminating the "Draw" or "Push" result.
+        <br />
+        • <strong>Neutral Result:</strong> Over/Under is the ultimate defensive tool because it is immune to who scores, as long as the <strong>cumulative volume</strong> is met.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'how-does-it-work-football', 
-    title: 'How does Over/Under Betting Work in Football?', 
-    content: "In football, over/under markets are often based on goals scored. The most popular lines are 0.5, 1.5, 2.5, 3.5, and so on. For example:\n\n• **Over 0.5 goals:** The game must have at least one goal.\n• **Under 1.5 goals:** Game must end with no more than one goal.\n• **Over 2.5 goals:** You win if the game has 3 or more goals.\n\nYou'll also find over/under lines for goals scored in the first half or second half alone. Other popular over/under bets include predicting the total corners, number of yellow and red cards, shots on target, and individual team goals.\n\nFor example, if you're betting on Manchester City vs Brentford with the line set at 3.5 goals. Based on City's recent scoring form and Brentford's leaky defence, you back the over. If the game ends 4-1 with total goals 5, you win easily.",
+    id: 'style-variance', 
+    title: 'Style Variance: Low-Blocks vs. High-Lines', 
+    content: (
+      <>
+        Professional totals analysts move beyond simple goal averages. They analyze <strong>Style Variance</strong>. A team averaging 2.0 goals might do so via a high-risk "High Line" defense that concedes goals as fast as they score them, while another team might achieve it through clinical efficiency and a "Low-Block" system.
+        <br /><br />
+        <strong>Under-Valued Indicators:</strong>
+        <br />
+        • <strong>Defensive Compactness:</strong> In matches where both teams prioritize defensive structure (underdog vs underdog in a relegation battle), the "Under 2.5" often carries significant mathematical value despite the "low odds" bias.
+        <br />
+        • <strong>PPDA (Passes Per Defensive Action):</strong> High-pressing teams create more turnovers in the final third, leading to high-variance games that favor "Over" outcomes.
+      </>
+    ),
     advantages: [],
     risks: []
   },
-  {
-    id: 'over-under-strategy-football',
-    title: 'Over/Under Betting Strategy in Football',
-    content: "To make smarter picks with total goals markets, you need a clear over/under betting strategy. Here are our tips that you should keep in mind when betting:\n\n### Don't Just Look at Averages\nYou might think looking at team averages is enough, but that's where you can go wrong. What you need to look at is how those averages were built. If a team scores 2.5 goals per game, it doesn't mean they're consistent; it could mean they smashed six in one match and didn't score at all in the next three.\n\n### Study Playing Styles\nTeams that sit deep and play five at the back won't generate as many open chances. If both teams play cautious football, the under often has value. On the other hand, games with attacking fullbacks, high defensive lines, or poor goalkeepers are asking for you to be on the over betting market.\n\n### Watch for Motivation\nLeague table positions can heavily influence how teams approach games. A team fighting relegation may go into all-out defence on the road. A side chasing Champions League spots may take more risks late in the season. Over/under outcomes often shift with what the teams are playing for.",
+  { 
+    id: 'over-1-5-anchor', 
+    title: 'The Over 1.5 Anchor: High-Precision Selection', 
+    content: (
+      <>
+        The 1.5 goal line is the "Gold Standard" for high-precision volume betting. While the odds are lower than the 2.5 line, the probability of <strong>at least two goals</strong> in a professional match is statistically robust.
+        <br /><br />
+        <strong>The "Banker" Logic:</strong>
+        <br />
+        In modern football, a 1-0 result is increasingly rare due to tactical shifts and injury-time extensions. Utilizing the Over 1.5 line as a "confidence anchor" in accumulators allows for a high hit-rate while protecting against the frustration of a 1-1 or 2-0 stalemate that would kill an "Over 2.5" bet.
+      </>
+    ),
     advantages: [],
     risks: []
   },
-  {
-    id: 'over-under-in-other-sports',
-    title: 'Over/Under in Other Sports',
-    content: "Football might be where over/under betting is most common, but the same principle applies across other sports. Once you're comfortable with the logic, you can apply it elsewhere.\n\n• **Basketball:** In basketball, you're betting on the total number of points scored by both teams. A typical over/under line might be 220.5. High-scoring teams, poor defences, or fast-paced styles tend to favour the over.\n• **Tennis:** In tennis, you can bet on the total number of games in a match. If the line is set at 22.5 and you bet over, you want something like 7-5, 6-4, or a third set.\n• **Cricket:** In limited-overs cricket, you'll see over/under lines for total runs in an innings. For example, a line of 294.5 in a 50-over ODI. If you back the over, you're hoping for a batting-friendly pitch.\n• **Ice Hockey:** Over/under in hockey is based on goals. Typical lines are 5.5 or 6.5. Low totals suit games with strong goaltending or tight playoff battles.",
+  { 
+    id: 'time-interval-dynamics', 
+    title: 'Time-Interval Dynamics: The Math of Late Goals', 
+    content: (
+      <>
+        A masterclass bettor understands that total goals are <strong>time-sensitive</strong>. Over 60% of goals in major leagues are scored in the final 30 minutes of play.
+        <br /><br />
+        <strong>Tactical Factors:</strong>
+        <br />
+        • <strong>Fatigue Coefficient:</strong> Defensive coordination fails as glycogen levels drop. High-paced teams exploit this in the "75th-90th" interval.
+        <br />
+        • <strong>Game State:</strong> If a favorite is trailing by 1 goal at the 70th minute, they will inevitably sacrifice defensive structure for attacking volume, creating a high-value opportunity for an additional goal (Over).
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
     id: 'conclusion', 
-    title: 'Conclusion', 
-    content: "Over/under betting is pretty simple once you get the hang of it. You're not predicting who wins the game, you're just betting on how busy the scoreboard gets. If you think it'll be a dull game with few chances, you're going under. If you're expecting fireworks, you go over. That’s it.\n\nDon’t just look at stats, watch how the teams play. Some teams love to attack, others sit back. Injuries, weather, and what the game means to each side all play a part. Use common sense, as not every game is worth betting on.",
+    title: 'Mastering the Board', 
+    content: (
+      <>
+        Over/Under betting is the thinking man’s market. It removes the emotional unpredictability of "Selection Bias" and replaces it with a clinical assessment of match flow. Master the styles, understand the intervals, and the scoreboard becomes your most reliable revenue indicator.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
     id: 'faqs', 
-    title: 'FAQs', 
+    title: 'Expert Q&A', 
     content: '',
     advantages: [],
     risks: [],
     faqs: [
       {
-        question: "What does Over/Under mean in betting?",
-        answer: "Predicting if the total is above or below a specific number (goals, points, or runs)."
+        question: "When is the best time to bet 'Under' in-play?",
+        answer: "The 'Under' market is most profitable when a match reaches its 'Stale State'—usually between the 15th and 35th minute if no early goal has disrupted the tactical setup. The market often over-adjusts its prices during this window."
       },
       {
-        question: "How to bet Over/Under?",
-        answer: "Find the market, pick a line (e.g., 2.5), and choose 'over' for high-action or 'under' for low-action."
+        question: "Does weather impact Over/Under lines?",
+        answer: "Significantly. Heavy rain or extreme heat can lower the 'Physical Ceiling' of a match, reducing high-intensity sprints and increasing defensive fatigue. In such conditions, 'Under' 2.5 often gains value as the game slows down."
       },
       {
-        question: "What does Over/Under 1.5 mean in betting?",
-        answer: "Total must be 2+ for Over, or 0-1 for Under."
+        question: "What is the 'Asian Total' market?",
+        answer: "Asian Totals (e.g., Over 2.0, Over 3.0) introduce a 'Push' (refund) element. If exactly 2 goals are scored on an Over 2.0 line, your stake is returned. This offers a middle-ground security between the binary Over 1.5 and Over 2.5 lines."
       },
       {
-        question: "How to win an Over/Under bet?",
-        answer: "Your chosen outcome must match the final tally (e.g., 3 goals for Over 2.5)."
-      },
-      {
-        question: "What does Over/Under 2.5 mean in betting?",
-        answer: "Total must be 3+ for Over, or 0-2 for Under."
+        question: "Which leagues are historically 'High-Scoring'?",
+        answer: "Leagues like the Bundesliga, Dutch Eredivisie, and MLS tend to have higher goal averages due to attacking philosophies and defensive variance. Conversely, the Italian Serie B and French Ligue 2 are historically tighter, favoring 'Under' selections."
       }
     ]
   }
@@ -124,16 +162,16 @@ export default function OverUnderPage() {
           <main className="flex-1 min-w-0 order-2 lg:order-1">
             <header className="mb-12">
               <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-8 tracking-tight leading-[1.1]">
-                Over/Under <span className="text-brand-emerald">Betting Guide</span>
+                Over/Under <span className="text-brand-emerald">Masterclass</span>
               </h1>
               
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
-                  <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6">
-                    If you’ve been betting on sports for a while, you’ve probably come across over/under betting. It's one of the most straightforward ways to wager.
+                  <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
+                    "Total markets move beyond the emotional variance of match results to focus on the clinical board efficiency of goal production."
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    This <span className="text-brand-emerald font-bold">OddinsOdds Academy</span> guide breaks down over/under betting in football, walks you through important strategies, and shows how it applies across other sports.
+                    In this technical guide, we break down the 'Totalization Framework' of Over/Under betting. We explore Style Variance, analyze why compactness is the key to 'Under' value, and reveal the interval dynamics that govern high-yield goals in the final 30 minutes of play.
                   </p>
                 </div>
               </div>

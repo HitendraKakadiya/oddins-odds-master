@@ -8,82 +8,102 @@ import StrategyTOC from '@/components/Academy/StrategyTOC';
 
 const sections = [
   { 
-    id: 'what-is-european-handicap', 
-    title: 'What Is European Handicap?', 
-    content: "The euro handicap is not complex. Often referred to as the 3-Way Handicap, this betting option makes one-sided matches more balanced from a betting perspective. For this market, the underdog receives a numerical goal advantage before the game begins. On the other hand, the favourites get a goal disadvantage.\n\nIn simple terms, this means that the match starts at least 1:0 in favour of the underdogs. In the 1X2 betting format, a win for your chosen team results in a winning bet. However, for handicap betting, the team must win by the margin specified before the match for the wager to be successful.\n\nThe European Handicap market consistently offers three possible outcomes for each match: a home win, a draw, and an away victory. Because of this structure, it applies to sports where these results are possible. Common examples include football, hockey, rugby, basketball, handball, and water polo.",
+    id: 'euro-handicap-explained', 
+    title: 'The 3-Way Symmetry: Mastering the European Line', 
+    content: (
+      <>
+        The European Handicap (EH), often referred to as the "3-Way Handicap," is the traditional pillar of goal-based spread betting. Unlike its Asian counterpart, the European Handicap uses only <strong>integers</strong> (-1, -2, +3) and explicitly incorporates the <strong>Draw</strong> as a betting outcome. This creates a high-variance market where precision is rewarded with significantly higher odds.
+        <br /><br />
+        <strong>The European Protocol:</strong>
+        <br />
+        • <strong>3-Way Outcome:</strong> You can bet on Home Win, Away Win, or the Handicap Draw.
+        <br />
+        • <strong>Binary Results:</strong> There are no "Pushes" or refunds. You either win the bet or lose the stake.
+        <br />
+        • <strong>Integer Only:</strong> Sizing is always in whole goals, making the "Handicap Draw" a vital strategic component.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'types-of-european-handicap', 
-    title: 'Types of European Handicap Bets', 
-    content: "There are different varieties of handicap bets available at most bookmakers. We'll break down the two main categories below.\n\n### Positive European Handicap\nThese handicaps apply to teams that are less likely to win the game. For underdog teams in football, a positive handicap of +3 offers them a three-goal lead heading into their game. Should they lose by 1 or 2 goals, they will still emerge with a win. Conceding three goals will be seen as a draw. For the underdog to lose the match, they must concede four goals without scoring a goal.\n\n### Negative European Handicap\nThis option is the reverse of a positive handicap. It applies to the favoured team or the one expected to win the matchup. Such a team is assigned a -1, -2, or -3 handicap before the game. For instance, with a -1 handicap, the team must win by at least a two-goal margin (2-0) to get a victory.",
-    advantages: [],
-    risks: []
-  },
-  {
-    id: 'basics-of-european-handicap',
-    title: 'Understanding the Basics of European Handicap',
-    content: "The EH market is a straightforward betting option that has three likely outcomes. Here we provide an example for each outcome.\n\n### First Outcome: Home Win\n**Example: Flamengo (-1) vs Vasco De Gama (+1)**\n**Final Score: 3 - 0**\nAfter applying the handicap: Flamengo (3-1=2) vs Vasco De Gama (0+1=1). Result: Flamengo wins. For the Home Win bet (-1) to be successful, they must win by at least 2 goals.\n\n### Second Outcome: Draw\n**Example: Marseille (-2) vs Reims (+2)**\n**Final Score: 3 - 1**\nAfter applying the handicap: Marseille (3-2=1) vs Reims (1). Wait, no, in European Handicap the 'Draw (-2)' bet wins if the home team wins by EXACTLY 2 goals. Since 3-1 is a 2-goal margin, the handicap draw is successful.\n\n### Third Outcome: Away Team Wins\n**Example: Velez Sarsfield (-1) vs Rosario Central (+1)**\n**Final Score: 1 - 1**\nAfter applying the handicap: Velez Sarsfield (1-1=0) vs Rosario Central (1+1=2). Result: Rosario Central wins. The Away Team Win outcome (+1) is successful if the underdog avoids a 2-goal defeat.",
+    id: 'integer-variance', 
+    title: 'Integer Variance: The Binary Risk Model', 
+    content: (
+      <>
+        The primary differentiator of the European Handicap is the lack of a safety net. In Asian Handicap, a -1.0 bet on a team that wins by exactly one goal results in a refund. In European Handicap, a -1 bet in the same scenario is a <strong>Loss</strong> (as the "Handicap Draw" was the winning outcome).
+        <br /><br />
+        <strong>Risk vs. Reward:</strong>
+        <br />
+        Because the "Push" is removed, the odds for a -1 European Handicap are always substantially higher than a -1 Asian Handicap. Professionals use EH when their model suggests a high probability of a multi-goal margin, sacrificing the "refund" safety for a larger payout.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'pros-and-cons', 
-    title: 'Pros and Cons of European Handicap', 
-    content: "With the basics explained, let's identify some of its benefits and disadvantages.",
-    advantages: [
-      "Competitive Odds: Handicaps usually offer 30-50% better odds on firm favourites compared to 1X2.",
-      "Simple Bet Market: Familiar 3-Way structure, easy to calculate without push/refund rules.",
-      "Whole Number Simplicity: Uses only integers (+1, -2, etc.), making results easy to grasp.",
-      "Balanced Underdog Bets: Positive handicaps give underdogs a solid head start."
-    ],
-    risks: [
-      "Definite Outcomes: Unlike Asian Handicaps, there are no partial wins or stake refunds.",
-      "Limited Flexibility: Does not offer precise lines like -0.5 or -1.25.",
-      "Harder to Win: Big negative handicaps (like -2) require a wide margin victory."
-    ]
-  },
-  { 
-    id: 'strategic-use', 
-    title: 'Strategic Use of European Handicaps', 
-    content: "There are specific scenarios where selecting the European Handicap option is your best bet:\n\n• **Underdogs With Huge Potential:** Back lower-ranked sides that bookmakers have underestimated.\n• **Favourites on Strong Form:** Support dominant teams with better odds than regular 1X2.\n• **Low Scoring Dominant Teams:** Use the draw handicap in matches where the favourite typically wins by exactly the expected margin.\n\n### Specific Match Situations\nSeveral match situations make this betting option appealing. It can be beneficial in form-based scenarios. For example, newly promoted teams come up against well-established opponents. It’s also effective when in-form attacking teams face sides struggling defensively.\n\nAnother case is when a team is dealing with numerous defensive injuries and plays against a high-scoring opponent. Conversely, it may also apply when a defensively organised lower-ranked team meets a stronger side missing key attacking players.",
+    id: 'draw-handicap-pivot', 
+    title: 'The Draw-Handicap Pivot: Betting on the Margin', 
+    content: (
+      <>
+        The "Handicap Draw" is the crown jewel of the European market. It allows you to bet on the <strong>exact winning margin</strong> of a favorite. For example, a "Handicap Draw (-1)" bet wins if the favorite wins by exactly one goal (1-0, 2-1, 3-2).
+        <br /><br />
+        <strong>Strategic Utility:</strong>
+        <br />
+        This market is ideal for matches where a dominant team faces a stubborn defense. If your data suggests a "low-block" match where the favorite will struggle to blow the opponent away but will eventually find a breakthrough, the Handicap Draw offers far superior value than the standard Match Result.
+      </>
+    ),
     advantages: [],
     risks: []
   },
-  {
-    id: 'tips-for-placing',
-    title: 'Tips for Placing Handicap Bets',
-    content: "Here are some tips you can leverage if you plan to use the European Handicap market.\n\n### Use Data from Historical Matchups (H2H) Smartly\nMake sure you carefully study the most recent matchups between competing teams. Focus on their last five head-to-head results and consider if there have been significant changes in the team rosters. Some teams consistently dominate others; based on the data, place a -1 or -2 handicap on the stronger team.\n\n### Search For Undervalued Underdogs\nThis betting option offers more protection to underdogs, so search for lower-ranked teams with strong recent form. It is essential that you only settle for underdogs that have strong defensive setups. If they are facing out-of-form favourites, selecting the +2, +3, or +4 handicap option could offer much better winning chances.\n\n### Only Select Motivated Teams\nDo not select a team that has nothing it's fighting for. Instead, focus on teams fighting for titles, promotion, or survival. Such teams are likely to remain resolute defensively while also attacking with intent.\n\n### Wait For Team News and Lineups\nDon’t rush to place handicap bets before you see the team news or line-up. Unexpected line-up changes or injuries can dramatically shift the balance in favour of the underdogs. So, before placing heavy handicap bets on dominant sides, be sure all their key attackers are starting the game.",
+  { 
+    id: 'market-calibration', 
+    title: 'Market Calibration: Identifying Underpriced Favorites', 
+    content: (
+      <>
+        The European Handicap is the most efficient way to extract value from "Heavy Favorites." When a team is priced at 1.15 in the 1X2 market, it is often unbettable. However, moving to the European Handicap -1 or -2 can push the odds into the 1.60 - 2.10 range.
+        <br /><br />
+        <strong>Performance Auditing:</strong>
+        <br />
+        To use EH effectively, you must audit your favorite-backing strategy. If your "bankers" consistently win by 2+ goals, you are leaving significant profit on the table by not utilizing the European Handicap -1 line.
+      </>
+    ),
+    advantages: [],
+    risks: []
+  },
+  { 
+    id: 'conclusion', 
+    title: 'The Integer Edge', 
+    content: (
+      <>
+        The European Handicap is for the bettor who values simplicity and high-alpha returns. It strips away the complexity of quarter-lines and refunds, leaving a pure, clinical assessment of goal margins. While the variance is higher, the rewards for precise margin prediction are unmatched in traditional spread markets.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
     id: 'faqs', 
-    title: 'FAQs', 
+    title: 'Expert Q&A', 
     content: '',
     advantages: [],
     risks: [],
     faqs: [
       {
-        question: "What is European Handicap in betting?",
-        answer: "European Handicap is a 3-way betting market that gives one team a head start (integer goals) and the other a deficit. It has three outcomes: Home Win, Draw, or Away Win."
+        question: "What is the biggest mistake when betting EH?",
+        answer: "Failing to account for the 'Handicap Draw'. Beginners often bet -1 thinking a 1-goal win is a refund (as in Asian Handicap). In EH, a 1-goal win for a -1 bet is a complete loss of stake."
       },
       {
-        question: "What does European Handicap 0:2 mean?",
-        answer: "It means the Away team starts with a 2-goal advantage. For the Home team to win, they must win the match by at least 3 goals. If they win by exactly 2, it's a handicap draw."
+        question: "Under what conditions is EH better than AH?",
+        answer: "When your confidence in a multi-goal win is high. Because EH doesn't offer the 'Push' (refund) protection, the bookmaker offers a higher price to compensate for the added risk."
       },
       {
-        question: "What does handicap +1.5 mean?",
-        answer: "Handicap +1.5 is an Asian Handicap line, not European. It means the team starts with a 1.5 goal head start. You win if your team wins, draws, or loses by only 1 goal."
+        question: "How do I calculate a 'Handicap Draw' result?",
+        answer: "Simply add the handicap to the final score. If the result is a tie, the 'Handicap Draw' bet wins. For a (-2) Draw bet, the team must win by exactly 2 goals (e.g., 2-0, 3-1)."
       },
       {
-        question: "What is a 3-way European handicap?",
-        answer: "It is another name for European Handicap, referring to the three possible outcomes: Team A Win, Draw (on handicap), or Team B Win."
-      },
-      {
-        question: "Is a 2.0 handicap good?",
-        answer: "Yes, it can be very effective when backing strong underdogs against favorites who struggle to score multiple goals, or when backing high-scoring favorites to win comfortably."
+        question: "Does EH only apply to football?",
+        answer: "While most popular in football, it is widely used in Rugby and Ice Hockey, where goal/point margins are clearly defined and the 'Draw' outcome on the spread is a viable statistical event."
       }
     ]
   }
@@ -141,16 +161,16 @@ export default function EuropeanHandicapPage() {
           <main className="flex-1 min-w-0 order-2 lg:order-1">
             <header className="mb-12">
               <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-8 tracking-tight leading-[1.1]">
-                European Handicap <span className="text-brand-emerald">Guide</span>
+                European Handicap <span className="text-brand-emerald">Masterclass</span>
               </h1>
               
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
-                  <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6">
-                    Not all matchups are evenly balanced. When there is a clear gap between the favourite and the underdog, that’s when the European Handicap betting market comes in handy.
+                  <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
+                    "The European Handicap is the market of integers. It demands binary precision and rewards multi-goal confidence with superior yield."
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    This <span className="text-brand-emerald font-bold">OddinsOdds Academy</span> guide explains how the European Handicap works, its 3-way structure, and how it differs from the more complex Asian Handicap system.
+                    In this technical breakdown, we explore the '3-Way Symmetry' of the European Handicap. We examine why the removal of 'Pushes' creates the 'Integer Edge,' the specialized value of the Draw-Handicap pivot, and how to calibrate your model to exploit underpriced favorites.
                   </p>
                 </div>
               </div>

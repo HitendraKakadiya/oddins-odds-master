@@ -8,93 +8,116 @@ import StrategyTOC from '@/components/Academy/StrategyTOC';
 
 const sections = [
   { 
-    id: 'What Is the Martingale Strategy?', 
-    title: 'What Is the Martingale Strategy?', 
-    content: "The Martingale betting strategy is a simple system where you double your bet after every loss. Your goal is simple: land a win and you’ll recover all your previous losses plus make a small profit.\n\n**Example:** You start with a $10 bet and lose. Your next bet is for $20, but you lose again. You then instantly double the wager to $40 and fail. Your next bet then becomes $80. Should you win $80, you will immediately recover the amounts lost at $10 + $20 + $40 and allow yourself a $10 profit.\n\nThe idea behind this betting strategy is simple: the idea that you’re always just one win away from getting all your losses and securing a profit. In theory, the Martingale system seems foolproof and promises almost certain profit. In practice, though, long losing streaks and limited bankrolls make it far riskier.",
+    id: 'theoretical-vs-real', 
+    title: 'The Double-Edged Sword: Theoretical Profit vs. Real-World Ruin', 
+    content: (
+      <>
+        The Martingale system is perhaps the most famous—and most dangerous—strategy in the history of gambling. It operates on a deceptively simple premise: after every loss, you double your stake. The goal is to recover all previous losses and secure a profit equal to your original "base" stake with a single win.
+        <br /><br />
+        <strong>The Mechanism of Action:</strong>
+        <br />
+        • <strong>Base Bet:</strong> You start with a small unit (e.g., $10).
+        <br />
+        • <strong>Geometric Progression:</strong> If you lose, your stake becomes $20, then $40, then $80, and so on.
+        <br />
+        • <strong>The Reset:</strong> Upon a win, you return to the $10 base bet.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'Where Did the Martingale System Come From?', 
-    title: 'Where Did the Martingale System Come From?', 
-    content: "The Martingale betting system originated in France during the 18th century. This system was first used for simple coin-flip wagers with even odds. However, its structure also made it suitable for games like roulette.\n\nIn the 20th century, French mathematician Paul Pierre Lévy connected the system to probability theory. As a result, the Martingale system got a proper mathematical framework.\n\nOver time, the method spread to other areas, including blackjack, sports betting, and even financial trading. What draws people to it is its straightforward nature. Anyone can grasp the idea and apply it without complex maths.",
+    id: 'geometric-trap', 
+    title: 'The Geometric Trap: Understanding Exponential Growth', 
+    content: (
+      <>
+        The primary flaw of the Martingale is that it assumes you have an infinite bankroll and no betting limits. In reality, exponential growth is more aggressive than most bettors realize. By the 10th consecutive loss, a $10 bet requires a <strong>$10,240 stake</strong> just to recover your funds and make a <strong>$10 profit</strong>.
+        <br /><br />
+        <strong>Sequence Risk:</strong>
+        <br />
+        • Round 1: $10
+        <br />
+        • Round 5: $160
+        <br />
+        • Round 10: $10,240
+        <br />
+        • Round 12: $40,960
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'How Does the Martingale Betting System Work in Practice?', 
-    title: 'How Does the Martingale Betting System Work in Practice?', 
-    content: "In this section, we break down how you can apply the strategy step by step:\n\n1. **Start With a Base Bet:** Choose a unit size that fits your bankroll. Most people use 1-2% of their bankroll.\n2. **Double After a Loss:** Every time you lose, double your stake.\n3. **Reset After a Win:** When you win, reset back to your base bet and repeat.\n\nHere’s a quick example starting with $5:\n\n• **Bet 1:** $5 - Lose (Bankroll -$5)\n• **Bet 2:** $10 - Lose (Bankroll -$15 total)\n• **Bet 3:** $20 - Lose (Bankroll -$35 total)\n• **Bet 4:** $40 - Win (Bankroll +$5 net profit)\n\nAt first, it feels safe. One win turns the session green. But as the losing streak grows, the bet size doubles. This seems manageable, but there might be a moment at which it completely drains your bankroll.",
+    id: 'hard-limits', 
+    title: 'Hard Limits: Table Caps and Bankroll Exhaustion', 
+    content: (
+      <>
+        Even if you have the wealth to support a long losing streak, bookmakers use <strong>Table Limits</strong> as their ultimate defense. Most platforms set a maximum bet for a single market. Once your required Martingale stake exceeds this cap, the system collapses, "locking in" a massive catastrophic loss that can take months of standard value betting to recover.
+        <br /><br />
+        <strong>Failure Points:</strong>
+        <br />
+        • <strong>The Table Cap:</strong> The maximum allowable stake on a single event.
+        <br />
+        • <strong>Bankroll Ruin:</strong> The point where your total liquid capital is exhausted.
+        <br />
+        • <strong>Emotional Tilt:</strong> The high stress of risking thousands to win tens.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'Why the Martingale System Isn’t Foolproof', 
-    title: 'Why the Martingale System Isn’t Foolproof', 
-    content: "At first glance, the Martingale system betting feels like a cheat code. The logic is simple: if you keep doubling your bets, eventually you’ll win. However, some factors make this system risky. They include:\n\n### Table Limits or Betting Caps\nBoth land-based and online casinos can set limits on their table games and live dealer options. Others may attach maximum betting sizes to their games, which prevent you from using this strategy to double your bets. In such cases, suffering a long losing streak means a permanent loss of valuable betting funds.\n\n**Example:** Suppose you begin with a $10 bet. After seven straight losses, you would need to stake $1,280 to continue the system. But with a table limit of $1,000, you can’t place the required wager. At that point, the strategy breaks down, leaving you unable to recover your losses.\n\n### Bankroll Size\nChances are you’re gambling with a set budget, which means your bankroll is limited. On a long losing streak, doubling your bets over and over simply isn't realistic. Continually increasing your wager by 2x after each loss quickly becomes impractical if you desire to gamble responsibly.\n\nRead more about this in our [Bankroll management guide](/academy/bankroll-management).",
+    id: 'martingale-variations', 
+    title: 'Strategic Variations: Mini-Martingale and Paroli', 
+    content: (
+      <>
+        Because of the inherent danger of the standard system, several variations have emerged to mitigate risks or capitalize on winning instead of losing streaks.
+        <br /><br />
+        <strong>Common Variations:</strong>
+        <br />
+        • <strong>Mini-Martingale:</strong> Limiting the number of double-downs (e.g., only doubling three times) to prevent total ruin.
+        <br />
+        • <strong>Paroli System:</strong> Doubling after a <strong>win</strong> rather than a loss to chase "hot" streaks with house money.
+        <br />
+        • <strong>Grand Martingale:</strong> Doubling plus adding one unit—an even more aggressive method that accelerates ruin.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
-    id: 'Martingale Bet Calculator', 
-    title: 'Martingale Bet Calculator', 
-    content: "A Martingale bet calculator can show you how quickly bets grow and whether your bankroll can handle it. For example, if your base bet is $5, here’s what happens after eight straight losses:\n\n• **Bet 1:** $5\n• **Bet 2:** $10\n• **Bet 3:** $20\n• **Bet 4:** $40\n• **Bet 5:** $80\n• **Bet 6:** $160\n• **Bet 7:** $320\n• **Bet 8:** $640\n\nBy the eighth round, you’re betting $640 to win just $5. One more loss and you’re down $1,275 total. Martingale bet calculators help you foresee these potential risks. They show you how quickly losses can grow out of control before you even begin using the strategy.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'Variations of the Martingale System', 
-    title: 'Variations of the Martingale System', 
-    content: "There are several versions of this system you can use if you don’t want to stick with the original. They include:\n\n### Reverse Martingale (Paroli System)\nInstead of doubling after every loss, you double your bet after a win. This approach lets you capitalise on winning streaks, which keeps losing streaks less damaging. However, there is a downside to this strategy. With one bad loss, you could lose all your gains, ensuring you are left with nothing after several winning runs.\n\n### Grand Martingale\nThis version raises the risk even higher. After each loss, you don’t just double your bet - you also add an extra unit. This means a win will bring in more profit, but your money can disappear much faster. It might look tempting if you expect to win soon, but if you keep losing, the losses get much bigger.\n\n### Mini-Martingale\nIn this martingale system betting variation, you set a strict stop-loss limit for each betting session. For instance, you may decide to double your bet only five times before quitting. In terms of bankroll management, this approach reduces some of the risks associated with the original Martingale betting system. However, since you are still doubling your bets, it also means you could walk away with a significant loss if a win doesn’t arrive in time.\n\n### Anti-Martingale Hybrids\nIn this variation, you double your bets during winning streaks and scale down when losses come. The goal is to balance aggression with caution. However, by constantly doubling your bets, you open yourself to the possibility of losing all your previous gains.\n\nIn the end, every version tries to cover the same weakness. No matter how you adjust it, the Martingale system relies on the idea that a win will eventually come. However, such an assumption makes the strategy dangerous.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'Using Martingale in Sports Betting', 
-    title: 'Using Martingale in Sports Betting', 
-    content: "The martingale betting system will be very effective when betting on heavy favourites with odds around 1.40-1.60. Although the profits are usually small, you should get a lot of wins by applying it to teams that have proven their potential to win.\n\nApplying this strategy for such teams against weaker opponents will see you get lots of wins. There could be the occasional losses to the heavyweight teams. However, throughout a season, they are likely to secure more wins than losses. So with a single win, you should get your betting funds and some profit back.\n\nHowever, do not apply it to evenly matched teams or teams that are suffering a poor run of form or a losing streak. Overall, it's better to treat Martingale as a fun experiment than a serious long-term strategy.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'Tips If You Want to Try the Martingale Strategy', 
-    title: 'Tips If You Want to Try the Martingale Strategy', 
-    content: "If you're determined to test this betting strategy, here's how to reduce risks:\n\n• **Start with tiny stakes:** Your base bet should be minimal compared to your bankroll.\n• **Pick even-money markets:** Roulette red/black or sports bets selections with odds around 2.00.\n• **Set strict stop-loss rules:** Decide how many rounds you’ll double before walking away.\n• **Don’t chase forever:** Accept that losses will come and know when to exit before your bankroll takes a big hit.\n• **Use it short-term only:** It’s not built for sustainable long-term betting.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'is-it-worth-it', 
-    title: 'Is the Martingale Betting System Worth It?', 
-    content: "The Martingale system isn’t a guaranteed way to win. It’s a relatively risky strategy that can work for short sessions but is highly vulnerable to long losing streaks.\n\nIf you’re a casual player, it can be fun to try this strategy with small bets just for the experience. But if you’re aiming for long-term profit, you’ll be better off sticking to smart bankroll management and better value bets.",
-    advantages: [],
-    risks: []
-  },
-  { 
-    id: 'final-thoughts', 
-    title: 'Final Thoughts', 
-    content: "The Martingale strategy has passed the test because of its simplicity. But simple does not mean safe. Doubling your bets after each loss may look smart. However, with each increase, you risk losing more money.\n\nIf you still wish to try the Martingale system, see it as entertainment. This system does not guarantee consistent profits. So bet small, set limits, and never risk more than you can afford to lose. In the end, no system replaces discipline.",
+    id: 'professional-verdict', 
+    title: 'Professional Verdict: Why Arithmetic Systems Fail', 
+    content: (
+      <>
+        Professional bettors avoid Martingale because it lacks a <strong>Value Edge</strong>. It is an arithmetic system that tries to overcome probability with stake sizing. However, if each individual bet has a negative expected value (due to the bookmaker's margin), no staking plan can magically turn it into a positive long-term return.
+      </>
+    ),
     advantages: [],
     risks: []
   },
   { 
     id: 'faqs', 
-    title: 'FAQs', 
+    title: 'Expert Q&A', 
     content: '',
     advantages: [],
     risks: [],
     faqs: [
       {
-        question: "What is martingale betting?",
-        answer: "It is a betting system where you double your stake after every loss, with the goal of recovering all previous losses and making a small profit with a single win."
+        question: "Is Martingale more effective in sports than roulette?",
+        answer: "Generally, no. Sports events are not truly independent like a roulette wheel, but the math of exponential growth remains the same. A losing streak in sports can be just as long and devastating."
       },
       {
-        question: "What is the 100% profitable Martingale strategy?",
-        answer: "There is no 100% profitable strategy. In theory, Martingale works with an infinite bankroll and no table limits, but in reality, both factors limit its success."
+        question: "Does the Martingale system improve my win rate?",
+        answer: "No. It only changes the *distribution* of your results. You win small amounts frequently, but will eventually suffer a rare, catastrophic loss that wipes out all those gains."
       },
       {
-        question: "Do casinos ban Martingale?",
-        answer: "No, casinos generally do not ban the Martingale system because they have table limits (maximum bets) that prevent players from doubling their stakes indefinitely."
+        question: "What is the best way to use Martingale safely?",
+        answer: "The safest way is to use a 'Mini-Martingale' with a very small base bet and a strict stop-loss limit after 3-4 consecutive losses."
+      },
+      {
+        question: "Why do 'influencers' often promote this system?",
+        answer: "It looks foolproof in the short term. Influencers often show sessions where 'it worked,' while ignoring the statistical inevitability of a total bankroll wipeout."
       }
     ]
   }
@@ -167,16 +190,16 @@ export default function MartingalePage() {
           <main className="flex-1 min-w-0 order-2 lg:order-1">
             <header className="mb-12">
               <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-8 tracking-tight leading-[1.1]">
-                Martingale <span className="text-brand-emerald">System</span>
+                Martingale <span className="text-brand-emerald">Masterclass</span>
               </h1>
               
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
-                  <p className="text-xl text-slate-600 leading-relaxed font-medium mb-6 italic">
-                    "The Martingale betting system works on a simple logic: after each loss, you double your bet. The idea is that with one win, you will recover previous losses and earn a profit."
+                  <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
+                    "The Martingale is a mathematical siren song—it promises certainty in an uncertain world, but its price is the statistical inevitability of ruin."
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    It might sound simple, but does it work in practice? Or is it just a fast way to lose all your money? This OddinsOdds Academy guide takes a closer look at this well-known strategy. We consider its origins and break down how it works.
+                    In this deep dive, we move beyond the superficial appeal of doubling down. We explore the geometric progression of risk, the role of table limits as a defensive tool for bookmakers, and the fundamental reason why no staking plan can overcome a negative expected value.
                   </p>
                 </div>
               </div>
