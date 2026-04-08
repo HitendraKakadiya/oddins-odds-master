@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, ReactNode } from 'react';
 
 interface StrategyContentSectionProps {
   id: string;
   title: string;
-  content: string;
+  content: ReactNode;
   advantages: string[];
   risks?: string[];
   isActive?: boolean;
@@ -78,7 +78,7 @@ export default function StrategyContentSection({
         </h2>
         
         <div className="text-slate-700 leading-relaxed text-lg mb-8 whitespace-pre-line">
-          <p>{content}</p>
+          {typeof content === 'string' ? <p>{content}</p> : content}
         </div>
 
         {(advantages.length > 0 || risks.length > 0) && (
