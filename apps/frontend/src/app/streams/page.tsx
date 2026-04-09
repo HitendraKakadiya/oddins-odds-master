@@ -31,8 +31,8 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
   return (
     <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="flex flex-col lg:flex-row gap-10">
-        {/* Sidebar - Now on the Left */}
-        <aside className="w-full lg:w-[360px] shrink-0 order-2 lg:order-1">
+        {/* Sidebar - Now on the Right */}
+        <aside className="w-full lg:w-[360px] shrink-0 order-1 lg:order-2">
           <div className="sticky top-24">
              <div className="mb-8">
                <h2 className="text-2xl font-black text-slate-800 mb-6 flex items-center gap-3">
@@ -51,7 +51,7 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1 min-w-0 order-1 lg:order-2">
+        <main className="flex-1 min-w-0 order-2 lg:order-1">
           {/* Hero Section */}
           <StreamsHero />
 

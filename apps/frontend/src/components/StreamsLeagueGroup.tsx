@@ -23,7 +23,7 @@ export default function StreamsLeagueGroup({ league, matches, date }: StreamsLea
   return (
     <div className="mb-8 rounded-[28px] overflow-hidden bg-white border border-slate-100 shadow-xl shadow-slate-200/30 transition-all duration-500 hover:shadow-slate-200/50">
       <div 
-        className="bg-brand-emerald p-5 flex items-center justify-between cursor-pointer hover:bg-emerald-600 transition-all duration-300"
+        className="bg-brand-emerald p-3.5 sm:p-5 flex items-center justify-between cursor-pointer hover:bg-emerald-600 transition-all duration-300"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex items-center gap-4">
