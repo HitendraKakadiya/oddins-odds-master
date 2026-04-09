@@ -16,7 +16,7 @@ const sections = [
         <br /><br />
         <strong>The Core Principles:</strong>
         <br />
-        • <strong>Zero Risk:</strong> Every "Back" bet at a bookmaker is matched by a "Lay" bet at an exchange.
+        • <strong>Zero Risk:</strong> Every &quot;Back&quot; bet at a bookmaker is matched by a &quot;Lay&quot; bet at an exchange.
         <br />
         • <strong>Mathematical Extraction:</strong> Converting a non-withdrawable free bet into withdrawable cash at a 70-80% efficiency rate.
         <br />
@@ -39,7 +39,7 @@ const sections = [
         <br />
         • <strong>The Lay Bet:</strong> Betting *against* an event happening (placed at the exchange).
         <br /><br />
-        When you place both simultaneously at near-identical odds, you create a "matched" position where your total bankroll (spread across both accounts) remains stable regardless of the final score.
+        When you place both simultaneously at near-identical odds, you create a &quot;matched&quot; position where your total bankroll (spread across both accounts) remains stable regardless of the final score.
       </>
     ),
     advantages: [],
@@ -50,15 +50,15 @@ const sections = [
     title: 'Extraction Efficiency: From Qualifying Bets to Cash', 
     content: (
       <>
-        A standard matched betting operation consists of two distinct phases. Understanding the difference between a "Qualifying Bet" and a "Free Bet" is essential for professional extraction.
+        A standard matched betting operation consists of two distinct phases. Understanding the difference between a &quot;Qualifying Bet&quot; and a &quot;Free Bet&quot; is essential for professional extraction.
         <br /><br />
         <strong>Phase 1: The Qualifier</strong>
         <br />
-        You place a bet with your own money to unlock a bonus. You aim for a "Qualifying Loss" of just a few cents by matching the odds as closely as possible.
+        You place a bet with your own money to unlock a bonus. You aim for a &quot;Qualifying Loss&quot; of just a few cents by matching the odds as closely as possible.
         <br /><br />
         <strong>Phase 2: The Free Bet</strong>
         <br />
-        Once the bonus is received, you repeat the process. However, since the stake isn't yours, the "winnings" from the back bet (minus the lay liability) result in pure, guaranteed profit.
+        Once the bonus is received, you repeat the process. However, since the stake isn&apos;t yours, the &quot;winnings&quot; from the back bet (minus the lay liability) result in pure, guaranteed profit.
       </>
     ),
     advantages: [],
@@ -66,16 +66,16 @@ const sections = [
   },
   { 
     id: 'operational-longevity', 
-    title: "Operational Longevity: Avoiding the 'Promo Ban'", 
+    title: "Operational Longevity: Avoiding the &apos;Promo Ban&apos;", 
     content: (
       <>
-        Bookmakers are aware of matched betting and will "gub" (ban from promotions) players who appear too efficient. To maintain your accounts long-term, you must mimic the behavior of a recreational loser.
+        Bookmakers are aware of matched betting and will &quot;gub&quot; (ban from promotions) players who appear too efficient. To maintain your accounts long-term, you must mimic the behavior of a recreational loser.
         <br /><br />
         <strong>Longevity Tactics:</strong>
         <br />
         • <strong>Mugging Bets:</strong> Placing occasional bets on high-margin markets without a promotional hook.
         <br />
-        • <strong>Avoid 100% Extraction:</strong> Don't always take the absolute best mathematical match; prioritize looking "natural."
+        • <strong>Avoid 100% Extraction:</strong> Don&apos;t always take the absolute best mathematical match; prioritize looking &quot;natural.&quot;
         <br />
         • <strong>Mobile App Usage:</strong> Betting via the app rather than a browser can make you look like a casual fan.
       </>
@@ -88,7 +88,7 @@ const sections = [
     title: 'Discipline Over Gambling', 
     content: (
       <>
-        Matched betting is often described as a "data-entry job with a high hourly wage." It requires meticulous record-keeping, emotional detachment, and technical precision. For those who treat it as a business rather than a hobby, it remains the most reliable way to extract wealth from the sports betting ecosystem.
+        Matched betting is often described as a &quot;data-entry job with a high hourly wage.&quot; It requires meticulous record-keeping, emotional detachment, and technical precision. For those who treat it as a business rather than a hobby, it remains the most reliable way to extract wealth from the sports betting ecosystem.
       </>
     ),
     advantages: [],
@@ -103,7 +103,7 @@ const sections = [
     faqs: [
       {
         question: "Is matched betting sustainable in 2024?",
-        answer: "Yes, but it requires more 'account hygiene' than in the past. While sign-up offers are finite, 'reload' offers for existing customers provide a consistent monthly income for those with healthy accounts."
+        answer: "Yes, but it requires more &apos;account hygiene&apos; than in the past. While sign-up offers are finite, &apos;reload&apos; offers for existing customers provide a consistent monthly income for those with healthy accounts."
       },
       {
         question: "Can I do this with a small starting bankroll?",
@@ -194,7 +194,7 @@ export default function MatchedBettingPage() {
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
                   <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
-                    "Matched betting is not gambling—it is a systematic process of capturing the arbitrage between bookmaker promotions and market realities."
+                    &quot;Matched betting is not gambling—it is a systematic process of capturing the arbitrage between bookmaker promotions and market realities.&quot;
                   </p>
                   <p className="text-slate-500 leading-relaxed">
                     In this technical guide, we move beyond the basics of sign-up offers and explore the heavy-lifting of matched betting: extraction efficiency, exchange liquidity, and the vital importance of account hygiene for long-term operational longevity.

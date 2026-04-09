@@ -12,7 +12,7 @@ const sections = [
     title: 'The Gold Standard of Risk: Balancing Edge and Bankroll', 
     content: (
       <>
-        The Kelly Criterion is widely considered the "Holy Grail" of money management. Developed by John Kelly in 1956, it is a mathematical formula designed to determine the optimal size of a series of bets to maximize the logarithm of wealth. In simpler terms, it finds the exact point where you bet enough to grow your bankroll as fast as possible without ever risking a total wipeout.
+        The Kelly Criterion is widely considered the &quot;Holy Grail&quot; of money management. Developed by John Kelly in 1956, it is a mathematical formula designed to determine the optimal size of a series of bets to maximize the logarithm of wealth. In simpler terms, it finds the exact point where you bet enough to grow your bankroll as fast as possible without ever risking a total wipeout.
         <br /><br />
         <strong>The Kelly Mandate:</strong>
         <br />
@@ -56,7 +56,7 @@ const sections = [
         <br /><br />
         <strong>The Accuracy Requirement:</strong>
         <br />
-        To use Kelly effectively, you don't just need to be a good bettor—you need to be a master statistician. You must have a proven model that generates winning probabilities more accurately than the bookmaker's market price.
+        To use Kelly effectively, you don&apos;t just need to be a good bettor—you need to be a master statistician. You must have a proven model that generates winning probabilities more accurately than the bookmaker&apos;s market price.
       </>
     ),
     advantages: [],
@@ -67,13 +67,13 @@ const sections = [
     title: 'Fractional Mitigation: Half-Kelly and the Safety Net', 
     content: (
       <>
-        Because humans are prone to overconfidence (Overestimation Bias), professional bettors almost never use "Full Kelly." Instead, they use <strong>Fractional Kelly</strong>.
+        Because humans are prone to overconfidence (Overestimation Bias), professional bettors almost never use &quot;Full Kelly.&quot; Instead, they use <strong>Fractional Kelly</strong>.
         <br /><br />
         <strong>Risk Tiers:</strong>
         <br />
         • <strong>Half-Kelly (0.5x):</strong> Betting 50% of what the formula suggests. This dramatically reduces volatility while still capturing 75% of the growth.
         <br />
-        • <strong>Quarter-Kelly (0.25x):</strong> Betting 25%. This is the "Industry Standard" for professional syndicates, providing a massive safety buffer against model error.
+        • <strong>Quarter-Kelly (0.25x):</strong> Betting 25%. This is the &quot;Industry Standard&quot; for professional syndicates, providing a massive safety buffer against model error.
       </>
     ),
     advantages: [],
@@ -99,7 +99,7 @@ const sections = [
     faqs: [
       {
         question: "Why is my Kelly percentage so high?",
-        answer: "If the formula suggests 20% or 30%, you likely have a massive discrepancy between your estimate and the bookie's odds. Usually, this means your probability estimate is too optimistic. Re-evaluate your model's accuracy."
+        answer: "If the formula suggests 20% or 30%, you likely have a massive discrepancy between your estimate and the bookie&apos;s odds. Usually, this means your probability estimate is too optimistic. Re-evaluate your model&apos;s accuracy."
       },
       {
         question: "Can I use Kelly for simultaneous bets?",
@@ -107,11 +107,11 @@ const sections = [
       },
       {
         question: "Is Kelly better than Flat Betting for beginners?",
-        answer: "No. Beginners should stick to Flat Betting (1-2%). Kelly requires a level of probabilistic accuracy that most novice bettors haven't developed yet."
+        answer: "No. Beginners should stick to Flat Betting (1-2%). Kelly requires a level of probabilistic accuracy that most novice bettors haven&apos;t developed yet."
       },
       {
         question: "How does commission affect the Kelly formula?",
-        answer: "Commission (on exchanges like Betfair) must be subtracted from the 'b' value. If you have 2.0 odds but pay 2% commission, your true 'b' is 0.98, not 1.0."
+        answer: "Commission (on exchanges like Betfair) must be subtracted from the &apos;b&apos; value. If you have 2.0 odds but pay 2% commission, your true &apos;b&apos; is 0.98, not 1.0."
       }
     ]
   }
@@ -192,10 +192,10 @@ export default function KellyCriterionPage() {
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
                   <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
-                    "The Kelly Criterion is the bridge between pure gambling and clinical finance. It determines not just *what* to bet, but exactly *how much* your edge is worth."
+                    &quot;The Kelly Criterion is the bridge between pure gambling and clinical finance. It determines not just *what* to bet, but exactly *how much* your edge is worth.&quot;
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    Used by hedge fund managers and professional gambling syndicates alike, the Kelly Criterion is the ultimate tool for exponential bankroll growth. In this technical guide, we break down the formula, address the 'sensitivity crisis' of probability estimation, and explain why 'Fractional Kelly' is the industry secret for long-term sustainability.
+                    Used by hedge fund managers and professional gambling syndicates alike, the Kelly Criterion is the ultimate tool for exponential bankroll growth. In this technical guide, we break down the formula, address the &apos;sensitivity crisis&apos; of probability estimation, and explain why &apos;Fractional Kelly&apos; is the industry secret for long-term sustainability.
                   </p>
                 </div>
               </div>

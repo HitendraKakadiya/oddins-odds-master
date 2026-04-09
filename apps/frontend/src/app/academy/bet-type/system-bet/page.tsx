@@ -9,14 +9,14 @@ import StrategyTOC from '@/components/Academy/StrategyTOC';
 const sections = [
   { 
     id: 'combinatorial-logic', 
-    title: "Combinatorial Logic: The Math of the 'M-of-N' System", 
+    title: "Combinatorial Logic: The Math of the &apos;M-of-N&apos; System", 
     content: (
       <>
         A System Bet is the transition from serial risk to <strong>parallel risk management</strong>. Unlike a standard accumulator, where every leg must succeed in sequence, a System Bet utilizes <strong>Combinatorial Logic</strong> to split your total stake across every possible mathematical permutation of your selections.
         <br /><br />
         <strong>The M-of-N Framework:</strong>
         <br />
-        Systems are defined by two variables: <strong>N</strong> (the number of selections) and <strong>M</strong> (the number of selections required per combination). For example, a "2/3 System" creates every possible "Double" (2-leg combo) from your 3 picks. This means a single failure doesn't kill the bet; it simply voids the combinations containing that losing leg.
+        Systems are defined by two variables: <strong>N</strong> (the number of selections) and <strong>M</strong> (the number of selections required per combination). For example, a &quot;2/3 System&quot; creates every possible &quot;Double&quot; (2-leg combo) from your 3 picks. This means a single failure doesn&apos;t kill the bet; it simply voids the combinations containing that losing leg.
       </>
     ),
     advantages: [],
@@ -27,7 +27,7 @@ const sections = [
     title: 'Structural Variants: Trixies, Yankees, and Goliaths', 
     content: (
       <>
-        Professional systems often utilize "Full Cover" structures. These don't just bet on a single permutation but cover <strong>all possible combinations</strong> above a certain leg count.
+        Professional systems often utilize &quot;Full Cover&quot; structures. These don&apos;t just bet on a single permutation but cover <strong>all possible combinations</strong> above a certain leg count.
         <br /><br />
         <strong>Technical Inventory:</strong>
         <br />
@@ -43,14 +43,14 @@ const sections = [
   },
   { 
     id: 'profit-thresholds', 
-    title: "Profit Thresholds: The 'Break-Even' Variable", 
+    title: "Profit Thresholds: The &apos;Break-Even&apos; Variable", 
     content: (
       <>
         The fatal error in recreational system betting is ignoring the <strong>Profit Threshold</strong>. Because your stake is split (e.g., a Yankee splits $110 into 11 x $10 bets), if only the minimum number of legs win (2 out of 4), your payout might be less than your total $110 stake.
         <br /><br />
         <strong>The Golden Rule:</strong>
         <br />
-        To maintain positive expectancy (EV+), the average odds of your selections must be high enough to "Self-Insure" the system. For a 2/3 system to be profitable with only 2 winners, each selection must have odds of at least <strong>1.75</strong>. Anything lower results in a "Winning Loss."
+        To maintain positive expectancy (EV+), the average odds of your selections must be high enough to &quot;Self-Insure&quot; the system. For a 2/3 system to be profitable with only 2 winners, each selection must have odds of at least <strong>1.75</strong>. Anything lower results in a &quot;Winning Loss.&quot;
       </>
     ),
     advantages: [],
@@ -76,7 +76,7 @@ const sections = [
     title: 'The Parallel Advantage', 
     content: (
       <>
-        System Betting is the preferred method for scaling complex models. It removes the "Binary Fragility" of the parlay and replaces it with a robust, multi-layered payout structure. Master the combinatorial math, adjust your unit stakes, and you transform a high-variance hobby into a professional financial operation.
+        System Betting is the preferred method for scaling complex models. It removes the &quot;Binary Fragility&quot; of the parlay and replaces it with a robust, multi-layered payout structure. Master the combinatorial math, adjust your unit stakes, and you transform a high-variance hobby into a professional financial operation.
       </>
     ),
     advantages: [],
@@ -91,11 +91,11 @@ const sections = [
     faqs: [
       {
         question: "Is a System Bet better than an Accumulator?",
-        answer: "If your model has high 'Selection Accuracy' (e.g., 80%), an Accumulator is more profitable. If your model targets 'High Odds / High Variance' (e.g., draws at 3.50), a System Bet is superior because it allows you to remain profitable despite the inevitable losses."
+        answer: "If your model has high &apos;Selection Accuracy&apos; (e.g., 80%), an Accumulator is more profitable. If your model targets &apos;High Odds / High Variance&apos; (e.g., draws at 3.50), a System Bet is superior because it allows you to remain profitable despite the inevitable losses."
       },
       {
-        question: "What is a 'Banker' in a System Bet?",
-        answer: "A Banker is a specific selection that MUST win for any combination in the system to pay out. Adding a Banker reduces the total number of bets (and thus the cost) but reintroduces the 'all-or-nothing' risk for that specific leg."
+        question: "What is a &apos;Banker&apos; in a System Bet?",
+        answer: "A Banker is a specific selection that MUST win for any combination in the system to pay out. Adding a Banker reduces the total number of bets (and thus the cost) but reintroduces the &apos;all-or-nothing&apos; risk for that specific leg."
       },
       {
         question: "Does the order of selections matter?",
@@ -166,10 +166,10 @@ export default function SystemBetPage() {
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
                   <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
-                    "Parallel risk management is the final step in the evolution from recreational gambler to professional trader."
+                    &quot;Parallel risk management is the final step in the evolution from recreational gambler to professional trader.&quot;
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    In this technical guide, we break down the 'Combinatorial Logic' of System Betting. We analyze the structural variants from Trixies to Goliaths, reveal the mathematical profit thresholds required to self-insure your bankroll, and provide an operational framework for managing stake inflation in multi-layered selections.
+                    In this technical guide, we break down the clinical &apos;Combinatorial Logic&apos; of System Betting. We analyze the structural variants from Trixies to Goliaths, reveal the mathematical profit thresholds required to self-insure your bankroll, and provide an operational framework for managing stake inflation in multi-layered selections.
                   </p>
                 </div>
               </div>

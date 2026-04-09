@@ -12,7 +12,7 @@ const sections = [
     title: 'Capital Preservation: The Logic of Draw No Bet', 
     content: (
       <>
-        Draw No Bet (DNB) is the primary entry point for bettors transitioning from recreational gambling to professional risk management. By removing the "Draw" as a losing outcome, DNB acts as a <strong>capital preservation tool</strong>. If the match ends in a stalemate, your entire stake is refunded. This isolation of the win/loss binary allows you to focus exclusively on your ability to select winners without being penalized by typical low-scoring variance.
+        Draw No Bet (DNB) is the primary entry point for bettors transitioning from recreational gambling to professional risk management. By removing the &quot;Draw&quot; as a losing outcome, DNB acts as a <strong>capital preservation tool</strong>. If the match ends in a stalemate, your entire stake is refunded. This isolation of the win/loss binary allows you to focus exclusively on your ability to select winners without being penalized by typical low-scoring variance.
         <br /><br />
         <strong>The DNB Framework:</strong>
         <br />
@@ -31,11 +31,11 @@ const sections = [
     title: 'Yield vs. Safety: The Physics of the Refund', 
     content: (
       <>
-        Understanding the physics of DNB requires comparing it to the 1X2 market. Because the bookmaker provides "insurance" against a draw, they compensate by lowering the odds on the win.
+        Understanding the physics of DNB requires comparing it to the 1X2 market. Because the bookmaker provides &quot;insurance&quot; against a draw, they compensate by lowering the odds on the win.
         <br /><br />
         <strong>Example Matrix:</strong>
         <br />
-        Consider a match where <strong>Team A</strong> is priced at 2.50 in the 1X2 market. In the Draw No Bet market, they might be priced at 1.80. You are paying a "premium" in the form of lower potential yield to obtain stake protection.
+        Consider a match where <strong>Team A</strong> is priced at 2.50 in the 1X2 market. In the Draw No Bet market, they might be priced at 1.80. You are paying a &quot;premium&quot; in the form of lower potential yield to obtain stake protection.
         
         <div className="my-8 overflow-hidden rounded-[32px] border border-slate-100 shadow-xl bg-white">
           <div className="overflow-x-auto">
@@ -81,7 +81,7 @@ const sections = [
         <br /><br />
         <strong>Operational Advantage:</strong>
         <br />
-        By utilizing DNB in your combos, you significantly increase the "Mathematical Floor" of your parlay, ensuring that your work isn't undone by a 90th-minute equalizer in a single match.
+        By utilizing DNB in your combos, you significantly increase the &quot;Mathematical Floor&quot; of your parlay, ensuring that your work isn&apos;t undone by a 90th-minute equalizer in a single match.
       </>
     ),
     advantages: [],
@@ -94,9 +94,9 @@ const sections = [
       <>
         Professional deployment of DNB usually occurs in two specific scenarios:
         <br /><br />
-        1. <strong>The Stubborn Underdog:</strong> When a lower-ranked team has a strong defensive record and is playing against an out-of-form favorite. DNB allows you to capture the "Value" of the underdog win while protecting against the likely draw.
+        1. <strong>The Stubborn Underdog:</strong> When a lower-ranked team has a strong defensive record and is playing against an out-of-form favorite. DNB allows you to capture the &quot;Value&quot; of the underdog win while protecting against the likely draw.
         <br />
-        2. <strong>Low-Volatility Derbies:</strong> In high-stakes matches where neither side wants to lose capital, the "Draw" probability increases significantly. DNB allows you to back your pick without the binary fear of a stalemate.
+        2. <strong>Low-Volatility Derbies:</strong> In high-stakes matches where neither side wants to lose capital, the &quot;Draw&quot; probability increases significantly. DNB allows you to back your pick without the binary fear of a stalemate.
       </>
     ),
     advantages: [],
@@ -107,7 +107,7 @@ const sections = [
     title: 'The Professional Safety Net', 
     content: (
       <>
-        Draw No Bet is not just a "safer" way to gamble; it is a clinical tool for managing variance. It rewards the bettor who can correctly identify a side that is "too good to lose" but might not have the clinical edge to guarantee a victory. In the long run, the capital saved by the DNB refund is often the difference between a failing bankroll and a profitable one.
+        Draw No Bet is not just a &quot;safer&quot; way to gamble; it is a clinical tool for managing variance. It rewards the bettor who can correctly identify a side that is &quot;too good to lose&quot; but might not have the clinical edge to guarantee a victory. In the long run, the capital saved by the DNB refund is often the difference between a failing bankroll and a profitable one.
       </>
     ),
     advantages: [],
@@ -129,12 +129,12 @@ const sections = [
         answer: "Choose Double Chance (1X) when you believe the draw is a likely outcome and you want to be paid for it. Choose DNB when you are confident in a win but want protection against a freak stalemate."
       },
       {
-        question: "How does DNB affect my 'Yield' over 1,000 bets?",
-        answer: "DNB will lower your average 'Odds won' but will significantly increase your 'Win/Refund Rate'. This results in a much smoother bankroll curve with fewer aggressive downswings compared to the 1X2 market."
+        question: "How does DNB affect my &apos;Yield&apos; over 1,000 bets?",
+        answer: "DNB will lower your average &apos;Odds won&apos; but will significantly increase your &apos;Win/Refund Rate&apos;. This results in a much smoother bankroll curve with fewer aggressive downswings compared to the 1X2 market."
       },
       {
         question: "Can I manually create my own DNB odds?",
-        answer: "Yes. By splitting your stake between the Home Win and the Draw (calculated as: Stake / Draw Odds), you can replicate DNB. Often, this 'Do It Yourself' method reveals that the bookmaker's DNB price is slightly underpaid."
+        answer: "Yes. By splitting your stake between the Home Win and the Draw (calculated as: Stake / Draw Odds), you can replicate DNB. Often, this &apos;Do It Yourself&apos; method reveals that the bookmaker&apos;s DNB price is slightly underpaid."
       }
     ]
   }
@@ -197,10 +197,10 @@ export default function DrawNoBetPage() {
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
                   <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
-                    "Draw No Bet is the clinical isolation of selection ability from market variance—it is the professional’s primary tool for capital preservation."
+                    &quot;Draw No Bet is the clinical isolation of selection ability from market variance—it is the professional&apos;s primary tool for capital preservation.&quot;
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    In this technical guide, we explore the mathematics of the 'Draw Refund.' We analyze the Yield-vs-Safety trade-off, the operational efficiency of DNB in multi-leg accumulators, and why identifying 'Stubborn Underdogs' is the key to unlocking the true value of this clinical safety net.
+                    In this technical guide, we explore the mathematics of the &apos;Draw Refund.&apos; We analyze the Yield-vs-Safety trade-off, the operational efficiency of DNB in multi-leg accumulators, and why identifying &apos;Stubborn Underdogs&apos; is the key to unlocking the true value of this clinical safety net.
                   </p>
                 </div>
               </div>

@@ -12,15 +12,15 @@ const sections = [
     title: 'The Capital Preservation Mindset: Betting as an Asset Class', 
     content: (
       <>
-        Professional betting is not about "winning a match"; it is about <strong>risk management</strong>. Your bankroll is your inventory. Without it, you cannot trade in the betting markets. Bankroll management is the systematic process of protecting that inventory against the statistical inevitability of variance.
+        Professional betting is not about &quot;winning a match&quot;; it is about <strong>risk management</strong>. Your bankroll is your inventory. Without it, you cannot trade in the betting markets. Bankroll management is the systematic process of protecting that inventory against the statistical inevitability of variance.
         <br /><br />
         <strong>The Golden Rules:</strong>
         <br />
         • <strong>Isolation:</strong> Your bankroll must be separate from your life savings.
         <br />
-        • <strong>Emotional Neutrality:</strong> Money on the table is already "lost"—you are simply managing its turnover.
+        • <strong>Emotional Neutrality:</strong> Money on the table is already &quot;lost&quot;—you are simply managing its turnover.
         <br />
-        • <strong>Capital Preservation:</strong> The priority is to avoid "The Zero"—the point where you can no longer place a value bet.
+        • <strong>Capital Preservation:</strong> The priority is to avoid &quot;The Zero&quot;—the point where you can no longer place a value bet.
       </>
     ),
     advantages: [],
@@ -39,9 +39,9 @@ const sections = [
         <br />
         • <strong>3 Units (3%):</strong> High-conviction edge (Rare).
         <br />
-        • <strong>0.5 Units (0.5%):</strong> Speculative "Long Shot" or experimental market.
+        • <strong>0.5 Units (0.5%):</strong> Speculative &quot;Long Shot&quot; or experimental market.
         <br /><br />
-        By using units, you ensure that no single "bad beat" can significantly damage your long-term growth.
+        By using units, you ensure that no single &quot;bad beat&quot; can significantly damage your long-term growth.
       </>
     ),
     advantages: [],
@@ -49,14 +49,14 @@ const sections = [
   },
   { 
     id: 'variance-downswing', 
-    title: 'Variance and the "Downswing": Protecting Your Mental Edge', 
+    title: 'Variance and the &quot;Downswing&quot;: Protecting Your Mental Edge', 
     content: (
       <>
         Even a 60% strike-rate bettor has a 5% chance of suffering <strong>10 consecutive losses</strong> at some point in their career. This is variance. Bankroll management provides the buffer needed to survive these mathematical slumps without going broke.
         <br /><br />
         <strong>The Psychology of the Slump:</strong>
         <br />
-        • <strong>Resist the Chase:</strong> Never increase stakes to "win back" losses.
+        • <strong>Resist the Chase:</strong> Never increase stakes to &quot;win back&quot; losses.
         <br />
         • <strong>Trust the Volume:</strong> If your edge is mathematically proven, profit will arrive over thousands of bets, not tens.
       </>
@@ -69,7 +69,7 @@ const sections = [
     title: 'Operational Hygiene: Tracking, Auditing, and Recalibrating', 
     content: (
       <>
-        You cannot manage what you do not measure. A professional bankroll workflow requires meticulous tracking and a monthly "audit" of your performance data.
+        You cannot manage what you do not measure. A professional bankroll workflow requires meticulous tracking and a monthly &quot;audit&quot; of your performance data.
         <br /><br />
         <strong>Audit Checklist:</strong>
         <br />
@@ -107,11 +107,11 @@ const sections = [
       },
       {
         question: "How large should my bankroll be?",
-        answer: "Large enough that a 1% unit bet is meaningful to you, but small enough that losing the entire amount wouldn't impact your ability to pay rent or bills. For beginners, $500 - $1,000 is a standard starting point."
+        answer: "Large enough that a 1% unit bet is meaningful to you, but small enough that losing the entire amount wouldn&apos;t impact your ability to pay rent or bills. For beginners, $500 - $1,000 is a standard starting point."
       },
       {
         question: "What is the biggest mistake in bankroll management?",
-        answer: "Speculative 'Accas' or 'Parlays'. Adding multiple legs to a bet exponentially increases the house edge and is the leading cause of bankroll drainage for recreational bettors."
+        answer: "Speculative &apos;Accas&apos; or &apos;Parlays&apos;. Adding multiple legs to a bet exponentially increases the house edge and is the leading cause of bankroll drainage for recreational bettors."
       },
       {
         question: "When should I withdraw my profits?",
@@ -194,10 +194,10 @@ export default function BankrollManagementPage() {
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
                   <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
-                    "Strategy without capital management is just an expensive hobby. Protecting your bankroll is the first and most important law of professional betting."
+                    &quot;Strategy without capital management is just an expensive hobby. Protecting your bankroll is the first and most important law of professional betting.&quot;
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    In this definitive guide, we move beyond basic 'budgeting' to explore the mathematics of capital preservation. We cover unit standardisation, the psychology of variance, and the operational hygiene required to treat your betting as a high-performance asset class.
+                    In this definitive guide, we move beyond basic &apos;budgeting&apos; to explore the mathematics of capital preservation. We cover unit standardisation, the psychology of variance, and the operational hygiene required to treat your betting as a high-performance asset class.
                   </p>
                 </div>
               </div>

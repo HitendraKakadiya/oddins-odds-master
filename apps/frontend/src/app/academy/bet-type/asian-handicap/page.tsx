@@ -12,13 +12,13 @@ const sections = [
     title: 'The Arbitrage of Probabilities: Understanding the Asian Line', 
     content: (
       <>
-        The Asian Handicap is the most mathematically evolved betting market in the world. Originally designed to eliminate the possibility of a "Draw" outcome, it balances two unevenly matched teams by applying a specific goal handicap. Unlike European Handicap, AH allows for "Half-Wins," "Half-Losses," and "Push" results, creating a more granular and efficient market for professional bettors.
+        The Asian Handicap is the most mathematically evolved betting market in the world. Originally designed to eliminate the possibility of a &quot;Draw&quot; outcome, it balances two unevenly matched teams by applying a specific goal handicap. Unlike European Handicap, AH allows for &quot;Half-Wins,&quot; &quot;Half-Losses,&quot; and &quot;Push&quot; results, creating a more granular and efficient market for professional bettors.
         <br /><br />
         <strong>The Core Mandate:</strong>
         <br />
         • <strong>Elimination of the Draw:</strong> By using half and quarter goals, the draw is essentially removed from the betting equation.
         <br />
-        • <strong>Reduced House Margin:</strong> Asian Handicap markets typically offer some of the lowest "vig" or commission in the industry.
+        • <strong>Reduced House Margin:</strong> Asian Handicap markets typically offer some of the lowest &quot;vig&quot; or commission in the industry.
         <br />
         • <strong>Capital Preservation:</strong> The dynamic nature of the lines allows for stake refunds in scenarios where your selection falls just short.
       </>
@@ -44,7 +44,7 @@ const sections = [
         <br />
         • <strong>-0.75 Line:</strong> Your stake is split between -0.5 and -1.0. If your team wins by exactly one goal, you win half the bet (the -0.5 half) and the other half is refunded (the -1.0 half).
         <br />
-        • <strong>-0.25 Line:</strong> Split between 0.0 and -0.5. A draw results in a "Half-Loss," where half your stake is lost and the other half is refunded.
+        • <strong>-0.25 Line:</strong> Split between 0.0 and -0.5. A draw results in a &quot;Half-Loss,&quot; where half your stake is lost and the other half is refunded.
       </>
     ),
     advantages: [],
@@ -70,13 +70,13 @@ const sections = [
     title: 'Strategic Deployment: Finding Value in the Spread',
     content: (
       <>
-        Successful Asian Handicap betting requires a deep understanding of <strong>Game State</strong>. You aren't just predicting who will win, but by *how much* they will win or how stubbornly they will defend.
+        Successful Asian Handicap betting requires a deep understanding of <strong>Game State</strong>. You aren&apos;t just predicting who will win, but by *how much* they will win or how stubbornly they will defend.
         <br /><br />
         <strong>Market Signals:</strong>
         <br />
         • <strong>The Underdog +1.0:</strong> Defensive specialists who play for draws or 1-goal losses offer massive value when favored teams have low scoring efficiency.
         <br />
-        • <strong>The Favorite -1.5:</strong> High-octane attacking teams facing defensive crises should be exploited when the market hasn't adjusted for squad rotations.
+        • <strong>The Favorite -1.5:</strong> High-octane attacking teams facing defensive crises should be exploited when the market hasn&apos;t adjusted for squad rotations.
       </>
     ),
     advantages: [],
@@ -87,7 +87,7 @@ const sections = [
     title: 'Asian Handicap vs traditional Handicap',
     content: (
       <>
-        While both systems use "head starts," the European Handicap (3-Way) is rigid and incorporates the Draw. The Asian Handicap is <strong>Dynamic</strong>—offering refunds (Pushes) and fractional outcomes that do not exist in traditional formats.
+        While both systems use &quot;head starts,&quot; the European Handicap (3-Way) is rigid and incorporates the Draw. The Asian Handicap is <strong>Dynamic</strong>—offering refunds (Pushes) and fractional outcomes that do not exist in traditional formats.
         <br /><br />
         <strong>Key Differentiators:</strong>
         <br />
@@ -101,7 +101,7 @@ const sections = [
   },
   {
     id: 'conclusion',
-    title: "The Master's Market",
+    title: "The Master&apos;s Market",
     content: (
       <>
         Asian Handicap is often seen as intimidating by novices, but it is the ultimate tool for serious bankroll growth. It rewards precision, protects capital, and offers the fairest prices in sports betting. Master the AH lines, and you master the math of football betting.
@@ -123,15 +123,15 @@ const sections = [
       },
       {
         question: "What is a 'Push' in Asian Handicap?",
-        answer: "A 'Push' occurs when the match result, after applying the handicap, is exactly a draw. In this scenario, your entire stake is refunded. This level of protection is unavailable in European Handicaps."
+        answer: "A &apos;Push&apos; occurs when the match result, after applying the handicap, is exactly a draw. In this scenario, your entire stake is refunded. This level of protection is unavailable in European Handicaps."
       },
       {
         question: "Does AH apply to in-play betting?",
-        answer: "Yes, but with a vital caveat: many bookmakers 'reset the score' to 0-0 from the moment you place an in-play AH bet. Always check if your bet is on the 'Full Time' result or just the 'Current Score' handicap."
+        answer: "Yes, but with a vital caveat: many bookmakers &apos;reset the score&apos; to 0-0 from the moment you place an in-play AH bet. Always check if your bet is on the &apos;Full Time&apos; result or just the &apos;Current Score&apos; handicap."
       },
       {
         question: "What is the best AH line for value?",
-        answer: "The +0.75 and +1.25 lines for underdogs are often undervalued. They provide a 'Half-Win' scenario even if your team loses by exactly one goal, offering a superior risk-to-reward ratio."
+        answer: "The +0.75 and +1.25 lines for underdogs are often undervalued. They provide a &apos;Half-Win&apos; scenario even if your team loses by exactly one goal, offering a superior risk-to-reward ratio."
       }
     ]
   }
@@ -244,10 +244,10 @@ export default function AsianHandicapPage() {
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
                   <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
-                    "The Asian Handicap is not just a betting market—it is a mathematical instrument for capital preservation and high-volume value extraction."
+                    &quot;The Asian Handicap is not just a betting market—it is a mathematical instrument for capital preservation and high-volume value extraction.&quot;
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    In this definitive technical guide, we explore the world's most dominant betting line. We break down the 'Arbitrage of Probabilities,' explain the tactical edge of quarter-line splitting, and reveal why professional liquidity is concentrated almost exclusively in the Asian markets.
+                    In this definitive technical guide, we explore the world&apos;s most dominant betting line. We break down the &apos;Arbitrage of Probabilities,&apos; explain the tactical edge of quarter-line splitting, and reveal why professional liquidity is concentrated almost exclusively in the Asian markets.
                   </p>
                 </div>
               </div>

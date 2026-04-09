@@ -12,7 +12,7 @@ const sections = [
     title: 'The Double-Edged Sword: Theoretical Profit vs. Real-World Ruin', 
     content: (
       <>
-        The Martingale system is perhaps the most famous—and most dangerous—strategy in the history of gambling. It operates on a deceptively simple premise: after every loss, you double your stake. The goal is to recover all previous losses and secure a profit equal to your original "base" stake with a single win.
+        The Martingale system is perhaps the most famous—and most dangerous—strategy in the history of gambling. It operates on a deceptively simple premise: after every loss, you double your stake. The goal is to recover all previous losses and secure a profit equal to your original &quot;base&quot; stake with a single win.
         <br /><br />
         <strong>The Mechanism of Action:</strong>
         <br />
@@ -52,7 +52,7 @@ const sections = [
     title: 'Hard Limits: Table Caps and Bankroll Exhaustion', 
     content: (
       <>
-        Even if you have the wealth to support a long losing streak, bookmakers use <strong>Table Limits</strong> as their ultimate defense. Most platforms set a maximum bet for a single market. Once your required Martingale stake exceeds this cap, the system collapses, "locking in" a massive catastrophic loss that can take months of standard value betting to recover.
+        Even if you have the wealth to support a long losing streak, bookmakers use <strong>Table Limits</strong> as their ultimate defense. Most platforms set a maximum bet for a single market. Once your required Martingale stake exceeds this cap, the system collapses, &quot;locking in&quot; a massive catastrophic loss that can take months of standard value betting to recover.
         <br /><br />
         <strong>Failure Points:</strong>
         <br />
@@ -77,7 +77,7 @@ const sections = [
         <br />
         • <strong>Mini-Martingale:</strong> Limiting the number of double-downs (e.g., only doubling three times) to prevent total ruin.
         <br />
-        • <strong>Paroli System:</strong> Doubling after a <strong>win</strong> rather than a loss to chase "hot" streaks with house money.
+        • <strong>Paroli System:</strong> Doubling after a <strong>win</strong> rather than a loss to chase &quot;hot&quot; streaks with house money.
         <br />
         • <strong>Grand Martingale:</strong> Doubling plus adding one unit—an even more aggressive method that accelerates ruin.
       </>
@@ -90,7 +90,7 @@ const sections = [
     title: 'Professional Verdict: Why Arithmetic Systems Fail', 
     content: (
       <>
-        Professional bettors avoid Martingale because it lacks a <strong>Value Edge</strong>. It is an arithmetic system that tries to overcome probability with stake sizing. However, if each individual bet has a negative expected value (due to the bookmaker's margin), no staking plan can magically turn it into a positive long-term return.
+        Professional bettors avoid Martingale because it lacks a <strong>Value Edge</strong>. It is an arithmetic system that tries to overcome probability with stake sizing. However, if each individual bet has a negative expected value (due to the bookmaker&apos;s margin), no staking plan can magically turn it into a positive long-term return.
       </>
     ),
     advantages: [],
@@ -113,11 +113,11 @@ const sections = [
       },
       {
         question: "What is the best way to use Martingale safely?",
-        answer: "The safest way is to use a 'Mini-Martingale' with a very small base bet and a strict stop-loss limit after 3-4 consecutive losses."
+        answer: "The safest way is to use a &apos;Mini-Martingale&apos; with a very small base bet and a strict stop-loss limit after 3-4 consecutive losses."
       },
       {
-        question: "Why do 'influencers' often promote this system?",
-        answer: "It looks foolproof in the short term. Influencers often show sessions where 'it worked,' while ignoring the statistical inevitability of a total bankroll wipeout."
+        question: "Why do &apos;influencers&apos; often promote this system?",
+        answer: "It looks foolproof in the short term. Influencers often show sessions where &apos;it worked,&apos; while ignoring the statistical inevitability of a total bankroll wipeout."
       }
     ]
   }
@@ -196,7 +196,7 @@ export default function MartingalePage() {
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
                   <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
-                    "The Martingale is a mathematical siren song—it promises certainty in an uncertain world, but its price is the statistical inevitability of ruin."
+                    &quot;The Martingale is a mathematical siren song—it promises certainty in an uncertain world, but its price is the statistical inevitability of ruin.&quot;
                   </p>
                   <p className="text-slate-500 leading-relaxed">
                     In this deep dive, we move beyond the superficial appeal of doubling down. We explore the geometric progression of risk, the role of table limits as a defensive tool for bookmakers, and the fundamental reason why no staking plan can overcome a negative expected value.

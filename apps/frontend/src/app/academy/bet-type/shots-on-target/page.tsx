@@ -18,9 +18,9 @@ const sections = [
         <br />
         Understanding what is <em>not</em> an SoT is critical for bankroll preservation:
         <br />
-        • <strong>Woodwork Hits:</strong> If a shot hits the post or crossbar and does not enter the net, it is recorded as a 'Shot Off Target.'
+        • <strong>Woodwork Hits:</strong> If a shot hits the post or crossbar and does not enter the net, it is recorded as a &apos;Shot Off Target.&apos;
         <br />
-        • <strong>Early Blocks:</strong> Shots blocked by defenders who are not the "last man" are classified as 'Blocked Shots,' not SoT.
+        • <strong>Early Blocks:</strong> Shots blocked by defenders who are not the &quot;last man&quot; are classified as &apos;Blocked Shots,&apos; not SoT.
         <br />
         • <strong>Accidental Crosses:</strong> If a cross accidentally loops toward the goal but is caught by the keeper, it is rarely credited as an SoT.
       </>
@@ -33,7 +33,7 @@ const sections = [
     title: 'Shot Density: Analyzing Player Intent', 
     content: (
       <>
-        Professional SoT betting requires an analysis of <strong>Shot Density</strong>—the frequency of attempts relative to minutes played. Some players are "Volume Shooters" (e.g., Erling Haaland or Mo Salah) whose primary tactical role is to test the keeper regardless of the angle.
+        Professional SoT betting requires an analysis of <strong>Shot Density</strong>—the frequency of attempts relative to minutes played. Some players are &quot;Volume Shooters&quot; (e.g., Erling Haaland or Mo Salah) whose primary tactical role is to test the keeper regardless of the angle.
         <br /><br />
         <strong>High-Yield Indicators:</strong>
         <br />
@@ -50,11 +50,11 @@ const sections = [
     title: 'Goalkeeper Variance: The Shot-Stopper Effect', 
     content: (
       <>
-        A secondary variable often ignored is the <strong>Goalkeeper's Profile</strong>. Refined models account for the "Parry-Rate" of the opposing keeper. A keeper who parries shots back into play (rather than catching) increases the probability of secondary and tertiary SoT opportunities in a single attacking sequence.
+        A secondary variable often ignored is the <strong>Goalkeeper&apos;s Profile</strong>. Refined models account for the &quot;Parry-Rate&quot; of the opposing keeper. A keeper who parries shots back into play (rather than catching) increases the probability of secondary and tertiary SoT opportunities in a single attacking sequence.
         <br /><br />
         <strong>Tactical Edge:</strong>
         <br />
-        Pairing a high-volume shooter against a keeper with a low "Claim-Success" rate is a prime strategy for the 2.5+ and 3.5+ SoT markets.
+        Pairing a high-volume shooter against a keeper with a low &quot;Claim-Success&quot; rate is a prime strategy for the 2.5+ and 3.5+ SoT markets.
       </>
     ),
     advantages: [],
@@ -65,11 +65,11 @@ const sections = [
     title: 'Desperation Velocity: The Trailing Shot-Spike', 
     content: (
       <>
-        In-play SoT markets are dictated by <strong>Desperation Velocity</strong>. When a favorite is trailing after the 65th minute, their "Tactical Filter" disappears. Players will take shots from sub-optimal positions just to force a mistake or generate a corner.
+        In-play SoT markets are dictated by <strong>Desperation Velocity</strong>. When a favorite is trailing after the 65th minute, their &quot;Tactical Filter&quot; disappears. Players will take shots from sub-optimal positions just to force a mistake or generate a corner.
         <br /><br />
         <strong>Market Trigger:</strong>
         <br />
-        This surge in volume makes "Player Over 1.5 SoT" a high-probability trade during the final quarter of the match, as teams move from controlled build-up to chaotic verticality.
+        This surge in volume makes &quot;Player Over 1.5 SoT&quot; a high-probability trade during the final quarter of the match, as teams move from controlled build-up to chaotic verticality.
       </>
     ),
     advantages: [],
@@ -95,10 +95,10 @@ const sections = [
     faqs: [
       {
         question: "Does a deflection count as a Shot on Target?",
-        answer: "Only if the original shot was already on target before the deflection. If a wild shot is heading wide but hits a defender and goes into the net, it is recorded as an 'Own Goal' or a goal, but technically not an SoT for the original kicker in many data models."
+        answer: "Only if the original shot was already on target before the deflection. If a wild shot is heading wide but hits a defender and goes into the net, it is recorded as an &apos;Own Goal&apos; or a goal, but technically not an SoT for the original kicker in many data models."
       },
       {
-        question: "Is 'Over 0.5' the same as '1+'?",
+        question: "Is &apos;Over 0.5&apos; the same as &apos;1+&apos;?",
         answer: "Yes. These are identical markets. You simply need the player to register 1 or more shots that meet the clinical SoT definition."
       },
       {
@@ -106,8 +106,8 @@ const sections = [
         answer: "Yes, provided the penalty is either scored or saved by the goalkeeper. A penalty that hits the woodwork or misses the target entirely counts as 0 SoT."
       },
       {
-        question: "How do 'Blocked Shots' affect my bet?",
-        answer: "Negatively. Most 'Blocked' shots (outside the last-man scenario) are not recorded as SoT. This is why betting on players who shoot from distance into congested boxes is inherently higher risk."
+        question: "How do &apos;Blocked Shots&apos; affect my bet?",
+        answer: "Negatively. Most &apos;Blocked&apos; shots (outside the last-man scenario) are not recorded as SoT. This is why betting on players who shoot from distance into congested boxes is inherently higher risk."
       }
     ]
   }
@@ -170,10 +170,10 @@ export default function ShotsOnTargetPage() {
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
                   <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
-                    "Shots on target filter out the luck of the goal—monetizing the intentionality of a player's tactical role."
+                    &quot;Shots on target filter out the luck of the goal—monetizing the intentionality of a player&apos;s tactical role.&quot;
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    In this technical guide, we break down the 'Clinical Definition' of an SoT using Opta standards. We analyze the distinction between shot volume and shot quality, reveal the secondary variable of 'Goalkeeper Parry-Rates,' and provide a professional framework for trading 'Desperation Velocity' in live markets.
+                    In this technical guide, we break down the clinical &apos;Definition&apos; of an SoT using Opta standards. We analyze the distinction between shot volume and shot quality, reveal the secondary variable of &apos;Goalkeeper Parry-Rates,&apos; and provide a professional framework for trading &apos;Desperation Velocity&apos; in live markets.
                   </p>
                 </div>
               </div>

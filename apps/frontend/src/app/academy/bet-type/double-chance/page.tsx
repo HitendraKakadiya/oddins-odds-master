@@ -12,7 +12,7 @@ const sections = [
     title: 'The Probability Floor: Securing 66.6% of Outcomes', 
     content: (
       <>
-        Double Chance (DC) is the most fundamental tool for increasing your "Probability Floor." In a standard 3-way (1X2) market, you are mathematically selecting only 33.3% of the possible match states. Double Chance immediately elevates that coverage to <strong>66.6%</strong> by allowing you to combine two of the three outcomes into a single wager.
+        Double Chance (DC) is the most fundamental tool for increasing your &quot;Probability Floor.&quot; In a standard 3-way (1X2) market, you are mathematically selecting only 33.3% of the possible match states. Double Chance immediately elevates that coverage to <strong>66.6%</strong> by allowing you to combine two of the three outcomes into a single wager.
         <br /><br />
         <strong>The Three Pillars of DC:</strong>
         <br />
@@ -20,7 +20,7 @@ const sections = [
         <br />
         • <strong>X2 (Away or Draw):</strong> Covers the away win and the stalemate. Your bet only fails if the home team wins.
         <br />
-        • <strong>12 (Home or Away):</strong> Eliminates the "Draw" entirely. Your bet wins as long as the match does not end in a tie.
+        • <strong>12 (Home or Away):</strong> Eliminates the &quot;Draw&quot; entirely. Your bet wins as long as the match does not end in a tie.
       </>
     ),
     advantages: [],
@@ -28,14 +28,14 @@ const sections = [
   },
   { 
     id: 'variant-12', 
-    title: "The '12' Variant: Elimination of the Stale Match", 
+    title: "The &apos;12&apos; Variant: Elimination of the Stale Match", 
     content: (
       <>
-        The <strong>'12' betting market</strong> is often the most underutilized tool in a professional's arsenal. It is specifically designed for high-stakes environments where a draw serves no party—such as second-leg knockout matches or final-day survival battles.
+        The <strong>&apos;12&apos; betting market</strong> is often the most underutilized tool in a professional&apos;s arsenal. It is specifically designed for high-stakes environments where a draw serves no party—such as second-leg knockout matches or final-day survival battles.
         <br /><br />
         <strong>Tactical Deployment:</strong>
         <br />
-        Deploy '12' when you observe "Glass-Cannon" dynamics: two teams with high attacking efficiency but catastrophic defensive lapses. In these scenarios, the probability of a 0-0 or 1-1 stalemate is statistically lower than a decisive result in either direction.
+        Deploy &apos;12&apos; when you observe &quot;Glass-Cannon&quot; dynamics: two teams with high attacking efficiency but catastrophic defensive lapses. In these scenarios, the probability of a 0-0 or 1-1 stalemate is statistically lower than a decisive result in either direction.
       </>
     ),
     advantages: [],
@@ -50,7 +50,7 @@ const sections = [
         <br /><br />
         <strong>The Yield Curve:</strong>
         <br />
-        By using DC in your combos, you trade off peak "Alpha" (maximum possible profit) for a significantly higher "Expected Hit Rate." This is a primary strategy for professional bankrolls aiming for consistent, incremental growth rather than high-risk "moon-shots."
+        By using DC in your combos, you trade off peak &quot;Alpha&quot; (maximum possible profit) for a significantly higher &quot;Expected Hit Rate.&quot; This is a primary strategy for professional bankrolls aiming for consistent, incremental growth rather than high-risk &quot;moon-shots.&quot;
       </>
     ),
     advantages: [],
@@ -65,7 +65,7 @@ const sections = [
         <br /><br />
         <strong>The Value Arbitrage:</strong>
         <br />
-        Always compare the price of DC with the +0.5 AH line on the same team. Occasionally, due to different liquidity pools or bookmaker "bias," one market will offer a 2-5% higher payout for the exact same mathematical probability. Exploiting these discrepancies is the hallmark of a masterclass bettor.
+        Always compare the price of DC with the +0.5 AH line on the same team. Occasionally, due to different liquidity pools or bookmaker &quot;bias,&quot; one market will offer a 2-5% higher payout for the exact same mathematical probability. Exploiting these discrepancies is the hallmark of a masterclass bettor.
       </>
     ),
     advantages: [],
@@ -76,7 +76,7 @@ const sections = [
     title: 'The Conservative Alpha', 
     content: (
       <>
-        Double Chance is the foundation of defensive betting. It rewards the analyst who correctly identifies that a team is <strong>unlikely to lose</strong>, even if they aren't clinical enough to guarantee a win. When managed with a clear focus on pricing efficiency, DC becomes one of the most stable revenue streams in sports betting.
+        Double Chance is the foundation of defensive betting. It rewards the analyst who correctly identifies that a team is <strong>unlikely to lose</strong>, even if they aren&apos;t clinical enough to guarantee a win. When managed with a clear focus on pricing efficiency, DC becomes one of the most stable revenue streams in sports betting.
       </>
     ),
     advantages: [],
@@ -90,20 +90,20 @@ const sections = [
     risks: [],
     faqs: [
       {
-        question: "When is Double Chance mathematically 'bad value'?",
+        question: "When is Double Chance mathematically &apos;bad value&apos;?",
         answer: "When backing heavy favorites at home (e.g., odds under 1.15). The risk of a freak 'loss' event usually outweighs the negligible return. If you need 1X to make a favorite bet viable, the selection is likely flawed to begin with."
       },
       {
         question: "Is DC better than Draw No Bet?",
-        answer: "If you believe the draw is a high-probability event, DC is superior because it pays out on the stalemate. DNB merely refunds your stake, which can lead to 'stagnant' bankroll performance in high-draw leagues."
+        answer: "If you believe the draw is a high-probability event, DC is superior because it pays out on the stalemate. DNB merely refunds your stake, which can lead to &apos;stagnant&apos; bankroll performance in high-draw leagues."
       },
       {
-        question: "How does '12' betting behave in overtime?",
-        answer: "Crucially, Double Chance markets in football almost exclusively apply to 'Regular Time' (90 mins + injury time). They do not extend to Extra Time or Penalty Shootouts unless specifically stated as a 'To Qualify' or 'To Lift Trophy' market."
+        question: "How does &apos;12&apos; betting behave in overtime?",
+        answer: "Crucially, Double Chance markets in football almost exclusively apply to &apos;Regular Time&apos; (90 mins + injury time). They do not extend to Extra Time or Penalty Shootouts unless specifically stated as a &apos;To Qualify&apos; or &apos;To Lift Trophy&apos; market."
       },
       {
         question: "What leagues are best for X2 Double Chance?",
-        answer: "Lower-tier leagues with high parity. When parity is high, bookmakers often overestimate 'Home Advantage.' Backing resilient away teams at X2 allows you to exploit this bias with a massive 66% probability coverage."
+        answer: "Lower-tier leagues with high parity. When parity is high, bookmakers often overestimate &apos;Home Advantage.&apos; Backing resilient away teams at X2 allows you to exploit this bias with a massive 66% probability coverage."
       }
     ]
   }
@@ -164,10 +164,10 @@ export default function DoubleChancePage() {
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
                   <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
-                    "Double Chance is the clinical expansion of probability—it is the defensive foundation of any professional bankroll strategy."
+                    &quot;Double Chance is the clinical expansion of probability—it is the defensive foundation of any professional bankroll strategy.&quot;
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    In this technical breakdown, we examine the 'Probability Floor' of Double Chance betting. We explore the tactical utility of the '12' variant in must-win scenarios, the mathematical buffer it provides to high-volatility accumulators, and the value arbitrage between Double Chance and Asian Handicap markets.
+                    In this technical breakdown, we examine the &apos;Probability Floor&apos; of Double Chance betting. We explore the tactical utility of the &apos;12&apos; variant in must-win scenarios, the mathematical buffer it provides to high-volatility accumulators, and the value arbitrage between Double Chance and Asian Handicap markets.
                   </p>
                 </div>
               </div>

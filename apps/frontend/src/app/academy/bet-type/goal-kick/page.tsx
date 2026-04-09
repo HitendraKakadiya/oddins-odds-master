@@ -12,11 +12,11 @@ const sections = [
     title: 'Restart Dynamics: The Mechanics of the Goal Kick', 
     content: (
       <>
-        In professional modeling, a <strong>Goal Kick</strong> is analyzed not as a simple stoppage, but as a "Possession Reset." It is the primary statistical marker for <strong>Inefficient Attacking</strong>. Every goal kick represents an offensive sequence that failed to result in a goal, a corner, or a parried save.
+        In professional modeling, a <strong>Goal Kick</strong> is analyzed not as a simple stoppage, but as a &quot;Possession Reset.&quot; It is the primary statistical marker for <strong>Inefficient Attacking</strong>. Every goal kick represents an offensive sequence that failed to result in a goal, a corner, or a parried save.
         <br /><br />
         <strong>The Strategic Context:</strong>
         <br />
-        • <strong>Attacking Waste:</strong> High goal kick counts often correlate with teams that take low-quality "hopeful" shots from distance.
+        • <strong>Attacking Waste:</strong> High goal kick counts often correlate with teams that take low-quality &quot;hopeful&quot; shots from distance.
         <br />
         • <strong>Tactical Reset:</strong> For the defending team, a goal kick is a controlled moment to re-establish their shape and launch a structured build-up from the back.
       </>
@@ -33,7 +33,7 @@ const sections = [
         <br /><br />
         <strong>High-Yield Predictors:</strong>
         <br />
-        • <strong>Low-Accuracy Strikers:</strong> Teams with forwards who have a high "Shot-Volume" but low "SoT-Percentage" are the primary drivers of high goal-kick counts.
+        • <strong>Low-Accuracy Strikers:</strong> Teams with forwards who have a high &quot;Shot-Volume&quot; but low &quot;SoT-Percentage&quot; are the primary drivers of high goal-kick counts.
         <br />
         • <strong>Distance Bias:</strong> Teams that are forced to shoot from outside the box due to a compact defense will naturally produce more off-target balls, leading to a surplus of goal kicks.
       </>
@@ -46,11 +46,11 @@ const sections = [
     title: 'Defensive Depth: The Low-Block Effect', 
     content: (
       <>
-        A common misconception is that under-pressure teams always concede more goal kicks. In reality, a team playing a <strong>"Deep Low-Block"</strong> may actually concede <em>fewer</em> goal kicks because they focus on blocking shot lanes and forcing corners.
+        A common misconception is that under-pressure teams always concede more goal kicks. In reality, a team playing a <strong>&quot;Deep Low-Block&quot;</strong> may actually concede <em>fewer</em> goal kicks because they focus on blocking shot lanes and forcing corners.
         <br /><br />
         <strong>The Variable:</strong>
         <br />
-        Active pressure in the mid-block often forces rushed, inaccurate shots. If your model predicts a frantic, end-to-end match with low tactical discipline, the "Over" lines on Goal Kicks provide an excellent "Non-Goal" safety net.
+        Active pressure in the mid-block often forces rushed, inaccurate shots. If your model predicts a frantic, end-to-end match with low tactical discipline, the &quot;Over&quot; lines on Goal Kicks provide an excellent &quot;Non-Goal&quot; safety net.
       </>
     ),
     advantages: [],
@@ -67,7 +67,7 @@ const sections = [
         <br />
         • <strong>Retaken Kicks:</strong> If a keeper takes a goal kick but the referee orders a retake (due to encroachment or a moving ball), it almost always counts as <strong>one incident</strong> toward the total.
         <br />
-        • <strong>90-Minute Rule:</strong> Unless specified as a 'Full Match' market, these bets are settled on regular time. Goal kicks in Extra Time are excluded from standard market calculations.
+        • <strong>90-Minute Rule:</strong> Unless specified as a &apos;Full Match&apos; market, these bets are settled on regular time. Goal kicks in Extra Time are excluded from standard market calculations.
       </>
     ),
     advantages: [],
@@ -78,7 +78,7 @@ const sections = [
     title: 'The Value in the Reset', 
     content: (
       <>
-        Goal Kick markets are the ultimate contrarian edge. By focusing on match inefficiency rather than clinical success, you can monetize the "waste" in an opponent's game plan. Analyze the off-target volume, understand the defensive shape, and exploit the markets that the public ignores.
+        Goal Kick markets are the ultimate contrarian edge. By focusing on match inefficiency rather than clinical success, you can monetize the &quot;waste&quot; in an opponent&apos;s game plan. Analyze the off-target volume, understand the defensive shape, and exploit the markets that the public ignores.
       </>
     ),
     advantages: [],
@@ -96,11 +96,11 @@ const sections = [
         answer: "No. If the ball is last touched by a defender and goes over the goal line, it is a corner. A goal kick only occurs if the attacking team touched it last."
       },
       {
-        question: "What is a 'Goal Kick Range' bet?",
-        answer: "This is a prediction that the total kicks will fall within a specific bracket (e.g., 10-12). It offers higher odds but requires a precise read on the match's 'Tactical Tempo'."
+        question: "What is a &apos;Goal Kick Range&apos; bet?",
+        answer: "This is a prediction that the total kicks will fall within a specific bracket (e.g., 10-12). It offers higher odds but requires a precise read on the match&apos;s &apos;Tactical Tempo&apos;."
       },
       {
-        question: "Do 'Woodwork' hits count as goal kicks?",
+        question: "Do &apos;Woodwork&apos; hits count as goal kicks?",
         answer: "Only if the ball goes out of play after hitting the post. If the keeper saves the rebound or the ball stays in play, no goal kick is awarded."
       },
       {
@@ -168,10 +168,10 @@ export default function GoalKickPage() {
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
                   <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
-                    "Goal kicks are the tactical marker for attacking inefficiency—monetizing the waste in an opponent's game plan."
+                    &quot;Goal kicks are the tactical marker for attacking inefficiency—monetizing the waste in an opponent&apos;s game plan.&quot;
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    In this technical guide, we break down the clinical mechanics of 'Restart Dynamics.' We analyze the 'Inefficiency Coefficient' of shot-accuracy data, identify the specific 'Low-Block' effects that dictate kick volume, and reveal the operational settlement rules that protect your bankroll from technical errors.
+                    In this technical guide, we break down the clinical mechanics of &apos;Restart Dynamics.&apos; We analyze the &apos;Inefficiency Coefficient&apos; of shot-accuracy data, identify the specific &apos;Low-Block&apos; effects that dictate kick volume, and reveal the operational settlement rules that protect your bankroll from technical errors.
                   </p>
                 </div>
               </div>

@@ -12,7 +12,7 @@ const sections = [
     title: 'The Stoic Baseline: Eliminating Staking Volatility', 
     content: (
       <>
-        Flat betting is the most disciplined form of money management in sports betting. It involves wagering the exact same amount on every single event, regardless of your confidence level, recent win/loss streaks, or the odds of the match. By removing the "Bet Sizing" variable, you isolate the only thing that matters: your ability to find <strong>Positive Expected Value (+EV)</strong>.
+        Flat betting is the most disciplined form of money management in sports betting. It involves wagering the exact same amount on every single event, regardless of your confidence level, recent win/loss streaks, or the odds of the match. By removing the &quot;Bet Sizing&quot; variable, you isolate the only thing that matters: your ability to find <strong>Positive Expected Value (+EV)</strong>.
         <br /><br />
         <strong>The Mechanics:</strong>
         <br />
@@ -31,11 +31,11 @@ const sections = [
     title: 'The Law of Large Numbers: Surviving the Mathematical Grind', 
     content: (
       <>
-        Sports betting is a high-volume business. To overcome the bookmaker's "vig" (margin), you need a massive sample size of bets. Flat betting is the only strategy that guarantees you will stay in the game long enough for the <strong>Law of Large Numbers</strong> to work in your favor.
+        Sports betting is a high-volume business. To overcome the bookmaker&apos;s &quot;vig&quot; (margin), you need a massive sample size of bets. Flat betting is the only strategy that guarantees you will stay in the game long enough for the <strong>Law of Large Numbers</strong> to work in your favor.
         <br /><br />
         <strong>Survival over Sensation:</strong>
         <br />
-        Unlike progressive systems (Martingale), flat betting ensures that a 10game losing streak only costs you 10% of your bankroll. This resilience allows you to weather the inevitable "downswings" of sports variance without the risk of insolvency.
+        Unlike progressive systems (Martingale), flat betting ensures that a 10game losing streak only costs you 10% of your bankroll. This resilience allows you to weather the inevitable &quot;downswings&quot; of sports variance without the risk of insolvency.
       </>
     ),
     advantages: [],
@@ -46,7 +46,7 @@ const sections = [
     title: 'Selection Purity: Evaluating Your Edge', 
     content: (
       <>
-        Professional syndicates use flat betting to "Audit" their analysts. If a bettor is not profitable using flat stakes, it proves they do not have a genuine <strong>Predictive Edge</strong>.
+        Professional syndicates use flat betting to &quot;Audit&quot; their analysts. If a bettor is not profitable using flat stakes, it proves they do not have a genuine <strong>Predictive Edge</strong>.
         <br /><br />
         <strong>The Audit Protocol:</strong>
         <br />
@@ -56,7 +56,7 @@ const sections = [
         <br />
         • <strong>Step 3:</strong> If ROI is positive, you have found value. If negative, you are likely just guessing.
         <br /><br />
-        Flat betting removes the "noise" created by varying bet sizes, giving you a clinical view of your actual sports knowledge.
+        Flat betting removes the &quot;noise&quot; created by varying bet sizes, giving you a clinical view of your actual sports knowledge.
       </>
     ),
     advantages: [],
@@ -67,11 +67,11 @@ const sections = [
     title: 'Operational Resilience: The Psychological Anchor', 
     content: (
       <>
-        The biggest enemy of a bettor is their own brain. The "Gambler's Fallacy" and "Loss Aversion" drive people to bet more when they are losing. Flat betting acts as a <strong>Psychological Anchor</strong>, forcing you to remain rational when emotions are high.
+        The biggest enemy of a bettor is their own brain. The &quot;Gambler&apos;s Fallacy&quot; and &quot;Loss Aversion&quot; drive people to bet more when they are losing. Flat betting acts as a <strong>Psychological Anchor</strong>, forcing you to remain rational when emotions are high.
         <br /><br />
         <strong>Mental Advantages:</strong>
         <br />
-        • <strong>Eliminates the "Chase":</strong> No more doubling down to win back losses.
+        • <strong>Eliminates the &quot;Chase&quot;:</strong> No more doubling down to win back losses.
         <br />
         • <strong>Reduces Stress:</strong> Since the risk is always known and controlled, you can focus on analysis rather than anxiety.
       </>
@@ -81,10 +81,10 @@ const sections = [
   },
   { 
     id: 'conclusion', 
-    title: "The Professional's Foundation", 
+    title: "The Professional&apos;s Foundation", 
     content: (
       <>
-        Flat betting might seem boring, but in the world of professional betting, "boring" is synonymous with "sustainable." It is the benchmark against which all other strategies (Kelly, Fibonacci, Proportional) are measured. If you cannot survive a flat-betting grind, you will not survive professional betting.
+        Flat betting might seem boring, but in the world of professional betting, &quot;boring&quot; is synonymous with &quot;sustainable.&quot; It is the benchmark against which all other strategies (Kelly, Fibonacci, Proportional) are measured. If you cannot survive a flat-betting grind, you will not survive professional betting.
       </>
     ),
     advantages: [],
@@ -190,10 +190,10 @@ export default function FlatBettingPage() {
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
                   <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
-                    "Excitement is the tax you pay for lack of discipline. Flat betting is the clinical benchmark for serious capital management."
+                    &quot;Excitement is the tax you pay for lack of discipline. Flat betting is the clinical benchmark for serious capital management.&quot;
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    While progressive systems promise quick recoveries and 'hot streaks' promise riches, flat betting provides the one thing every professional needs: <strong>Statistical Survival</strong>. In this masterclass, we explore how flat staking allows you to isolate your predictive edge, survive the inevitable laws of variance, and build a sustainable long-term betting career.
+                    While progressive systems promise quick recoveries and &apos;hot streaks&apos; promise riches, flat betting provides the one thing every professional needs: <strong>Statistical Survival</strong>. In this masterclass, we explore how flat staking allows you to isolate your predictive edge, survive the inevitable laws of variance, and build a sustainable long-term betting career.
                   </p>
                 </div>
               </div>

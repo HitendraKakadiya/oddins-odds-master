@@ -20,7 +20,7 @@ const sections = [
         <br />
         • <strong>Game Props:</strong> Structural events within the match (e.g., Will there be a Red Card? Will the game go to Overtime?).
         <br />
-        • <strong>Statistical Isolation:</strong> Props allow you to isolate a single variable—like a striker's shot volume—without needing to predict the winner of the match.
+        • <strong>Statistical Isolation:</strong> Props allow you to isolate a single variable—like a striker&apos;s shot volume—without needing to predict the winner of the match.
       </>
     ),
     advantages: [],
@@ -31,11 +31,11 @@ const sections = [
     title: 'Market Inefficiency: Exploiting the Soft Lines', 
     content: (
       <>
-        Prop lines are notoriously "soft" compared to primary markets like the Point Spread or Moneyline. Because bookmakers must manage thousands of individual prop lines across a single weekend, they often rely on <strong>historical averages</strong> rather than deep situational analysis.
+        Prop lines are notoriously &quot;soft&quot; compared to primary markets like the Point Spread or Moneyline. Because bookmakers must manage thousands of individual prop lines across a single weekend, they often rely on <strong>historical averages</strong> rather than deep situational analysis.
         <br /><br />
-        <strong>The Analyst’s Edge:</strong>
+        <strong>The Analyst&apos;s Edge:</strong>
         <br />
-        By identifying <strong>situational shifts</strong>—such as a key teammate being injured or a change in defensive scheme—you can exploit lines that have not yet adjusted to the new tactical reality. This is where the highest "Alpha" in modern sports betting is found.
+        By identifying <strong>situational shifts</strong>—such as a key teammate being injured or a change in defensive scheme—you can exploit lines that have not yet adjusted to the new tactical reality. This is where the highest &quot;Alpha&quot; in modern sports betting is found.
       </>
     ),
     advantages: [],
@@ -50,7 +50,7 @@ const sections = [
         <br /><br />
         <strong>Logic of Positive Correlation:</strong>
         <br />
-        If you bet on an NFL Quarterback to have <strong>Over 300 Passing Yards</strong>, it is mathematically consistent to pair it with his primary Wide Receiver having <strong>Over 100 Receiving Yards</strong>. Understanding how these props 'feed' into one another allows you to build high-coefficient tickets with logically consistent foundations.
+        If you bet on an NFL Quarterback to have <strong>Over 300 Passing Yards</strong>, it is mathematically consistent to pair it with his primary Wide Receiver having <strong>Over 100 Receiving Yards</strong>. Understanding how these props &apos;feed&apos; into one another allows you to build high-coefficient tickets with logically consistent foundations.
       </>
     ),
     advantages: [],
@@ -65,11 +65,11 @@ const sections = [
         <br /><br />
         <strong>Potential Disruptors:</strong>
         <br />
-        • <strong>Late Scratches:</strong> A player being ruled out minutes before tip-off can void your bet or trigger a "push" depending on house rules.
+        • <strong>Late Scratches:</strong> A player being ruled out minutes before tip-off can void your bet or trigger a &quot;push&quot; depending on house rules.
         <br />
-        • <strong>Blowout Minutes:</strong> In high-parity leagues like the NBA, "Garbage Time" can see star players benched early, causing them to fall short of their prop lines despite high efficiency.
+        • <strong>Blowout Minutes:</strong> In high-parity leagues like the NBA, &quot;Garbage Time&quot; can see star players benched early, causing them to fall short of their prop lines despite high efficiency.
         <br />
-        • <strong>Tactical Substitution:</strong> A change in formation can move a player into a less offensive role, immediately devaluing their "Over" props.
+        • <strong>Tactical Substitution:</strong> A change in formation can move a player into a less offensive role, immediately devaluing their &quot;Over&quot; props.
       </>
     ),
     advantages: [],
@@ -94,16 +94,16 @@ const sections = [
     risks: [],
     faqs: [
       {
-        question: "What happens if my player doesn't start?",
-        answer: "Most sportsbooks require a player to actually take the field (or court) for the bet to stand. If they are an 'Active Inactive' or never leave the bench, the bet is typically voided and your stake is returned."
+        question: "What happens if my player doesn&apos;t start?",
+        answer: "Most sportsbooks require a player to actually take the field (or court) for the bet to stand. If they are an &apos;Active Inactive&apos; or never leave the bench, the bet is typically voided and your stake is returned."
       },
       {
         question: "Are Props harder to win than Moneyline bets?",
         answer: "Professionally, no. Prop markets are often easier to beat because they have lower liquidity and less sophisticated modeling from the bookmakers. The challenge is the lower betting limits often placed on prop markets."
       },
       {
-        question: "What is a 'Hook' in prop betting?",
-        answer: "A hook is the '.5' at the end of a line (e.g., 22.5 points). It ensures there can be no 'Push' (draw)—the bet must either win or lose."
+        question: "What is a &apos;Hook&apos; in prop betting?",
+        answer: "A hook is the &apos;.5&apos; at the end of a line (e.g., 22.5 points). It ensures there can be no &apos;Push&apos; (draw)—the bet must either win or lose."
       },
       {
         question: "Can I parlay props from different games?",
@@ -170,10 +170,10 @@ export default function PropBetPage() {
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
                   <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
-                    "Prop bets represent the most granular way to monetize individual player matchups—monetizing the detail that main markets ignore."
+                    &quot;Prop bets represent the most granular way to monetize individual player matchups—monetizing the detail that main markets ignore.&quot;
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    In this technical guide, we break down the clinical 'Architecture of the Prop.' We reveal the specific 'Market Inefficiencies' found in soft player lines, analyze the logic of 'Correlated Parlays' (Same-Game Parlays), and provide a professional framework for managing 'Operational Variance' like injury-scrubs and rotation risks.
+                    In this technical guide, we break down the clinical &apos;Architecture of the Prop.&apos; We reveal the specific &apos;Market Inefficiencies&apos; found in soft player lines, analyze the logic of &apos;Correlated Parlays&apos; (Same-Game Parlays), and provide a professional framework for managing &apos;Operational Variance&apos; like injury-scrubs and rotation risks.
                   </p>
                 </div>
               </div>

@@ -12,15 +12,15 @@ const sections = [
     title: 'The 3-Way Symmetry: Mastering the European Line', 
     content: (
       <>
-        The European Handicap (EH), often referred to as the "3-Way Handicap," is the traditional pillar of goal-based spread betting. Unlike its Asian counterpart, the European Handicap uses only <strong>integers</strong> (-1, -2, +3) and explicitly incorporates the <strong>Draw</strong> as a betting outcome. This creates a high-variance market where precision is rewarded with significantly higher odds.
+        The European Handicap (EH), often referred to as the &quot;3-Way Handicap,&quot; is the traditional pillar of goal-based spread betting. Unlike its Asian counterpart, the European Handicap uses only <strong>integers</strong> (-1, -2, +3) and explicitly incorporates the <strong>Draw</strong> as a betting outcome. This creates a high-variance market where precision is rewarded with significantly higher odds.
         <br /><br />
         <strong>The European Protocol:</strong>
         <br />
         • <strong>3-Way Outcome:</strong> You can bet on Home Win, Away Win, or the Handicap Draw.
         <br />
-        • <strong>Binary Results:</strong> There are no "Pushes" or refunds. You either win the bet or lose the stake.
+        • <strong>Binary Results:</strong> There are no &quot;Pushes&quot; or refunds. You either win the bet or lose the stake.
         <br />
-        • <strong>Integer Only:</strong> Sizing is always in whole goals, making the "Handicap Draw" a vital strategic component.
+        • <strong>Integer Only:</strong> Sizing is always in whole goals, making the &quot;Handicap Draw&quot; a vital strategic component.
       </>
     ),
     advantages: [],
@@ -31,11 +31,11 @@ const sections = [
     title: 'Integer Variance: The Binary Risk Model', 
     content: (
       <>
-        The primary differentiator of the European Handicap is the lack of a safety net. In Asian Handicap, a -1.0 bet on a team that wins by exactly one goal results in a refund. In European Handicap, a -1 bet in the same scenario is a <strong>Loss</strong> (as the "Handicap Draw" was the winning outcome).
+        The primary differentiator of the European Handicap is the lack of a safety net. In Asian Handicap, a -1.0 bet on a team that wins by exactly one goal results in a refund. In European Handicap, a -1 bet in the same scenario is a <strong>Loss</strong> (as the &quot;Handicap Draw&quot; was the winning outcome).
         <br /><br />
         <strong>Risk vs. Reward:</strong>
         <br />
-        Because the "Push" is removed, the odds for a -1 European Handicap are always substantially higher than a -1 Asian Handicap. Professionals use EH when their model suggests a high probability of a multi-goal margin, sacrificing the "refund" safety for a larger payout.
+        Because the &quot;Push&quot; is removed, the odds for a -1 European Handicap are always substantially higher than a -1 Asian Handicap. Professionals use EH when their model suggests a high probability of a multi-goal margin, sacrificing the &quot;refund&quot; safety for a larger payout.
       </>
     ),
     advantages: [],
@@ -46,11 +46,11 @@ const sections = [
     title: 'The Draw-Handicap Pivot: Betting on the Margin', 
     content: (
       <>
-        The "Handicap Draw" is the crown jewel of the European market. It allows you to bet on the <strong>exact winning margin</strong> of a favorite. For example, a "Handicap Draw (-1)" bet wins if the favorite wins by exactly one goal (1-0, 2-1, 3-2).
+        The &quot;Handicap Draw&quot; is the crown jewel of the European market. It allows you to bet on the <strong>exact winning margin</strong> of a favorite. For example, a &quot;Handicap Draw (-1)&quot; bet wins if the favorite wins by exactly one goal (1-0, 2-1, 3-2).
         <br /><br />
         <strong>Strategic Utility:</strong>
         <br />
-        This market is ideal for matches where a dominant team faces a stubborn defense. If your data suggests a "low-block" match where the favorite will struggle to blow the opponent away but will eventually find a breakthrough, the Handicap Draw offers far superior value than the standard Match Result.
+        This market is ideal for matches where a dominant team faces a stubborn defense. If your data suggests a &quot;low-block&quot; match where the favorite will struggle to blow the opponent away but will eventually find a breakthrough, the Handicap Draw offers far superior value than the standard Match Result.
       </>
     ),
     advantages: [],
@@ -61,11 +61,11 @@ const sections = [
     title: 'Market Calibration: Identifying Underpriced Favorites', 
     content: (
       <>
-        The European Handicap is the most efficient way to extract value from "Heavy Favorites." When a team is priced at 1.15 in the 1X2 market, it is often unbettable. However, moving to the European Handicap -1 or -2 can push the odds into the 1.60 - 2.10 range.
+        The European Handicap is the most efficient way to extract value from &quot;Heavy Favorites.&quot; When a team is priced at 1.15 in the 1X2 market, it is often unbettable. However, moving to the European Handicap -1 or -2 can push the odds into the 1.60 - 2.10 range.
         <br /><br />
         <strong>Performance Auditing:</strong>
         <br />
-        To use EH effectively, you must audit your favorite-backing strategy. If your "bankers" consistently win by 2+ goals, you are leaving significant profit on the table by not utilizing the European Handicap -1 line.
+        To use EH effectively, you must audit your favorite-backing strategy. If your &quot;bankers&quot; consistently win by 2+ goals, you are leaving significant profit on the table by not utilizing the European Handicap -1 line.
       </>
     ),
     advantages: [],
@@ -91,19 +91,19 @@ const sections = [
     faqs: [
       {
         question: "What is the biggest mistake when betting EH?",
-        answer: "Failing to account for the 'Handicap Draw'. Beginners often bet -1 thinking a 1-goal win is a refund (as in Asian Handicap). In EH, a 1-goal win for a -1 bet is a complete loss of stake."
+        answer: "Failing to account for the &apos;Handicap Draw&apos;. Beginners often bet -1 thinking a 1-goal win is a refund (as in Asian Handicap). In EH, a 1-goal win for a -1 bet is a complete loss of stake."
       },
       {
         question: "Under what conditions is EH better than AH?",
-        answer: "When your confidence in a multi-goal win is high. Because EH doesn't offer the 'Push' (refund) protection, the bookmaker offers a higher price to compensate for the added risk."
+        answer: "When your confidence in a multi-goal win is high. Because EH doesn&apos;t offer the &apos;Push&apos; (refund) protection, the bookmaker offers a higher price to compensate for the added risk."
       },
       {
-        question: "How do I calculate a 'Handicap Draw' result?",
-        answer: "Simply add the handicap to the final score. If the result is a tie, the 'Handicap Draw' bet wins. For a (-2) Draw bet, the team must win by exactly 2 goals (e.g., 2-0, 3-1)."
+        question: "How do I calculate a &apos;Handicap Draw&apos; result?",
+        answer: "Simply add the handicap to the final score. If the result is a tie, the &apos;Handicap Draw&apos; bet wins. For a (-2) Draw bet, the team must win by exactly 2 goals (e.g., 2-0, 3-1)."
       },
       {
         question: "Does EH only apply to football?",
-        answer: "While most popular in football, it is widely used in Rugby and Ice Hockey, where goal/point margins are clearly defined and the 'Draw' outcome on the spread is a viable statistical event."
+        answer: "While most popular in football, it is widely used in Rugby and Ice Hockey, where goal/point margins are clearly defined and the &apos;Draw&apos; outcome on the spread is a viable statistical event."
       }
     ]
   }
@@ -167,10 +167,10 @@ export default function EuropeanHandicapPage() {
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
                   <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
-                    "The European Handicap is the market of integers. It demands binary precision and rewards multi-goal confidence with superior yield."
+                    &quot;The European Handicap is the market of integers. It demands binary precision and rewards multi-goal confidence with superior yield.&quot;
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    In this technical breakdown, we explore the '3-Way Symmetry' of the European Handicap. We examine why the removal of 'Pushes' creates the 'Integer Edge,' the specialized value of the Draw-Handicap pivot, and how to calibrate your model to exploit underpriced favorites.
+                    In this technical breakdown, we explore the &apos;3-Way Symmetry&apos; of the European Handicap. We examine why the removal of &apos;Pushes&apos; creates the &apos;Integer Edge,&apos; the specialized value of the Draw-Handicap pivot, and how to calibrate your model to exploit underpriced favorites.
                   </p>
                 </div>
               </div>

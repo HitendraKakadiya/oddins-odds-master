@@ -16,7 +16,7 @@ const sections = [
         <br /><br />
         <strong>The Matrix of Outcomes:</strong>
         <br />
-        There are 9 possible combinations, ranging from the stable 1/1 (Favorite leads throughout) to the highly volatile 1/2 or 2/1 (Full-match reversals). Mastery of this market requires moving beyond "who wins" to "how the winning narrative unfolds."
+        There are 9 possible combinations, ranging from the stable 1/1 (Favorite leads throughout) to the highly volatile 1/2 or 2/1 (Full-match reversals). Mastery of this market requires moving beyond &quot;who wins&quot; to &quot;how the winning narrative unfolds.&quot;
       </>
     ),
     advantages: [],
@@ -24,14 +24,14 @@ const sections = [
   },
   { 
     id: 'x1-alpha', 
-    title: "The 'X/1' Alpha: Exploiting the Slow Start", 
+    title: "The &apos;X/1&apos; Alpha: Exploiting the Slow Start", 
     content: (
       <>
-        One of the most profitable sectors of the HT/FT market is the <strong>X/1 selection</strong> (Draw at Half-Time, Home Win at Full-Time). This pattern is frequent when elite teams face disciplined "Low-Block" defenses.
+        One of the most profitable sectors of the HT/FT market is the <strong>X/1 selection</strong> (Draw at Half-Time, Home Win at Full-Time). This pattern is frequent when elite teams face disciplined &quot;Low-Block&quot; defenses.
         <br /><br />
         <strong>The Tactical Hook:</strong>
         <br />
-        A favorite may take 60 minutes to break down a stubborn opponent. If your model suggests a "Stale Phase" in the first half followed by a high-intensity second half (due to fatigue or tactical substitutions), the X/1 line offers a massive price boost compared to a straight 1X2 bet.
+        A favorite may take 60 minutes to break down a stubborn opponent. If your model suggests a &quot;Stale Phase&quot; in the first half followed by a high-intensity second half (due to fatigue or tactical substitutions), the X/1 line offers a massive price boost compared to a straight 1X2 bet.
       </>
     ),
     advantages: [],
@@ -42,13 +42,13 @@ const sections = [
     title: 'Urgency vs. Fatigue: Predicting the Two halves', 
     content: (
       <>
-        Successful HT/FT betting requires an audit of manager philosophies. Coaches who prioritize <strong>"Blitz" tactics</strong> (high pressing from the first whistle) are prime candidates for 1/1 or 1/X results. Conversely, managers who favor <strong>"Control" tactics</strong> often produce X/1 or X/X patterns.
+        Successful HT/FT betting requires an audit of manager philosophies. Coaches who prioritize <strong>&quot;Blitz&quot; tactics</strong> (high pressing from the first whistle) are prime candidates for 1/1 or 1/X results. Conversely, managers who favor <strong>&quot;Control&quot; tactics</strong> often produce X/1 or X/X patterns.
         <br /><br />
         <strong>Key Indicators:</strong>
         <br />
         • <strong>Substitute Depth:</strong> A favorite with high-quality bench options is more likely to turn a Half-Time draw (X) into a Full-Time win (1) in the final 20 minutes.
         <br />
-        • <strong>Historical Intervals:</strong> Some clubs are historically "Slow Starters"—this data is gold for HT/FT market refinement.
+        • <strong>Historical Intervals:</strong> Some clubs are historically &quot;Slow Starters&quot;—this data is gold for HT/FT market refinement.
       </>
     ),
     advantages: [],
@@ -63,7 +63,7 @@ const sections = [
         <br /><br />
         <strong>Spotting the Reversal:</strong>
         <br />
-        These outcomes are statistically more likely in derbies or high-stakes knockout games where emotional momentum can shift rapidly after a red card or a key tactical substitution. Professionally, these are "Lotto" style bets that should only be deployed with a tiny fraction of the stake.
+        These outcomes are statistically more likely in derbies or high-stakes knockout games where emotional momentum can shift rapidly after a red card or a key tactical substitution. Professionally, these are &quot;Lotto&quot; style bets that should only be deployed with a tiny fraction of the stake.
       </>
     ),
     advantages: [],
@@ -93,15 +93,15 @@ const sections = [
       },
       {
         question: "Does HT/FT include injury time?",
-        answer: "Yes. The 'Half-Time' result is settled after the first-half injury time, and 'Full-Time' is settled after the second-half injury time. It does NOT include extra time or penalties."
+        answer: "Yes. The &apos;Half-Time&apos; result is settled after the first-half injury time, and &apos;Full-Time&apos; is settled after the second-half injury time. It does NOT include extra time or penalties."
       },
       {
         question: "What is the best HT/FT strategy for underdogs?",
-        answer: "The '2/X' or '1/X' (Lead at HT, Draw at FT). Many underdogs start with high intensity and take a shock lead, but eventually succumb to the favorite's pressure and settle for a draw. These 'Lead-Fade' scenarios offer excellent value."
+        answer: "The &apos;2/X&apos; or &apos;1/X&apos; (Lead at HT, Draw at FT). Many underdogs start with high intensity and take a shock lead, but eventually succumb to the favorite&apos;s pressure and settle for a draw. These &apos;Lead-Fade&apos; scenarios offer excellent value."
       },
       {
         question: "Can I use HT/FT in-play?",
-        answer: "Yes, but only before the first half ends. Once the second half begins, you can only bet on the 'Second Half Result' or 'Full Time Result,' not the combined HT/FT narrative."
+        answer: "Yes, but only before the first half ends. Once the second half begins, you can only bet on the &apos;Second Half Result&apos; or &apos;Full Time Result,&apos; not the combined HT/FT narrative."
       }
     ]
   }
@@ -164,10 +164,10 @@ export default function HTFTPage() {
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
                   <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
-                    "HT/FT betting is the clinical breakdown of match narrative—it is about predicting the *how* as much as the *who*."
+                    &quot;HT/FT betting is the clinical breakdown of match narrative—it is about predicting the *how* as much as the *who*.&quot;
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    In this technical guide, we explore the 'Compound Variance' of HT/FT markets. We examine the specific alpha of the 'X/1' slow-start pattern, analyze how manager philosophy dictates interval scoring, and reveal the statistical triggers for high-yield reversal betting.
+                    In this technical guide, we explore the &apos;Compound Variance&apos; of HT/FT markets. We examine the specific alpha of the &apos;X/1&apos; slow-start pattern, analyze how manager philosophy dictates interval scoring, and reveal the statistical triggers for high-yield reversal betting.
                   </p>
                 </div>
               </div>

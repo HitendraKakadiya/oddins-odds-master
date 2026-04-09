@@ -12,13 +12,13 @@ const sections = [
     title: 'The Mechanics of a Sure Bet: Mathematical Arbitrage', 
     content: (
       <>
-        Arbitrage betting, or "arbing," is the practice of exploiting price discrepancies between different bookmakers to guarantee a profit regardless of the outcome. In an efficient market, odds represent probability plus a margin (the "overround"). Arbitrage occurs when the composite overround of two or more bookmakers drops below 0%, creating a mathematical gap where the bettor cannot lose.
+        Arbitrage betting, or &quot;arbing,&quot; is the practice of exploiting price discrepancies between different bookmakers to guarantee a profit regardless of the outcome. In an efficient market, odds represent probability plus a margin (the &quot;overround&quot;). Arbitrage occurs when the composite overround of two or more bookmakers drops below 0%, creating a mathematical gap where the bettor cannot lose.
         <br /><br />
         <strong>Key Mechanics:</strong>
         <br />
         • <strong>Cross-Market Hedging:</strong> Placing complementary bets on opposing platforms.
         <br />
-        • <strong>Price Inefficiency:</strong> Capitalizing on "soft" bookmakers who are slow to react to market moves.
+        • <strong>Price Inefficiency:</strong> Capitalizing on &quot;soft&quot; bookmakers who are slow to react to market moves.
         <br />
         • <strong>Mathematical Certainty:</strong> Removing the element of sports knowledge and replacing it with pure calculation.
       </>
@@ -48,7 +48,7 @@ const sections = [
     title: 'Operational Risk Management: Beyond the Math', 
     content: (
       <>
-        While arbing is mathematically certain, operational risks are significant. <strong>Slippage</strong> occurs when odds change at one bookmaker while you are still placing the bet at another, potentially leaving you with an unhedged position. <strong>Voided bets</strong> are even more dangerous—if a bookmaker cancels a leg of your arb due to a "palpable error," you are left with massive exposure.
+        While arbing is mathematically certain, operational risks are significant. <strong>Slippage</strong> occurs when odds change at one bookmaker while you are still placing the bet at another, potentially leaving you with an unhedged position. <strong>Voided bets</strong> are even more dangerous—if a bookmaker cancels a leg of your arb due to a &quot;palpable error,&quot; you are left with massive exposure.
         <br /><br />
         <strong>Risk Mitigation:</strong>
         <br />
@@ -56,7 +56,7 @@ const sections = [
         <br />
         • <strong>Check Max Stakes:</strong> Always verify that both bookmakers will accept your full stake before placing either bet.
         <br />
-        • <strong>Avoid 'Obvious' Errors:</strong> If odds are 50% higher than the market average, it is likely a stay-away error.
+        • <strong>Avoid &apos;Obvious&apos; Errors:</strong> If odds are 50% higher than the market average, it is likely a stay-away error.
       </>
     ),
     advantages: [],
@@ -64,10 +64,10 @@ const sections = [
   },
   { 
     id: 'gubbing-problem', 
-    title: 'The "Gubbing" Problem: Evading Detection', 
+    title: 'The &quot;Gubbing&quot; Problem: Evading Detection', 
     content: (
       <>
-        Bookmakers use advanced algorithms to detect arbitrage patterns. Once identified, your account will be "gubbed"—meaning your stakes will be limited to pennies or your account closed entirely. Protecting your account longevity is as important as finding the arbs themselves.
+        Bookmakers use advanced algorithms to detect arbitrage patterns. Once identified, your account will be &quot;gubbed&quot;—meaning your stakes will be limited to pennies or your account closed entirely. Protecting your account longevity is as important as finding the arbs themselves.
         <br /><br />
         <strong>How to Stay Under the Radar:</strong>
         <br />
@@ -75,7 +75,7 @@ const sections = [
         <br />
         • <strong>Avoid Minor Markets:</strong> Focus on liquid markets where price moves are natural and harder to track.
         <br />
-        • <strong>Mugging Bets:</strong> Occasionally place high-margin recreational bets to mimic a "loser" profile.
+        • <strong>Mugging Bets:</strong> Occasionally place high-margin recreational bets to mimic a &quot;loser&quot; profile.
       </>
     ),
     advantages: [],
@@ -86,7 +86,7 @@ const sections = [
     title: 'The Professional Toolkit: Scaling for Profit', 
     content: (
       <>
-        Manual arbing is largely obsolete in today's high-speed market. Success requires professional software that scans hundreds of bookmakers in real-time. To scale, professional arbers often use dedicated browsers and e-wallets to manage capital movement without triggering security flags.
+        Manual arbing is largely obsolete in today&apos;s high-speed market. Success requires professional software that scans hundreds of bookmakers in real-time. To scale, professional arbers often use dedicated browsers and e-wallets to manage capital movement without triggering security flags.
         <br /><br />
         <strong>The Pro Stack:</strong>
         <br />
@@ -128,7 +128,7 @@ const sections = [
       },
       {
         question: "How long can an arbitrage career last?",
-        answer: "Arbing is often a finite game. The 'burn rate' of bookmaker accounts is high. The goal for many is to maximize profits over 12-24 months before account limits become too restrictive."
+        answer: "Arbing is often a finite game. The &apos;burn rate&apos; of bookmaker accounts is high. The goal for many is to maximize profits over 12-24 months before account limits become too restrictive."
       },
       {
         question: "Can I arb using only one bookmaker?",
@@ -211,10 +211,10 @@ export default function ArbitragePage() {
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
                   <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
-                    "In sports betting, as in finance, arbitrage is the art of capturing risk-free profit by exploiting price discrepancies across different markets."
+                    &quot;In sports betting, as in finance, arbitrage is the art of capturing risk-free profit by exploiting price discrepancies across different markets.&quot;
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    Welcome to the OddinsOdds Academy masterclass on Arbitrage. We move beyond theoretical "sure bets" to explore the mathematical formulas, operational risks, and tactical execution required to extract consistent profit from the betting ecosystem.
+                    Welcome to the OddinsOdds Academy masterclass on Arbitrage. We move beyond theoretical &quot;sure bets&quot; to explore the mathematical formulas, operational risks, and tactical execution required to extract consistent profit from the betting ecosystem.
                   </p>
                 </div>
               </div>

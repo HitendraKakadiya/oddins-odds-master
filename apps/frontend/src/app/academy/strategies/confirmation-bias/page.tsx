@@ -9,18 +9,18 @@ import StrategyTOC from '@/components/Academy/StrategyTOC';
 const sections = [
   { 
     id: 'echo-chamber', 
-    title: "The Echo Chamber of Choice: Your Brain's Shortcut", 
+    title: "The Echo Chamber of Choice: Your Brain&apos;s Shortcut", 
     content: (
       <>
-        Confirmation bias is a cognitive shortcut where the brain prioritizes information that confirms its pre-existing beliefs while subconsciously filtering out contradictory evidence. In sports betting, this often manifests as a "locked-in" opinion on a team or outcome that survives even in the face of overwhelming negative data.
+        Confirmation bias is a cognitive shortcut where the brain prioritizes information that confirms its pre-existing beliefs while subconsciously filtering out contradictory evidence. In sports betting, this often manifests as a &quot;locked-in&quot; opinion on a team or outcome that survives even in the face of overwhelming negative data.
         <br /><br />
         <strong>The Psychological Mechanism:</strong>
         <br />
         • <strong>Selective Perception:</strong> Noticing every stat that favors your pick.
         <br />
-        • <strong>Biased Interpretation:</strong> Explaining away negative news (e.g., "the injury won't matter").
+        • <strong>Biased Interpretation:</strong> Explaining away negative news (e.g., &quot;the injury won&apos;t matter&quot;).
         <br />
-        • <strong>Memory Recall:</strong> Remembering your successful "gut feeling" bets while forgetting the failures.
+        • <strong>Memory Recall:</strong> Remembering your successful &quot;gut feeling&quot; bets while forgetting the failures.
       </>
     ),
     advantages: [],
@@ -31,7 +31,7 @@ const sections = [
     title: "Narrative vs. Data: Why Facts Lose to Stories", 
     content: (
       <>
-        Human beings are hardwired for stories, not statistics. We are more likely to bet on a "narrative"—such as a team seeking revenge or a star player returning from injury—than we are to follow a dry probability model. Confirmation bias feeds these narratives, allowing us to build a case for almost any outcome by selectively picking data points.
+        Human beings are hardwired for stories, not statistics. We are more likely to bet on a &quot;narrative&quot;—such as a team seeking revenge or a star player returning from injury—than we are to follow a dry probability model. Confirmation bias feeds these narratives, allowing us to build a case for almost any outcome by selectively picking data points.
         <br /><br />
         <strong>Narrative Traps:</strong>
         <br />
@@ -50,13 +50,13 @@ const sections = [
     title: "Overconfidence Traps: The Blind Spots of Experience", 
     content: (
       <>
-        Counterintuitively, the more experienced a bettor becomes, the more susceptible they may be to confirmation bias. Experts often believe their "intuition" is a valid data source, leading them to ignore new variables that contradict their established model. This is known as "Expert Blindness."
+        Counterintuitively, the more experienced a bettor becomes, the more susceptible they may be to confirmation bias. Experts often believe their &quot;intuition&quot; is a valid data source, leading them to ignore new variables that contradict their established model. This is known as &quot;Expert Blindness.&quot;
         <br /><br />
         <strong>The Dangers:</strong>
         <br />
         • <strong>Ignoring Regression:</strong> Expecting an outlier performance to continue indefinitely.
         <br />
-        • <strong>Stake Escalation:</strong> Increasing bets because you are "sure" of a biased conclusion.
+        • <strong>Stake Escalation:</strong> Increasing bets because you are &quot;sure&quot; of a biased conclusion.
         <br />
         • <strong>Strategy Stagnation:</strong> Refusing to adapt your model because it worked in the past.
       </>
@@ -73,11 +73,11 @@ const sections = [
         <br /><br />
         <strong>The Neutrality Toolkit:</strong>
         <br />
-        • <strong>The Devil’s Advocate:</strong> Force yourself to write three reasons why your bet will lose.
+        • <strong>The Devil&apos;s Advocate:</strong> Force yourself to write three reasons why your bet will lose.
         <br />
         • <strong>Blind Audits:</strong> Review stats without team names to see if the value still exists.
         <br />
-        • <strong>Betting Journals:</strong> Specifically track bets where you "ignored" red flags.
+        • <strong>Betting Journals:</strong> Specifically track bets where you &quot;ignored&quot; red flags.
       </>
     ),
     advantages: [],
@@ -88,7 +88,7 @@ const sections = [
     title: "Objectivity as an Edge", 
     content: (
       <>
-        In a market full of emotional, biased recreational bettors, <strong>objectivity is an edge</strong>. By recognizing your brain's natural tendency to seek confirmation, you can build systems that force you to look at the cold, hard reality of the numbers.
+        In a market full of emotional, biased recreational bettors, <strong>objectivity is an edge</strong>. By recognizing your brain&apos;s natural tendency to seek confirmation, you can build systems that force you to look at the cold, hard reality of the numbers.
       </>
     ),
     advantages: [],
@@ -103,19 +103,19 @@ const sections = [
     faqs: [
       {
         question: "Is confirmation bias always a bad thing?",
-        answer: "In betting, yes. While it's a helpful brain shortcut for daily life, it is lethal for capital management because it hides the real risks of a wager."
+        answer: "In betting, yes. While it&apos;s a helpful brain shortcut for daily life, it is lethal for capital management because it hides the real risks of a wager."
       },
       {
         question: "How can I tell if I'm being biased?",
-        answer: "Ask yourself: 'What piece of information would make me change my mind about this bet?' If the answer is 'nothing,' you are suffering from severe confirmation bias."
+        answer: "Ask yourself: &apos;What piece of information would make me change my mind about this bet?&apos; If the answer is &apos;nothing,&apos; you are suffering from severe confirmation bias."
       },
       {
         question: "Do professional syndicates suffer from this?",
-        answer: "Less so. Pros use algorithmic models and team-based 'vetting' processes specifically designed to remove the individual human's biased perspective from the decision."
+        answer: "Less so. Pros use algorithmic models and team-based &apos;vetting&apos; processes specifically designed to remove the individual human&apos;s biased perspective from the decision."
       },
       {
         question: "Does 'Value Betting' fix confirmation bias?",
-        answer: "Only if you trust the numbers. Many bettors find value in the stats but then use confirmation bias to talk themselves *out* of the bet because they 'don't like' the team."
+        answer: "Only if you trust the numbers. Many bettors find value in the stats but then use confirmation bias to talk themselves *out* of the bet because they &apos;don&apos;t like&apos; the team."
       }
     ]
   }
@@ -194,7 +194,7 @@ export default function ConfirmationBiasPage() {
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
                   <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
-                    "The brain is a master story-teller, but a terrible odds-maker. Learning to see the data as it is, not as you want it to be, is the ultimate betting discipline."
+                    &quot;The brain is a master story-teller, but a terrible odds-maker. Learning to see the data as it is, not as you want it to be, is the ultimate betting discipline.&quot;
                   </p>
                   <p className="text-slate-500 leading-relaxed">
                     Confirmation bias is the invisible hand that moves you toward loss. It makes you prioritize the stories that agree with you while silencing the statistics that warn you. In this guide, we dive into the cognitive psychology of the betting mind and build a workflow designed for total objectivity.

@@ -12,7 +12,7 @@ const sections = [
     title: 'Disciplinary Quantization: The Booking Point Scale', 
     content: (
       <>
-        Booking Points represent the <strong>mathematical quantization of match discipline</strong>. Instead of merely counting cards, bookmakers assign specific point values to 'Yellow' and 'Red' incidents to create a high-resolution market for match aggression.
+        Booking Points represent the <strong>mathematical quantization of match discipline</strong>. Instead of merely counting cards, bookmakers assign specific point values to &apos;Yellow&apos; and &apos;Red&apos; incidents to create a high-resolution market for match aggression.
         <br /><br />
         <strong>The Universal Point Hierarchy:</strong>
         <br />
@@ -20,7 +20,7 @@ const sections = [
         <br />
         • <strong>Red Card:</strong> 25 Points.
         <br />
-        • <strong>The 'Double-Yellow' (Yellow + Red):</strong> 35 Points. In this scenario, the second yellow is discarded, and the player is credited with 10 (1st Yellow) + 25 (Red). Mastering these totals is essential for accurate margin analysis.
+        • <strong>The &apos;Double-Yellow&apos; (Yellow + Red):</strong> 35 Points. In this scenario, the second yellow is discarded, and the player is credited with 10 (1st Yellow) + 25 (Red). Mastering these totals is essential for accurate margin analysis.
       </>
     ),
     advantages: [],
@@ -31,13 +31,13 @@ const sections = [
     title: 'The Third Team: Referee Profiling', 
     content: (
       <>
-        In the Booking Points market, the referee is often more significant than the two teams on the pitch. Professional analysts maintain <strong>"Strictness Coefficients"</strong> for officials.
+        In the Booking Points market, the referee is often more significant than the two teams on the pitch. Professional analysts maintain <strong>&quot;Strictness Coefficients&quot;</strong> for officials.
         <br /><br />
         <strong>Key Variables:</strong>
         <br />
         • <strong>Cards-Per-Game (CPG):</strong> The average volume of cards an official issues.
         <br />
-        • <strong>The 'Early-Tone' bias:</strong> Referees who issue yellow cards in the first 15 minutes are statistically more likely to trigger a 50+ point match, as early bookings limit players' ability to commit "tactical fouls" later in the game.
+        • <strong>The &apos;Early-Tone&apos; bias:</strong> Referees who issue yellow cards in the first 15 minutes are statistically more likely to trigger a 50+ point match, as early bookings limit players&apos; ability to commit &quot;tactical fouls&quot; later in the game.
       </>
     ),
     advantages: [],
@@ -52,7 +52,7 @@ const sections = [
         <br /><br />
         <strong>Spotting the 60+ Point Spike:</strong>
         <br />
-        Look for matchups featuring high-frequency dribblers (who draw fouls) against aggressive "enforcer" midfielders. If the match has historical disciplinary baggage, the probability of multiple 25-point red cards increases, making the "Over" markets highly attractive.
+        Look for matchups featuring high-frequency dribblers (who draw fouls) against aggressive &quot;enforcer&quot; midfielders. If the match has historical disciplinary baggage, the probability of multiple 25-point red cards increases, making the &quot;Over&quot; markets highly attractive.
       </>
     ),
     advantages: [],
@@ -63,11 +63,11 @@ const sections = [
     title: 'Operational Risk: Calculating the Tipping Point', 
     content: (
       <>
-        The primary operational risk in this market is the <strong>35-point cap per player</strong>. Most sportsbooks cap a single player's contribution at 35 points, even if they receive multiple yellows followed by a straight red.
+        The primary operational risk in this market is the <strong>35-point cap per player</strong>. Most sportsbooks cap a single player&apos;s contribution at 35 points, even if they receive multiple yellows followed by a straight red.
         <br /><br />
         <strong>Technical Tip:</strong>
         <br />
-        Always check the specific bookmaker's "Settlement Rules." Cards shown to substitutes (not on the pitch) or coaching staff traditionally contribute <strong>zero points</strong> to the total. Ignoring these nuances can lead to a "Winning Loss" during settlement.
+        Always check the specific bookmaker&apos;s &quot;Settlement Rules.&quot; Cards shown to substitutes (not on the pitch) or coaching staff traditionally contribute <strong>zero points</strong> to the total. Ignoring these nuances can lead to a &quot;Winning Loss&quot; during settlement.
       </>
     ),
     advantages: [],
@@ -97,15 +97,15 @@ const sections = [
       },
       {
         question: "Do cards shown after the final whistle count?",
-        answer: "Usually, no. Most markets only settle on cards shown between the kick-off and the end of regular time. Always verify your bookmaker's specific 'Settlement Window'."
+        answer: "Usually, no. Most markets only settle on cards shown between the kick-off and the end of regular time. Always verify your bookmaker&apos;s specific &apos;Settlement Window&apos;."
       },
       {
         question: "What is the 'Time of First Booking' market?",
-        answer: "This is a prediction of how early the first 10-point increment (Yellow) will occur. It is highly dependent on the referee's profiling and the match's importance."
+        answer: "This is a prediction of how early the first 10-point increment (Yellow) will occur. It is highly dependent on the referee&apos;s profiling and the match&apos;s importance."
       },
       {
         question: "How do VAR reviews affect Booking Points?",
-        answer: "VAR can significantly increase the frequency of 25-point red cards. Referees who are frequently called to the screen for 'Violent Conduct' reviews are prime candidates for high-scoring booking matches."
+        answer: "VAR can significantly increase the frequency of 25-point red cards. Referees who are frequently called to the screen for &apos;Violent Conduct&apos; reviews are prime candidates for high-scoring booking matches."
       }
     ]
   }
@@ -166,10 +166,10 @@ export default function BookingPointsPage() {
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
                   <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
-                    "Booking points are the mathematical quantization of aggression—monetizing the psychological state of a match."
+                    &quot;Booking points are the mathematical quantization of aggression—monetizing the psychological state of a match.&quot;
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    In this technical guide, we break down the clinical point hierarchy of disciplinary markets. We analyze the crucial variable of 'Referee Profiling,' identify the specific environmental triggers for '60+ Point Spikes,' and reveal the operational risks of the 35-point 'Double-Yellow' settlement cap.
+                    In this technical guide, we break down the clinical point hierarchy of disciplinary markets. We analyze the crucial variable of &apos;Referee Profiling,&apos; identify the specific environmental triggers for &apos;60+ Point Spikes,&apos; and reveal the operational risks of the 35-point &apos;Double-Yellow&apos; settlement cap.
                   </p>
                 </div>
               </div>

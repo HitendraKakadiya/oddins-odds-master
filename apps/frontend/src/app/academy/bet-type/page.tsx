@@ -206,7 +206,7 @@ export default function BetTypesPage() {
                     When betting on online sports, understanding which bet type suits your approach can benefit in the long run. If you are new to online betting and wish to learn about the different bet types, this OddinsOdds Academy page can act as your guide.
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    Soccer Betting requires knowledge about the game to master it. Still, it can be unpredictable, which means there's no sure way to win. This is where understanding how various bets work can give you an advantage.
+                    Soccer Betting requires knowledge about the game to master it. Still, it can be unpredictable, which means there&apos;s no sure way to win. This is where understanding how various bets work can give you an advantage.
                   </p>
                   <p className="text-slate-500 leading-relaxed mt-4">
                     You can read about the bet types here that you will usually find at a legal sportsbook.

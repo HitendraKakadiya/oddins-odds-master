@@ -12,7 +12,7 @@ const sections = [
     title: 'The Anatomy of a Slump: Beyond Bad Luck', 
     content: (
       <>
-        A losing streak isn't just a series of unfortunate events; it's a mathematical certainty in the world of high-volume betting. Whether you're a seasoned pro or a recreational bettor, understanding that streaks are a natural byproduct of variance—not a sign of failure—is the first step toward professional resilience.
+        A losing streak isn&apos;t just a series of unfortunate events; it&apos;s a mathematical certainty in the world of high-volume betting. Whether you&apos;re a seasoned pro or a recreational bettor, understanding that streaks are a natural byproduct of variance—not a sign of failure—is the first step toward professional resilience.
         <br /><br />
         Losing streaks are often driven by:
         <br /><br />
@@ -32,7 +32,7 @@ const sections = [
     title: 'The Math of Variance: The Monte Carlo Fallacy', 
     content: (
       <>
-        Many bettors fall into the 'Gambler's Fallacy'—believing that because they've lost five in a row, a win is 'due.' In reality, every event is independent. We use standard deviation to calculate the 'Expected Maximum Drawdown,' which helps you prepare for the reality that a 10-loss streak is statistically inevitable over a 1,000-bet sample size.
+        Many bettors fall into the &apos;Gambler&apos;s Fallacy&apos;—believing that because they&apos;ve lost five in a row, a win is &apos;due.&apos; In reality, every event is independent. We use standard deviation to calculate the &apos;Expected Maximum Drawdown,&apos; which helps you prepare for the reality that a 10-loss streak is statistically inevitable over a 1,000-bet sample size.
         <br /><br />
         Consider the probabilities:
         <br />
@@ -46,18 +46,18 @@ const sections = [
   },
   { 
     id: 'psychological-trap', 
-    title: 'The Psychological Trap: Mastering "Tilt"', 
+    title: 'The Psychological Trap: Mastering &quot;Tilt&quot;', 
     content: (
       <>
-        The greatest danger of a losing streak isn't the financial loss—it's the psychological 'tilt.' When emotions take over, bettors often deviate from their proven models, increase stake sizes to 'break even,' or bet on unfamiliar markets. Mastering your mindset is what separates the winners from the bankrupt.
+        The greatest danger of a losing streak isn&apos;t the financial loss—it&apos;s the psychological &apos;tilt.&apos; When emotions take over, bettors often deviate from their proven models, increase stake sizes to &apos;break even,&apos; or bet on unfamiliar markets. Mastering your mindset is what separates the winners from the bankrupt.
         <br /><br />
-        Watch for these 'Tilt' triggers:
+        Watch for these &apos;Tilt&apos; triggers:
         <br />
         • <strong>Revenge betting</strong> immediately after a loss.
         <br />
-        • Feeling 'cheated' by late goals or referee decisions.
+        • Feeling &apos;cheated&apos; by late goals or referee decisions.
         <br />
-        • Obsessively checking scores of games you didn't even bet on.
+        • Obsessively checking scores of games you didn&apos;t even bet on.
       </>
     ),
     advantages: [],
@@ -65,10 +65,10 @@ const sections = [
   },
   { 
     id: 'survival-tactics', 
-    title: 'Tactical Survival: The "Stake Down" Strategy', 
+    title: 'Tactical Survival: The &quot;Stake Down&quot; Strategy', 
     content: (
       <>
-        When a streak hits, the best defense is a strategic retreat. Instead of chasing, professional bettors often 'Stake Down'—reducing their unit size (e.g., from 2% to 0.5% of their bankroll). This preserves capital while you wait for the variance to normalize, ensuring you stay in the game long enough for your edge to manifest again.
+        When a streak hits, the best defense is a strategic retreat. Instead of chasing, professional bettors often &apos;Stake Down&apos;—reducing their unit size (e.g., from 2% to 0.5% of their bankroll). This preserves capital while you wait for the variance to normalize, ensuring you stay in the game long enough for your edge to manifest again.
         <br /><br />
         <strong>Key Survival Rules:</strong>
         <br />
@@ -76,7 +76,7 @@ const sections = [
         <br />
         • <strong>Lower</strong> your unit size during high-variance periods.
         <br />
-        • <strong>Set</strong> a hard 'Stop-Loss' limit for the day or week.
+        • <strong>Set</strong> a hard &apos;Stop-Loss&apos; limit for the day or week.
       </>
     ),
     advantages: [],
@@ -104,7 +104,7 @@ const sections = [
   {
     id: 'conclusion',
     title: 'Resilience as a Strategy',
-    content: "Winning bettors aren't those who never lose—they're those who lose better. By accepting variance, managing emotions, and strictly adhering to bankroll discipline, you turn a losing streak from a crisis into a routine part of your professional evolution. Remember: the long run is much longer than most people think.",
+    content: "Winning bettors aren&apos;t those who never lose—they&apos;re those who lose better. By accepting variance, managing emotions, and strictly adhering to bankroll discipline, you turn a losing streak from a crisis into a routine part of your professional evolution. Remember: the long run is much longer than most people think.",
     advantages: [],
     risks: []
   },
@@ -117,19 +117,19 @@ const sections = [
     faqs: [
       {
         question: "Can a losing streak be a sign of a bad model?",
-        answer: "Yes. If the streak exceeds your calculated 'Max Drawdown' based on historical data, or if your Closing Line Value (CLV) is consistently negative, it's time to re-evaluate your edge."
+        answer: "Yes. If the streak exceeds your calculated &apos;Max Drawdown&apos; based on historical data, or if your Closing Line Value (CLV) is consistently negative, it&apos;s time to re-evaluate your edge."
       },
       {
         question: "How do I know when to stop?",
-        answer: "Stop immediately if you find yourself betting out of anger, or if you've hit your pre-defined 'Stop-Loss' limit. Professionalism is knowing when the edge has vanished."
+        answer: "Stop immediately if you find yourself betting out of anger, or if you&apos;ve hit your pre-defined &apos;Stop-Loss&apos; limit. Professionalism is knowing when the edge has vanished."
       },
       {
         question: "Is it better to follow a streak or go against it?",
-        answer: "Neither. Statistics show that 'streaks' in independent events don't influence future outcomes. Always bet based on value and probability, not recent history."
+        answer: "Neither. Statistics show that &apos;streaks&apos; in independent events don&apos;t influence future outcomes. Always bet based on value and probability, not recent history."
       },
       {
         question: "How can I stay calm during a 10-bet loss?",
-        answer: "Focus on the process, not the outcome. If your analysis was correct and you achieved good value, consider the loss a 'cost of doing business' rather than a personal failure."
+        answer: "Focus on the process, not the outcome. If your analysis was correct and you achieved good value, consider the loss a &apos;cost of doing business&apos; rather than a personal failure."
       }
     ]
   }
@@ -208,10 +208,10 @@ export default function LosingStreaksPage() {
               <div className="bg-white rounded-[40px] p-8 sm:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 mb-12">
                 <div className="prose prose-slate prose-lg max-w-none">
                   <p className="text-xl text-slate-600 leading-relaxed font-semibold mb-6 italic">
-                    "Variance is not your enemy; it's the environment in which an edge thrives. Learning to survive a slump is what defines a professional bettor."
+                    &quot;Variance is not your enemy; it&apos;s the environment in which an edge thrives. Learning to survive a slump is what defines a professional bettor.&quot;
                   </p>
                   <p className="text-slate-500 leading-relaxed">
-                    In this deep dive, we move beyond the basics of "bad luck." We explore the mathematics of variance, the psychology of tilt, and the tactical retreats necessary to protect your bankroll. Welcome to the OddinsOdds Academy masterclass on resilience.
+                    In this deep dive, we move beyond the basics of &quot;bad luck.&quot; We explore the mathematics of variance, the psychology of tilt, and the tactical retreats necessary to protect your bankroll. Welcome to the OddinsOdds Academy masterclass on resilience.
                   </p>
                 </div>
               </div>
