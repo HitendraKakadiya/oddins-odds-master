@@ -145,7 +145,27 @@ const legendItems = [
   { label: 'Stake Refund', sub: 'Get Stake Back', color: 'bg-blue-500', text: 'text-blue-700', bg: 'bg-blue-50', border: 'border-blue-100' }
 ];
 
-const handicapTablesData: { [key: string]: any } = {
+interface HandicapRow {
+  label: string;
+  result: string;
+}
+
+interface HandicapSide {
+  title: string;
+  rows: HandicapRow[];
+}
+
+interface HandicapTable {
+  line: string;
+  left: HandicapSide;
+  right: HandicapSide;
+}
+
+interface HandicapTablesData {
+  [key: string]: HandicapTable;
+}
+
+const handicapTablesData: HandicapTablesData = {
   'asian-handicap-0-0': {
     line: '0',
     left: { title: '-0 Handicap', rows: [{ label: 'Win', result: 'Win' }, { label: 'Draw', result: 'Stake Refund' }, { label: 'Lose', result: 'Lose' }] },
@@ -292,7 +312,7 @@ export default function AsianHandicapPage() {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
                           <div className="p-8 sm:p-10 space-y-4">
-                            {handicapTablesData[section.id].left.rows.map((row: any, rIdx: number) => (
+                            {handicapTablesData[section.id].left.rows.map((row: HandicapRow, rIdx: number) => (
                               <div key={rIdx} className="flex items-center justify-between">
                                 <span className="text-slate-700 font-bold">{row.label}</span>
                                 <span className={`px-4 py-1.5 rounded-xl border text-[11px] font-black uppercase tracking-wider ${getBadgeStyles(row.result)}`}>
@@ -302,7 +322,7 @@ export default function AsianHandicapPage() {
                             ))}
                           </div>
                           <div className="p-8 sm:p-10 space-y-4">
-                            {handicapTablesData[section.id].right.rows.map((row: any, rIdx: number) => (
+                            {handicapTablesData[section.id].right.rows.map((row: HandicapRow, rIdx: number) => (
                               <div key={rIdx} className="flex items-center justify-between">
                                 <span className="text-slate-700 font-bold">{row.label}</span>
                                 <span className={`px-4 py-1.5 rounded-xl border text-[11px] font-black uppercase tracking-wider ${getBadgeStyles(row.result)}`}>
