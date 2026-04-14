@@ -93,7 +93,12 @@ export function MatchRow({ match }: MatchProps) {
             >
               Prediction
             </button>
-            <button className="flex-1 sm:flex-none bg-slate-50 text-slate-700 font-black py-2 md:py-2.5 px-4 md:px-5 rounded-lg md:rounded-xl text-[9px] md:text-[10px] uppercase tracking-widest hover:bg-slate-100 border border-slate-200/60 transition-all shadow-sm">Stats</button>
+            <button 
+              onClick={() => router.push(`/match/${match.matchId}`)}
+              className="flex-1 sm:flex-none bg-slate-50 text-slate-700 font-black py-2 md:py-2.5 px-4 md:px-5 rounded-lg md:rounded-xl text-[9px] md:text-[10px] uppercase tracking-widest hover:bg-slate-100 border border-slate-200/60 transition-all shadow-sm"
+            >
+              Stats
+            </button>
         </div>
       </div>
     </div>

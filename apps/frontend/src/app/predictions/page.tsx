@@ -17,6 +17,16 @@ interface SearchParams {
   page?: string;
 }
 
+import { Metadata } from 'next';
+
+export async function generateMetadata({ searchParams }: { searchParams: SearchParams }): Promise<Metadata> {
+  const date = searchParams.date || new Date().toISOString().split('T')[0];
+  return {
+    title: `Football Predictions & Betting Tips for ${date}`,
+    description: `Expert football predictions and betting tips for ${date}. Get data-driven insights, 1x2 odds, and match analysis for major leagues today.`,
+  };
+}
+
 export default async function PredictionsPage({
   searchParams,
 }: {

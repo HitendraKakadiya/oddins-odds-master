@@ -1,8 +1,12 @@
-'use client';
-
+import { Metadata } from 'next';
 import PopularLeaguesList from '@/components/PopularLeaguesList';
 import WorldwideLeagueDirectory from '@/components/WorldwideLeagueDirectory';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Football Leagues Directory - Predictions & Statistics',
+  description: 'Explore our worldwide directory of football leagues and competitions. Get accurate predictions and detailed match statistics for over 400 national and international tournaments.',
+};
 
 export default function LeaguesPage() {
   return (
@@ -33,8 +37,6 @@ export default function LeaguesPage() {
           <PopularLeaguesList />
         </aside>
       </div>
-
-
     </div>
   );
 }

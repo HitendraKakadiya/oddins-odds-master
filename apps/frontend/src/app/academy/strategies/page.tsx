@@ -1,11 +1,11 @@
-'use client';
-
-import { useState, useEffect } from 'react';
+import { Metadata } from 'next';
 import Link from 'next/link';
-import TodaysMatchesWidget from '@/components/About/TodaysMatchesWidget';
-import StrategyCardGrid from '@/components/Academy/StrategyCardGrid';
-import StrategyContentSection from '@/components/Academy/StrategyContentSection';
-import StrategyTOC from '@/components/Academy/StrategyTOC';
+import AcademyStrategiesMain from '@/components/Academy/AcademyStrategiesMain';
+
+export const metadata: Metadata = {
+  title: 'Football Betting Academy - Professional Strategies',
+  description: 'Master the art of football betting with our free academy. Learn professional strategies like Bankroll Management, Value Betting, Arbitrage, and more.',
+};
 
 const sections = [
   { 
@@ -95,99 +95,28 @@ const sections = [
 ];
 
 export default function AcademyStrategiesPage() {
-  const [activeSection, setActiveSection] = useState('bankroll-management');
-
-  // Handle scroll-based section activation
-  useEffect(() => {
-    const observerOptions = {
-      root: null,
-      rootMargin: '-15% 0px -80% 0px',
-      threshold: 0
-    };
-
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      // Find entries that are intersecting
-      const intersecting = entries.filter(entry => entry.isIntersecting);
-      
-      // If we have several, the last and most recently triggered one usually represents the current position
-      if (intersecting.length > 0) {
-        // Sort by their vertical position to be sure, or just take the last one
-        const latest = intersecting[intersecting.length - 1];
-        setActiveSection(latest.target.id);
-      }
-    };
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-    
-    // Start observing each section
-    sections.forEach((section) => {
-      const element = document.getElementById(section.id);
-      if (element) {
-        observer.observe(element);
-      }
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-      <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-        {/* Main Content Area */}
-        <main className="flex-1 min-w-0 order-2 lg:order-1">
-          {/* Breadcrumbs */}
-          <nav className="mb-6 flex items-center text-xs font-bold uppercase tracking-widest text-slate-400">
-            <Link href="/" className="hover:text-brand-emerald transition-colors">Home</Link>
-            <span className="mx-2 opacity-50">/</span>
-            <Link href="/academy" className="hover:text-brand-emerald transition-colors">Academy</Link>
-            <span className="mx-2 opacity-50">/</span>
-            <span className="text-slate-900">Betting Strategies</span>
-          </nav>
+      {/* Breadcrumbs */}
+      <nav className="mb-6 flex items-center text-xs font-bold uppercase tracking-widest text-slate-400">
+        <Link href="/" className="hover:text-brand-emerald transition-colors">Home</Link>
+        <span className="mx-2 opacity-50">/</span>
+        <Link href="/academy" className="hover:text-brand-emerald transition-colors">Academy</Link>
+        <span className="mx-2 opacity-50">/</span>
+        <span className="text-slate-900">Betting Strategies</span>
+      </nav>
 
-          <header className="mb-12">
-            <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-6 tracking-tight">
-              Football Betting Strategies
-            </h1>
-            <p className="text-lg text-slate-600 leading-relaxed max-w-3xl">
-              Professional football betting involves critical thinking and disciplined strategy. 
-              Our guide explains the most effective systems to help you manage your bankroll and make smarter decisions.
-            </p>
-          </header>
+      <header className="mb-12">
+        <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-6 tracking-tight">
+          Football Betting Strategies
+        </h1>
+        <p className="text-lg text-slate-600 leading-relaxed max-w-3xl">
+          Professional football betting involves critical thinking and disciplined strategy. 
+          Our guide explains the most effective systems to help you manage your bankroll and make smarter decisions.
+        </p>
+      </header>
 
-          {/* Strategy Card Grid */}
-          <div className="mb-16">
-            <StrategyCardGrid />
-          </div>
-
-          {/* Detailed Content Sections */}
-          <div className="space-y-12 mb-16">
-            {sections.map((section) => (
-              <StrategyContentSection 
-                key={section.id}
-                id={section.id}
-                title={section.title}
-                content={section.content}
-                advantages={section.advantages}
-                risks={section.risks}
-                isActive={activeSection === section.id}
-                variant="premium"
-              />
-            ))}
-          </div>
-        </main>
-
-        {/* Sidebar */}
-        <aside className="w-full lg:w-[380px] shrink-0 order-1 lg:order-2">
-          <div className="sticky top-24 space-y-8">
-            {/* Table of Contents */}
-            <StrategyTOC sections={sections} activeSection={activeSection} onSectionChange={setActiveSection} />
-            
-            <div className="hidden lg:block">
-              <TodaysMatchesWidget />
-            </div>
-          </div>
-        </aside>
-      </div>
+      <AcademyStrategiesMain sections={sections} />
     </div>
   );
 }

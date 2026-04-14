@@ -10,6 +10,7 @@ interface TeamHeaderProps {
   competitions: Array<{
     name: string;
     logoUrl?: string | null;
+    logo?: string | null;
   }>;
 }
 
@@ -65,8 +66,8 @@ export default function TeamHeader({ team, competitions }: TeamHeaderProps) {
             {competitions.map((comp, idx) => (
               <div key={idx} className="flex items-center space-x-4 group cursor-pointer hover:bg-gray-50 p-2 rounded-xl transition-colors duration-200">
                 <div className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-lg flex items-center justify-center p-1.5 transform transition-transform duration-200 group-hover:scale-110">
-                  {comp.logoUrl ? (
-                    <img src={comp.logoUrl} alt={comp.name} className="w-full h-full object-contain" />
+                  {comp.logoUrl || comp.logo ? (
+                    <img src={comp.logoUrl || comp.logo || ''} alt={comp.name} className="w-full h-full object-contain" />
                   ) : (
                     <span className="text-xs">⚽</span>
                   )}

@@ -132,8 +132,8 @@ export default function TeamTabsContent({
             className="w-full md:w-auto flex items-center justify-between md:justify-start space-x-3 bg-slate-50 border border-slate-100 px-5 py-3 rounded-2xl transition-all duration-300 hover:border-brand-emerald/30 hover:bg-white hover:shadow-md"
           >
             <div className="flex items-center space-x-3">
-              <div className="w-6 h-6 flex items-center justify-center p-0.5 bg-white rounded-lg shadow-sm border border-slate-100">
-                <img src={currentLeague.logoUrl || ''} alt="League" className="w-full h-full object-contain" />
+              <div className="w-6 h-6 flex items-center justify-center p-0.5 bg-white rounded-lg shadow-sm border border-slate-100 overflow-hidden">
+                <img src={currentLeague.logoUrl || ((currentLeague as unknown) as { logo?: string }).logo || ''} alt="League" className="w-full h-full object-contain" />
               </div>
               <span className="text-xs font-black text-slate-700 uppercase tracking-widest">{currentLeague.name}</span>
             </div>

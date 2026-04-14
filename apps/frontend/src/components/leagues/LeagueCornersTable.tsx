@@ -52,7 +52,7 @@ export default function LeagueCornersTable({ standings }: LeagueCornersTableProp
   return (
     <div className="bg-white rounded-[40px] border border-slate-100 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-700 mb-12">
       {/* Header Bar */}
-      <div className="bg-brand-indigo px-8 py-5">
+      <div className="bg-brand-emerald px-8 py-5">
         <h3 className="text-xl font-black text-white uppercase tracking-widest italic">Corners</h3>
       </div>
 
@@ -62,7 +62,7 @@ export default function LeagueCornersTable({ standings }: LeagueCornersTableProp
         <div className="relative">
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full border-2 border-slate-200 text-xs font-black text-slate-700 bg-white hover:border-brand-indigo transition-colors"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full border-2 border-slate-200 text-xs font-black text-slate-700 bg-white hover:border-brand-emerald transition-colors"
           >
             {typeLabels[cornerType]}
             <svg className={`w-3 h-3 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -75,7 +75,7 @@ export default function LeagueCornersTable({ standings }: LeagueCornersTableProp
                 <button
                   key={t}
                   onClick={() => { setCornerType(t); setDropdownOpen(false); }}
-                  className={`w-full text-left px-5 py-3 text-xs font-black transition-colors ${cornerType === t ? 'bg-brand-indigo/10 text-brand-indigo' : 'text-slate-600 hover:bg-slate-50'}`}
+                  className={`w-full text-left px-5 py-3 text-xs font-black transition-colors ${cornerType === t ? 'bg-brand-emerald/10 text-brand-emerald' : 'text-slate-600 hover:bg-slate-50'}`}
                 >
                   {typeLabels[t]}
                 </button>
@@ -92,7 +92,7 @@ export default function LeagueCornersTable({ standings }: LeagueCornersTableProp
               onClick={() => setFilter(f)}
               className={`px-5 py-1.5 rounded-full text-xs font-black transition-all ${
                 filter === f
-                  ? 'bg-brand-indigo text-white shadow-md shadow-brand-indigo/30'
+                  ? 'bg-brand-emerald text-white shadow-md shadow-brand-emerald/30'
                   : 'text-slate-500 hover:text-slate-700'
               }`}
             >
@@ -128,10 +128,10 @@ export default function LeagueCornersTable({ standings }: LeagueCornersTableProp
                 </td>
                 <td className="px-4 py-4">
                   <Link href={`/teams/${row.team.slug}`} className="flex items-center gap-3 group min-w-0">
-                    <div className="w-8 h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center p-1.5 shadow-sm shrink-0 overflow-hidden group-hover:border-brand-indigo/30 transition-colors">
+                    <div className="w-8 h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center p-1.5 shadow-sm shrink-0 overflow-hidden group-hover:border-brand-emerald/30 transition-colors">
                       <img src={row.team.logoUrl || ''} alt={row.team.name} className="w-full h-full object-contain" />
                     </div>
-                    <span className="text-sm font-black text-slate-700 group-hover:text-brand-indigo transition-colors truncate">
+                    <span className="text-sm font-black text-slate-700 group-hover:text-brand-emerald transition-colors truncate">
                       {row.team.name}
                     </span>
                   </Link>
@@ -145,7 +145,7 @@ export default function LeagueCornersTable({ standings }: LeagueCornersTableProp
                 <td className="px-4 py-4 text-center text-xs font-bold text-slate-500">{row.over125}</td>
                 <td className="px-4 py-4 text-center text-xs font-bold text-slate-500">{row.over135}</td>
                 <td className="px-4 py-4 text-center">
-                  <span className="inline-flex items-center justify-center bg-brand-indigo/10 text-brand-indigo px-2.5 py-1 rounded-lg text-sm font-black min-w-[40px]">
+                  <span className="inline-flex items-center justify-center bg-brand-emerald/10 text-brand-emerald px-2.5 py-1 rounded-lg text-sm font-black min-w-[40px]">
                     {row.average != null ? row.average.toFixed(1) : 'N/A'}
                   </span>
                 </td>

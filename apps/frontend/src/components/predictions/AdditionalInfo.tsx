@@ -2,6 +2,8 @@
 
 import type { MatchData } from '@/lib/api/types';
 
+import Link from 'next/link';
+
 interface WatchBannerProps {
   match: MatchData;
 }
@@ -16,7 +18,7 @@ export function WatchBanner({ match }: WatchBannerProps) {
           </p>
        </div>
 
-       <div className="relative h-[120px] md:h-[180px] rounded-[32px] overflow-hidden group cursor-pointer shadow-xl shadow-slate-200/50">
+       <Link href="/betting-sites" className="block relative h-[120px] md:h-[180px] rounded-[32px] overflow-hidden group cursor-pointer shadow-xl shadow-slate-200/50">
           <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1574629810360-70f11279ce8?q=80&w=2070&auto=format&fit=crop")' }}></div>
           <div className="absolute inset-0 bg-gradient-to-r from-brand-midnight/90 via-brand-midnight/70 to-brand-midnight/40"></div>
           
@@ -30,14 +32,14 @@ export function WatchBanner({ match }: WatchBannerProps) {
                 </div>
              </div>
 
-             <button className="bg-brand-emerald text-white px-6 md:px-10 py-3 md:py-4 rounded-full font-black flex items-center gap-3 shadow-lg shadow-brand-emerald/40 hover:scale-105 transition-transform">
+             <div className="bg-brand-emerald text-white px-6 md:px-10 py-3 md:py-4 rounded-full font-black flex items-center gap-3 shadow-lg shadow-brand-emerald/40 hover:scale-105 transition-transform">
                 <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
                    <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-1"></div>
                 </div>
                 <span>Where to Watch</span>
-             </button>
+             </div>
           </div>
-       </div>
+       </Link>
     </div>
   );
 }

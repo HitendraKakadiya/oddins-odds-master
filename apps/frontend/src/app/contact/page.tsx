@@ -1,7 +1,11 @@
-'use client';
-
+import { Metadata } from 'next';
 import ContactForm from '@/components/ContactForm';
 import { FiMail, FiGlobe } from 'react-icons/fi';
+
+export const metadata: Metadata = {
+  title: 'Contact Us',
+  description: "Get in touch with the Oddins Odds team. We're here to help with your questions, feedback, or business inquiries about our football predictions and betting insights.",
+};
 
 export default function ContactPage() {
   return (

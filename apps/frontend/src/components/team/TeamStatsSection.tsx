@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 import type { 
   TeamDetailResponse, 
@@ -128,9 +129,9 @@ export default function TeamStatsSection({ teamName, venue, city, stats, nextMat
                 <StatRow label="xGA" home={comparison?.goals?.home || '-'} away={comparison?.goals?.away || '-'} />
               </div>
 
-              <button className="w-full py-4 bg-brand-emerald text-white rounded-[24px] font-black uppercase text-xs tracking-widest shadow-lg shadow-brand-emerald/20 hover:scale-[1.02] hover:shadow-brand-emerald/30 transition-all">
+              <Link href={`/predictions/${nextMatchInfo.matchId}`} className="block text-center w-full py-4 bg-brand-emerald text-white rounded-[24px] font-black uppercase text-xs tracking-widest shadow-lg shadow-brand-emerald/20 hover:scale-[1.02] hover:shadow-brand-emerald/30 transition-all">
                 View Prediction Detail →
-              </button>
+              </Link>
             </div>
           </div>
 

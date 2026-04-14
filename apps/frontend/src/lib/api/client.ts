@@ -13,6 +13,11 @@ export class APIError extends Error {
 
 export async function fetchAPI<T>(endpoint: string, options?: RequestInit): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
+    
+    // Add logging to help debug connectivity in different environments
+    if (process.env.NODE_ENV === 'development') {
+        console.log(`[API] Fetching: ${url}`);
+    }
 
     try {
         const response = await fetch(url, {

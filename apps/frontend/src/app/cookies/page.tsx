@@ -1,7 +1,11 @@
-'use client';
-
-import { useState, useEffect } from 'react';
+import { Metadata } from 'next';
+import PolicyNavigation from '@/components/PolicyNavigation';
 import { FiLock, FiSettings, FiActivity, FiInfo, FiLayers, FiShield } from 'react-icons/fi';
+
+export const metadata: Metadata = {
+  title: 'Cookies Policy',
+  description: 'Understand how Oddins Odds uses cookies to improve your experience and manage affiliate tracking. View our comprehensive cookie policies and management options.',
+};
 
 const SECTIONS = [
   { id: 'introduction', title: 'Introduction', icon: <FiInfo /> },
@@ -21,34 +25,7 @@ function FiShieldIcon() {
 }
 
 export default function CookiesPage() {
-  const [activeSection, setActiveSection] = useState('introduction');
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
-
-    SECTIONS.forEach((section) => {
-      const el = document.getElementById(section.id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  const scrollToSection = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
+  const lastUpdated = new Date().toLocaleDateString('en-GB');
 
   return (
     <div className="min-h-screen bg-brand-surface pb-24">
@@ -74,30 +51,7 @@ export default function CookiesPage() {
         <div className="flex flex-col lg:flex-row gap-12">
           
           {/* Navigation Sidebar */}
-          <aside className="w-full lg:w-80 shrink-0">
-            <div className="lg:sticky lg:top-24 bg-white rounded-[40px] border border-slate-100 p-8 shadow-xl shadow-slate-200/50">
-              <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6 px-2">Knowledge Base</h3>
-              <nav className="space-y-1">
-                {SECTIONS.map((section) => (
-                  <button
-                    key={section.id}
-                    onClick={() => scrollToSection(section.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all ${
-                      activeSection === section.id 
-                        ? 'bg-brand-emerald/10 text-brand-emerald shadow-sm' 
-                        : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
-                    }`}
-                  >
-                    <span className="text-lg opacity-70 group-hover:opacity-100">{section.icon}</span>
-                    <span className="text-left">{section.title}</span>
-                  </button>
-                ))}
-              </nav>
-              <div className="mt-8 pt-8 border-t border-slate-100 px-2 text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed">
-                Last updated: {new Date().toLocaleDateString('en-GB')}
-              </div>
-            </div>
-          </aside>
+          <PolicyNavigation sections={SECTIONS} lastUpdated={lastUpdated} />
 
           {/* Policy Content */}
           <main className="flex-1 min-w-0">

@@ -20,6 +20,15 @@ import type {
   Team,
   PredictionsResponse
 } from '@/lib/api/types';
+import { Metadata } from 'next';
+
+export async function generateMetadata({ searchParams }: { searchParams: { date?: string } }): Promise<Metadata> {
+  const date = searchParams.date || new Date().toISOString().split('T')[0];
+  return {
+    title: `Football Matches Today & Betting Tips - ${date}`,
+    description: `View all football matches scheduled for ${date}. Get live scores, expert predictions, and betting tips for major leagues worldwide on Oddins Odds.`,
+  };
+}
 
 export default async function HomePage({ searchParams }: { searchParams: { date?: string; leagueId?: string; market?: string; minOdds?: string } }) {
   let selectedDate = searchParams.date || new Date().toISOString().split('T')[0];
