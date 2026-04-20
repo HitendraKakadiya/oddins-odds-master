@@ -23,7 +23,7 @@ export default function LeagueNavigation({ prevLeague, nextLeague }: LeagueNavig
       {/* Previous League */}
       {prevLeague && (
         <Link 
-          href={`/leagues/${prevLeague.countrySlug}/${prevLeague.slug}`}
+          href={`/leagues/${prevLeague.countrySlug.replace(/-+/g, '-')}/${prevLeague.slug.replace(/-+/g, '-')}`}
           className="fixed left-4 top-1/2 -translate-y-1/2 z-50 group hidden xl:flex flex-col items-center gap-3"
         >
           <div className="w-16 h-28 bg-white border border-slate-100 rounded-full shadow-xl shadow-slate-200/50 flex flex-col items-center justify-center p-3 group-hover:bg-brand-emerald group-hover:border-brand-emerald transition-all duration-300">
@@ -44,7 +44,7 @@ export default function LeagueNavigation({ prevLeague, nextLeague }: LeagueNavig
       {/* Next League */}
       {nextLeague && (
         <Link 
-          href={`/leagues/${nextLeague.countrySlug}/${nextLeague.slug}`}
+          href={`/leagues/${nextLeague.countrySlug.replace(/-+/g, '-')}/${nextLeague.slug.replace(/-+/g, '-')}`}
           className="fixed right-4 top-1/2 -translate-y-1/2 z-50 group hidden xl:flex flex-col items-center gap-3"
         >
           <div className="w-16 h-28 bg-white border border-slate-100 rounded-full shadow-xl shadow-slate-200/50 flex flex-col items-center justify-center p-3 group-hover:bg-brand-emerald group-hover:border-brand-emerald transition-all duration-300">

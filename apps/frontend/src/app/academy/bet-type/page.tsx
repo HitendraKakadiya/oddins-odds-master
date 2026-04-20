@@ -1,11 +1,7 @@
-'use client';
-
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import TodaysMatchesWidget from '@/components/About/TodaysMatchesWidget';
 import BetTypeCardGrid from '@/components/Academy/BetTypeCardGrid';
 import StrategyContentSection from '@/components/Academy/StrategyContentSection';
-import StrategyTOC from '@/components/Academy/StrategyTOC';
+import StrategyPageClientWrapper from '@/components/Academy/StrategyPageClientWrapper';
 
 const sections = [
   { 
@@ -134,56 +130,12 @@ const sections = [
 ];
 
 export default function BetTypesPage() {
-  const [activeSection, setActiveSection] = useState(sections[0].id);
-  const [scrollProgress, setScrollProgress] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
-      const currentProgress = (window.scrollY / totalScroll) * 100;
-      setScrollProgress(currentProgress);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const observerOptions = {
-      root: null,
-      rootMargin: '-15% 0px -80% 0px',
-      threshold: 0
-    };
-
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      const intersecting = entries.filter(entry => entry.isIntersecting);
-      if (intersecting.length > 0) {
-        const latest = intersecting[intersecting.length - 1];
-        setActiveSection(latest.target.id);
-      }
-    };
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-    sections.forEach((section) => {
-      const element = document.getElementById(section.id);
-      if (element) {
-        observer.observe(element);
-      }
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
+    
+  
+  
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       {/* Reading Progress Bar */}
-      <div className="fixed top-0 left-0 w-full h-1.5 z-50 bg-slate-100">
-        <div 
-          className="h-full bg-brand-emerald transition-all duration-150 ease-out"
-          style={{ width: `${scrollProgress}%` }}
-        />
-      </div>
-
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <nav className="flex items-center gap-2 text-xs font-medium text-slate-400 mb-8 overflow-x-auto whitespace-nowrap pb-2">
           <Link href="/" className="hover:text-brand-emerald transition-colors">HOME</Link>
@@ -193,8 +145,7 @@ export default function BetTypesPage() {
           <span className="text-brand-emerald uppercase">BET TYPES GUIDES</span>
         </nav>
 
-        <div className="flex flex-col lg:flex-row gap-12">
-          <main className="flex-1 min-w-0 order-2 lg:order-1">
+        <StrategyPageClientWrapper sections={sections.map(s => ({id: s.id, title: s.title}))}>
             <header className="mb-12">
               <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-8 tracking-tight leading-[1.1]">
                 Guides for All <span className="text-brand-emerald">Bet Types</span>
@@ -225,7 +176,7 @@ export default function BetTypesPage() {
                 <StrategyContentSection
                   key={section.id}
                   {...section}
-                  isActive={activeSection === section.id}
+                  
                 />
               ))}
             </div>

@@ -312,7 +312,7 @@ export default function Sidebar({
                    {group.leagues.map((league) => (
                       <Link 
                         key={league.id} 
-                        href={`/leagues/${group.country.name.toLowerCase()}/${league.slug}`} 
+                        href={`/leagues/${group.country.name.toLowerCase().replace(/\\s+/g, '-').replace(/-+/g, '-')}/${league.slug.replace(/-+/g, '-')}`} 
                         className="flex items-center justify-between p-4 px-5 hover:bg-slate-50 transition-all border-b border-slate-50 last:border-0 group"
                       >
                         <div className="flex items-center gap-4">
@@ -378,7 +378,7 @@ export default function Sidebar({
                         {group.leagues.map((league) => (
                           <Link 
                             key={league.id} 
-                            href={`/leagues/${group.country.name.toLowerCase()}/${league.slug}`}
+                            href={`/leagues/${group.country.name.toLowerCase().replace(/\\s+/g, '-').replace(/-+/g, '-')}/${league.slug.replace(/-+/g, '-')}`}
                             className="flex items-center gap-3 p-2 rounded-lg hover:bg-white hover:text-brand-emerald transition-all text-sm font-bold text-slate-500"
                           >
                             <span className="w-1.5 h-1.5 rounded-full bg-slate-300"></span>

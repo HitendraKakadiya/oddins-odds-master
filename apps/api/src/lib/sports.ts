@@ -117,7 +117,7 @@ export async function getFixtureDetailDirect(fixtureId: number) {
         league: {
             id: item.league.id,
             name: item.league.name,
-            slug: item.league.name.toLowerCase().replace(/\s+/g, '-'),
+            slug: item.league.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]+/g, ""),
             logoUrl: item.league.logo,
             country: {
                 name: item.league.country || '',
@@ -513,7 +513,7 @@ export function mapMatch(fixture: any, league: any, teams: any, res: any) {
         league: {
             id: (league?.id || fixtureLeague?.id || 0) as number,
             name: (league?.name || fixtureLeague?.name || 'Unknown League') as string,
-            slug: ((league?.name || fixtureLeague?.name || 'unknown-league') as string).toLowerCase().replace(/\s+/g, '-'),
+            slug: ((league?.name || fixtureLeague?.name || 'unknown-league') as string).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]+/g, ""),
             logoUrl: (league?.logo || (league as Record<string, unknown>)?.logo || fixtureLeague?.logo || '') as string,
             season: (league?.season || (league as Record<string, unknown>)?.season || fixtureLeague?.season) as number,
             country: {

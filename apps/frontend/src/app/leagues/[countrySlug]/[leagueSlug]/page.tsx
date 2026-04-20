@@ -1,16 +1,8 @@
-'use client';
-
-import { useState, useEffect } from 'react';
+import { Metadata } from 'next';
 import Link from 'next/link';
 import { getLeagueDetail } from '@/lib/api/leagues';
-import { LeagueDetailResponse } from '@/lib/api/types';
 import LeagueHero from '@/components/leagues/LeagueHero';
-import LeagueStandingsTable from '@/components/leagues/LeagueStandingsTable';
-import LeagueStatsAnalysis from '@/components/leagues/LeagueStatsAnalysis';
-import LeagueMatchList from '@/components/leagues/LeagueMatchList';
-import LeagueFAQ from '@/components/leagues/LeagueFAQ';
-import LeagueMatches from '@/components/leagues/LeagueMatches';
-import LeagueCornersTable from '@/components/leagues/LeagueCornersTable';
+import LeagueTabsClient from '@/components/leagues/LeagueTabsClient';
 
 interface PageProps {
   params: {
@@ -19,32 +11,28 @@ interface PageProps {
   };
 }
 
-export default function LeagueDetailPage({ params }: PageProps) {
-  const [data, setData] = useState<LeagueDetailResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'summary' | 'matches' | 'stats' | 'corners'>('summary');
+export const revalidate = 3600; // Cache for 1 hour
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const res = await getLeagueDetail(params.countrySlug, params.leagueSlug);
-        setData(res);
-      } catch (err) {
-        console.error('Failed to fetch league detail:', err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, [params.countrySlug, params.leagueSlug]);
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  try {
+    const data = await getLeagueDetail(params.countrySlug, params.leagueSlug);
+    if (!data) return { title: 'League Not Found' };
+    
+    return {
+      title: `${data.league.name} ${data.season?.year || ''} Standings, Matches & Stats`,
+      description: `Get the latest ${data.league.name} standings, comprehensive match stats, upcoming fixtures, and precise predictions for the ${data.season?.year ? `${data.season.year}/${data.season.year+1}` : ''} season.`,
+    };
+  } catch (err) {
+    return { title: 'League Details' };
+  }
+}
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[600px] gap-4">
-        <div className="w-12 h-12 border-4 border-brand-indigo/10 border-t-brand-indigo rounded-full animate-spin"></div>
-        <p className="text-sm font-black text-slate-400 uppercase tracking-widest italic">Analyzing league data...</p>
-      </div>
-    );
+export default async function LeagueDetailPage({ params }: PageProps) {
+  let data;
+  try {
+    data = await getLeagueDetail(params.countrySlug, params.leagueSlug);
+  } catch(e) {
+    data = null;
   }
 
   if (!data) {
@@ -58,8 +46,6 @@ export default function LeagueDetailPage({ params }: PageProps) {
       </div>
     );
   }
-
-  // No more mock stats, we use data.statsSummary directly
 
   return (
     <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-8 relative">
@@ -77,76 +63,14 @@ export default function LeagueDetailPage({ params }: PageProps) {
           league={data.league} 
           season={data.season} 
           stats={{ 
-            teamCount: data.standings.length, 
-            matchesPlayed: data.statsSummary.matchesPlayed, 
-            totalMatches: data.statsSummary.totalMatches 
+            teamCount: data.standings?.length || 0, 
+            matchesPlayed: data.statsSummary?.matchesPlayed || 0, 
+            totalMatches: data.statsSummary?.totalMatches || 0
           }} 
         />
 
-        {/* Tabs Content Navigation */}
-        <div className="flex items-center gap-8 border-b border-slate-100 mb-8 px-4 overflow-x-auto scrollbar-hide">
-           <TabButton active={activeTab === 'summary'} onClick={() => setActiveTab('summary')} label="Summary" />
-           <TabButton active={activeTab === 'matches'} onClick={() => setActiveTab('matches')} label="Matches" />
-           <TabButton active={activeTab === 'stats'} onClick={() => setActiveTab('stats')} label="Stats" />
-           <TabButton active={activeTab === 'corners'} onClick={() => setActiveTab('corners')} label="Corners" />
-        </div>
-
-        {activeTab === 'summary' && (
-          <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-            <LeagueStandingsTable standings={data.standings} />
-            <LeagueStatsAnalysis 
-              leagueName={data.league.name} 
-              season={data.season?.year ? `${data.season.year}/${data.season.year+1}` : ''} 
-              stats={data.statsSummary} 
-            />
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-               <LeagueMatchList title="Recent Results" matches={data.results.slice(0, 5)} type="results" />
-               <LeagueMatchList title="Upcoming Matches" matches={data.fixtures.slice(0, 5)} type="fixtures" />
-            </div>
-
-            <LeagueFAQ leagueName={data.league.name} faqs={data.faq || []} />
-          </div>
-        )}
-        
-        {activeTab === 'matches' && (
-           <LeagueMatches fixtures={data.fixtures} results={data.results} />
-        )}
-
-        {(activeTab === 'stats') && (
-           <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-             <LeagueStatsAnalysis 
-               leagueName={data.league.name} 
-               season={data.season?.year ? `${data.season.year}/${data.season.year+1}` : ''} 
-               stats={data.statsSummary} 
-               detailedMode={activeTab}
-               standings={data.standings}
-             />
-           </div>
-        )}
-
-        {activeTab === 'corners' && (
-           <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-             <LeagueCornersTable standings={data.standings} />
-           </div>
-        )}
+        <LeagueTabsClient data={data} />
       </div>
     </div>
-  );
-}
-
-function TabButton({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) {
-  return (
-    <button 
-      onClick={onClick}
-      className={`px-4 py-5 text-sm font-black transition-all relative whitespace-nowrap ${
-        active ? 'text-brand-indigo' : 'text-slate-400 hover:text-slate-600'
-      }`}
-    >
-      {label}
-      {active && (
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-brand-indigo rounded-t-full"></div>
-      )}
-    </button>
   );
 }

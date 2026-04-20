@@ -188,7 +188,7 @@ export function SidebarLeagues({ leagueData = [] }: { leagueData: LeaguesRespons
           leagueData.map((group) => (
             <div key={group.country.name}>
                {group.leagues.map((league) => (
-                  <Link key={league.id} href={`/leagues/${group.country.name.toLowerCase()}/${league.slug}`} className="flex items-center justify-between p-4 px-5 hover:bg-slate-50 transition-all border-b border-slate-100 last:border-0 group">
+                  <Link key={league.id} href={`/leagues/${group.country.name.toLowerCase().replace(/\\s+/g, '-').replace(/-+/g, '-')}/${league.slug.replace(/-+/g, '-')}`} className="flex items-center justify-between p-4 px-5 hover:bg-slate-50 transition-all border-b border-slate-100 last:border-0 group">
                     <div className="flex items-center gap-4">
                       {league.logoUrl ? (
                         <img src={league.logoUrl} alt={league.name} className="w-8 h-8 object-contain rounded shadow-sm border border-slate-100" />

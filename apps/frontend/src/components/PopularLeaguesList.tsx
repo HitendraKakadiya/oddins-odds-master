@@ -53,7 +53,7 @@ export default function PopularLeaguesList() {
             {leagues.map((league) => (
               <Link 
                 key={league.id} 
-                href={`/leagues/${league.country.toLowerCase().replace(/\s+/g, '-')}/${league.slug}`}
+                href={`/leagues/${league.country.toLowerCase().replace(/\s+/g, '-').replace(/-+/g, '-')}/${league.slug.replace(/-+/g, '-')}`}
                 className="group flex items-center justify-between p-4 hover:bg-slate-50 transition-all"
               >
                 <div className="flex items-center gap-4">

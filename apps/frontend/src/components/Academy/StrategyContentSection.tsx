@@ -1,12 +1,11 @@
-import { useState, ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 interface StrategyContentSectionProps {
   id: string;
   title: string;
-  content: ReactNode;
-  advantages: string[];
+  content?: ReactNode;
+  advantages?: string[];
   risks?: string[];
-  isActive?: boolean;
   variant?: 'premium' | 'simple';
   faqs?: { question: string; answer: string }[];
 }
@@ -15,43 +14,36 @@ export default function StrategyContentSection({
   id, 
   title, 
   content, 
-  advantages, 
+  advantages = [], 
   risks = [], 
-  isActive,
   variant = 'premium',
   faqs = []
 }: StrategyContentSectionProps) {
   const isSimple = variant === 'simple';
   const isFAQs = id === 'faqs' && faqs.length > 0;
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   if (isFAQs) {
     return (
-      <section id={id} className="pt-8 mb-16 scroll-mt-24">
+      <section id={id} className="pt-8 mb-16 scroll-mt-24 strategy-section" data-active="false">
         <h2 className="text-3xl font-black text-slate-900 mb-8 tracking-tight">{title}</h2>
         <div className="space-y-4">
           {faqs.map((faq, idx) => (
-            <div key={idx} className="bg-white border border-slate-100 rounded-[24px] overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md">
-              <button
-                onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                className="w-full text-left px-8 py-6 flex items-center justify-between group"
-              >
+            <details key={idx} className="group bg-white border border-slate-100 rounded-[24px] overflow-hidden shadow-sm hover:shadow-md [&_summary::-webkit-details-marker]:hidden">
+              <summary className="w-full text-left px-8 py-6 flex items-center justify-between cursor-pointer list-none">
                 <span className="text-lg font-bold text-slate-900 group-hover:text-brand-emerald transition-colors">{faq.question}</span>
                 <svg 
-                  className={`w-6 h-6 text-slate-400 transition-transform duration-300 ${openFaq === idx ? 'rotate-180' : ''}`} 
+                  className="w-6 h-6 text-slate-400 group-open:rotate-180 transition-transform duration-300" 
                   fill="none" 
                   stroke="currentColor" 
                   viewBox="0 0 24 24"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                 </svg>
-              </button>
-              <div className={`transition-all duration-300 ease-in-out overflow-hidden ${openFaq === idx ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                <div className="px-8 pb-8 text-slate-600 leading-relaxed">
-                  {faq.answer}
-                </div>
+              </summary>
+              <div className="px-8 pb-8 text-slate-600 leading-relaxed animate-in slide-in-from-top-2 fade-in duration-300">
+                {faq.answer}
               </div>
-            </div>
+            </details>
           ))}
         </div>
       </section>
@@ -61,12 +53,11 @@ export default function StrategyContentSection({
   return (
     <section 
       id={id} 
-      className={`relative transition-all duration-700 scroll-mt-24 ${
+      data-active="false"
+      className={`strategy-section relative transition-all duration-700 scroll-mt-24 ${
         isSimple 
           ? 'p-0 py-8 bg-transparent' 
-          : `p-8 sm:p-12 bg-white rounded-[40px] border border-slate-100 shadow-2xl hover:shadow-slate-200/50 ${
-              isActive ? 'ring-2 ring-brand-emerald shadow-brand-emerald/10 scale-[1.02]' : 'opacity-80 scale-100 grayscale-[0.2]'
-            }`
+          : 'p-8 sm:p-12 bg-white rounded-[40px] border border-slate-100 shadow-2xl hover:shadow-slate-200/50 opacity-80 scale-100 grayscale-[0.2] data-[active=true]:ring-2 data-[active=true]:ring-brand-emerald data-[active=true]:shadow-brand-emerald/10 data-[active=true]:scale-[1.02] data-[active=true]:opacity-100 data-[active=true]:grayscale-0'
       }`}
     >
       <div className="relative z-10">
@@ -122,7 +113,6 @@ export default function StrategyContentSection({
             )}
           </div>
         )}
-
       </div>
 
       {!isSimple && (

@@ -10,6 +10,7 @@ interface LeagueDetailParams {
 function slugify(text: string): string {
   return text
     .toString()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .replace(/\s+/g, '-')
     .replace(/[^\w-]+/g, '')

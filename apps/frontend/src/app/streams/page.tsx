@@ -21,7 +21,7 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
   const sort = searchParams.sort || 'important';
 
   const streamsData = await api.streams.getStreams(searchParams.region, date, 1, 20, search, sort).catch(() => ({ date, items: [] }));
-  const leagues = await api.leagues.getLeagues().catch(() => ({ items: [], total: 0 }));
+  const leagues = await api.leagues.getLiveLeagues(1, 100, date).catch(() => ({ items: [], total: 0 }));
 
   const streamsRes = streamsData as StreamsResponse;
   const initialMatches = streamsRes.items || [];
@@ -43,6 +43,7 @@ export default async function StreamsPage({ searchParams }: { searchParams: Sear
                  leagueData={Array.isArray(leagues) ? leagues : (leagues.items || [])} 
                  initialTotal={Array.isArray(leagues) ? 0 : (leagues.total || 0)}
                  mode="predictions" 
+                 date={date}
                  hidePrediction={true}
                  hideCompetitionHeader={true}
                />

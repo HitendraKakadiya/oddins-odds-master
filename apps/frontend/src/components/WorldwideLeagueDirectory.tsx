@@ -99,7 +99,7 @@ export default function WorldwideLeagueDirectory() {
                       return (
                         <Link 
                           key={league.id} 
-                          href={`/leagues/${countrySlug}/${league.slug}`}
+                          href={`/leagues/${countrySlug.replace(/-+/g, '-')}/${league.slug.replace(/-+/g, '-')}`}
                           className="group flex items-center justify-between p-4 hover:bg-slate-50 transition-all rounded-xl cursor-pointer"
                         >
                           <div className="flex items-center gap-4">
