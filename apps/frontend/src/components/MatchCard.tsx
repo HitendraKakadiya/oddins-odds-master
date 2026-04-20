@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useIsMounted } from '@/hooks/useIsMounted';
 import type { MatchData } from '@/lib/api';
 
 interface MatchProps {
@@ -29,11 +30,15 @@ interface MatchProps {
 
 export function MatchRow({ match }: MatchProps) {
   const router = useRouter();
-  const kickoffTime = new Date(match.kickoffAt).toLocaleTimeString('en-GB', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false
-  });
+  const isMounted = useIsMounted();
+  
+  const kickoffTime = isMounted 
+    ? new Date(match.kickoffAt).toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      })
+    : '--:--';
 
   return (
     <div className="bg-white p-4 md:p-6 flex flex-col gap-4 md:gap-5 group hover:bg-slate-50/40 transition-all border-b border-slate-100/60 last:border-0">

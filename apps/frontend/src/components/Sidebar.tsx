@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useIsMounted } from '@/hooks/useIsMounted';
 import Link from 'next/link';
 import type { LeaguesResponse, Prediction } from '@/lib/api';
 import { getLiveLeagues } from '@/lib/api';
@@ -41,6 +42,7 @@ export default function Sidebar({
   hideCompetitionHeader = false
 }: SidebarProps) {
   // Leagues State
+  const isMounted = useIsMounted();
   const [competitions, setCompetitions] = useState<LeaguesResponse[]>(leagueData || []);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -154,8 +156,8 @@ export default function Sidebar({
     return {
       id: (tip.id || tip.matchId || `tip-${index}`).toString(),
       leagueName: leagueName,
-      time: kickoffDate ? kickoffDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : (tip.time || '20:00'),
-      date: kickoffDate ? kickoffDate.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) : (tip.date || 'Today'),
+      time: isMounted && kickoffDate ? kickoffDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : (tip.time || '20:00'),
+      date: isMounted && kickoffDate ? kickoffDate.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }) : (tip.date || 'Today'),
       homeTeam: { 
         name: tip.homeTeam?.name || 'Home Team', 
         logo: tip.homeTeam?.logoUrl || tip.homeTeam?.logo || 'https://via.placeholder.com/100' 

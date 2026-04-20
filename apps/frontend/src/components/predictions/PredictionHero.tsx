@@ -1,5 +1,6 @@
 'use client';
 
+import { useIsMounted } from '@/hooks/useIsMounted';
 import type { MatchData } from '@/lib/api/types';
 
 interface PredictionHeroProps {
@@ -7,18 +8,19 @@ interface PredictionHeroProps {
 }
 
 export default function PredictionHero({ match }: PredictionHeroProps) {
+  const isMounted = useIsMounted();
   const kickoffTime = new Date(match.kickoffAt);
-  const formattedDate = kickoffTime.toLocaleDateString('en-GB', {
+  const formattedDate = isMounted ? kickoffTime.toLocaleDateString('en-GB', {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
     year: 'numeric'
-  });
-  const formattedTime = kickoffTime.toLocaleTimeString('en-GB', {
+  }) : '---';
+  const formattedTime = isMounted ? kickoffTime.toLocaleTimeString('en-GB', {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false
-  });
+  }) : '--:--';
 
   return (
     <div className="relative w-full h-[400px] md:h-[480px] overflow-hidden">

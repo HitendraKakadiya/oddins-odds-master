@@ -1,5 +1,6 @@
 'use client';
 
+import { useIsMounted } from '@/hooks/useIsMounted';
 import { useRouter } from 'next/navigation';
 
 interface DateOption {
@@ -11,6 +12,7 @@ interface DateOption {
 
 export default function PredictionDateSelector({ selectedDate }: { selectedDate?: string }) {
   const router = useRouter();
+  const isMounted = useIsMounted();
   
   // Generate 7 days around today
   const dates: DateOption[] = [];
@@ -25,8 +27,8 @@ export default function PredictionDateSelector({ selectedDate }: { selectedDate?
     const isToday = i === 0;
     
     dates.push({
-      dayName: isToday ? 'TODAY' : d.toLocaleDateString('en-GB', { weekday: 'short' }).toUpperCase(),
-      dayMonth: d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }),
+      dayName: isToday ? 'TODAY' : (isMounted ? d.toLocaleDateString('en-GB', { weekday: 'short' }).toUpperCase() : '---'),
+      dayMonth: isMounted ? d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) : '-- ---',
       dateStr,
       isActive: selectedDate === dateStr || (isToday && !selectedDate)
     });

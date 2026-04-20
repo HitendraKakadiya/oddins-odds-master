@@ -1,5 +1,6 @@
 'use client';
 
+import { useIsMounted } from '@/hooks/useIsMounted';
 import Link from 'next/link';
 import type { StreamItem } from '@/lib/api';
 
@@ -8,11 +9,14 @@ interface StreamsMatchRowProps {
 }
 
 export default function StreamsMatchRow({ match }: StreamsMatchRowProps) {
-  const kickoffTime = new Date(match.kickoffAt).toLocaleTimeString('en-GB', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false
-  });
+  const isMounted = useIsMounted();
+  const kickoffTime = isMounted 
+    ? new Date(match.kickoffAt).toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      })
+    : '--:--';
 
   return (
     <div className="group flex items-center justify-between p-3 sm:p-4 px-2 sm:px-6 hover:bg-slate-50/80 transition-all duration-300 relative">

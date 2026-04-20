@@ -1,10 +1,12 @@
 'use client';
 
+import { useIsMounted } from '@/hooks/useIsMounted';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { getTodayMatches, getFeaturedTips, getArticles } from '@/lib/api';
 
 export default function Footer() {
+  const isMounted = useIsMounted();
   const [sections, setSections] = useState([
     {
       title: "Today's Main Matches",
@@ -136,7 +138,7 @@ export default function Footer() {
               <span className="font-bold text-white text-sm sm:text-base">OddinsOdds</span>
            </div>
            <p className="text-xs sm:text-sm text-gray-400 text-center sm:text-right">
-             &copy; {new Date().getFullYear()} OddinsOdds. All rights reserved.
+             &copy; {isMounted ? new Date().getFullYear() : '2025'} OddinsOdds. All rights reserved.
            </p>
         </div>
       </div>

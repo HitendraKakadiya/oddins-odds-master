@@ -1,5 +1,6 @@
 'use client';
 
+import { useIsMounted } from '@/hooks/useIsMounted';
 import Link from 'next/link';
 import type { MatchData, Prediction } from '@/lib/api/types';
 
@@ -9,10 +10,11 @@ interface PredictionAnalysisProps {
 }
 
 export default function PredictionAnalysis({ match, predictions }: PredictionAnalysisProps) {
-  const date = new Date(match.kickoffAt).toLocaleDateString('en-GB', {
+  const isMounted = useIsMounted();
+  const date = isMounted ? new Date(match.kickoffAt).toLocaleDateString('en-GB', {
     day: '2-digit',
     month: '2-digit'
-  });
+  }) : '--/--';
 
   return (
     <div className="flex flex-col gap-8">
@@ -32,8 +34,8 @@ export default function PredictionAnalysis({ match, predictions }: PredictionAna
 
           <div className="prose prose-slate max-w-none text-slate-600 mb-12">
              <p className="text-lg leading-relaxed">
-                The kick off for the match between <strong>{match.homeTeam.name} and {match.awayTeam.name}</strong> will take place at <strong>{new Date(match.kickoffAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })} (UK time)</strong> - 
-                <strong> {new Date(match.kickoffAt).toLocaleDateString('en-GB', { weekday: 'long', day: '2-digit', month: '2-digit' })}</strong> - at the <strong>{ ((match as unknown) as { venue?: string }).venue || 'Stadium'}</strong>. This clash of the 2025/26 {match.league.name} looks very promising!
+                The kick off for the match between <strong>{match.homeTeam.name} and {match.awayTeam.name}</strong> will take place at <strong>{isMounted ? new Date(match.kickoffAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }) : '--:--'} (UK time)</strong> - 
+                <strong> {isMounted ? new Date(match.kickoffAt).toLocaleDateString('en-GB', { weekday: 'long', day: '2-digit', month: '2-digit' }) : '---'}</strong> - at the <strong>{ ((match as unknown) as { venue?: string }).venue || 'Stadium'}</strong>. This clash of the 2025/26 {match.league.name} looks very promising!
              </p>
              <p className="text-lg leading-relaxed">
                 Before placing your bets on this match, check out the full analysis, including predictions for {match.homeTeam.name} vs {match.awayTeam.name}. We also highlight the most interesting odds and markets with a high chance of winning. Providing today&apos;s best free tip to help you make informed and profitable betting decisions.

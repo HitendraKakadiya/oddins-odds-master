@@ -1,5 +1,6 @@
 'use client';
 
+import { useIsMounted } from '@/hooks/useIsMounted';
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { FiPlayCircle, FiTv, FiLoader, FiGrid } from 'react-icons/fi';
 import Link from 'next/link';
@@ -13,6 +14,8 @@ export default function ComboSidebar() {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const loaderRef = useRef<HTMLDivElement>(null);
+
+    const isMounted = useIsMounted();
 
     const fetchStreams = useCallback(async (pageNum: number, isInitial: boolean = false) => {
         if (isInitial) setLoading(true);
@@ -119,7 +122,7 @@ export default function ComboSidebar() {
                                                 <span className="text-[13px] font-bold text-slate-700 group-hover/match:text-brand-emerald transition-colors line-clamp-1">{match.homeTeam.name}</span>
                                             </div>
                                             <span className="text-[10px] font-black text-slate-300 tabular-nums shrink-0 ml-2">
-                                                {new Date(match.kickoffAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                {isMounted ? new Date(match.kickoffAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
                                             </span>
                                         </div>
                                         <div className="flex items-center justify-between">

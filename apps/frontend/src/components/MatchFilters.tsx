@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import { useIsMounted } from '@/hooks/useIsMounted';
 
 export type FilterType = 
   | '1X2' | 'Over 1.5' | 'Over 2.5' | 'Under 2.5' | 'Under 3.5' | 'Under 4.5' 
@@ -192,6 +193,7 @@ export function DateSelector({ selectedDate }: { selectedDate?: string }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const isMounted = useIsMounted();
   
   const today = new Date();
   const days = [];
@@ -206,9 +208,8 @@ export function DateSelector({ selectedDate }: { selectedDate?: string }) {
     if (i === -1) label = 'YESTERDAY';
     else if (i === 0) label = 'TODAY';
     else if (i === 1) label = 'TOMORROW';
-    else label = date.toLocaleDateString('en-GB', { weekday: 'short' }).toUpperCase();
-
-    const dateStr = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+    else label = isMounted ? date.toLocaleDateString('en-GB', { weekday: 'short' }).toUpperCase() : '---';
+    const dateStr = isMounted ? date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) : '-- ---';
     
     // Fix: Use local date instead of UTC to avoid timezone offset issues
     const year = date.getFullYear();

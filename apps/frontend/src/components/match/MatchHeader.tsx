@@ -3,6 +3,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useIsMounted } from '@/hooks/useIsMounted';
 import type { MatchData } from '@/lib/api/types';
 
 interface MatchHeaderProps {
@@ -17,6 +18,7 @@ interface MatchHeaderProps {
 
 export default function MatchHeader({ match, prevMatch, nextMatch, stats }: MatchHeaderProps) {
   const router = useRouter();
+  const isMounted = useIsMounted();
   const [isLoadingPrev, setIsLoadingPrev] = useState(false);
   const [isLoadingNext, setIsLoadingNext] = useState(false);
 
@@ -33,17 +35,17 @@ export default function MatchHeader({ match, prevMatch, nextMatch, stats }: Matc
   };
 
   const kickoffTime = new Date(match.kickoffAt);
-  const formattedDate = kickoffTime.toLocaleDateString('en-GB', {
+  const formattedDate = isMounted ? kickoffTime.toLocaleDateString('en-GB', {
     weekday: 'short',
     day: 'numeric',
     month: 'long',
     year: 'numeric'
-  });
-  const formattedTime = kickoffTime.toLocaleTimeString('en-GB', {
+  }) : '---';
+  const formattedTime = isMounted ? kickoffTime.toLocaleTimeString('en-GB', {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false
-  });
+  }) : '--:--';
 
   return (
     <div className="relative mb-8">
