@@ -68,8 +68,7 @@ export default function StreamsMatchRow({ match }: StreamsMatchRowProps) {
       {/* Where to Watch Button */}
       <div className="flex items-center justify-end min-w-fit sm:min-w-[140px] pl-1.5 sm:pl-4 shrink-0">
         <Link 
-          href={match.whereToWatch?.[0]?.url || '#'} 
-          target="_blank"
+          href="/betting-sites"
           className="bg-brand-emerald text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl sm:rounded-[18px] text-[10px] sm:text-[11px] font-black uppercase tracking-widest hover:bg-emerald-600 transition-all hover:shadow-lg hover:shadow-emerald-500/30 active:scale-95 flex items-center gap-1.5 sm:gap-2 group/btn"
         >
           <span className="hidden sm:inline">Watch</span>

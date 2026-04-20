@@ -139,10 +139,13 @@ export default function ComboSidebar() {
                                         >
                                             PREDICTION
                                         </Link>
-                                        <button className="border-2 border-slate-100 text-slate-400 text-[10px] font-black py-3 rounded-xl flex items-center justify-center gap-1.5 hover:bg-slate-50 hover:text-brand-pink hover:border-brand-pink/20 transition-all active:scale-[0.98]">
+                                        <Link 
+                                            href="/betting-sites"
+                                            className="border-2 border-slate-100 text-slate-400 text-[10px] font-black py-3 rounded-xl flex items-center justify-center gap-1.5 hover:bg-slate-50 hover:text-brand-pink hover:border-brand-pink/20 transition-all active:scale-[0.98]"
+                                        >
                                             <FiPlayCircle className="w-3.5 h-3.5" />
                                             WATCH
-                                        </button>
+                                        </Link>
                                     </div>
                                 </div>
                             ))}

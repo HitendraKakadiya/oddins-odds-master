@@ -3,16 +3,16 @@ export default function AcademyAuthor() {
     <div className="bg-white border border-slate-100 rounded-[32px] p-6 sm:p-10 flex flex-col sm:flex-row items-center sm:items-start gap-8 shadow-sm mb-16">
       <div className="shrink-0">
         <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-[24px] overflow-hidden bg-slate-100 border-4 border-slate-50 flex items-center justify-center text-5xl">
-          🧔🏻‍♂️
+          👨🏻‍💻
         </div>
       </div>
       <div className="flex-1 text-center sm:text-left">
         <div className="flex flex-col sm:flex-row items-center sm:items-baseline gap-3 mb-4">
-          <h3 className="text-xl font-black text-slate-900">Abhishek Nandwani</h3>
+          <h3 className="text-xl font-black text-slate-900">John Doe</h3>
           <span className="bg-brand-emerald/10 text-brand-emerald text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">Author</span>
         </div>
         <p className="text-sm text-slate-500 leading-relaxed max-w-2xl">
-          15 years into rollercoaster world of sports journalism and betting. Fun-loving, and hopelessly attached to Manchester United - I only get mad when they lose or draw...
+          John is a seasoned sports analyst with over 10 years of experience in data modeling and match predictions. At OddinsOdds, he leads the statistical analysis team, ensuring every tip is backed by solid data.
         </p>
         
         <div className="mt-8 flex flex-wrap justify-center sm:justify-start gap-4 text-[10px] font-black uppercase tracking-widest text-slate-400">

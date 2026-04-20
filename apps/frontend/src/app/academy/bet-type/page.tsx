@@ -180,33 +180,7 @@ export default function BetTypesPage() {
                 />
               ))}
             </div>
-          </main>
-
-          <aside className="w-full lg:w-80 space-y-8 order-1 lg:order-2">
-            <div className="sticky top-24 space-y-8">
-              <StrategyTOC 
-                sections={sections} 
-                activeSection={activeSection} 
-                onSectionChange={(id) => {
-                  setActiveSection(id);
-                  const element = document.getElementById(id);
-                  if (element) {
-                    const offset = 100;
-                    const bodyRect = document.body.getBoundingClientRect().top;
-                    const elementRect = element.getBoundingClientRect().top;
-                    const elementPosition = elementRect - bodyRect;
-                    const offsetPosition = elementPosition - offset;
-                    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-                  }
-                }} 
-              />
-              
-              <div className="hidden lg:block">
-                <TodaysMatchesWidget />
-              </div>
-            </div>
-          </aside>
-        </div>
+        </StrategyPageClientWrapper>
       </div>
     </div>
   );
