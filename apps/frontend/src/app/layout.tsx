@@ -1,13 +1,14 @@
 import type { Metadata, Viewport } from 'next';
-import { Outfit } from 'next/font/google';
+import { Proza_Libre } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
-const outfit = Outfit({ 
+const prozaLibre = Proza_Libre({ 
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-outfit',
+  variable: '--font-proza-libre',
+  weight: ['400', '500', '600', '700'],
 });
 
 export const viewport: Viewport = {
@@ -74,7 +75,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={outfit.className}>
+    <html lang="en" className={prozaLibre.className}>
     <head>
         {/* Google Tag Manager */}
         <script

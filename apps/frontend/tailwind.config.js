@@ -32,6 +32,9 @@ module.exports = {
           'dark-blue': '#0F172A', // Map to midnight
         }
       },
+      fontFamily: {
+        sans: ['var(--font-proza-libre)', 'sans-serif'],
+      },
     },
   },
   plugins: [],
