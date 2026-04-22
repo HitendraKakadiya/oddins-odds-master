@@ -1,13 +1,20 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { FiBarChart2, FiCalendar, FiGrid, FiChevronDown, FiMenu, FiX } from 'react-icons/fi';
 
 export default function Header() {
+  const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [expandedMobileItem, setExpandedMobileItem] = useState<string | null>(null);
+
+  const isActive = (path: string) => {
+    if (path === '/') return pathname === '/';
+    return pathname.startsWith(path);
+  };
 
   const toggleMobileDropdown = (itemName: string) => {
     setExpandedMobileItem(expandedMobileItem === itemName ? null : itemName);
@@ -36,6 +43,7 @@ export default function Header() {
     { name: 'Leagues', href: '/leagues' },
     { name: 'Teams', href: '/teams' },
     { name: 'Streams', href: '/streams' },
+    { name: 'World Cup', href: '/world-cup' },
     { name: 'Academy', href: '/academy' },
   ];
 
@@ -62,7 +70,9 @@ export default function Header() {
                 {item.href ? (
                   <Link 
                     href={item.href} 
-                    className="text-slate-600 hover:text-brand-emerald font-bold flex items-center transition-all text-sm px-2 py-1.5 rounded-lg hover:bg-slate-50"
+                    className={`${
+                      isActive(item.href) ? 'text-brand-emerald bg-slate-50' : 'text-slate-600 hover:text-brand-emerald hover:bg-slate-50'
+                    } font-bold flex items-center transition-all text-sm px-3 py-2 rounded-lg`}
                   >
                     {item.name}
                     {item.hasDropdown && (
@@ -70,7 +80,7 @@ export default function Header() {
                     )}
                   </Link>
                 ) : (
-                  <div className="text-slate-600 hover:text-brand-emerald font-bold flex items-center transition-all text-sm px-2 py-1.5 rounded-lg hover:bg-slate-50 cursor-default">
+                  <div className="text-slate-600 hover:text-brand-emerald font-bold flex items-center transition-all text-sm px-3 py-2 rounded-lg hover:bg-slate-50 cursor-default">
                     {item.name}
                     {item.hasDropdown && (
                       <FiChevronDown className={`ml-1 w-3.5 h-3.5 transition-transform duration-200 ${openDropdown === item.name ? 'rotate-180' : ''}`} />
@@ -137,7 +147,9 @@ export default function Header() {
                     <Link
                       href={item.href}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="px-4 py-4 text-slate-900 hover:text-brand-emerald hover:bg-slate-50 font-bold flex items-center justify-between transition-colors rounded-xl text-lg"
+                      className={`px-4 py-4 font-bold flex items-center justify-between transition-colors rounded-xl text-lg ${
+                        isActive(item.href) ? 'bg-slate-50 text-brand-emerald' : 'text-slate-900 hover:text-brand-emerald hover:bg-slate-50'
+                      }`}
                     >
                       {item.name}
                     </Link>
